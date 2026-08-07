@@ -159,7 +159,22 @@
   .trend-verdict { font-size:13.5px; font-weight:650; text-align:center; }
   .trend-sub { font-size:11px; color:var(--text-muted); text-align:center;
                margin-top:2px; line-height:1.45; }
-  .trend-chips { display:flex; gap:6px; margin:11px 0 9px; }
+  /* WHAT THE CHIPS ARE MEASURED FROM, said where the chips are.
+     The four chips are differences within the REPLAYED series. The big figure
+     at the top of this card is the LIVE headline, computed from the provider's
+     own fields rather than the archive's, and on 7 August the two stood ten
+     points apart. Nothing said so anywhere near them, so a reader holding the
+     headline in their head and reading "24h -18" got a past value that was
+     wrong by the gap -- every time, on every chip.
+     The reconciliation existed already, buried three paragraphs down in the
+     note under the chart. A correction a reader has to go looking for is not a
+     correction; it goes where the mistake is made. */
+  .trend-anchor { font-size:10.5px; color:var(--text-muted); text-align:center;
+                  margin-top:9px; line-height:1.5; }
+  .trend-anchor b { color:var(--text-primary); font-weight:650;
+                    font-variant-numeric:tabular-nums; }
+  .trend-anchor .gapv { color:var(--warning); font-weight:700; }
+  .trend-chips { display:flex; gap:6px; margin:6px 0 9px; }
   .chip { flex:1 1 0; text-align:center; padding:7px 2px 6px; border-radius:8px;
           background:var(--surface-2); }
   .chip b { display:block; font-size:16px; font-weight:650; line-height:1.1;
@@ -167,7 +182,12 @@
   .chip i { display:block; font-style:normal; font-size:9px; letter-spacing:0.07em;
             text-transform:uppercase; color:var(--text-muted); margin-top:3px; }
   .chip.na b { color:var(--text-muted); font-size:14px; font-weight:500; }
-  .trend-svg { display:block; width:100%; height:108px; touch-action:pan-y; }
+  /* 108px was the whole chart, on a phone, carrying five days. A level change
+     of ten points -- the size of the live-versus-replay gap this card is about
+     -- was under four pixels of travel, which is smaller than the line is
+     thick. Height is the only axis a trajectory has and it was the one being
+     rationed. */
+  .trend-svg { display:block; width:100%; height:172px; touch-action:pan-y; }
   .trend-foot { display:flex; justify-content:space-between; font-size:10px;
                 color:var(--text-muted); margin-top:3px;
                 font-variant-numeric:tabular-nums; }
@@ -2165,8 +2185,9 @@
   <div class="trend" id="toneTrend">
     <div class="trend-verdict" id="toneVerdict">&mdash;</div>
     <div class="trend-sub" id="toneVerdictSub"></div>
+    <div class="trend-anchor" id="toneAnchor"></div>
     <div class="trend-chips" id="toneChips"></div>
-    <svg class="trend-svg" id="toneSpark" viewBox="0 0 320 108"
+    <svg class="trend-svg" id="toneSpark" viewBox="0 0 320 172"
          role="img" aria-label="Composite sentiment, replayed over the quote archive"></svg>
     <div class="trend-foot"><span id="toneSparkL"></span><span id="toneSparkR"></span></div>
     <div class="trend-read" id="toneSparkRead"></div>
@@ -10055,8 +10076,13 @@ var TONEHIST = {
 
 var TRD_TZ = "Asia/Hong_Kong";
 var TRD = {
-  W: 320, H: 108,          /* viewBox; the element scales, strokes do not */
-  top: 7, bot: 88,         /* plot band, leaving room for day labels */
+  W: 320, H: 172,          /* viewBox; the element scales, strokes do not */
+  top: 7, bot: 146,        /* plot band, leaving room for day labels. 7..88 gave
+                              81 units for a range that routinely spans 105 score
+                              points, so a band was thinner than its own label and
+                              the reader was asked to read a trend off a strip.
+                              139 units is the same chart with the vertical it
+                              always needed; nothing else here is rescaled. */
   padL: 36,                /* y-axis gutter. The band names USED to be drawn at
                               x=3, inside the plot, and the series ran straight
                               through them — "Mixed" and "Cautious" were struck
@@ -10201,6 +10227,15 @@ function paintTrend(atMs){
   }
   wrap.style.display = "";
   var T = TONEHIST, rows = T.rows;
+  /* ONE LIVE VALUE ON THIS CARD, NOT TWO. The ring, the anchor line and the
+     note all mark "where the live headline stands against the replayed line",
+     and all three used to read it out of the baked block -- the score tonegen
+     computed when the file was written. The headline above them is recomputed
+     every paint. A page left open drifts the two apart, and on 7 August it had
+     the card printing +21 at the top and +12 on its own chart, both labelled
+     the live headline. The ring follows the number the reader can see. */
+  var liveVal = (typeof TONE_ONSCREEN !== "undefined" && TONE_ONSCREEN)
+                  ? TONE_ONSCREEN.score : T.live;
 
   /* ---- verdict + chips ------------------------------------------- */
   var vd = trendVerdict(T.d);
@@ -10221,9 +10256,40 @@ function paintTrend(atMs){
   }
   document.getElementById("toneChips").innerHTML = ch;
 
+  /* Anchor the chips to the line they were measured on, and reconcile that
+     line against the headline. Three numbers that subtract correctly beat
+     two that look like they should and do not. */
+  var anc = document.getElementById("toneAnchor");
+  if (anc){
+    var lastRow = rows[rows.length - 1], rep0 = lastRow ? lastRow[1] : null;
+    var sgn = function(x){ return (x > 0 ? "+" : x < 0 ? "\u2212" : "") + Math.abs(x); };
+    var a = "";
+    if (rep0 != null){
+      a = "Change in the replayed line, which stands at <b>" + sgn(rep0) + "</b>";
+      /* The headline as PAINTED, falling back to the baked one only if the
+         tone card has not run yet this pass. */
+      var liveNow = TONE_ONSCREEN ? TONE_ONSCREEN.score : T.live;
+      if (liveNow != null){
+        var gp = liveNow - rep0;
+        var ld = (T.gap_by && T.gap_by.length && Math.abs(gp) >= 3) ? T.gap_by[0][0] : null;
+        if (gp === 0){
+          a += " &middot; the live headline agrees with it";
+        } else {
+          a += " &middot; the live headline is <b>" + sgn(liveNow) + "</b>, " +
+               '<span class="gapv">' + Math.abs(gp) + " " +
+               (gp > 0 ? "above" : "below") + "</span> it" +
+               (ld ? " on " + ld : "") + " &mdash; do not subtract a chip from the headline";
+        }
+        if (TONE_ONSCREEN && TONE_ONSCREEN.weak)
+          a += ". The headline is running on a degraded feed and the line is not";
+      }
+    }
+    anc.innerHTML = a;
+  }
+
   /* ---- scale ------------------------------------------------------ */
   var lo = T.lo, hi = T.hi;
-  if (T.live != null){ lo = Math.min(lo, T.live); hi = Math.max(hi, T.live); }
+  if (liveVal != null){ lo = Math.min(lo, liveVal); hi = Math.max(hi, liveVal); }
   var pad = Math.max(6, (hi - lo) * 0.10);
   var y0 = Math.min(lo - pad, -10), y1 = Math.max(hi + pad, 10);
   var Y = function(sc){ return TRD.bot - (sc - y0) / (y1 - y0) * (TRD.bot - TRD.top); };
@@ -10249,9 +10315,12 @@ function paintTrend(atMs){
        The threshold is a band's height, not its importance: a stripe under
        11 units tall cannot hold 6.6px of text without touching its neighbour,
        so it goes unnamed and the colour carries it. */
-    if (yb - yt >= 11)
-      g += '<text x="' + (X0 - 5) + '" y="' + ((yt + yb) / 2 + 2.4).toFixed(1) +
-           '" text-anchor="end" font-size="6.6" fill="var(--text-muted)" ' +
+    /* 13 units at the new scale is what 11 was at the old one -- the test is
+       whether a band can hold its own label without touching its neighbour, and
+       the label grew with the chart. */
+    if (yb - yt >= 13)
+      g += '<text x="' + (X0 - 5) + '" y="' + ((yt + yb) / 2 + 2.9).toFixed(1) +
+           '" text-anchor="end" font-size="8.2" fill="var(--text-muted)" ' +
            'letter-spacing="0.02em">' + b.s + '</text>';
   }
 
@@ -10378,7 +10447,7 @@ function paintTrend(atMs){
   var trdNum = function(v){ return (v > 0 ? "+" : v < 0 ? "\u2212" : "") + Math.abs(v); };
   var clampY = function(v){ return Math.max(TRD.top + 3, Math.min(TRD.bot - 1, v)); };
 
-  var lvy = (T.live != null) ? Y(T.live) : null;
+  var lvy = (liveVal != null) ? Y(liveVal) : null;
   /* label positions, pushed apart when the two readings are close enough that
      their text would overlap. The MARKS stay where the data is; only the words
      move, and only far enough to be read. */
@@ -10401,7 +10470,7 @@ function paintTrend(atMs){
              'fill="none" stroke="var(--text-primary)" stroke-width="1.4" ' +
              'vector-effect="non-scaling-stroke"/>';
     marks += '<text x="' + (X1 + 6) + '" y="' + (clampY(lvL) + 2.3).toFixed(1) +
-             '" font-size="7.4" fill="var(--text-secondary)">' + trdNum(T.live) + '</text>';
+             '" font-size="7.4" fill="var(--text-secondary)">' + trdNum(liveVal) + '</text>';
   }
   marks += '<text x="' + (X1 + 6) + '" y="' + (clampY(lyL) + 2.3).toFixed(1) +
            '" font-size="7.8" font-weight="700" fill="var(--text-primary)">' + trdNum(lastV) + '</text>';
@@ -10434,12 +10503,19 @@ function paintTrend(atMs){
     noteBits.push(grp(T.thin) + " of them carried under " + T.minw + " of 100 weight and are not " +
                   "plotted — a score built on a fraction of the inputs is not the same reading — " +
                   "which leaves " + grp(T.n) + " points on the line.");
-  if (T.live != null && T.gap != null){
+  if (liveVal != null && rows.length){
+    var repEnd = rows[rows.length - 1][1], gnow = liveVal - repEnd;
     var lead = (T.gap_by && T.gap_by.length) ? T.gap_by[0] : null;
-    noteBits.push("The ring is the live headline (" + (T.live > 0 ? "+" : "") + T.live +
+    /* The attribution was measured against the BAKED gap. It only describes
+       the gap on screen while the two are still the same size, so it is
+       dropped rather than reused once they part company -- a breakdown of a
+       number that is no longer the number is worse than no breakdown. */
+    var attrOk = (T.gap != null && Math.abs(gnow - T.gap) <= 2 && Math.abs(gnow) >= 3);
+    noteBits.push("The ring is the live headline (" + (liveVal > 0 ? "+" : "") + liveVal +
                   "), computed from the provider's own change and range fields rather than the archive's. " +
-                  "It sits " + Math.abs(T.gap) + " " + (T.gap > 0 ? "above" : "below") + " the replay" +
-                  (lead ? ", most of it in " + lead[0] : "") + ".");
+                  (gnow === 0 ? "It sits exactly on the replay."
+                              : "It sits " + Math.abs(gnow) + " " + (gnow > 0 ? "above" : "below") +
+                                " the replay" + (attrOk && lead ? ", most of it in " + lead[0] : "") + "."));
   }
   document.getElementById("toneTrendNote").textContent = noteBits.join(" ");
 
@@ -10498,6 +10574,15 @@ function wireTrendHover(svg){
   svg.addEventListener("pointercancel", hide);
 }
 
+/* What the headline actually says, published for paintTrend.
+   TONEHIST.live is the score tonegen computed AT BAKE TIME; the figure on
+   screen is recomputed every paint from the live payload and its ageing
+   rules, so the two drift apart as a page sits open -- on 7 August the baked
+   live read +12 while the card showed +21. The trend anchor reconciles the
+   chips against the headline, so it has to reconcile against the headline the
+   reader can see, not the one that was true when the file was written. */
+var TONE_ONSCREEN = null;
+
 function paintTone(d, atMs){
   var nowMs = atMs || Date.now();
   var t = tone(d, nowMs);
@@ -10542,6 +10627,7 @@ function paintTone(d, atMs){
      when it is still the biggest thing on the card. Below a quarter, the figure
      goes; the component rows below it are the honest reading at that point. */
   var husk = t.wsum < 25;
+  TONE_ONSCREEN = husk ? null : { score: t.score, weak: weak };
   $("toneFig").textContent  = husk ? "—" : (t.score>0?"+":"") + t.score;
   divFill($("toneFill"), husk ? 0 : t.score/100);
   /* A 48px em-dash reads as a stray rule floating above the card rather than as
@@ -14308,9 +14394,37 @@ function load(){
         attempt(i+1);
         return;
       }
+      /* TIME MUST NOT RUN BACKWARDS, AND ON THESE MIRRORS IT CAN.
+         Both of them are CDNs in front of a git branch, and neither promises
+         freshness: raw.githubusercontent.com caches per path for minutes, and
+         jsDelivr's @main URLs are cached far longer than that. So the second
+         mirror can answer with a payload HOURS older than the one the first
+         mirror already gave us, and until now the page took it -- `last = d`
+         with no comparison -- repainted every card from it, and showed the
+         result as live. That is the page going backwards in time with nothing
+         on screen admitting it, and it is the likeliest cause of the "the
+         dashboard is lagging" reports: not a stalled timer, a fresher reading
+         being overwritten by a staler one.
+         The payload carries its own stamp, so the test is cheap and exact.
+         A mirror that is behind what we hold is not a failure to report as an
+         outage -- it is a mirror that has nothing to add. Skip to the next. */
+      var newTs = num(d.ts_epoch), haveTs = last ? num(last.ts_epoch) : null;
+      if (haveTs != null && newTs != null && newTs < haveTs){
+        errs.push(MIRRORS[i].n + ": " + Math.round((haveTs - newTs) / 60) +
+                  "m behind the payload already held");
+        attempt(i+1);
+        return;
+      }
       clearTimeout(hint); busy = false;
       last = d;
-      paintLive(d); paintAll(d);
+      /* Painting is OUTSIDE the promise chain on purpose. It used to sit inside
+         the .then, which meant a painter throwing an exception was caught by the
+         .catch below and reported as though the MIRROR had failed -- the page
+         would then walk to the next mirror, paint, throw again, and finally
+         announce a network outage for a bug that never touched the network.
+         A rendering fault and a fetch fault are different failures and the
+         reader is told which. */
+      setTimeout(function(){ paintLive(d); paintAll(d); }, 0);
     }).catch(function(e){
       errs.push(MIRRORS[i].n+": "+((e && e.message) ? e.message : "failed"));
       attempt(i+1);
