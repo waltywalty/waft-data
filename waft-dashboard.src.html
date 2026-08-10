@@ -2183,6 +2183,26 @@
   table.tv td { padding:6px 4px; border-bottom:1px solid var(--grid); font-variant-numeric:tabular-nums; color:var(--text-secondary); }
   table.tv td:first-child { color:var(--text-primary); font-weight:600; }
 
+  /* The live-print bar. Sticky because a price you typed six cards ago is the
+     anchor for the card you are reading now, and having to scroll back to check
+     it is how it ends up trusted without being looked at. */
+  .lp { position:sticky; top:0; z-index:40; background:var(--surface-2);
+        border:1px solid var(--grid); border-radius:10px; padding:8px 10px; margin-bottom:10px; }
+  .lp.on { border-color:var(--accent); }
+  .lp-row { display:flex; gap:7px; align-items:center; }
+  .lp-lab { font-size:10px; font-weight:650; letter-spacing:0.4px; text-transform:uppercase;
+            color:var(--text-muted); white-space:nowrap; }
+  .lp-sel { background:var(--surface-1); color:var(--text-primary); border:1px solid var(--grid);
+            border-radius:7px; font-size:12px; min-height:32px; padding:0 6px; }
+  .lp-in { flex:1 1 auto; min-width:0; background:var(--surface-1); color:var(--text-primary);
+           border:1px solid var(--grid); border-radius:7px; font-size:14px; min-height:32px;
+           padding:0 8px; font-variant-numeric:tabular-nums; }
+  .lp-clr { background:none; border:1px solid var(--grid); color:var(--text-secondary);
+            border-radius:7px; font-size:11px; min-height:32px; padding:0 9px; cursor:pointer;
+            white-space:nowrap; }
+  .lp-note { font-size:10.5px; color:var(--text-muted); line-height:1.5; margin-top:5px; }
+  .lp-note b { color:var(--accent); font-weight:650; }
+  .lp-note .warn { color:var(--warning); font-weight:650; }
   footer.foot { margin-top:24px; font-size:11px; color:var(--text-muted); line-height:1.6; text-align:center; }
 </style>
 </head>
@@ -2203,6 +2223,21 @@
     <button class="toggle" id="themeBtn" type="button">Light</button>
   </div>
 </header>
+
+<!-- YOUR LIVE PRINT. The one input on this page whose number beats the relay,
+     because it is the only one that came from the present. Sits at the top
+     because it governs every distance below it, and stays visible on scroll for
+     the same reason. -->
+<section class="lp" id="lpBar">
+  <div class="lp-row">
+    <label class="lp-lab" for="lpIn">Your live print</label>
+    <select class="lp-sel" id="lpSym" aria-label="Contract"></select>
+    <input class="lp-in" id="lpIn" type="number" step="any" inputmode="decimal"
+           placeholder="type off your platform">
+    <button class="lp-clr" id="lpClr" type="button">Clear</button>
+  </div>
+  <div class="lp-note" id="lpNote"></div>
+</section>
 
 <!-- THE RAIL. Populated by paintRail() from the cards actually in the document;
      there is deliberately no list of card names here, because a typed list is a
@@ -4726,6 +4761,18 @@ document.getElementById("sessTvBtn").onclick = function(){
    own — two cards quoting two different prices for the same contract is the exact
    failure this dashboard exists to avoid. pxManual latches the moment the reader
    types: after that the tape stops overwriting their number. */
+/* THE LIVE-PRINT STATE IS DECLARED HERE, ahead of every consumer, and the
+   position is load-bearing rather than tidy. var hoists the declaration and not
+   the assignment, so any of this sitting beside the code that READS it is
+   `undefined` for every call that happens earlier in the file — and the very
+   next line calls liqPx(), which now consults it. Declared late, LIVEPRINT took
+   the ladder out at parse time and LP_SYMS took out the wiring; both failed
+   silently as an empty card rather than loudly, which is exactly how the tile
+   map's identical bug behaved and why that one carries a comment too. */
+var PRINT_TTL_MS = 15 * 60 * 1000;   /* how long a print you typed stays current */
+var LIVEPRINT = {};                  /* sym -> { px, at } — your own print, top rung */
+var LP_SYMS = ["ES", "RTY", "NQ", "YM", "HSI"];
+
 var curKey = "RTY", curPx = liqPx("RTY"), pxManual = false;
 
 /* TICK PRECISION IS NOT BIN PRECISION, AND THE BOX NEEDS THE FIRST ONE.
@@ -4809,8 +4856,53 @@ function setPxBox(k, p){
 
 document.getElementById("priceIn").addEventListener("input", function(e){
   var v = parseFloat(e.target.value);
-  if (!isNaN(v) && v > 0){ curPx = v; pxManual = true; drawLadder(); }
+  /* The ladder's own box now writes into the SAME store as the bar at the top.
+     Two inputs for one fact is how they end up disagreeing, and the one the
+     reader is not looking at is always the one that wins. */
+  if (!isNaN(v) && v > 0){
+    LIVEPRINT[curKey] = { px: v, at: Date.now() };
+    curPx = v; pxManual = true;
+    var top = document.getElementById("lpIn"), sel = document.getElementById("lpSym");
+    if (sel && sel.value !== curKey){ sel.value = curKey; }
+    if (top) top.value = String(v);
+    lpPaint();
+    lpRepaint();
+  }
 });
+
+(function wireLivePrint(){
+  var sel = document.getElementById("lpSym"), box = document.getElementById("lpIn"),
+      clr = document.getElementById("lpClr");
+  if (!sel || !box || !clr) return;
+  /* Only contracts this page can actually measure a distance for. A symbol with
+     no ladder and no profile would accept a number and change nothing, which is
+     a worse outcome than not offering it. */
+  var opts = "";
+  for (var i = 0; i < LP_SYMS.length; i++){
+    var k = LP_SYMS[i];
+    if (!LADDERS[k] && !LIQ[k]) continue;
+    opts += '<option value="' + k + '"' + (k === curKey ? " selected" : "") + ">" +
+            ((LADDERS[k] && LADDERS[k].label) || k) + "</option>";
+  }
+  sel.innerHTML = opts;
+  sel.addEventListener("change", function(){
+    var e = printAt(lpSym());
+    box.value = e ? String(e.px) : "";
+    lpPaint();
+  });
+  box.addEventListener("input", lpApply);
+  clr.addEventListener("click", function(){
+    LIVEPRINT = {};
+    box.value = "";
+    pxManual = false; curPx = liqPx(curKey); setPxBox(curKey, curPx);
+    lpPaint();
+    lpRepaint();
+  });
+  lpPaint();
+  /* The bar re-states its own age on the poll, so a print quietly ageing toward
+     expiry is visible rather than discovered at the moment it vanishes. */
+  setInterval(lpPaint, 30000);
+})();
 
 /* The ladder follows the tape, but a redraw collapses whatever detail row the
    reader has open — so it only redraws once price has moved far enough to change
@@ -4947,8 +5039,12 @@ function drawLadder(atMs){
    presented without provenance is the one thing on the ladder that cannot be
    checked, and every other number is measured off it. */
 function hereRow(L){
-  var r = el("div","lrow here"), src = pxManual ? "manual" : pxSource(curKey), note;
-  if (src === "manual")    note = "Your number — every distance below is measured from it";
+  var r = el("div","lrow here"), src = pxSource(curKey), note;
+  /* "manual" used to be a state of this card alone. It is not one any more:
+     typing here writes the same store the bar at the top writes, so the price
+     funnel answers "yours" and the note can say what is actually true — the
+     number governs the whole page, not just the rows underneath it. */
+  if (src === "yours")     note = "Your number, typed " + printAge(curKey) + " — every distance on this page is measured from it";
   else if (src === "live") note = "Live print, tracking the tape — type over it to pin the board to your own fill";
   else if (src === "snap") note = "Snapshot price, " + snapWhen() + " — type over it to use your live print";
   else                     note = AS_OF + " — overwrite with your live print above";
@@ -5013,7 +5109,43 @@ var liqKey = Object.keys(LIQ)[0];
    when the ladder was written, which on a morning like 31 July was Thursday's
    settlement while the tape was sixteen points higher. Every distance on the
    board was then measured from a price that had stopped existing overnight. */
+/* YOUR OWN PRINT, and it outranks everything.
+
+   The feed reaches this page about twenty-one minutes behind the tape: eleven
+   of provider delay, five to ten of relay publish interval, up to five of CDN
+   cache and up to one of poll. For levels, profiles and session structure that
+   does not matter — none of them decay in twenty minutes, which is why the rest
+   of this page is worth reading off a delayed feed. For DISTANCE it matters
+   completely: "6.25 away, 1.0x" is a claim about now, and on ES at the measured
+   cash pace the price on screen is roughly ten points wrong in an unknown
+   direction.
+
+   So the reader can type the price off their own platform, and every distance,
+   multiple, reach time and pool proximity on the page recomputes from it. This
+   is the one input on the board that beats the relay, because it is the only
+   number here that came from the present.
+
+   IT EXPIRES. A print typed twenty minutes ago is exactly the thing it was
+   entered to replace, and a stale override is worse than a stale feed because
+   the feed at least admits its age. PRINT_TTL_MS is the life of one; past it
+   the value is dropped and the page silently returns to the relay — silently
+   in the sense of not asking, never in the sense of not saying: the age rides
+   next to the number for as long as it is in force. */
+function printAt(sym, nowMs){
+  /* LIVEPRINT is `undefined` here on the very first call and that is not a bug
+     to declare away: the ladder reads liqPx() while establishing curPx, which
+     happens before the live-state block further down has been assigned. liqPx
+     has always survived that by short-circuiting on LIVEQ; this rung has to do
+     the same or it takes the whole ladder out at parse time — which it did. */
+  if (!LIVEPRINT) return null;
+  var e = LIVEPRINT[sym];
+  if (!e) return null;
+  if ((nowMs || Date.now()) - e.at > PRINT_TTL_MS){ delete LIVEPRINT[sym]; return null; }
+  return e;
+}
 function liqPx(sym){
+  var mine = printAt(sym);
+  if (mine) return mine.px;
   var q = LIVEQ && LIVEQ.quotes && LIVEQ.quotes[sym];
   var p = q ? lnum(q.px) : null;
   if (p == null){
@@ -5022,9 +5154,83 @@ function liqPx(sym){
   }
   return p != null ? p : (LADDERS[sym] ? LADDERS[sym].seed : null);
 }
-/* Which of those three rungs answered, so the board can say so out loud rather
-   than presenting all three with the same confidence. */
+/* ONE repaint entry point, and it is the page's own.
+
+   The first version of this called paintAll() directly and guarded with
+   `typeof paintAll === "function"` — which is false here, because paintAll
+   lives inside the live() IIFE and this code does not. So the guard was always
+   false, the call never happened, and every handler quietly fell through to
+   redrawing the ladder alone: the reader's print moved the card they were
+   looking at and left every other card on the page measuring from the relay.
+   It looked like it worked, which is the worst way for it not to.
+
+   __wf.repaintAt is the same door the build's freeze and three suites use, so a
+   card added later is repainted by default rather than by being remembered. The
+   fallback is narrower and says so rather than pretending it did the job. */
+function lpRepaint(){
+  if (window.__wf && typeof window.__wf.repaintAt === "function"){
+    window.__wf.repaintAt(Date.now());
+    return true;
+  }
+  try { drawLadder(); } catch (e) {}
+  return false;
+}
+
+/* How long ago the reader typed the print that is currently in force, spelled
+   the way every other age on this page is spelled. */
+function printAge(sym){
+  var e = printAt(sym);
+  if (!e) return "";
+  var s = Math.max(0, Math.round((Date.now() - e.at) / 1000));
+  if (s < 45) return "just now";
+  var m = Math.round(s / 60);
+  return m <= 1 ? "a minute ago" : m + " minutes ago";
+}
+
+/* ---- the live-print bar -------------------------------------------------
+   Wiring, not arithmetic: the number goes into LIVEPRINT and liqPx() does the
+   rest, so every card that already asks for a price gets the new one without
+   knowing anything changed. That is the whole reason this went into the price
+   funnel rather than into fourteen call sites. */
+function lpSym(){
+  var s = document.getElementById("lpSym");
+  return (s && s.value) || LP_SYMS[0];
+}
+function lpApply(){
+  var box = document.getElementById("lpIn");
+  var v = box ? parseFloat(box.value) : NaN;
+  var sym = lpSym();
+  if (isFinite(v) && v > 0) LIVEPRINT[sym] = { px: v, at: Date.now() };
+  else delete LIVEPRINT[sym];
+  /* The ladder keeps its own cursor, so release its manual latch and let it
+     re-read the funnel — otherwise the card the reader is most likely to be
+     looking at is the one card that ignores what they just typed. */
+  if (sym === curKey){ pxManual = false; curPx = liqPx(curKey); setPxBox(curKey, curPx); }
+  lpPaint();
+  lpRepaint();
+}
+function lpPaint(){
+  var bar = document.getElementById("lpBar"), note = document.getElementById("lpNote");
+  if (!bar || !note) return;
+  var live = [], k, e;
+  for (k = 0; k < LP_SYMS.length; k++){
+    e = printAt(LP_SYMS[k]);
+    if (e) live.push(LP_SYMS[k] + " " + fmt(e.px, (TICK[LP_SYMS[k]] && TICK[LP_SYMS[k]] < 1) ? 2 : 2));
+  }
+  if (bar.className.indexOf("on") >= 0 !== (live.length > 0))
+    bar.className = live.length ? "lp on" : "lp";
+  var age = printAge(lpSym());
+  note.innerHTML = live.length
+    ? "Every distance, &times; figure, reach time and pool proximity on this page is now measured from <b>" +
+      live.join("</b>, <b>") + "</b>. Typed " + age +
+      "; it expires after fifteen minutes and the board falls back to the relay, because a print you typed twenty minutes ago is the thing this field exists to replace."
+    : "The relay reaches this page about <span class=\"warn\">twenty minutes behind the tape</span> &mdash; fine for levels and profiles, wrong for distances. Type the price off your platform and every distance below recomputes from it.";
+}
+
+/* Which of those rungs answered, so the board can say so out loud rather
+   than presenting all of them with the same confidence. */
 function pxSource(sym){
+  if (printAt(sym)) return "yours";
   var q = LIVEFEED && LIVEQ && LIVEQ.quotes && LIVEQ.quotes[sym];
   if (q && lnum(q.px) != null) return "live";
   var s = SNAPSHOT && SNAPSHOT.quotes && SNAPSHOT.quotes[sym];
@@ -8148,6 +8354,10 @@ window.__wf.scenState = function(){
   });
 };
 window.__wf.scenTok = scenTok;
+/* Exported so a suite can assert the price FUNNEL took the reader's print, not
+   merely that a card printed a sentence saying so. */
+window.__wf.pxSource = pxSource;
+window.__wf.liqPx = liqPx;
 
 /* ---- chain ---- */
 (function renderChain(){
