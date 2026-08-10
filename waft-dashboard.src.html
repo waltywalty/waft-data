@@ -3500,35 +3500,35 @@ function mhiAt(min){
 }
 
 var SESSION = [
-  { s:   0, e:  60, tr:1, n:"US midday lull",
+  { s:   0, e:  60, tr:1, n:"US midday lull", tz:"ET", lm:720,
     note:"The dead middle of the US session. Breaks here reverse more often than they run — the desks that would push it are away from the screen. If you are early, this is the hour that stops you out for nothing." },
-  { s:  60, e: 180, tr:3, n:"US afternoon trend",
+  { s:  60, e: 180, tr:3, n:"US afternoon trend", tz:"ET", lm:780,
     note:"Volume comes back and the day's direction usually settles here. A level that gives way in this window tends to stay given. The best window on the clock for an entry you actually intend to hold." },
-  { s: 180, e: 240, tr:3, n:"Power hour → cash close",
+  { s: 180, e: 240, tr:3, n:"Power hour → cash close", tz:"ET", lm:900,
     note:"Index funds and closing imbalances dominate the last hour. Moves are quick and they stick into the bell — but the cause is flow, not opinion, so do not read the direction as a signal for tomorrow. MHI has just shut, at 03:00, so whatever this hour does to the China complex cannot be traded in Hong Kong until 09:15." },
-  { s: 240, e: 300, tr:1, n:"After the US cash close",
+  { s: 240, e: 300, tr:1, n:"After the US cash close", tz:"ET", lm:960,
     note:"Cash is shut, futures still trade on a thin book. A break here is often one order finding no bids. Do not act on it." },
-  { s: 300, e: 360, tr:0, n:"CME halt — futures shut",
+  { s: 300, e: 360, tr:0, n:"CME halt — futures shut", tz:"ET", lm:1020,
     note:"The one hour a day RTY and ES do not trade at all. MHI has already been shut for two hours by this point. Nothing to do but sleep." },
-  { s: 360, e: 540, tr:1, n:"Globex reopen · Asia pre-dawn",
+  { s: 360, e: 540, tr:1, n:"Globex reopen · Asia pre-dawn", tz:"ET", lm:1080,
     note:"Futures reopen into the thinnest book of the day. Highs and lows printed in this window get run straight over the moment Europe arrives — do not carry them into your level map." },
-  { s: 540, e: 570, tr:1, n:"HK pre-open auction",
+  { s: 540, e: 570, tr:1, n:"HK pre-open auction", tz:"HK", lm:540,
     note:"The cash index is matching orders, not trading, and its indicative price swings around meaning very little until the bell. MHI is different and this is the one place it matters: the future has been trading since 09:15, fifteen minutes ahead of the cash open, so the contract prints a real two-way price while the index underneath it is still an auction. Those fifteen minutes are the only window on the clock where the HK ladder's price is more honest than the levels drawn on it." },
-  { s: 570, e: 720, tr:2, n:"HK morning session",
+  { s: 570, e: 720, tr:2, n:"HK morning session", tz:"HK", lm:570,
     note:"Your one properly liquid window for MHI — levels tested in the first hour here are real. RTY and ES are still thin, so a US break during Asia hours is Asian flow, not a US decision." },
-  { s: 720, e: 780, tr:1, n:"HK lunch break",
+  { s: 720, e: 780, tr:1, n:"HK lunch break", tz:"HK", lm:720,
     note:"MHI is shut for the first half hour and matching in the second; US futures drift throughout. The flattest hour on the board. A good time to plan the entry; a bad time to take it." },
-  { s: 780, e: 900, tr:2, n:"HK afternoon session",
+  { s: 780, e: 900, tr:2, n:"HK afternoon session", tz:"HK", lm:780,
     note:"MHI reopens at 13:00 and the afternoon usually resolves the morning's range. Whether the morning high or the morning low goes first is the day's tell for the whole China complex." },
-  { s: 900, e: 970, tr:2, n:"Europe opens · HK closes",
+  { s: 900, e: 970, tr:2, n:"Europe opens · HK closes", tz:"LON", lm:480,
     note:"Europe arrives and RTY and ES get their first genuine two-way flow of the day. This is the earliest hour a US level break is worth trusting. The cash index closes at 16:10 into it; MHI keeps trading until 16:30, so the last twenty minutes of the HK day are the contract moving with no index behind it." },
-  { s: 970, e:1230, tr:2, n:"European session",
+  { s: 970, e:1230, tr:2, n:"European session", tz:"HK", lm:970,
     note:"Steady, moderate volume. Breaks here follow through perhaps half the time — useful for starting a position, not for taking the whole one." },
-  { s:1230, e:1290, tr:1, n:"US data window · pre-open",
+  { s:1230, e:1290, tr:1, n:"US data window · pre-open", tz:"ET", lm:510,
     note:"Numbers land at 20:30 and the pre-open book is thin enough that the first move is regularly the wrong one. This is exactly where a right call becomes a wrong entry. Let the bell confirm it." },
-  { s:1290, e:1350, tr:3, n:"US cash open — first hour",
+  { s:1290, e:1350, tr:3, n:"US cash open — first hour", tz:"ET", lm:570,
     note:"The highest-volume hour RTY sees all day. A level that breaks here on volume is the most reliable break on the board. It is also the fastest — that is an argument for smaller size, not larger." },
-  { s:1350, e:1440, tr:1, n:"US midday lull",
+  { s:1350, e:1440, tr:1, n:"US midday lull", tz:"ET", lm:630,
     note:"Volume falls off a cliff once the first hour is done. False breaks are the norm and the range usually survives until the afternoon." }
 ];
 
@@ -4490,8 +4490,81 @@ function weekendShut(p){
   if (p.dow === 1 && p.min < 360) return true;    /* before Monday's reopen */
   return false;
 }
-function phaseAt(min){
-  for (var i=0;i<SESSION.length;i++){ if (min >= SESSION[i].s && min < SESSION[i].e) return i; }
+/* ------------------------------------------------------------------------
+   THE SESSION CLOCK IS DERIVED FROM REAL TIMEZONES, NOT FROM FIXED UTC HOURS.
+
+   Until 10 Aug 2026 this table's s/e were hard-coded HKT minutes and sessAt()
+   classified by hard-coded UTC hours, both of which silently assumed the US
+   would be on EDT forever. Hong Kong has no daylight saving; New York and
+   London do, on DIFFERENT dates. Run 2 November 2026 through the old code and
+   the power hour (20:30Z) and the cash close (21:00Z) both come back EVE
+   instead of RTH — and since sessAt() picks the divisor for pace(), and pace()
+   sets every x-distance on this page, the two highest-volume half hours of the
+   day would have been divided by the post-close median. Every distance would
+   have read about half as far as it is, in the direction that puts levels "in
+   reach" that are not.
+
+   It is not a two-state problem either. Europe leaves DST on 25 Oct and the US
+   on 1 Nov, so for one week London opens an hour later relative to New York
+   than it does in either steady state. A boolean cannot express that; a real
+   timezone database can.
+
+   So each row now carries the exchange whose clock DEFINES it (tz) and its
+   local start minute in that clock (lm), and the boundaries are projected into
+   the display timezone at paint time. s/e remain in the table as the
+   EDT/BST-era reference values, because kzlib.load_phases() parses this literal
+   and maps killzones onto row INDICES; the row order and count are unchanged,
+   so that contract holds. Nothing on the page reads s/e any more.
+   ------------------------------------------------------------------------ */
+
+/* Minutes east of UTC for a named zone at a given instant. Formats the instant
+   in that zone and reads it back as if it were UTC — the difference IS the
+   offset, and it is correct across every DST rule without a table to maintain. */
+function tzOffMin(ms, tz){
+  var d = new Date(ms);
+  var s = d.toLocaleString("en-US", { timeZone: tz, hour12: false,
+    year: "numeric", month: "2-digit", day: "2-digit",
+    hour: "2-digit", minute: "2-digit" });
+  var m = /(\d+)\/(\d+)\/(\d+),?\s+(\d+):(\d+)/.exec(s);
+  if (!m) return 0;
+  var hh = +m[4] % 24;   /* en-US can hand back 24:00 at local midnight */
+  var asUtc = Date.UTC(+m[3], +m[1] - 1, +m[2], hh, +m[5], 0);
+  var utc = Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate(),
+                     d.getUTCHours(), d.getUTCMinutes(), 0);
+  return Math.round((asUtc - utc) / 60000);
+}
+var TZ_NAME = { ET: "America/New_York", LON: "Europe/London", HK: "Asia/Hong_Kong" };
+/* The display clock. HKT by standing decision — Hong Kong keeps no daylight
+   saving, so this one never moves, and everything that DOES move is now
+   projected onto it rather than assumed against it. */
+var DISPLAY_TZ = "Asia/Hong_Kong";
+
+/* A row's start, in display-clock minutes, on the date of `ms`. */
+function phaseStart(row, ms){
+  if (row.tz == null || row.lm == null) return row.s;      /* pre-anchor rows */
+  var off = tzOffMin(ms, DISPLAY_TZ) - tzOffMin(ms, TZ_NAME[row.tz] || DISPLAY_TZ);
+  var v = (row.lm + off) % 1440;
+  return v < 0 ? v + 1440 : v;
+}
+/* The whole table projected and re-sorted for the given instant. Boundaries are
+   contiguous by construction — each row runs to the next row's start — so a
+   projection that moves one row moves its neighbour's end with it and no gap
+   can open up. Sorted because a DST shift can rotate a row past midnight. */
+function phaseTable(ms){
+  var out = [], i;
+  for (i = 0; i < SESSION.length; i++)
+    out.push({ i: i, row: SESSION[i], s: phaseStart(SESSION[i], ms) });
+  out.sort(function(a, b){ return a.s - b.s; });
+  for (i = 0; i < out.length; i++)
+    out[i].e = out[(i + 1) % out.length].s;
+  return out;
+}
+function phaseAt(min, ms){
+  var T = phaseTable(ms == null ? Date.now() : ms), i;
+  for (i = 0; i < T.length; i++){
+    var s = T[i].s, e = T[i].e;
+    if (e > s ? (min >= s && min < e) : (min >= s || min < e)) return T[i].i;
+  }
   return SESSION.length - 1;
 }
 
@@ -4503,13 +4576,22 @@ function buildStrip(){
   /* Height carries break-trust. A shut phase still gets a visible sliver so the
      axis never looks broken, but it is unmistakably the shortest thing there. */
   var H = { 0:5, 1:11, 2:20, 3:30 };
-  SESSION.forEach(function(ph, i){
-    var seg = el("div","sess-seg" + (ph.tr===0 ? " shut" : ""));
-    seg.style.left   = (ph.s / 1440 * 100) + "%";
-    seg.style.width  = "calc(" + ((ph.e - ph.s) / 1440 * 100) + "% - 2px)";
-    seg.style.height = H[ph.tr] + "px";
-    seg.id = "sseg" + i;
-    host.appendChild(seg);
+  /* Geometry from the PROJECTED table. A segment keeps its row index as its id
+     so paintSession can outline the current one, but its position comes from
+     where that phase actually falls today. A row rotated past midnight by a DST
+     shift is drawn as two pieces rather than as a negative width. */
+  phaseTable(Date.now()).forEach(function(e){
+    var ph = e.row;
+    var pieces = e.e > e.s ? [[e.s, e.e]] : [[e.s, 1440], [0, e.e]];
+    pieces.forEach(function(pc, k){
+      if (pc[1] <= pc[0]) return;
+      var seg = el("div","sess-seg" + (ph.tr===0 ? " shut" : ""));
+      seg.style.left   = (pc[0] / 1440 * 100) + "%";
+      seg.style.width  = "calc(" + ((pc[1] - pc[0]) / 1440 * 100) + "% - 2px)";
+      seg.style.height = H[ph.tr] + "px";
+      seg.id = k === 0 ? "sseg" + e.i : "sseg" + e.i + "b";
+      host.appendChild(seg);
+    });
   });
   [0,360,720,1080,1440].forEach(function(m){
     var t = el("div","sess-tick", m===1440 ? "24:00" : hhmm(m));
@@ -4525,7 +4607,11 @@ function buildStrip(){
 
 function paintSession(atMs, frozenNote){
   var p = hkParts(atMs);
-  var idx = phaseAt(p.min);
+  var nphS = 0;
+  var atRef = atMs == null ? Date.now() : atMs;
+  var PT = phaseTable(atRef);                 /* projected once, used throughout */
+  var byIdx = {}; for (var pi = 0; pi < PT.length; pi++) byIdx[PT[pi].i] = PT[pi];
+  var idx = phaseAt(p.min, atRef);
   var ph = SESSION[idx];
   var shut = weekendShut(p);
 
@@ -4552,7 +4638,7 @@ function paintSession(atMs, frozenNote){
     '<div class="sess-lab">Right now &middot; Hong Kong time</div>'+
     '<div class="sess-name">'+name+'</div>'+
     '<div class="sess-meta">'+(shut ? "Reopens 06:00 Monday HKT"
-        : hhmm(ph.s)+"–"+hhmm(ph.e)+" HKT &middot; it is "+hhmm(p.min))+'</div>'+
+        : hhmm(byIdx[idx].s)+"–"+hhmm(byIdx[idx].e)+" HKT &middot; it is "+hhmm(p.min))+'</div>'+
     '<div class="sess-trust"><u>'+bars+'</u>Break follow-through: '+TRUST_WORD[tr]+'</div>'+
     mhiRow(p.min, shut)+
     '<div class="sess-note">'+note+'</div>'+
@@ -4565,17 +4651,21 @@ function paintSession(atMs, frozenNote){
     /* The midday lull straddles midnight as two rows, so the naive "next" can be
        the same phase again — announcing a change that is not one. Skip ahead to
        the first phase that actually reads differently. */
-    var j = idx, nph = null, end = ph.e, guard = 0;
-    while (guard++ < SESSION.length){
-      j = (j + 1) % SESSION.length;
-      if (SESSION[j].n !== ph.n){ nph = SESSION[j]; break; }
-      end = SESSION[j].e;
+    /* Walked in PROJECTED order, not in table order: a DST shift can rotate a
+       row across midnight, and "the next row in the literal" would then be a
+       phase that has already happened. */
+    var pos = 0; for (var pk = 0; pk < PT.length; pk++) if (PT[pk].i === idx) pos = pk;
+    var nph = null, end = byIdx[idx].e, guard = 0, k2 = pos;
+    while (guard++ < PT.length){
+      k2 = (k2 + 1) % PT.length;
+      if (PT[k2].row.n !== ph.n){ nph = PT[k2].row; nphS = PT[k2].s; break; }
+      end = PT[k2].e;
     }
-    if (!nph) nph = SESSION[(idx+1) % SESSION.length];
+    if (!nph){ nph = PT[(pos + 1) % PT.length].row; nphS = PT[(pos + 1) % PT.length].s; }
     var left = end - p.min; if (left <= 0) left += 1440;
     var h = Math.floor(left/60), mm = left % 60;
     nxt.innerHTML = "In <b>" + (h ? h + "h" + (mm ? " " + mm + "m" : "") : left + "m") +
-                    "</b> this becomes <b>" + nph.n + "</b> · " + hhmm(nph.s) + " HKT" +
+                    "</b> this becomes <b>" + nph.n + "</b> · " + hhmm(nphS) + " HKT" +
                     ' <span style="color:var(--text-muted)">(' + TRUST_WORD[nph.tr].toLowerCase() + ' follow-through)</span>';
   }
 }
@@ -4600,10 +4690,13 @@ function buildSessTable(){
   var t = document.getElementById("sessTv");
   t.innerHTML = "";   /* idempotent: this markup ships pre-rendered */
   var rows = ['<thead><tr><th>Window (HKT)</th><th>Phase</th><th>Follow-through</th></tr></thead><tbody>'];
-  SESSION.forEach(function(ph){
+  /* Projected, and in projected order, so the table reads down the day as it
+     actually falls rather than as it fell in July. */
+  phaseTable(Date.now()).forEach(function(e){
+    var ph = e.row;
     /* hhmm wraps 1440 to 00:00, which reads as the start of the day rather than
-       the end of it. The final boundary is spelled out. */
-    rows.push('<tr><td>'+hhmm(ph.s)+'–'+(ph.e===1440 ? "24:00" : hhmm(ph.e))+'</td><td style="text-align:left;white-space:normal">'+
+       the end of it. A final boundary landing there is spelled out. */
+    rows.push('<tr><td>'+hhmm(e.s)+'–'+(e.e===0 ? "24:00" : hhmm(e.e))+'</td><td style="text-align:left;white-space:normal">'+
               ph.n+'</td><td>'+TRUST_WORD[ph.tr]+'</td></tr>');
   });
   rows.push('</tbody>');
@@ -5059,11 +5152,31 @@ function poolReach(x30, clock, mins){
    The session clock in UTC, matching reach.py boundary for boundary. Two
    implementations of one clock in two languages is a bug waiting to happen; if
    either moves, both move. */
+/* THE DIVISOR SELECTOR, and the single most consequential function on the page
+   for the reason given at phaseAt: pace() reads it, and every x-distance reads
+   pace(). It classified by hard-coded UTC hours, which is EDT written in a
+   disguise that survives a code review — on 2 Nov 2026 it returns EVE for the
+   power hour and EVE for the cash close, and the two busiest half hours of the
+   day get divided by the post-close median.
+
+   Now it asks the exchanges. RTH is the US cash session in New York's own
+   clock, 09:30 to 16:00, whatever UTC that lands on. EVE is the thin book from
+   the bell to the CME halt. EUR runs from London's open to New York's, which is
+   the one window whose LENGTH changes for a week each autumn — Europe leaves
+   DST on 25 Oct and the US on 1 Nov — and asking both clocks is the only way to
+   get that week right. */
 function sessAt(ms){
-  var d = new Date(ms), h = d.getUTCHours() + d.getUTCMinutes()/60;
-  if (h >= 13.5 && h < 20) return "RTH";
-  if (h >= 7 && h < 13.5)  return "EUR";
-  if (h >= 20 && h < 22)   return "EVE";
+  var et  = (function(){ var o = tzOffMin(ms, "America/New_York");
+               var d = new Date(ms);
+               var m = d.getUTCHours() * 60 + d.getUTCMinutes() + o;
+               return ((m % 1440) + 1440) % 1440; })();
+  var lon = (function(){ var o = tzOffMin(ms, "Europe/London");
+               var d = new Date(ms);
+               var m = d.getUTCHours() * 60 + d.getUTCMinutes() + o;
+               return ((m % 1440) + 1440) % 1440; })();
+  if (et >= 570 && et < 960)  return "RTH";      /* 09:30–16:00 New York */
+  if (et >= 960 && et < 1080) return "EVE";      /* 16:00–18:00, bell to halt */
+  if (lon >= 480 && et < 570) return "EUR";      /* London open → New York open */
   return "ASIA";
 }
 
