@@ -1,35 +1,35 @@
 {
  "meta": {
-  "futures_age_s": 661,
+  "futures_age_s": 841,
   "note": "US index futures are exchange-delayed ~15min. Overnight ranges and levels are unaffected by the delay; the last tick is.",
   "sources": {
    "rates": "treasury.gov",
    "us_index": "yahoo_delayed",
    "vix": "cnbc"
   },
-  "took_s": 6.7
+  "took_s": 5.5
  },
  "quotes": {
   "CRUDE": {
-   "age_s": 661,
+   "age_s": 624,
    "bars": 477,
-   "chg": -2.11,
-   "chg_pct": -2.534,
-   "cnbc_px": 81.16,
+   "chg": -2.09,
+   "chg_pct": -2.51,
    "d1_high": 83.3,
    "d1_low": 80.09,
    "on_high": 81.31,
    "on_low": 81.07,
    "on_open": 81.28,
-   "on_pos": 0.375,
+   "on_pos": 0.458,
    "on_range": 0.24,
    "prev_close": 83.27,
-   "px": 81.16,
-   "src": "yahoo",
-   "ts": 1786653600
+   "px": 81.18,
+   "src": "cnbc",
+   "ts": 1786653817,
+   "yahoo_px": 81.18
   },
   "DXY": {
-   "age_s": 661,
+   "age_s": 841,
    "bars": 470,
    "chg": -0.038,
    "chg_pct": -0.038,
@@ -46,7 +46,7 @@
    "ts": 1786653600
   },
   "ES": {
-   "age_s": 661,
+   "age_s": 841,
    "bars": 475,
    "chg": 53.0,
    "chg_pct": 0.682,
@@ -63,24 +63,24 @@
    "ts": 1786653600
   },
   "GOLD": {
-   "age_s": 661,
+   "age_s": 841,
    "bars": 477,
-   "chg": -4.0,
-   "chg_pct": -0.091,
+   "chg": -3.2998,
+   "chg_pct": -0.075,
    "d1_high": 4509.1001,
    "d1_low": 4400.0,
    "on_high": 4408.3999,
    "on_low": 4402.8999,
    "on_open": 4406.2002,
-   "on_pos": 0.364,
+   "on_pos": 0.491,
    "on_range": 5.5,
    "prev_close": 4408.8999,
-   "px": 4404.8999,
+   "px": 4405.6001,
    "src": "yahoo",
    "ts": 1786653600
   },
   "HSI": {
-   "age_s": 45747,
+   "age_s": 45927,
    "bars": 140,
    "chg": -256.3105,
    "chg_pct": -0.999,
@@ -93,7 +93,7 @@
    "yahoo_px": 25396.5098
   },
   "NDX": {
-   "age_s": 3361,
+   "age_s": 3541,
    "bars": 156,
    "chg": 342.6816,
    "chg_pct": 1.152,
@@ -105,41 +105,41 @@
    "ts": 1786650900
   },
   "NQ": {
-   "age_s": 661,
+   "age_s": 841,
    "bars": 475,
-   "chg": 358.75,
-   "chg_pct": 1.202,
+   "chg": 356.25,
+   "chg_pct": 1.193,
    "d1_high": 30272.75,
    "d1_low": 29780.5,
    "on_high": 30220.0,
    "on_low": 30144.5,
    "on_open": 30194.25,
-   "on_pos": 0.894,
+   "on_pos": 0.861,
    "on_range": 75.5,
    "prev_close": 29853.25,
-   "px": 30212.0,
+   "px": 30209.5,
    "src": "yahoo",
    "ts": 1786653600
   },
   "RTY": {
-   "age_s": 661,
+   "age_s": 841,
    "bars": 473,
-   "chg": 7.3,
-   "chg_pct": 0.239,
+   "chg": 7.7,
+   "chg_pct": 0.252,
    "d1_high": 3076.3,
    "d1_low": 3052.5,
    "on_high": 3061.3999,
    "on_low": 3058.6001,
    "on_open": 3060.1001,
-   "on_pos": 0.536,
+   "on_pos": 0.679,
    "on_range": 2.7998,
    "prev_close": 3052.8,
-   "px": 3060.1001,
+   "px": 3060.5,
    "src": "yahoo",
    "ts": 1786653600
   },
   "RUT": {
-   "age_s": 1261,
+   "age_s": 1441,
    "bars": 156,
    "chg": 7.1545,
    "chg_pct": 0.235,
@@ -152,7 +152,7 @@
    "yahoo_px": 3052.6345
   },
   "SPX": {
-   "age_s": 958,
+   "age_s": 1138,
    "bars": 156,
    "chg": 50.3599,
    "chg_pct": 0.65,
@@ -165,7 +165,7 @@
    "yahoo_px": 7798.8599
   },
   "US10Y": {
-   "age_s": 6961,
+   "age_s": 7141,
    "bars": 160,
    "chg": -0.041,
    "chg_pct": -0.876,
@@ -177,7 +177,7 @@
    "ts": 1786647300
   },
   "VIX": {
-   "age_s": 2160,
+   "age_s": 2340,
    "bars": 312,
    "chg": 0.08,
    "chg_pct": 0.55,
@@ -195,19 +195,19 @@
    "yahoo_px": 14.63
   },
   "YM": {
-   "age_s": 661,
+   "age_s": 841,
    "bars": 477,
-   "chg": 75.0,
-   "chg_pct": 0.139,
+   "chg": 73.0,
+   "chg_pct": 0.136,
    "d1_high": 54149.0,
    "d1_low": 53715.0,
    "on_high": 53951.0,
    "on_low": 53919.0,
    "on_open": 53936.0,
-   "on_pos": 0.844,
+   "on_pos": 0.781,
    "on_range": 32.0,
    "prev_close": 53871.0,
-   "px": 53946.0,
+   "px": 53944.0,
    "src": "yahoo",
    "ts": 1786653600
   }
@@ -225,6 +225,6 @@
   "src": "treasury.gov",
   "ts": 1786579200
  },
- "ts": "2026-08-13T20:51:08Z",
- "ts_epoch": 1786654261
+ "ts": "2026-08-13T20:54:06Z",
+ "ts_epoch": 1786654441
 }
