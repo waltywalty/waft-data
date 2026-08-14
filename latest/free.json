@@ -1,52 +1,52 @@
 {
  "meta": {
-  "futures_age_s": 722,
+  "futures_age_s": 601,
   "note": "US index futures are exchange-delayed ~15min. Overnight ranges and levels are unaffected by the delay; the last tick is.",
   "sources": {
    "rates": "treasury.gov",
    "us_index": "yahoo_delayed",
    "vix": "cnbc"
   },
-  "took_s": 4.7
+  "took_s": 6.5
  },
  "quotes": {
   "CRUDE": {
-   "age_s": 601,
+   "age_s": 604,
    "bars": 364,
-   "chg": 0.42,
-   "chg_pct": 0.517,
+   "chg": 0.48,
+   "chg_pct": 0.591,
    "d1_high": 82.99,
    "d1_low": 80.09,
    "on_high": 82.99,
    "on_low": 80.71,
    "on_open": 81.28,
-   "on_pos": 0.421,
+   "on_pos": 0.447,
    "on_range": 2.28,
    "prev_close": 81.25,
-   "px": 81.67,
+   "px": 81.73,
    "src": "cnbc",
-   "ts": 1786706221,
-   "yahoo_px": 81.67
+   "ts": 1786706397,
+   "yahoo_px": 81.73
   },
   "DXY": {
-   "age_s": 722,
-   "bars": 356,
-   "chg": -0.286,
-   "chg_pct": -0.286,
+   "age_s": 601,
+   "bars": 357,
+   "chg": -0.296,
+   "chg_pct": -0.296,
    "d1_high": 99.985,
-   "d1_low": 99.674,
+   "d1_low": 99.661,
    "on_high": 99.981,
-   "on_low": 99.674,
+   "on_low": 99.661,
    "on_open": 99.959,
-   "on_pos": 0.0,
-   "on_range": 0.307,
+   "on_pos": 0.009,
+   "on_range": 0.32,
    "prev_close": 99.96,
-   "px": 99.674,
+   "px": 99.664,
    "src": "yahoo",
-   "ts": 1786706100
+   "ts": 1786706400
   },
   "ES": {
-   "age_s": 722,
+   "age_s": 901,
    "bars": 362,
    "chg": 4.5,
    "chg_pct": 0.058,
@@ -63,24 +63,24 @@
    "ts": 1786706100
   },
   "GOLD": {
-   "age_s": 722,
-   "bars": 364,
-   "chg": 46.5,
-   "chg_pct": 1.066,
+   "age_s": 601,
+   "bars": 365,
+   "chg": 48.5,
+   "chg_pct": 1.111,
    "d1_high": 4460.0,
    "d1_low": 4365.5,
    "on_high": 4419.3999,
    "on_low": 4365.5,
    "on_open": 4406.2002,
-   "on_pos": 0.827,
+   "on_pos": 0.865,
    "on_range": 53.8999,
    "prev_close": 4363.6001,
-   "px": 4410.1001,
+   "px": 4412.1001,
    "src": "yahoo",
-   "ts": 1786706100
+   "ts": 1786706400
   },
   "HSI": {
-   "age_s": 11886,
+   "age_s": 12065,
    "bars": 140,
    "chg": -279.6602,
    "chg_pct": -1.101,
@@ -98,7 +98,7 @@
    "yahoo_px": 25116.8496
   },
   "NDX": {
-   "age_s": 55922,
+   "age_s": 56101,
    "bars": 156,
    "chg": 342.6816,
    "chg_pct": 1.152,
@@ -110,41 +110,41 @@
    "ts": 1786650900
   },
   "NQ": {
-   "age_s": 722,
-   "bars": 362,
-   "chg": 62.25,
-   "chg_pct": 0.206,
+   "age_s": 601,
+   "bars": 363,
+   "chg": 57.25,
+   "chg_pct": 0.19,
    "d1_high": 30272.75,
    "d1_low": 29812.25,
    "on_high": 30262.0,
    "on_low": 30124.25,
    "on_open": 30194.25,
-   "on_pos": 0.918,
+   "on_pos": 0.882,
    "on_range": 137.75,
    "prev_close": 30188.5,
-   "px": 30250.75,
+   "px": 30245.75,
    "src": "yahoo",
-   "ts": 1786706100
+   "ts": 1786706400
   },
   "RTY": {
-   "age_s": 722,
-   "bars": 361,
-   "chg": -3.5,
-   "chg_pct": -0.114,
+   "age_s": 601,
+   "bars": 362,
+   "chg": -3.0,
+   "chg_pct": -0.098,
    "d1_high": 3076.3,
    "d1_low": 3052.8,
    "on_high": 3062.3999,
    "on_low": 3053.5,
    "on_open": 3060.1001,
-   "on_pos": 0.36,
+   "on_pos": 0.416,
    "on_range": 8.8999,
    "prev_close": 3060.2,
-   "px": 3056.7,
+   "px": 3057.2,
    "src": "yahoo",
-   "ts": 1786706100
+   "ts": 1786706400
   },
   "RUT": {
-   "age_s": 55922,
+   "age_s": 56101,
    "bars": 156,
    "chg": 7.1545,
    "chg_pct": 0.235,
@@ -157,7 +157,7 @@
    "ts": 1786650900
   },
   "SPX": {
-   "age_s": 55922,
+   "age_s": 56101,
    "bars": 156,
    "chg": 50.3599,
    "chg_pct": 0.65,
@@ -170,7 +170,7 @@
    "ts": 1786650900
   },
   "US10Y": {
-   "age_s": 59522,
+   "age_s": 59701,
    "bars": 160,
    "chg": -0.041,
    "chg_pct": -0.876,
@@ -182,37 +182,37 @@
    "ts": 1786647300
   },
   "VIX": {
-   "age_s": 1,
-   "bars": 204,
-   "chg": -0.13,
-   "chg_pct": -0.889,
+   "age_s": 15,
+   "bars": 205,
+   "chg": -0.11,
+   "chg_pct": -0.752,
    "d1_high": 14.8,
    "d1_low": 14.39,
    "on_high": 14.65,
    "on_low": 14.49,
    "on_open": 14.56,
-   "on_pos": 0.062,
+   "on_pos": 0.188,
    "on_range": 0.16,
    "prev_close": 14.63,
-   "px": 14.52,
+   "px": 14.53,
    "src": "cnbc",
-   "ts": 1786706821,
-   "yahoo_px": 14.5
+   "ts": 1786706986,
+   "yahoo_px": 14.52
   },
   "YM": {
-   "age_s": 722,
+   "age_s": 901,
    "bars": 364,
-   "chg": -125.0,
-   "chg_pct": -0.232,
+   "chg": -113.0,
+   "chg_pct": -0.21,
    "d1_high": 54149.0,
    "d1_low": 53715.0,
    "on_high": 53999.0,
    "on_low": 53798.0,
    "on_open": 53936.0,
-   "on_pos": 0.06,
+   "on_pos": 0.119,
    "on_range": 201.0,
    "prev_close": 53935.0,
-   "px": 53810.0,
+   "px": 53822.0,
    "src": "yahoo",
    "ts": 1786706100
   }
@@ -230,6 +230,6 @@
   "src": "treasury.gov",
   "ts": 1786579200
  },
- "ts": "2026-08-14T11:27:06Z",
- "ts_epoch": 1786706822
+ "ts": "2026-08-14T11:30:08Z",
+ "ts_epoch": 1786707001
 }
