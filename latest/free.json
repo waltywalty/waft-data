@@ -1,86 +1,86 @@
 {
  "meta": {
-  "futures_age_s": 662,
+  "futures_age_s": 842,
   "note": "US index futures are exchange-delayed ~15min. Overnight ranges and levels are unaffected by the delay; the last tick is.",
   "sources": {
    "rates": "treasury.gov",
    "us_index": "yahoo_delayed",
    "vix": "cnbc"
   },
-  "took_s": 6.9
+  "took_s": 10.2
  },
  "quotes": {
   "CRUDE": {
-   "age_s": 662,
+   "age_s": 595,
    "bars": 271,
-   "chg": 2.59,
-   "chg_pct": 3.143,
-   "cnbc_px": 84.99,
-   "d1_high": 84.99,
+   "chg": 2.56,
+   "chg_pct": 3.107,
+   "d1_high": 85.04,
    "d1_low": 81.5,
-   "on_high": 84.99,
+   "on_high": 85.04,
    "on_low": 84.51,
    "on_open": 84.64,
-   "on_pos": 1.0,
-   "on_range": 0.48,
+   "on_pos": 0.849,
+   "on_range": 0.53,
    "prev_close": 82.4,
-   "px": 84.99,
-   "src": "yahoo",
-   "ts": 1786999200
+   "px": 84.95,
+   "src": "cnbc",
+   "ts": 1786999447,
+   "yahoo_px": 84.96
   },
   "DXY": {
-   "age_s": 662,
+   "age_s": 842,
    "bars": 273,
-   "chg": -0.079,
-   "chg_pct": -0.079,
+   "chg": -0.081,
+   "chg_pct": -0.081,
    "d1_high": 99.668,
    "d1_low": 99.294,
    "on_high": 99.597,
    "on_low": 99.575,
    "on_open": 99.582,
-   "on_pos": 0.727,
+   "on_pos": 0.636,
    "on_range": 0.022,
    "prev_close": 99.67,
-   "px": 99.591,
+   "px": 99.589,
    "src": "yahoo",
    "ts": 1786999200
   },
   "ES": {
-   "age_s": 662,
+   "age_s": 842,
    "bars": 271,
-   "chg": -40.25,
-   "chg_pct": -0.516,
+   "chg": -40.0,
+   "chg_pct": -0.512,
    "d1_high": 7824.5,
    "d1_low": 7764.25,
    "on_high": 7769.5,
    "on_low": 7764.25,
    "on_open": 7768.5,
-   "on_pos": 0.095,
+   "on_pos": 0.143,
    "on_range": 5.25,
    "prev_close": 7805.0,
-   "px": 7764.75,
+   "px": 7765.0,
    "src": "yahoo",
    "ts": 1786999200
   },
   "GOLD": {
-   "age_s": 662,
+   "age_s": 842,
    "bars": 271,
-   "chg": 91.0,
-   "chg_pct": 2.077,
+   "chg": 91.2002,
+   "chg_pct": 2.082,
    "d1_high": 4486.5,
    "d1_low": 4422.2998,
    "on_high": 4477.5,
    "on_low": 4471.1001,
    "on_open": 4475.8999,
-   "on_pos": 0.047,
+   "on_pos": 0.078,
    "on_range": 6.3999,
    "prev_close": 4380.3999,
-   "px": 4471.3999,
+   "px": 4471.6001,
    "src": "yahoo",
    "ts": 1786999200
   },
   "HSI": {
-   "age_s": 45728,
+   "age_s": 45908,
    "bars": 140,
    "chg": 56.7207,
    "chg_pct": 0.223,
@@ -93,7 +93,7 @@
    "yahoo_px": 25453.2305
   },
   "NDX": {
-   "age_s": 3362,
+   "age_s": 3542,
    "bars": 156,
    "chg": -43.8965,
    "chg_pct": -0.146,
@@ -105,24 +105,24 @@
    "ts": 1786996500
   },
   "NQ": {
-   "age_s": 662,
+   "age_s": 842,
    "bars": 271,
-   "chg": -76.75,
-   "chg_pct": -0.255,
+   "chg": -74.25,
+   "chg_pct": -0.246,
    "d1_high": 30343.0,
    "d1_low": 30059.0,
    "on_high": 30098.0,
    "on_low": 30059.0,
    "on_open": 30091.0,
-   "on_pos": 0.154,
+   "on_pos": 0.218,
    "on_range": 39.0,
    "prev_close": 30141.75,
-   "px": 30065.0,
+   "px": 30067.5,
    "src": "yahoo",
    "ts": 1786999200
   },
   "RTY": {
-   "age_s": 662,
+   "age_s": 842,
    "bars": 271,
    "chg": -10.5999,
    "chg_pct": -0.345,
@@ -139,7 +139,7 @@
    "ts": 1786999200
   },
   "RUT": {
-   "age_s": 1262,
+   "age_s": 1442,
    "bars": 156,
    "chg": -10.8438,
    "chg_pct": -0.353,
@@ -152,7 +152,7 @@
    "yahoo_px": 3057.5762
   },
   "SPX": {
-   "age_s": 515,
+   "age_s": 695,
    "bars": 155,
    "chg": -39.6196,
    "chg_pct": -0.509,
@@ -165,7 +165,7 @@
    "yahoo_px": 7746.1401
   },
   "US10Y": {
-   "age_s": 6962,
+   "age_s": 7142,
    "bars": 160,
    "chg": 0.028,
    "chg_pct": 0.596,
@@ -177,7 +177,7 @@
    "ts": 1786992900
   },
   "VIX": {
-   "age_s": 2161,
+   "age_s": 2341,
    "bars": 312,
    "chg": 0.94,
    "chg_pct": 6.596,
@@ -195,7 +195,7 @@
    "yahoo_px": 15.19
   },
   "YM": {
-   "age_s": 662,
+   "age_s": 842,
    "bars": 271,
    "chg": -294.0,
    "chg_pct": -0.546,
@@ -225,6 +225,6 @@
   "src": "treasury.gov",
   "ts": 1786924800
  },
- "ts": "2026-08-17T20:51:09Z",
- "ts_epoch": 1786999862
+ "ts": "2026-08-17T20:54:12Z",
+ "ts_epoch": 1787000042
 }
