@@ -110,3 +110,31 @@ the shortfall at 30 minutes explained by feed jitter rather than decoupling. Tic
 rounding to the $0.10 grid is a non-event ($0.002/oz).
 
 Write-up: `results/report4.html`.
+
+## Round five — the yuan as a second reference
+
+```bash
+python3 run_cny.py           # CNY vs AUD head to head, cross-tab, joint regression
+python3 cny_window.py        # window sweep for CNY
+python3 cny_incremental.py   # does CNY add anything to AUD?
+```
+
+Tested on the hypothesis that Chinese demand should make CNY a useful regime
+reference. It does carry the same kind of signal - the gold/CNYUSD correlation
+gradient runs the same direction (PF 1.128 unfiltered -> 1.378 at the tightest
+cut) - but weaker than AUD at every matched quantile, and it never clears
+significance without a best-of-grid window pick.
+
+The 2x2 cross-tab looks additive (AUD-low + CNY-low gives PF 1.436, both high
+gives 0.623) but neither incremental test is significant: CNY inside the
+AUD-filtered set gives p = 0.12, and in a joint regression AUD survives
+(t = -2.58) while CNY does not (t = -1.12). CNY's apparent out-of-sample
+validation is an artefact - its 90-day filter keeps 96% of days in 2024-25, so
+it is barely filtering there, while AUD keeps a stable 57% -> 72% and lifts in
+both halves.
+
+Likely reason: the filter measures whether gold is trading as a dollar proxy,
+not Chinese demand. CNY is managed (daily sd 0.271% against AUD's 0.676%, and
+5.8% of days show no change at all), so it is a degraded dollar sensor. The
+right instruments for the China thesis would be the Shanghai Gold Exchange
+premium over London, or offshore CNH - neither reachable from this environment.

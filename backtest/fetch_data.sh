@@ -18,3 +18,7 @@ curl -fL --retry 3 -o AUDUSD_m15_ejtrader.csv \
   https://raw.githubusercontent.com/ejtraderLabs/historical-data/master/AUDUSD/AUDUSDm15.csv
 curl -fL --retry 3 -o AUDUSD_daily_fred.csv \
   https://raw.githubusercontent.com/unbalancedparentheses/forex-centuries/main/data/sources/fred/daily/fred_aud_usd.csv
+
+# CNY (FRED DEXCHUS, yuan per dollar) for the China-reference test
+curl -fL --retry 3 -o CNY_daily_fred.csv \
+  https://raw.githubusercontent.com/unbalancedparentheses/forex-centuries/main/data/sources/fred/daily/fred_cny_usd.csv
