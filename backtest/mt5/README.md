@@ -36,8 +36,8 @@ could never be verified.
 
 ## What a correct run should produce
 
-Roughly **745 trades, 158 a year, ~40% win rate, profit factor near 1.27**, average hold
-10.7 hours, stop hit on about half. If your numbers are far from these, suspect the time
+Roughly **652 trades, 138 a year, ~40% win rate, profit factor near 1.32**, average hold
+11.1 hours, stop hit on about half. If your numbers are far from these, suspect the time
 offset or the spread model before suspecting the strategy.
 
 Check the journal line printed at init:
@@ -71,4 +71,24 @@ for part of the year.
 
 Reproduce the numbers above in the tester, then demo for 4–8 weeks — about 40 trades, enough
 to catch an implementation bug, not enough to prove an edge. Log every skipped day and its
-reason; if the share of days skipped is far from ~40%, the correlation calculation is wrong.
+reason; if the share of days skipped is far from ~38%, the correlation calculation is wrong.
+
+## Verification status
+
+The EA has **not been compiled by MetaEditor** — that is a closed Windows binary and was not
+reachable from the environment this was written in. Three other checks were run instead, in
+`verify/`:
+
+| Check | What it proves | Result |
+|---|---|---|
+| `test_dst.py` | The calendar arithmetic, transliterated from the MQL5, against the IANA tz database, every day 2020–2026 | 0 mismatches in 2,557 days |
+| `mql5_shim.h` + `transform.py` | Syntax and types, by rewriting MQL5-only syntax into C++ and compiling with `g++ -Wall -Wextra` | 0 errors, 0 warnings |
+| `replay_ea.py` | The decision logic, by re-implementing `OnTick` in Python and comparing trades to the research engine | 652/652 identical: same days, directions, entry and exit prices, exit reasons |
+
+The replay also **caught a real defect** — not in the EA, in the research. The published spec
+and the EA both stop taking entries at 08:00 London; the backtest behind the original headline
+numbers had no such deadline. Those 93 extra late entries lose money (0.951 profit factor), so
+the EA's stricter version is the better one. The research engine now enforces the deadline and
+the reported figures are the corrected ones.
+
+None of this substitutes for a MetaEditor compile. Expect to fix something on first build.

@@ -19,8 +19,13 @@ def corr_series(gold, window=20):
             .ffill().shift(1))          # shift -> only data through yesterday
 
 def generate(gold, L=60, exit_tz="America/New_York", exit_h=16, exit_m=0,
-             stop_r=None, cost=0.30):
-    """One row per trade. stop_r = stop distance as a multiple of the range width."""
+             stop_r=None, cost=0.30, entry_cutoff_ldn=None):
+    """One row per trade.
+    stop_r           = stop distance as a multiple of the range width.
+    entry_cutoff_ldn = hour, London local, after which no new entry is taken. The EA
+                       enforces this, so the research must too or the two are not the
+                       same strategy."""
+    from zoneinfo import ZoneInfo as _ZI
     bL = engine.resample(gold, L)
     rows = []
     for day, _ in gold.groupby(gold.index.date):
@@ -33,7 +38,13 @@ def generate(gold, L=60, exit_tz="America/New_York", exit_h=16, exit_m=0,
             continue
         te = pd.Timestamp(day.year, day.month, day.day, exit_h, exit_m,
                           tz=ZoneInfo(exit_tz)).tz_convert("UTC")
-        fwd = bL.loc[t0 + pd.Timedelta(minutes=L):te]
+        t_last = te
+        if entry_cutoff_ldn is not None:
+            cut = pd.Timestamp(day.year, day.month, day.day, entry_cutoff_ldn, 0,
+                               tz=_ZI("Europe/London")).tz_convert("UTC")
+            t_last = min(te, cut)
+        fwd = bL.loc[t0 + pd.Timedelta(minutes=L):t_last]
+        fwd = fwd[fwd.index + pd.Timedelta(minutes=L) <= t_last]
         sig = fwd[(fwd.close > hi) | (fwd.close < lo)]
         if not len(sig):
             continue

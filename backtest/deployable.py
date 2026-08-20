@@ -18,7 +18,7 @@ C = (j.g.rolling(20).corr(j.a)
 
 out = {}
 for stop_r, label in ((2.0, "2R stop"), (None, "no stop")):
-    t = trades.generate(gold, 60, stop_r=stop_r)
+    t = trades.generate(gold, 60, stop_r=stop_r, entry_cutoff_ldn=8)
     t["c"] = pd.to_datetime(t.day).dt.normalize().map(C)
     t = t.dropna(subset=["c"])
     f = t[t.c <= 0.5].reset_index(drop=True)

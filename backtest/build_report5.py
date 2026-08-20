@@ -15,17 +15,17 @@ conv_rows = "\n".join(
     f'<td class="num">{e:+.2f}</td><td class="num">{t:+.2f}</td>'
     f'<td class="num muted">{xp:.3f}</td></tr>'
     for lab, n, p, e, t, xp in [
-        ("00:00 UTC — the research convention", 747, 1.337, 2.01, 2.76, 0.848),
-        ("00:00 EET/EEST — the MT4/MT5 broker day", 737, 1.343, 2.00, 2.85, 0.861),
-        ("17:00 New York — the FX day", 737, 1.343, 2.00, 2.85, 0.861)])
+        ("00:00 UTC — the research convention", 651, 1.434, 2.48, 3.30, 0.857),
+        ("00:00 EET/EEST — the MT4/MT5 broker day", 645, 1.450, 2.51, 3.42, 0.861),
+        ("17:00 New York — the FX day", 645, 1.450, 2.51, 3.42, 0.861)])
 
 lag_rows = "\n".join(
     f'<tr><td class="lbl">{l} day{"s" if l != 1 else ""}{note}</td><td class="num">{n}</td>'
     f'{pfc(p)}<td class="num">{e:+.2f}</td><td class="num">{t:+.2f}</td></tr>'
     for l, n, p, e, t, note in [
-        (1, 737, 1.343, 2.00, 2.85, " — what an EA can actually use"),
-        (2, 734, 1.322, 1.91, 2.70, ""), (3, 727, 1.349, 2.03, 2.91, ""),
-        (5, 725, 1.176, 1.12, 1.45, ""), (10, 728, 1.257, 1.57, 2.05, "")])
+        (1, 645, 1.450, 2.51, 3.42, " — what an EA can actually use"),
+        (2, 643, 1.438, 2.47, 3.32, ""), (3, 638, 1.450, 2.53, 3.38, ""),
+        (5, 636, 1.259, 1.61, 1.99, ""), (10, 639, 1.354, 2.11, 2.62, "")])
 
 perf_rows = "\n".join(
     f'<tr><td class="lbl">{lab}</td><td class="num">{d["n"]}</td>'
@@ -72,11 +72,11 @@ DOC = f"""<title>Running This on MT5</title>
   <h1>Running This on MT5</h1>
   <p class="standfirst">The rule survives every MetaTrader-specific change I could test — broker
   daily bars, broker time, stale correlation inputs. But it has to be <strong>MT5, not MT4</strong>,
-  and the number to plan around is closer to 10% a year than the 17.5% the full backtest shows.</p>
+  and the number to plan around is closer to 13% a year than the 20.7% the full backtest shows.</p>
   <div class="provenance">
-    <span><b>745</b> trades</span>
-    <span><b>158</b> per year</span>
-    <span><b>10.7 h</b> average hold</span>
+    <span><b>652</b> trades</span>
+    <span><b>138</b> per year</span>
+    <span><b>11.1 h</b> average hold</span>
     <span><b>0</b> swap charges</span>
   </div>
 </header>
@@ -89,10 +89,10 @@ DOC = f"""<title>Running This on MT5</title>
     live on MT4, but you could never verify it there.</p>
     <p><strong>The rule is robust to MetaTrader's data conventions.</strong> Recomputing the filter
     from a broker's EET daily bars rather than the research convention gives a
-    {ST['pf']:.3f}→<strong>1.343</strong> profit factor — marginally better, not worse. Using broker
-    FX bars instead of the Fed's fix gives 1.537. A one-, two- or three-day-stale correlation still
+    1.434→<strong>1.450</strong> profit factor — marginally better, not worse. Using broker
+    FX bars instead of the Fed's fix gives 1.612. A one-, two- or three-day-stale correlation still
     works.</p>
-    <p><strong>Plan for the weaker half.</strong> The full five years give 17.5% a year on a $2,000
+    <p><strong>Plan for the weaker half.</strong> The full five years give 20.7% a year on a $2,000
     account at 1% risk. The first two-thirds alone — before gold's 2024–25 bull market — give
     <strong>{ISO['cagr']*100:.1f}%</strong> at the same 20% drawdown. That is the more honest
     planning number.</p>
@@ -100,6 +100,15 @@ DOC = f"""<title>Running This on MT5</title>
 </section>
 
 <section>
+  <div class="note">
+    <p><strong>Corrected after verification.</strong> An earlier version of this page quoted
+    745 trades and a 1.270 profit factor. Replaying the EA's logic against the research engine
+    caught a mismatch: the published spec and the EA both stopped taking entries at 08:00
+    London, but the backtest that produced those numbers had no entry deadline and kept
+    hunting breakouts until the exit. Those 93 late entries lose money on their own — a 0.951
+    profit factor — so enforcing the deadline improves the rule. Every figure below is the
+    corrected, deadline-enforced version.</p>
+  </div>
   <h2><span class="n">01</span>The exact configuration</h2>
   <div class="spec">
 <div>SYMBOL        XAUUSD  (check your broker's suffix: XAUUSD.m, GOLD, XAUUSD#)</div>
@@ -157,7 +166,7 @@ DOC = f"""<title>Running This on MT5</title>
     <th>Exp. $/oz</th><th>t-stat</th></tr></thead>
     <tbody>{perf_rows}</tbody>
   </table></div>
-  <p>158 trades a year, average hold 10.7 hours, and <strong>the stop is hit on 51% of them</strong>.
+  <p>138 trades a year, average hold 11.1 hours, and <strong>the stop is hit on 52% of them</strong>.
   A 40% win rate is normal for this shape and is not a warning sign — but it is worth knowing before
   you watch it live, because six losses in a row will happen.</p>
   <h3>Without a stop, for comparison</h3>
@@ -241,13 +250,13 @@ DOC = f"""<title>Running This on MT5</title>
   <h2><span class="n">06</span>Before it trades real money</h2>
   <ul>
     <li><strong>Reproduce these numbers in the MT5 tester first.</strong> If your run does not land
-    near a 1.27 profit factor and 40% win rate over 2020–2025, something differs — most likely the
+    near a 1.32 profit factor and 40% win rate over 2020–2025, something differs — most likely the
     time offset or the spread model — and it is worth finding before it costs anything.</li>
     <li><strong>Then run it on demo for a quarter</strong> without changing anything. 158 trades a
     year means roughly 40 in that window: not enough to prove the edge, but enough to catch an
     implementation bug, which is what that quarter is for.</li>
     <li><strong>Log every skipped day and why.</strong> The filter is the strategy. If it is skipping
-    a very different share of days than the 60% seen here, the correlation calculation is wrong.</li>
+    a very different share of days than the 62% seen here, the correlation calculation is wrong.</li>
     <li><strong>The underlying edge is a t-statistic near 3 on one instrument over five years</strong>,
     found after a large search. Everything above inherits that uncertainty. Size accordingly and
     revisit if the live profit factor sits below 1.1 after 200 trades.</li>

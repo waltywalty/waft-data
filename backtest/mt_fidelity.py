@@ -11,7 +11,7 @@ warnings.filterwarnings("ignore")
 from zoneinfo import ZoneInfo
 
 gold = engine.load_bars()
-t0 = pd.read_pickle("results/trades_60_ny.pkl").drop(columns=["corr"])
+t0 = pd.read_pickle("results/trades_60_ny_cut.pkl").drop(columns=["corr"])
 pf = lambda s: float(s[s > 0].sum() / max(-s[s <= 0].sum(), 1e-9))
 def stat(x):
     p = x.pnl_oz; pct = p / x.entry * 100
