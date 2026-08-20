@@ -1,0 +1,201 @@
+How Quants Use Loop Engineering to Find Trades That Actually 
+Work (The Full Framework) 
+Don't want to ﬁgure this out alone? I walk members through every step inside the 
+community. Join the Skool → skool.com/raycfu 
+ 
+The reason most trading strategies look incredible on a backtest and then lose money 
+the moment you trade them live is because they were tested once on the same data they 
+were built on. You came up with an idea, tested it on historical data, the chart looked 
+great, you started trading, and two weeks later you are bleeding money wondering 
+what went wrong. 
+What went wrong is that you found a pattern in the noise and mistook it for a real edge. 
+The backtest was not testing your strategy. It was conﬁrming your bias. 
+Quants do not work like this. They run a loop. Generate a strategy, test it, score it 
+against a speciﬁc metric, read why it failed, feed that information back in, and generate 
+a better version. Then they repeat. Each round keeps the variants that scored well and 
+kills the ones that did not. And at the end every surviving strategy has to pass one ﬁnal 
+gate on data it has never seen before. If it does not hold up on fresh data it gets thrown 
+out no matter how good it looked before. 
+This guide walks you through the exact loop framework with the scoring metrics, the 
+stop rules, and the out-of-sample gate that separates real edges from faster overﬁtting. 
+WHY SINGLE-PASS TESTING ALWAYS FAILS 
+When you test a strategy once on historical data you are running a closed-book exam 
+where the student already saw the answer key. The strategy "learned" from the data and 
+then got tested on the same data it learned from. Of course it looks good. That does not 
+mean it will work tomorrow. 
+
+
+The deeper problem is that ﬁnancial data is noisy. There are thousands of patterns in 
+any dataset and most of them are random. If you look hard enough you will always ﬁnd 
+something that worked in the past. The question is whether it worked because of a real 
+structural reason or because of coincidence. 
+A single test cannot answer that question. A loop can because it generates dozens of 
+variations, scores them rigorously, and forces the survivors through a gate that 
+eliminates luck. 
+THE LOOP: HOW IT WORKS 
+The loop has 5 stages that repeat. Each round takes the output from the previous round 
+and makes it better. 
+Stage 1 is hypothesis generation. You start with a trading idea. It can be as simple as 
+"buy when the RSI drops below 30 on the daily chart" or as complex as "combine 
+momentum on the weekly timeframe with mean reversion on the hourly timeframe and 
+ﬁlter by volatility regime." The key is that you do not need the idea to be perfect. You 
+just need a starting point because the loop reﬁnes it. 
+If you are using Claude Code or Claude Fable to generate strategies, give it a prompt 
+like this: 
+"Generate 10 mean reversion trading strategies for the S&P 500 using 15-minute 
+candles. Each strategy should use a diﬀerent combination of indicators and entry/exit 
+rules. Include the exact parameters for each indicator. Format each strategy as: entry 
+condition, exit condition, stop loss rule, and position sizing rule." 
+Stage 2 is backtesting. You run each strategy against historical data and record the 
+results. Not just whether it made money but the speciﬁc metrics that tell you if the edge 
+is real or just noise. 
+Stage 3 is scoring. You score each strategy using a metric called the Information 
+Coeﬃcient Ratio which I will explain in detail in the next section. This score tells you 
+whether the strategy is ﬁnding real signal or just getting lucky on random patterns. 
+Stage 4 is analysis and feedback. You read why the losing strategies failed. What market 
+conditions broke them. What assumptions were wrong. What edge cases they missed. 
+This analysis gets fed back into Stage 1 as constraints for the next round. "Generate 10 
+more strategies but avoid the failure modes we found in round 1." 
+
+Stage 5 is selection. You keep the strategies that scored above your threshold and 
+discard the rest. The survivors go into the next round where the loop tightens further. 
+After 3 to 5 rounds of this loop you have a small set of strategies that survived multiple 
+rounds of testing and reﬁnement. These are your candidates for the ﬁnal gate. 
+THE SCORING FUNCTION: IC AND ICIR 
+The loop only works if you have a scoring function that can tell the diﬀerence between a 
+real edge and noise. Without it the loop optimizes for nothing and you are just 
+generating random strategies with no way to rank them. 
+The standard metric quants use is called the Information Coeﬃcient or IC. It measures 
+the correlation between what your strategy predicted would happen and what actually 
+happened. If your signal said "this stock will go up" and it went up, that is a positive IC. 
+If it said "up" and it went down, that is negative. 
+A single IC reading is noisy though. A strategy could have a great IC one month and a 
+terrible IC the next. What actually matters is how consistent the IC is over time. That 
+consistency is measured by ICIR which stands for Information Coeﬃcient to 
+Information Ratio. The formula is simple: 
+ICIR = mean(IC) / standard deviation(IC) 
+A strategy with a modest but steady IC of 0.03 every month is far more valuable than a 
+strategy with an IC of 0.15 one month and negative 0.10 the next. The ﬁrst one is a real 
+edge you can trade. The second one is noise that happened to work sometimes. 
+Here is how to interpret ICIR scores: 
+ICIR above 0.5: Strong. This is a genuinely consistent signal worth trading. ICIR 
+between 0.3 and 0.5: Moderate. Worth investigating further but needs more validation. 
+ICIR below 0.3: Weak. Probably noise. The loop should deprioritize strategies scoring 
+here. 
+To calculate IC and ICIR for your strategies, give Claude this prompt: 
+"I have backtest results for 10 trading strategies tested over 12 months of daily data. For 
+each strategy I have the signal value it generated each day and the actual return that 
+followed. Calculate the Information Coeﬃcient for each month (the Pearson correlation 
+between the signal values and the subsequent returns). Then calculate the ICIR for each 
+strategy (mean IC divided by standard deviation of IC across all months). Rank the 
+
+strategies by ICIR highest to lowest. Flag any strategy with ICIR below 0.3 as likely 
+noise." 
+THE DECAY CHECK: IS THE EDGE STILL ALIVE 
+Even a real edge has a shelf life. Markets change. Other participants ﬁnd the same 
+pattern. Regulations shift. What worked 6 months ago might be dead today. 
+You measure this by looking at how quickly the signal's predictive power decays over 
+time. The technical term is the half-life of the signal. 
+A signal with a half-life of 50 days means it takes about 50 days for the signal's 
+predictive power to drop to half its original strength. That is a tradeable edge because 
+you have plenty of time to act on it before it fades. 
+A signal with a half-life of 2 days means the predictive power is basically gone by the 
+time you execute the trade. You are paying transaction costs to chase something that 
+already disappeared. That is not tradeable for most people. 
+To check the decay of your surviving strategies, give Claude this prompt: 
+"For each of my surviving strategies, calculate the autocorrelation of the signal at lags of 
+1 day, 5 days, 10 days, 20 days, and 50 days. Plot the decay curve showing how the 
+signal's predictive power drops over time. Estimate the half-life of each signal. Flag any 
+strategy where the half-life is under 5 days as likely too short to trade proﬁtably after 
+transaction costs." 
+The loop should automatically reject strategies with a half-life shorter than your trading 
+frequency. If you are making trades that take 3 to 5 days to play out, a signal that decays 
+in 2 days is useless even if its ICIR is strong. 
+THE OUT-OF-SAMPLE GATE 
+This is the most important step in the entire framework and the one that most people 
+skip. Everything up to this point was done on the same historical data. The loop reﬁned 
+strategies. The scoring function ranked them. The decay check ﬁltered out the 
+short-lived ones. But all of that happened on data the strategies have already seen. 
+The out-of-sample gate tests every surviving strategy on completely fresh data that was 
+held back from the beginning and never used at any point during the loop. This is data 
+the strategies have never seen and could not have been optimized against. 
+
+The practical way to do this is to split your historical data before you start the loop. 
+Take the most recent 20 to 30% of your data and set it aside. Lock it away. Run the entire 
+loop on the remaining 70 to 80%. Only after the loop is ﬁnished and you have your 
+surviving strategies do you test them on the held-out data. 
+The rules for the gate are strict: 
+The ICIR must hold on the out-of-sample data. If a strategy scored 0.6 ICIR on the 
+in-sample data but drops to 0.15 on the out-of-sample data, it was overﬁt. Throw it out. 
+The decay proﬁle must hold. If the half-life was 30 days in-sample but drops to 3 days 
+out-of-sample, the signal was not real. Throw it out. 
+Adjust for multiple testing. This is the part most people get wrong and it is critical. If 
+you tested 200 strategies inside the loop and one of them passes the out-of-sample gate, 
+that could still be luck. When you test 200 things, some will pass by chance alone. You 
+have to raise the bar based on how many attempts you made. 
+The standard correction is the Bonferroni adjustment where you divide your 
+signiﬁcance threshold by the number of strategies tested. If your original threshold was 
+a p-value of 0.05 and you tested 200 strategies, your adjusted threshold is 0.05 divided 
+by 200 which equals 0.00025. Only strategies that pass at this stricter level are 
+considered genuinely signiﬁcant. 
+To run the out-of-sample gate, give Claude this prompt: 
+"I have [X] strategies that survived the loop. I held back 20% of my data as an 
+out-of-sample set that was never used during optimization. For each surviving strategy, 
+calculate the ICIR on the out-of-sample data. Also calculate the signal half-life on the 
+out-of-sample data. Compare both metrics to the in-sample values. Flag any strategy 
+where the out-of-sample ICIR drops by more than 50% from the in-sample ICIR. Apply 
+a Bonferroni correction for [X] strategies tested and ﬂag any that do not pass the 
+adjusted signiﬁcance threshold. Only strategies that pass all three checks (ICIR holds, 
+decay holds, signiﬁcance after correction) should be marked as viable." 
+PUTTING IT ALL TOGETHER: THE FULL WORKFLOW 
+Step 1: Split your historical data. Hold back the most recent 20 to 30% as your 
+out-of-sample set. Do not touch it until the very end. 
+Step 2: Generate your ﬁrst batch of strategies. Start with 10 to 20 variations of a core 
+idea. 
+
+Step 3: Backtest all of them on the in-sample data. 
+Step 4: Score each one using ICIR. Kill anything below 0.3. 
+Step 5: Check the decay half-life. Kill anything under 5 days. 
+Step 6: Analyze why the losers failed. What market conditions, what assumptions, what 
+edge cases. 
+Step 7: Feed the failure analysis back into generation. Create 10 to 20 new strategies that 
+avoid the failure modes from round 1. 
+Step 8: Repeat steps 3 through 7 for 3 to 5 rounds total. Each round the surviving pool 
+gets smaller and stronger. 
+Step 9: Take all ﬁnal survivors and test them on your held-out out-of-sample data. 
+Apply the Bonferroni correction for the total number of strategies tested across all 
+rounds. 
+Step 10: Only strategies that pass the out-of-sample gate with corrected signiﬁcance are 
+real. Everything else gets discarded. 
+This entire workﬂow can run in Claude Code or Claude Fable. You describe the strategy 
+ideas, Claude generates the code, runs the backtests, calculates the metrics, and reports 
+the results. The loop itself is the human directing each round based on what the 
+previous round revealed. 
+WHAT THE LOOP SHOULD NEVER DO 
+Optimize entry and exit parameters to ﬁt historical data perfectly. If your strategy 
+worked because you used a 17-period moving average instead of a 20-period one, that 
+speciﬁcity is almost certainly overﬁt. Real edges work across a range of reasonable 
+parameters, not just one magic number. 
+Test on data that overlaps with the out-of-sample set. If even one data point from the 
+held-out set leaks into the loop, the gate is compromised. 
+Run indeﬁnitely without a round cap. Set a maximum of 5 rounds. More rounds means 
+more opportunity to accidentally overﬁt even with the scoring function in place. 
+Skip the multiple testing correction. The more strategies you test, the higher your bar 
+needs to be. 200 strategies tested with no correction is just automated luck-ﬁnding. 
+
+Don't want to ﬁgure this out alone? I walk members through every step inside the 
+community. Join the Skool → skool.com/raycfu 
+ 
+ 
+IMPORTANT DISCLAIMERS 
+This guide is for educational purposes only. Trading involves real ﬁnancial risk. Past 
+performance does not guarantee future results. Even strategies that pass the full loop 
+and out-of-sample gate can lose money in live markets due to execution slippage, 
+changing market conditions, or structural regime shifts. 
+The framework described here is a simpliﬁed version of what professional quantitative 
+trading ﬁrms use. Real ﬁrms layer additional checks including walk-forward analysis, 
+Monte Carlo simulation, and live paper trading periods before committing real capital. 
+Always paper trade any strategy for a minimum of 4 to 8 weeks before using real 
+money. Start with position sizes you can aﬀord to lose entirely. Never trade with 
+borrowed money. 
+ 

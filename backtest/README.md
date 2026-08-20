@@ -167,3 +167,18 @@ server hour is wrong half the year; and if the AUDUSD feed is missing the EA mus
 the day rather than trade unfiltered (0.85 profit factor unfiltered vs 1.34 filtered).
 
 Write-up: `results/report5.html`.
+
+## Reference material
+
+`backtest/reference/` holds the loop-engineering framework document plus our assessment of
+it and a checklist for future strategy work. `loop_metrics.py` applies its three metrics to
+this rule: ICIR +0.340 (against +0.041 for the raw breakout direction alone — an independent
+confirmation that the edge is the filter, not the breakout), signal half-life 27 days against
+a 0.45-day hold, and a Bonferroni correction that the rule **fails** at any plausible test
+count even though the correlation-aware randomisation test passes it.
+
+## MT5 expert advisor
+
+`backtest/mt5/AsiaOpenGold.mq5` implements the deployable configuration. See
+`backtest/mt5/README.md` for install, tester settings, and the numbers a correct run should
+reproduce.
