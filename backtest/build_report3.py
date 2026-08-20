@@ -331,9 +331,10 @@ DOC = f"""<title>A $2,000 Gold Account</title>
     <li><strong>Never all-in.</strong> Not at 20:1, not at 5:1. The unleveraged version is defensible
     and returns about what holding gold returned; everything above it is buying a lottery ticket with
     the account as the stake.</li>
-    <li>On $2,000 specifically, position sizes come out around 0.1–0.5 ounces. Check your broker
-    supports that granularity before anything else — many quote a 0.01-lot minimum, which is 1 ounce
-    and already too big for 1% risk on this account.</li>
+    <li>On $2,000 specifically, positions start at about <strong>1.8 ounces</strong> and run to a
+    median of 3.1 as the account compounds — roughly 0.02 to 0.05 of a standard 100-ounce lot.
+    Any broker quoting 0.01-lot (one-ounce) increments handles that comfortably, so granularity is
+    not a constraint on spot. It very much is on futures: see the companion report on MGC.</li>
   </ol></div>
 </section>
 

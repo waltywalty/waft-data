@@ -85,3 +85,28 @@ stop is hit on 72% of trades and fifty cents of slippage costs more than half th
 result, while a 3x stop barely notices.
 
 Write-up: `results/report3.html`.
+
+## Round four — MGC micro futures vs spot
+
+```bash
+python3 futures_basis.py  # MGC Dec-26 vs the relay's own spot quotes: basis + tracking
+python3 run_mgc.py        # the rule costed as MGC across six account sizes
+python3 build_report4.py
+```
+
+Rounds one to three all used spot XAUUSD, where position size is continuous. MGC is
+10 troy ounces per contract: about $21,800 of notional, ~$1,300 initial margin at 6%,
+and ~$108 of risk against a 2x-range stop. On a $2,000 account one contract risks 5.4%
+and ties up 65% as margin, so a 1% risk target takes **zero** trades and every risk
+level that can be traded loses money. MGC needs roughly $25,000 to express the rule and
+$50,000 before granularity costs nothing; at $50,000 it finishes ahead of spot.
+
+Skipped trades are not a random sample - a trade is skipped when its stop is widest, so
+a small futures account trades a systematically calm-day-only version of the strategy.
+
+The signal itself carries over: the basis averaged $0.48 (0.011% of price) and futures
+vs spot tracking converges to 0.94 correlation / 0.95 slope at an 8-hour horizon, with
+the shortfall at 30 minutes explained by feed jitter rather than decoupling. Tick
+rounding to the $0.10 grid is a non-event ($0.002/oz).
+
+Write-up: `results/report4.html`.
