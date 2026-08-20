@@ -3,6 +3,9 @@ import json
 
 S = json.load(open("results/summary2.json"))
 CSS = open("report_style.css").read()
+# The stylesheet was originally lifted out of an f-string, where every brace is
+# doubled. Leaving those in emits invalid CSS and the page renders unstyled.
+assert "{{" not in CSS and "}}" not in CSS, "report_style.css still has f-string-escaped braces"
 LIQ_LABEL = {"dyn_swing": "most recent swing low/high", "breakout_low": "low of the breakout candle",
              "session_extreme": "Asia session extreme", "range_opp": "far side of the opening range"}
 EXIT_LABEL = {"pre_london": "Pre-London 07:00 LDN", "london_open": "London open 08:00 LDN",
