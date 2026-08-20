@@ -10,3 +10,11 @@ curl -fL --retry 3 -o XAUUSD_5m.csv \
 curl -fL --retry 3 -o XAUUSD_m15_ejtrader.csv \
   https://raw.githubusercontent.com/ejtraderLabs/historical-data/master/XAUUSD/XAUUSDm15.csv
 wc -l XAUUSD_5m.csv XAUUSD_m15_ejtrader.csv
+
+# AUDUSD, for the correlation-regime work
+curl -fL --retry 3 -o AUDUSD_M5.csv \
+  https://raw.githubusercontent.com/jaxontn/historical-Data/main/AUDUSD_M5.csv
+curl -fL --retry 3 -o AUDUSD_m15_ejtrader.csv \
+  https://raw.githubusercontent.com/ejtraderLabs/historical-data/master/AUDUSD/AUDUSDm15.csv
+curl -fL --retry 3 -o AUDUSD_daily_fred.csv \
+  https://raw.githubusercontent.com/unbalancedparentheses/forex-centuries/main/data/sources/fred/daily/fred_aud_usd.csv

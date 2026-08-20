@@ -33,6 +33,28 @@ the time the confirming candle closes — measured from the actual fill the hit 
 
 Full write-up: `results/report.html`.
 
+## Round two — sweep entries and the AUD filter
+
+```bash
+python3 audusd_align.py     # empirical timezone identification for both AUDUSD feeds
+python3 run_sweep_grid.py   # bias -> liquidity sweep -> reclaim, 16 variants x 7 exits
+python3 run_structure.py    # the sweep used as an exit instead of an entry
+python3 run_audusd.py       # AUDUSD confluence: same-day agreement and correlation regime
+python3 audusd_stress.py    # placebo, confound controls, within-year tests
+python3 validate_filter.py  # independent re-implementation + generalisation checks
+python3 summarize2.py && python3 build_report2.py
+```
+
+The sweep entry gives a far better fill than the breakout close but still loses: requiring a
+sweep selects for the days the bias failed (profit factor 0.61 on days that sweep versus 1.93
+on days that never do). Same-day AUDUSD agreement with the gold bias is not predictive
+(p = 0.20). The 20-day gold/AUDUSD correlation *regime* is: trading only when it sits at or
+below 0.5 lifts the profit factor from 1.13 to 1.34 and the t-statistic from 1.14 to 2.76,
+generalises to 11 of 12 other configurations, is monotonic in the threshold, holds in both
+in-sample and out-of-sample halves, and survives a block-shuffle placebo at p < 0.001.
+
+Write-up: `results/report2.html`.
+
 ## Data
 
 Five-minute spot XAUUSD, 350,903 bars, 2020-08-21 to 2025-08-01. Timestamps confirmed
