@@ -138,3 +138,32 @@ not Chinese demand. CNY is managed (daily sd 0.271% against AUD's 0.676%, and
 5.8% of days show no change at all), so it is a degraded dollar sensor. The
 right instruments for the China thesis would be the Shanghai Gold Exchange
 premium over London, or offshore CNH - neither reachable from this environment.
+
+## Round six — MetaTrader deployment
+
+```bash
+python3 mt_fidelity.py   # daily-close convention, correlation staleness, DST, swap
+python3 deployable.py    # the exact EA configuration, scored honestly
+python3 build_report5.py
+```
+
+The rule survives every MetaTrader-specific change tested. Recomputing the filter from
+broker EET daily bars instead of the research convention gives PF 1.343 vs 1.337 (the
+three conventions agree on 94% of days), and computing BOTH sides from broker bars gives
+1.537 kept vs 0.740 excluded over the window where two feeds exist. A correlation lagged
+one to three days still works; it only sags around five.
+
+It must be MT5, not MT4: the edge is a filter that reads AUDUSD while trading gold, and
+MT4's Strategy Tester cannot faithfully backtest a second symbol.
+
+Deployable configuration (60m range from 01:30 UTC, 2x-range stop, corr <= 0.5, exit
+16:00 NY): 745 trades, 158/year, 10.7h average hold, stopped 51%, win 40%, PF 1.270,
++$1.39/oz, t = 2.26. On $2,000 at 1% risk that is 17.5%/yr with a 20% drawdown - but the
+2020-23 half alone gives 9.6%/yr at the same drawdown, which is the more honest planning
+number.
+
+Two traps: 09:30 HKT is 03:30 broker time in winter and 04:30 in summer, so a hardcoded
+server hour is wrong half the year; and if the AUDUSD feed is missing the EA must skip
+the day rather than trade unfiltered (0.85 profit factor unfiltered vs 1.34 filtered).
+
+Write-up: `results/report5.html`.
