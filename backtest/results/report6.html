@@ -1,0 +1,485 @@
+<title>Gold at the New York Open</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+
+:root {
+  --ground:#FBFBFC; --surface:#FFFFFF; --sunk:#F3F4F7;
+  --ink:#16191F; --ink-2:#4A515E; --ink-3:#7C8496;
+  --rule:#DFE2E9; --rule-2:#EDEFF3;
+  --brass:#8A6420; --brass-soft:#F0E4CC;
+  --pos:#1B6E55; --pos-bg:#E4F1EB; --pos-bg-2:#C9E4D8;
+  --neg:#A83226; --neg-bg:#FAE7E4; --neg-bg-2:#F3CDC7;
+  --maxw:74ch;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ground:#0E1116; --surface:#161A21; --sunk:#1B2029;
+    --ink:#E8EAEF; --ink-2:#A7AEBC; --ink-3:#767E8E;
+    --rule:#272D38; --rule-2:#1F242D;
+    --brass:#D5A64A; --brass-soft:#3A2F18;
+    --pos:#5CBE99; --pos-bg:#14291F; --pos-bg-2:#1C4132;
+    --neg:#E58275; --neg-bg:#2C1714; --neg-bg-2:#4A211B;
+  }
+}
+:root[data-theme="dark"] {
+  --ground:#0E1116; --surface:#161A21; --sunk:#1B2029;
+  --ink:#E8EAEF; --ink-2:#A7AEBC; --ink-3:#767E8E;
+  --rule:#272D38; --rule-2:#1F242D;
+  --brass:#D5A64A; --brass-soft:#3A2F18;
+  --pos:#5CBE99; --pos-bg:#14291F; --pos-bg-2:#1C4132;
+  --neg:#E58275; --neg-bg:#2C1714; --neg-bg-2:#4A211B;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:"IBM Plex Sans",system-ui,sans-serif; font-size:16.5px; line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap { max-width:940px; margin:0 auto; padding:0 28px 96px; }
+header { padding:64px 0 34px; border-bottom:1px solid var(--rule); }
+.eyebrow {
+  font-family:"IBM Plex Mono",monospace; font-size:11.5px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--brass); margin:0 0 14px;
+}
+h1 {
+  font-family:Spectral,Georgia,serif; font-weight:600; font-size:clamp(34px,5.2vw,50px);
+  line-height:1.1; letter-spacing:-.015em; margin:0 0 16px; text-wrap:balance;
+}
+.standfirst { font-size:19px; color:var(--ink-2); max-width:62ch; margin:0; text-wrap:pretty; }
+.provenance {
+  display:flex; flex-wrap:wrap; gap:0 26px; margin-top:26px;
+  font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--ink-3);
+}
+.provenance b { color:var(--ink-2); font-weight:500; }
+section { padding-top:52px; }
+h2 {
+  font-family:Spectral,Georgia,serif; font-weight:600; font-size:26px; letter-spacing:-.01em;
+  margin:0 0 6px; text-wrap:balance;
+}
+h2 .n {
+  font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--brass);
+  letter-spacing:.1em; display:block; margin-bottom:8px; font-weight:500;
+}
+h3 { font-size:15px; font-weight:600; margin:32px 0 8px; letter-spacing:.005em; }
+p { max-width:var(--maxw); margin:14px 0; text-wrap:pretty; }
+.lede { color:var(--ink-2); }
+ul { max-width:var(--maxw); padding-left:20px; }
+li { margin:7px 0; }
+strong { font-weight:600; }
+code { font-family:"IBM Plex Mono",monospace; font-size:.9em; background:var(--sunk);
+        padding:1px 5px; border-radius:3px; }
+.verdict {
+  margin-top:36px; background:var(--surface); border:1px solid var(--rule);
+  border-left:3px solid var(--brass); border-radius:4px; padding:24px 26px;
+}
+.verdict p { margin:0 0 12px; }
+.verdict p:last-child { margin-bottom:0; }
+.verdict .head {
+  font-family:"IBM Plex Mono",monospace; font-size:11.5px; letter-spacing:.13em;
+  text-transform:uppercase; color:var(--brass); margin-bottom:12px;
+}
+.stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(148px,1fr)); gap:1px;
+          background:var(--rule); border:1px solid var(--rule); border-radius:4px;
+          overflow:hidden; margin:28px 0; }
+.stat { background:var(--surface); padding:16px 18px; }
+.stat .k { font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.1em;
+            text-transform:uppercase; color:var(--ink-3); }
+.stat .v { font-family:"IBM Plex Mono",monospace; font-size:24px; font-weight:500;
+            margin-top:5px; font-variant-numeric:tabular-nums; }
+.stat .v.dim { color:var(--ink-2); }
+.tbl-wrap { overflow-x:auto; margin:22px 0; border:1px solid var(--rule); border-radius:4px;
+             background:var(--surface); }
+table { border-collapse:collapse; width:100%; font-size:13.5px; }
+th {
+  font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--ink-3); font-weight:500; text-align:right;
+  padding:12px 14px; border-bottom:1px solid var(--rule); white-space:nowrap;
+}
+th:first-child, th.l { text-align:left; }
+td { padding:9px 14px; border-bottom:1px solid var(--rule-2); white-space:nowrap; }
+tbody tr:last-child td { border-bottom:none; }
+.num { text-align:right; font-family:"IBM Plex Mono",monospace;
+        font-variant-numeric:tabular-nums; }
+.lbl { color:var(--ink-2); }
+.muted { color:var(--ink-3); }
+.pos-1 { background:var(--pos-bg); color:var(--pos); }
+.pos-2 { background:var(--pos-bg-2); color:var(--pos); font-weight:500; }
+.neg-1 { background:var(--neg-bg); color:var(--neg); }
+.neg-2 { background:var(--neg-bg-2); color:var(--neg); font-weight:500; }
+.pos-t { color:var(--pos); } .neg-t { color:var(--neg); }
+figure { margin:26px 0; }
+figcaption { font-size:13px; color:var(--ink-3); margin-top:10px; max-width:66ch; }
+.chart { background:var(--surface); border:1px solid var(--rule); border-radius:4px;
+          padding:18px 10px 8px; overflow-x:auto; }
+svg { display:block; max-width:100%; height:auto; }
+.bar-open { fill:var(--ink-3); }
+.bar-entry { fill:var(--brass); }
+.bar-val { font-family:"IBM Plex Mono",monospace; font-size:11px; fill:var(--ink-2);
+            text-anchor:middle; font-variant-numeric:tabular-nums; }
+.bar-lbl { font-family:"IBM Plex Sans",sans-serif; font-size:12px; fill:var(--ink-2);
+            text-anchor:middle; }
+.baseline { stroke:var(--neg); stroke-width:1.2; stroke-dasharray:5 4; }
+.baseline-lbl { font-family:"IBM Plex Mono",monospace; font-size:10.5px; fill:var(--neg); }
+.curve { fill:none; stroke-width:1.7; }
+.c0 { stroke:var(--brass); stroke-width:2.2; }
+.c1 { stroke:var(--pos); }
+.c2 { stroke:var(--neg); }
+.c3 { stroke:var(--ink-3); }
+.c4 { stroke:var(--ink-3); stroke-dasharray:4 3; stroke-width:1.3; }
+.ax { font-family:"IBM Plex Mono",monospace; font-size:10.5px; fill:var(--ink-3); }
+.zero { stroke:var(--rule); stroke-width:1; }
+.legend { display:flex; flex-wrap:wrap; gap:16px; margin-top:12px; font-size:12.5px;
+           color:var(--ink-2); }
+.legend span { display:inline-flex; align-items:center; gap:7px; }
+.swatch { width:16px; height:3px; border-radius:2px; display:inline-block; }
+.note { background:var(--sunk); border-radius:4px; padding:18px 20px; margin:26px 0;
+         font-size:14.5px; color:var(--ink-2); }
+.note p { margin:0 0 10px; max-width:none; } .note p:last-child { margin:0; }
+footer { margin-top:64px; padding-top:22px; border-top:1px solid var(--rule);
+          font-size:13px; color:var(--ink-3); }
+a { color:var(--brass); text-underline-offset:2px; }
+a:focus-visible, :focus-visible { outline:2px solid var(--brass); outline-offset:2px; }
+@media (max-width:620px) { .wrap { padding:0 18px 64px; } header { padding-top:40px; } }
+
+.bar-neg { fill:var(--neg); }
+.warn { background:var(--surface); border:1px solid var(--rule); border-left:3px solid var(--neg);
+         border-radius:4px; padding:22px 26px; margin:26px 0; }
+.warn .head { font-family:"IBM Plex Mono",monospace; font-size:11.5px; letter-spacing:.13em;
+               text-transform:uppercase; color:var(--neg); margin-bottom:12px; }
+.warn p { margin:0 0 12px; } .warn p:last-child { margin:0; }
+.rule-box { background:var(--sunk); border-radius:4px; padding:20px 24px; margin:24px 0; }
+.rule-box ol { margin:0; padding-left:22px; } .rule-box li { margin:8px 0; max-width:64ch; }
+</style>
+
+<div class="wrap">
+<header>
+  <p class="eyebrow">XAUUSD · Round 7 · New York session</p>
+  <h1>Gold at the New York Open</h1>
+  <p class="standfirst">Eighty configurations of the 09:30 ET opening-range breakout. One of the
+  thirty-nine unfiltered ones clears a profit factor of 1.0. The best t-statistic anywhere in the
+  grid is <strong>+0.70</strong> — a search this size over pure noise would normally
+  throw up something better than that.</p>
+  <div class="provenance">
+    <span><b>80</b> configurations</span>
+    <span><b>4</b> range lengths</span>
+    <span><b>10</b> exits</span>
+    <span><b>2</b> lookahead bugs caught</span>
+  </div>
+</header>
+
+<section>
+  <div class="verdict">
+    <div class="head">Verdict</div>
+    <p><strong>The New York opening range does not work on gold.</strong> Unfiltered,
+    1 of 39 configurations clear a 1.0 profit factor; the median is
+    0.888. With the AUD correlation filter applied, 11 of 39 clear it and the
+    median rises to 0.968 — still below break-even.</p>
+    <p><strong>It is not close, and it is not noise.</strong> At zero transaction cost the
+    strategy runs a 1.030 profit factor: essentially break-even gross. There
+    is no edge there to pay a spread out of.</p>
+    <p><strong>Liquidity targets did not beat the clock.</strong> Previous-day, Asia, London and
+    prior-hour highs and lows all landed in the same 0.84–0.94 band as simple time exits.</p>
+  </div>
+</section>
+
+<section>
+  <h2><span class="n">01</span>What was tested</h2>
+  <p class="lede">Your specification, widened in every direction you suggested.</p>
+  <ul>
+    <li><strong>Range</strong> — the first 5, 15, 30 or 60 minutes after 09:30 America/New_York,
+    DST-aware.</li>
+    <li><strong>Entry</strong> — the first 5-minute candle to <em>close</em> beyond the range
+    high or low, in that direction. One trade per day, first break only, no new entry after
+    90 minutes.</li>
+    <li><strong>Exits</strong> — five clock exits (first hour, 90 minutes, two hours, NY lunch,
+    NY close) and five liquidity targets (previous day, Asia session, London session, prior
+    hour, and a measured move of one range width). Targets carry a stop at the far side of the
+    opening range.</li>
+    <li><strong>Filter</strong> — every configuration run twice, with and without the 20-day
+    gold/AUDUSD correlation gate from round two.</li>
+    <li><strong>Costs</strong> — $0.30 per round trip, the same as every earlier round.</li>
+  </ul>
+  <div class="warn">
+    <div class="head">Two lookahead bugs, caught before they became results</div>
+    <p>The first version of this engine returned a <strong>2.479 profit factor with a
+    t-statistic of 12</strong> on the previous-day target. After six rounds where nothing beat
+    1.45, that is not a discovery — it is a bug, and it was.</p>
+    <p><strong>One:</strong> FX sessions run 17:00 ET to 17:00 ET. I labelled each session by the
+    date it <em>started</em>, so "yesterday's session" ran to 17:00 ET <em>today</em> — hours
+    after the 09:30 open being traded. The previous day's high and low already contained the
+    move. <strong>Two:</strong> a pandas <code>.loc</code> slice is inclusive of its right
+    endpoint, so the London window ending "at the NY open" swallowed the 09:30–09:35 bar — the
+    first bar of the opening range itself. That one mattered on 84 days.</p>
+    <p>Both are fixed, and an audit now checks every level against bars that had actually closed.
+    Fixing them took the previous-day target from 2.479 to 0.918.</p>
+  </div>
+</section>
+
+<section>
+  <h2><span class="n">02</span>The grid</h2>
+  <p class="lede">Profit factor, trade count in brackets. Green above 1.0, red below.</p>
+  <h3>No filter</h3>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th class="l">Exit</th><th>5-min range</th><th>15-min range</th><th>30-min range</th><th>60-min range</th></tr></thead>
+    <tbody><tr><td class="lbl">First hour</td><td class="num neg-2">0.885<span class="muted" style="font-size:11px"> (1256)</span></td><td class="num neg-2">0.852<span class="muted" style="font-size:11px"> (1125)</span></td><td class="num neg-2">0.808<span class="muted" style="font-size:11px"> (776)</span></td><td class="num muted">—</td></tr>
+<tr><td class="lbl">First 90 minutes</td><td class="num neg-2">0.888<span class="muted" style="font-size:11px"> (1272)</span></td><td class="num neg-2">0.892<span class="muted" style="font-size:11px"> (1207)</span></td><td class="num neg-2">0.877<span class="muted" style="font-size:11px"> (1002)</span></td><td class="num neg-2">0.605<span class="muted" style="font-size:11px"> (516)</span></td></tr>
+<tr><td class="lbl">First 2 hours</td><td class="num neg-1">0.919<span class="muted" style="font-size:11px"> (1273)</span></td><td class="num neg-1">0.931<span class="muted" style="font-size:11px"> (1214)</span></td><td class="num neg-1">0.946<span class="muted" style="font-size:11px"> (1018)</span></td><td class="num neg-2">0.717<span class="muted" style="font-size:11px"> (556)</span></td></tr>
+<tr><td class="lbl">To NY lunch</td><td class="num neg-1">0.915<span class="muted" style="font-size:11px"> (1273)</span></td><td class="num neg-1">0.929<span class="muted" style="font-size:11px"> (1214)</span></td><td class="num neg-1">0.919<span class="muted" style="font-size:11px"> (1018)</span></td><td class="num neg-2">0.704<span class="muted" style="font-size:11px"> (556)</span></td></tr>
+<tr><td class="lbl">To NY close</td><td class="num neg-1">0.954<span class="muted" style="font-size:11px"> (1262)</span></td><td class="num neg-1">0.942<span class="muted" style="font-size:11px"> (1198)</span></td><td class="num neg-1">0.975<span class="muted" style="font-size:11px"> (999)</span></td><td class="num neg-2">0.856<span class="muted" style="font-size:11px"> (548)</span></td></tr>
+<tr><td class="lbl">Previous day high/low</td><td class="num neg-1">0.917<span class="muted" style="font-size:11px"> (920)</span></td><td class="num neg-1">0.918<span class="muted" style="font-size:11px"> (811)</span></td><td class="num neg-1">0.943<span class="muted" style="font-size:11px"> (633)</span></td><td class="num neg-2">0.873<span class="muted" style="font-size:11px"> (313)</span></td></tr>
+<tr><td class="lbl">Asia high/low</td><td class="num neg-2">0.802<span class="muted" style="font-size:11px"> (688)</span></td><td class="num neg-2">0.843<span class="muted" style="font-size:11px"> (558)</span></td><td class="num neg-2">0.849<span class="muted" style="font-size:11px"> (423)</span></td><td class="num neg-1">0.905<span class="muted" style="font-size:11px"> (179)</span></td></tr>
+<tr><td class="lbl">London high/low</td><td class="num neg-1">0.906<span class="muted" style="font-size:11px"> (918)</span></td><td class="num neg-1">0.937<span class="muted" style="font-size:11px"> (701)</span></td><td class="num neg-2">0.879<span class="muted" style="font-size:11px"> (507)</span></td><td class="num neg-2">0.858<span class="muted" style="font-size:11px"> (209)</span></td></tr>
+<tr><td class="lbl">Prior hour high/low</td><td class="num neg-2">0.809<span class="muted" style="font-size:11px"> (673)</span></td><td class="num neg-2">0.859<span class="muted" style="font-size:11px"> (456)</span></td><td class="num neg-2">0.877<span class="muted" style="font-size:11px"> (289)</span></td><td class="num neg-2">0.786<span class="muted" style="font-size:11px"> (100)</span></td></tr>
+<tr><td class="lbl">Measured move (1× range)</td><td class="num neg-2">0.849<span class="muted" style="font-size:11px"> (1273)</span></td><td class="num neg-1">0.943<span class="muted" style="font-size:11px"> (1208)</span></td><td class="num pos-1">1.003<span class="muted" style="font-size:11px"> (1003)</span></td><td class="num neg-1">0.909<span class="muted" style="font-size:11px"> (548)</span></td></tr></tbody>
+  </table></div>
+  <h3>With the AUD correlation filter</h3>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th class="l">Exit</th><th>5-min range</th><th>15-min range</th><th>30-min range</th><th>60-min range</th></tr></thead>
+    <tbody><tr><td class="lbl">First hour</td><td class="num neg-1">0.951<span class="muted" style="font-size:11px"> (760)</span></td><td class="num neg-1">0.918<span class="muted" style="font-size:11px"> (676)</span></td><td class="num neg-2">0.823<span class="muted" style="font-size:11px"> (463)</span></td><td class="num muted">—</td></tr>
+<tr><td class="lbl">First 90 minutes</td><td class="num neg-1">0.924<span class="muted" style="font-size:11px"> (771)</span></td><td class="num neg-1">0.937<span class="muted" style="font-size:11px"> (728)</span></td><td class="num neg-1">0.923<span class="muted" style="font-size:11px"> (599)</span></td><td class="num neg-2">0.687<span class="muted" style="font-size:11px"> (311)</span></td></tr>
+<tr><td class="lbl">First 2 hours</td><td class="num neg-1">0.968<span class="muted" style="font-size:11px"> (772)</span></td><td class="num neg-1">0.989<span class="muted" style="font-size:11px"> (731)</span></td><td class="num pos-1">1.002<span class="muted" style="font-size:11px"> (607)</span></td><td class="num neg-2">0.801<span class="muted" style="font-size:11px"> (330)</span></td></tr>
+<tr><td class="lbl">To NY lunch</td><td class="num neg-1">0.990<span class="muted" style="font-size:11px"> (772)</span></td><td class="num neg-1">0.998<span class="muted" style="font-size:11px"> (731)</span></td><td class="num neg-1">0.985<span class="muted" style="font-size:11px"> (607)</span></td><td class="num neg-2">0.791<span class="muted" style="font-size:11px"> (330)</span></td></tr>
+<tr><td class="lbl">To NY close</td><td class="num neg-1">0.981<span class="muted" style="font-size:11px"> (765)</span></td><td class="num neg-1">0.964<span class="muted" style="font-size:11px"> (721)</span></td><td class="num neg-1">0.985<span class="muted" style="font-size:11px"> (594)</span></td><td class="num neg-2">0.891<span class="muted" style="font-size:11px"> (323)</span></td></tr>
+<tr><td class="lbl">Previous day high/low</td><td class="num pos-1">1.022<span class="muted" style="font-size:11px"> (550)</span></td><td class="num pos-1">1.018<span class="muted" style="font-size:11px"> (491)</span></td><td class="num neg-1">0.992<span class="muted" style="font-size:11px"> (382)</span></td><td class="num neg-1">0.966<span class="muted" style="font-size:11px"> (185)</span></td></tr>
+<tr><td class="lbl">Asia high/low</td><td class="num neg-1">0.901<span class="muted" style="font-size:11px"> (410)</span></td><td class="num neg-1">0.904<span class="muted" style="font-size:11px"> (335)</span></td><td class="num neg-2">0.872<span class="muted" style="font-size:11px"> (258)</span></td><td class="num pos-2">1.123<span class="muted" style="font-size:11px"> (116)</span></td></tr>
+<tr><td class="lbl">London high/low</td><td class="num pos-1">1.047<span class="muted" style="font-size:11px"> (556)</span></td><td class="num pos-1">1.022<span class="muted" style="font-size:11px"> (433)</span></td><td class="num neg-1">0.957<span class="muted" style="font-size:11px"> (315)</span></td><td class="num pos-1">1.018<span class="muted" style="font-size:11px"> (127)</span></td></tr>
+<tr><td class="lbl">Prior hour high/low</td><td class="num neg-2">0.854<span class="muted" style="font-size:11px"> (411)</span></td><td class="num neg-1">0.956<span class="muted" style="font-size:11px"> (287)</span></td><td class="num neg-1">0.975<span class="muted" style="font-size:11px"> (183)</span></td><td class="num pos-2">1.117<span class="muted" style="font-size:11px"> (64)</span></td></tr>
+<tr><td class="lbl">Measured move (1× range)</td><td class="num neg-2">0.850<span class="muted" style="font-size:11px"> (772)</span></td><td class="num pos-1">1.016<span class="muted" style="font-size:11px"> (726)</span></td><td class="num pos-2">1.057<span class="muted" style="font-size:11px"> (596)</span></td><td class="num pos-2">1.057<span class="muted" style="font-size:11px"> (323)</span></td></tr></tbody>
+  </table></div>
+  <p>Three patterns hold across the whole grid. <strong>Later exits beat earlier ones</strong> —
+  the same thing round one found on the Asia session, and the opposite of the usual advice to
+  take opening-range profits quickly. <strong>Longer ranges are worse</strong>, sharply so at 60
+  minutes, because an hour of the New York session is exactly the part worth being in.
+  <strong>Liquidity targets are not better than a clock</strong>, and the two nearest ones —
+  the prior hour and the Asia range — are the worst of the ten.</p>
+  <h3>The best of the eighty</h3>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th class="l">Range</th><th class="l">Exit</th><th class="l">Filter</th>
+    <th>Trades</th><th>Win rate</th><th>Profit factor</th><th>Exp. $/oz</th><th>t-stat</th></tr></thead>
+    <tbody><tr><td class="lbl">60-min</td><td class="lbl">Asia high/low</td><td class="lbl muted">corr<=0.5</td><td class="num">116</td><td class="num">59.5%</td><td class="num pos-1">1.123</td><td class="num">+0.33</td><td class="num muted">+0.70</td></tr>
+<tr><td class="lbl">30-min</td><td class="lbl">Measured move (1× range)</td><td class="lbl muted">corr<=0.5</td><td class="num">596</td><td class="num">52.5%</td><td class="num pos-1">1.057</td><td class="num">+0.17</td><td class="num muted">+0.59</td></tr>
+<tr><td class="lbl">60-min</td><td class="lbl">Measured move (1× range)</td><td class="lbl muted">corr<=0.5</td><td class="num">323</td><td class="num">51.4%</td><td class="num pos-1">1.057</td><td class="num">+0.17</td><td class="num muted">+0.49</td></tr>
+<tr><td class="lbl">60-min</td><td class="lbl">Prior hour high/low</td><td class="lbl muted">corr<=0.5</td><td class="num">64</td><td class="num">64.1%</td><td class="num pos-1">1.117</td><td class="num">+0.27</td><td class="num muted">+0.46</td></tr>
+<tr><td class="lbl">5-min</td><td class="lbl">London high/low</td><td class="lbl muted">corr<=0.5</td><td class="num">556</td><td class="num">47.8%</td><td class="num pos-1">1.047</td><td class="num">+0.11</td><td class="num muted">+0.31</td></tr>
+<tr><td class="lbl">5-min</td><td class="lbl">Previous day high/low</td><td class="lbl muted">corr<=0.5</td><td class="num">550</td><td class="num">37.8%</td><td class="num pos-1">1.022</td><td class="num">+0.06</td><td class="num muted">+0.20</td></tr>
+<tr><td class="lbl">60-min</td><td class="lbl">London high/low</td><td class="lbl muted">corr<=0.5</td><td class="num">127</td><td class="num">56.7%</td><td class="num pos-1">1.018</td><td class="num">+0.05</td><td class="num muted">+0.18</td></tr>
+<tr><td class="lbl">30-min</td><td class="lbl">Measured move (1× range)</td><td class="lbl muted">all</td><td class="num">1003</td><td class="num">52.2%</td><td class="num pos-1">1.003</td><td class="num">+0.01</td><td class="num muted">+0.14</td></tr></tbody>
+  </table></div>
+  <p>The top of this table is where a reader normally starts looking for the strategy. There
+  isn't one. The strongest t-statistic in the entire grid is <strong>+0.70</strong>,
+  on 116 trades. Eighty correlated tests over data with no signal would ordinarily
+  produce a best t of around +2. Getting +0.70 means this grid is not merely
+  unprofitable — it is consistently, systematically negative.</p>
+</section>
+
+<section>
+  <h2><span class="n">03</span>Why it fails, and why that is interesting</h2>
+  <p class="lede">The obvious guess is that the New York open is too choppy. The data says the
+  opposite, which makes the answer more useful.</p>
+  <figure>
+    <div class="chart">
+      <svg viewBox="0 0 660 200" role="img" aria-label="Forward move remaining after the fill, New York ranges versus Asia">
+        <line class="zero" x1="50" y1="150" x2="620" y2="150"/>
+        <rect class="bar-neg" x="70" y="140.5" width="52" height="9.5" rx="2"/>
+<text class="bar-val" x="96" y="132.5">$+0.15</text>
+<text class="bar-lbl" x="96" y="184">NY 5m</text>
+<rect class="bar-neg" x="170" y="143.8" width="52" height="6.2" rx="2"/>
+<text class="bar-val" x="196" y="135.8">$+0.10</text>
+<text class="bar-lbl" x="196" y="184">NY 15m</text>
+<rect class="bar-neg" x="270" y="136.6" width="52" height="13.4" rx="2"/>
+<text class="bar-val" x="296" y="128.6">$+0.22</text>
+<text class="bar-lbl" x="296" y="184">NY 30m</text>
+<rect class="bar-neg" x="370" y="150.0" width="52" height="9.9" rx="2"/>
+<text class="bar-val" x="396" y="176.9">$-0.16</text>
+<text class="bar-lbl" x="396" y="184">NY 60m</text>
+<rect class="bar-entry" x="470" y="53.3" width="52" height="96.7" rx="2"/>
+<text class="bar-val" x="496" y="45.3">$+1.56</text>
+<text class="bar-lbl" x="496" y="184">Asia 60m</text>
+        <text class="ax" x="50" y="28">gross move remaining after you are filled, $/oz</text>
+      </svg>
+    </div>
+    <figcaption>Everything to the left is New York at four range lengths. The bar on the right is
+    the Asia-open setup from round two, on the same data and the same costs.</figcaption>
+  </figure>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th class="l">Setup</th><th>Range width</th><th>Already moved by fill</th>
+    <th>Forward move after fill</th><th>Traded back through</th></tr></thead>
+    <tbody><tr><td class="lbl">New York, 5-min range</td><td class="num">$3.50</td><td class="num">$3.40</td><td class="num neg-t">$+0.15</td><td class="num muted">63%</td></tr>
+<tr><td class="lbl">New York, 15-min range</td><td class="num">$5.79</td><td class="num">$4.74</td><td class="num neg-t">$+0.10</td><td class="num muted">45%</td></tr>
+<tr><td class="lbl">New York, 30-min range</td><td class="num">$7.77</td><td class="num">$6.03</td><td class="num neg-t">$+0.22</td><td class="num muted">30%</td></tr>
+<tr><td class="lbl">New York, 60-min range</td><td class="num">$11.03</td><td class="num">$8.30</td><td class="num neg-t">$-0.16</td><td class="num muted">16%</td></tr>
+<tr style="border-top:2px solid var(--rule)"><td class="lbl"><strong>Asia, 60-min range</strong></td><td class="num">$5.22</td><td class="num">$4.92</td><td class="num pos-t"><strong>+$1.56</strong></td><td class="num muted">61%</td></tr></tbody>
+  </table></div>
+  <p><strong>New York breakouts hold their direction far better than Asia ones.</strong> Only
+  45% of 15-minute New York breaks ever trade back through the far side of the
+  range, against about 79% on the Asia session. On the structural measure everyone uses to judge
+  a breakout, New York wins comfortably.</p>
+  <p>It still loses, because <strong>there is nothing left to capture</strong>. By the time a
+  15-minute range has formed and a 5-minute candle has closed beyond it, price has already moved
+  $4.74 from the open — and the average gross move remaining is
+  <strong>$+0.10</strong>. Against a $0.30 round trip that is a decided loss
+  before the trade is placed. The Asia setup leaves $1.56 on the table for a nearly identical
+  entry cost, which is the entire difference between the two.</p>
+  <p>That is a coherent story about the instrument rather than about the pattern. 09:30 in New
+  York is gold's most watched, most contested moment; the information in the open is priced
+  within minutes and a confirmed break is late by construction. 09:30 in Hong Kong is thin, and
+  gold has a structural participant there that the rest of the day does not.</p>
+</section>
+
+<section>
+  <h2><span class="n">04</span>Your 1-minute question</h2>
+  <p class="lede">The data is 5-minute, so 1-minute confirmation cannot be tested directly. The
+  gradient across the timeframes I do have brackets the answer.</p>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th class="l">Range</th><th class="l">Confirmation</th><th>Trades</th>
+    <th>Profit factor</th><th>t-stat</th></tr></thead>
+    <tbody><tr><td class="lbl">15-min range</td><td class="lbl">5-min</td><td class="num">1207</td><td class="num neg-1">0.892</td><td class="num muted">-1.50</td></tr>
+<tr><td class="lbl">30-min range</td><td class="lbl">5-min</td><td class="num">1002</td><td class="num neg-1">0.877</td><td class="num muted">-1.47</td></tr>
+<tr><td class="lbl">15-min range</td><td class="lbl">15-min</td><td class="num">1093</td><td class="num neg-1">0.835</td><td class="num muted">-2.26</td></tr>
+<tr><td class="lbl">30-min range</td><td class="lbl">15-min</td><td class="num">810</td><td class="num neg-1">0.925</td><td class="num muted">-0.99</td></tr>
+<tr><td class="lbl">15-min range</td><td class="lbl">30-min</td><td class="num">972</td><td class="num neg-1">0.799</td><td class="num muted">-2.71</td></tr>
+<tr><td class="lbl">30-min range</td><td class="lbl">30-min</td><td class="num">553</td><td class="num pos-1">1.036</td><td class="num muted">-0.12</td></tr>
+<tr><td class="lbl">15-min range</td><td class="lbl">60-min</td><td class="num">811</td><td class="num neg-1">0.722</td><td class="num muted">-3.51</td></tr></tbody>
+  </table></div>
+  <p>On the 15-minute range you asked about, finer confirmation is monotonically better —
+  0.892 at 5 minutes, 0.835 at 15, 0.799 at 30, 0.722 at 60. Extrapolating that slope, a
+  1-minute confirmation would land somewhere near <strong>0.92–0.94</strong>. Better than
+  5-minute, and still comfortably short of break-even.</p>
+  <p>Two cautions on that extrapolation. The direction reverses on the 30-minute range, where
+  coarser confirmation is better — so this is an interaction, not a law. And a backtest flatters
+  fine confirmation: a 1-minute close through a level generates more marginal triggers, and in
+  live trading those are exactly the ones that fill worst. The honest reading is that
+  1-minute would not change the conclusion.</p>
+</section>
+
+<section>
+  <h2><span class="n">05</span>Everything else I varied</h2>
+  <h3>Costs decide it</h3>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th class="l">Round trip</th><th>Profit factor</th><th>Exp. $/oz</th></tr></thead>
+    <tbody><tr><td class="lbl">$0.00</td><td class="num pos-1">1.030</td><td class="num">+0.10</td></tr>
+<tr><td class="lbl">$0.15</td><td class="num neg-1">0.985</td><td class="num">-0.05</td></tr>
+<tr><td class="lbl">$0.30</td><td class="num neg-1">0.942</td><td class="num">-0.20</td></tr>
+<tr><td class="lbl">$0.60</td><td class="num neg-1">0.863</td><td class="num">-0.50</td></tr></tbody>
+  </table></div>
+  <p>15-minute range, held to the NY close. <strong>1.030 at zero cost.</strong>
+  This is the cleanest single statement of the result: the strategy is a coin flip gross, and the
+  spread is the whole story. No exit rule, filter or stop placement can fix a gross edge that
+  does not exist.</p>
+  <h3>Stop placement</h3>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th class="l">Stop</th><th>Trades</th><th>Win rate</th><th>Profit factor</th>
+    <th>t-stat</th></tr></thead>
+    <tbody><tr><td class="lbl">far side of range</td><td class="num">811</td><td class="num">44.1%</td><td class="num neg-1">0.918</td><td class="num muted">-0.96</td></tr>
+<tr><td class="lbl">0.5 x range</td><td class="num">821</td><td class="num">25.0%</td><td class="num neg-1">0.812</td><td class="num muted">-2.20</td></tr>
+<tr><td class="lbl">1.0 x range</td><td class="num">816</td><td class="num">40.4%</td><td class="num neg-1">0.926</td><td class="num muted">-0.86</td></tr>
+<tr><td class="lbl">2.0 x range</td><td class="num">801</td><td class="num">48.6%</td><td class="num neg-1">0.840</td><td class="num muted">-1.94</td></tr></tbody>
+  </table></div>
+  <p>Tight stops are punished here exactly as they were in round three — a half-range stop drops
+  the win rate to 25% and the profit factor to 0.812. Nothing beats the far side of the range.</p>
+  <h3>Two things that turned out not to matter</h3>
+  <ul>
+    <li><strong>The entry deadline.</strong> Cutting off new entries at 30, 60, 90, 150 or 390
+    minutes moves the profit factor only between 0.918 and 0.955. There is no window inside the
+    session that behaves differently from the rest of it.</li>
+    <li><strong>The intrabar ambiguity.</strong> When a 5-minute bar touches both the stop and
+    the target, I assume the stop filled. Assuming the target instead moves the profit factor
+    from 0.918 to 0.922 — so the conservative choice is not what is driving the negative
+    result.</li>
+  </ul>
+</section>
+
+<section>
+  <h2><span class="n">06</span>Does the AUD filter carry over?</h2>
+  <p class="lede">This is close to an independent test of round two's finding: different session,
+  different range, different exits, different holding period, same instrument.</p>
+  <div class="stats">
+    <div class="stat"><div class="k">Cells improved</div><div class="v">39<span style="font-size:15px;color:var(--ink-3)">/39</span></div></div>
+    <div class="stat"><div class="k">Median PF lift</div><div class="v">+0.066</div></div>
+    <div class="stat"><div class="k">Median PF, unfiltered</div><div class="v dim">0.888</div></div>
+    <div class="stat"><div class="k">Median PF, filtered</div><div class="v dim">0.968</div></div>
+  </div>
+  <p>The filter improved <strong>every single one of the 39 configurations</strong>.
+  That looks overwhelming, and a naive signed-rank test returns p &lt; 0.00001. It is not that
+  strong, and the reason matters.</p>
+  <p><strong>Those 39 cells share most of their trades.</strong> They are the same
+  days re-cut by exit rule, so they are nearly the same test repeated — the sign agreeing 39
+  times is much weaker evidence than 39 independent experiments would be. Testing it properly,
+  at the level of individual trade returns:</p>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th class="l">Configuration</th><th>Kept</th><th>PF</th><th>Excluded</th><th>PF</th>
+    <th>p-value</th></tr></thead>
+    <tbody><tr><td class="lbl">15-min · To NY close</td><td class="num">721</td><td class="num">0.964</td><td class="num">455</td><td class="num">0.905</td><td class="num muted">0.924</td></tr>
+<tr><td class="lbl">15-min · First 2 hours</td><td class="num">731</td><td class="num">0.989</td><td class="num">461</td><td class="num">0.803</td><td class="num muted">0.372</td></tr>
+<tr><td class="lbl">30-min · Measured move (1× range)</td><td class="num">596</td><td class="num">1.057</td><td class="num">388</td><td class="num">0.908</td><td class="num muted">0.400</td></tr>
+<tr><td class="lbl">15-min · Previous day high/low</td><td class="num">491</td><td class="num">1.018</td><td class="num">307</td><td class="num">0.744</td><td class="num muted">0.139</td></tr>
+<tr><td class="lbl">5-min · London high/low</td><td class="num">556</td><td class="num">1.047</td><td class="num">348</td><td class="num">0.695</td><td class="num muted">0.030</td></tr></tbody>
+  </table></div>
+  <p>The direction is right every time — days the filter keeps always beat days it excludes — but
+  only one of the five clears significance on its own, and on the representative cell the
+  continuous relationship is flat (Spearman ρ = +0.002,
+  p = 0.93).</p>
+  <p><strong>So: the New York data neither confirms nor refutes the filter.</strong> It is
+  consistent with round two's finding and adds mild support to the idea that the filter measures
+  something general about gold rather than something specific to the Asia session. It is not the
+  independent validation it looked like at first glance, and I would not claim it as one.</p>
+</section>
+
+<section>
+  <h2><span class="n">07</span>Where that leaves both strategies</h2>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th class="l">Setup</th><th>Trades</th><th>Win rate</th><th>Profit factor</th>
+    <th>t-stat</th></tr></thead>
+    <tbody>
+      <tr><td class="lbl">Asia 09:30 HKT, 60-min range, NY-close exit, filtered</td>
+        <td class="num">652</td><td class="num">40.2%</td>
+        <td class="num pos-2">1.320</td><td class="num">+2.54</td></tr>
+      <tr><td class="lbl">New York 09:30 ET, best of eighty</td>
+        <td class="num">116</td><td class="num">59.5%</td>
+        <td class="num pos-1">1.123</td><td class="num">+0.70</td></tr>
+    </tbody>
+  </table></div>
+  <div class="rule-box"><ol>
+    <li><strong>Do not trade the New York opening range on gold.</strong> Not with these exits,
+    not with liquidity targets, not with finer confirmation. The gross edge is zero and eighty
+    configurations could not find one.</li>
+    <li><strong>The Asia setup stands.</strong> Nothing here weakens it, and the fact that the
+    same filter points the same way on a structurally unrelated setup is mildly encouraging for
+    it.</li>
+    <li><strong>If you want to keep pulling this thread</strong>, the interesting version is not
+    another exit rule. It is the observation from section 03: New York breaks hold well but leave
+    nothing on the table. That points at <em>fading</em> the New York open — entering against
+    the first break — which is the one direction this study did not test and which the numbers
+    here would predict.</li>
+    <li><strong>The negative result is the deliverable.</strong> Eighty configurations, one bad
+    idea eliminated, and two lookahead bugs found in the process. That is the round working
+    correctly.</li>
+  </ol></div>
+</section>
+
+<section>
+  <h2><span class="n">08</span>Caveats</h2>
+  <ul>
+    <li><strong>One instrument, five years, one data source.</strong> Everything here inherits the
+    caveats of rounds one to six.</li>
+    <li><strong>5-minute bars.</strong> The 1-minute variant is bounded by extrapolation, not
+    measured.</li>
+    <li><strong>The liquidity targets are my definitions of those levels</strong>, not yours.
+    Asia is Tokyo cash hours, London is 08:00 London to the NY open, the previous day is the
+    17:00 ET FX session. Different definitions would move the numbers somewhat — but all four
+    landed in the same band, which suggests the choice is not what is driving the result.</li>
+    <li><strong>Days are dropped when a target sits behind the entry</strong> — between 4% and
+    60% of days depending on the level. That selection is reported in the trade counts, and it
+    is why the target rows have fewer trades than the clock rows.</li>
+    <li><strong>The data ends August 2025.</strong></li>
+  </ul>
+</section>
+
+<footer>
+  Round seven. Code and results on branch <code>claude/trading-strategy-backtest-gqym2i</code>;
+  figures generated from <code>results/ny_grid.json</code> and <code>results/ny_sens.json</code>.
+  Rounds one to six are the companion reports.
+</footer>
+</div>

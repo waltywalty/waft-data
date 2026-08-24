@@ -182,3 +182,38 @@ count even though the correlation-aware randomisation test passes it.
 `backtest/mt5/AsiaOpenGold.mq5` implements the deployable configuration. See
 `backtest/mt5/README.md` for install, tester settings, and the numbers a correct run should
 reproduce.
+
+## Round seven — the New York opening range
+
+```bash
+python3 run_ny.py        # 80 configurations: 4 range lengths x 10 exits x filter on/off
+python3 run_ny_sens.py   # confirmation timeframe, deadline, stops, costs, filter generalisation
+python3 build_report6.py
+```
+
+Tested the 09:30 ET opening-range breakout with five clock exits and five liquidity targets
+(previous day, Asia, London, prior hour, measured move). **It does not work.** Unfiltered,
+1 of 39 configurations clears a 1.0 profit factor (median 0.888); with the AUD filter, 11 of 39
+(median 0.968). The best t-statistic anywhere in the grid is +0.70 - lower than a search this
+size over pure noise would normally produce.
+
+The mechanism is the useful part. New York breaks *hold* far better than Asia ones - 45%
+whipsaw against 79% - but there is nothing left to capture: after a 15-minute range and a
+5-minute confirmation, price has already moved $4.74 from the open and the average forward move
+is +$0.10, against Asia's +$1.56. At zero cost the strategy runs a 1.030 profit factor, so the
+spread is the entire story.
+
+Finer confirmation is monotonically better on a 15-minute range (5m 0.892, 15m 0.835, 30m 0.799,
+60m 0.722), which brackets the untestable 1-minute case at roughly 0.92-0.94 - better, still
+losing.
+
+The AUD correlation filter improved all 39 cells, but those cells share most of their trades;
+tested properly at the trade level only 1 of 5 configurations reaches significance and the
+continuous relationship is flat. It neither confirms nor refutes round two.
+
+**Two lookahead bugs were caught during this round** (the first engine returned PF 2.479,
+t = 12): FX sessions labelled by start date rather than end date, so "previous day" ran to
+17:00 ET *today*; and a pandas `.loc` slice inclusive of its right endpoint, so the London
+window swallowed the first bar of the opening range. `build_levels()` now carries an audit.
+
+Write-up: `results/report6.html`.
