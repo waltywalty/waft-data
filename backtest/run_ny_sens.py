@@ -80,7 +80,10 @@ OUT["costs"] = costs
 print("\n=== 6. DOES THE AUD CORRELATION FILTER GENERALISE TO THIS SETUP? ===")
 print("   The filter was found on the Asia-open strategy. This is a different session,")
 print("   a different range, and different exits - so it is close to an independent test.\n")
-piv = res.pivot_table(index=["range", "exit"], columns="filter", values="pf")
+# compare like with like: both sides must be the stop-at-range-opposite variant, or the
+# unfiltered column silently averages the with-stop and no-stop runs
+cmpres = res[res["stop"] == "range_opp"] if "stop" in res.columns else res
+piv = cmpres.pivot_table(index=["range", "exit"], columns="filter", values="pf")
 piv = piv.dropna()
 lift = piv["corr<=0.5"] - piv["all"]
 w = st.wilcoxon(piv["corr<=0.5"], piv["all"])
@@ -96,24 +99,48 @@ OUT["filter_generalisation"] = {"n_cells": int(len(piv)), "improved": int((lift 
                                 "median_pf_all": float(piv["all"].median()),
                                 "median_pf_filt": float(piv["corr<=0.5"].median())}
 
-print("\n=== 7. IN-SAMPLE / OUT-OF-SAMPLE ON THE BEST CELLS ===")
-best = res.sort_values("t", ascending=False).head(5)
-isos = []
-for _, r in best.iterrows():
+print("\n=== 7. A GENUINE OUT-OF-SAMPLE TEST ===")
+print("   Cells are ranked using ONLY pre-2024 data, then scored on 2024-25. Ranking on the")
+print("   whole sample - as an earlier version of this script did - lets the selector see the")
+print("   holdout, and turns an out-of-sample panel into an in-sample one wearing a label.\n")
+pf = lambda s: float(s[s > 0].sum() / max(-s[s <= 0].sum(), 1e-9))
+SPLIT = pd.Timestamp("2024-01-01")
+
+scored = []
+for _, r in res.iterrows():
+    if r.get("stop") not in (None, "range_opp") or r["filter"] not in ("all", "corr<=0.5"):
+        continue
     d = go(range_min=int(r["range"]), exit_spec=r["exit"])
-    x = d[d.traded]
+    x = d[d.traded].dropna(subset=["corr"]).copy()
     if r["filter"] != "all":
         x = x[x["corr"] <= 0.5]
-    x = x.copy(); x["os"] = pd.to_datetime(x.day) >= "2024-01-01"
-    pf = lambda s: float(s[s > 0].sum() / max(-s[s <= 0].sum(), 1e-9))
+    x["os"] = pd.to_datetime(x.day) >= SPLIT
     a, b = x[~x.os], x[x.os]
-    if len(a) < 25 or len(b) < 25:
+    if len(a) < 40 or len(b) < 25:
         continue
-    print(f"  {int(r['range'])}m / {r['exit']:14s} / {r['filter']:9s} "
-          f"IS n={len(a):>3} PF={pf(a.pnl_oz):.3f} | OS n={len(b):>3} PF={pf(b.pnl_oz):.3f}")
-    isos.append({"range": int(r["range"]), "exit": r["exit"], "filter": r["filter"],
-                 "is_n": len(a), "is_pf": pf(a.pnl_oz), "os_n": len(b), "os_pf": pf(b.pnl_oz)})
-OUT["isos"] = isos
+    pct = a.pnl_oz / a.entry * 100
+    scored.append({"range": int(r["range"]), "exit": r["exit"], "filter": r["filter"],
+                   "is_n": len(a), "is_pf": pf(a.pnl_oz),
+                   "is_t": float(pct.mean() / pct.std() * np.sqrt(len(a))) if pct.std() else 0.0,
+                   "os_n": len(b), "os_pf": pf(b.pnl_oz)})
+sc = pd.DataFrame(scored)
+top5 = sc.sort_values("is_t", ascending=False).head(5)
+print("   top 5 by IN-SAMPLE t-statistic, then read out-of-sample:")
+for _, r in top5.iterrows():
+    print(f"     {r['range']:2d}m / {r['exit']:14s} / {r['filter']:9s} "
+          f"IS n={r['is_n']:>4} PF={r['is_pf']:.3f} t={r['is_t']:+.2f} | "
+          f"OS n={r['os_n']:>3} PF={r['os_pf']:.3f}")
+print(f"\n   of the 5 selected honestly, {int((top5.os_pf > 1).sum())} clear 1.0 out of sample "
+      f"(median OS PF {top5.os_pf.median():.3f})")
+print(f"   the population of all {len(sc)} cells has median OS PF {sc.os_pf.median():.3f}")
+print("   -> selecting on in-sample strength buys no out-of-sample advantage whatsoever.")
+contam = sc.sort_values("os_pf", ascending=False).head(5)
+print(f"\n   for contrast, the 5 cells with the BEST out-of-sample profit factor have a median")
+print(f"   OS PF of {contam.os_pf.median():.3f} - that is what the biased version was reporting.")
+OUT["isos"] = {"honest_top5": top5.to_dict("records"),
+               "honest_median_os_pf": float(top5.os_pf.median()),
+               "population_median_os_pf": float(sc.os_pf.median()),
+               "n_cells": int(len(sc))}
 
 print("\n=== 8. NEW YORK vs ASIA, side by side ===")
 try:

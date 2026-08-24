@@ -157,25 +157,26 @@ a:focus-visible, :focus-visible { outline:2px solid var(--brass); outline-offset
 <header>
   <p class="eyebrow">XAUUSD · Round 7 · New York session</p>
   <h1>Gold at the New York Open</h1>
-  <p class="standfirst">Eighty configurations of the 09:30 ET opening-range breakout. One of the
-  thirty-nine unfiltered ones clears a profit factor of 1.0. The best t-statistic anywhere in the
-  grid is <strong>+0.70</strong> — a search this size over pure noise would normally
-  throw up something better than that.</p>
+  <p class="standfirst">One hundred and seventeen configurations of the 09:30 ET opening-range
+  breakout. Without a protective stop, <strong>none of them</strong> clears a profit factor of
+  1.0. The best t-statistic anywhere is <strong>+0.70</strong> — a search this size
+  over pure noise would normally throw up something better.</p>
   <div class="provenance">
-    <span><b>80</b> configurations</span>
+    <span><b>117</b> configurations</span>
     <span><b>4</b> range lengths</span>
     <span><b>10</b> exits</span>
-    <span><b>2</b> lookahead bugs caught</span>
+    <span><b>4</b> defects caught and fixed</span>
   </div>
 </header>
 
 <section>
   <div class="verdict">
     <div class="head">Verdict</div>
-    <p><strong>The New York opening range does not work on gold.</strong> Unfiltered,
-    1 of 39 configurations clear a 1.0 profit factor; the median is
-    0.888. With the AUD correlation filter applied, 11 of 39 clear it and the
-    median rises to 0.968 — still below break-even.</p>
+    <p><strong>The New York opening range does not work on gold.</strong> With a protective stop
+    at the far side of the range, 1 of 39 configurations clear a 1.0 profit
+    factor (median 0.899). <strong>Without a stop, 0 of 39 do</strong> —
+    median 0.847, best 0.920. Adding the AUD correlation filter lifts
+    12 of 39 above 1.0 (median 0.974), still short of break-even.</p>
     <p><strong>It is not close, and it is not noise.</strong> At zero transaction cost the
     strategy runs a 1.030 profit factor: essentially break-even gross. There
     is no edge there to pay a spread out of.</p>
@@ -195,8 +196,10 @@ a:focus-visible, :focus-visible { outline:2px solid var(--brass); outline-offset
     90 minutes.</li>
     <li><strong>Exits</strong> — five clock exits (first hour, 90 minutes, two hours, NY lunch,
     NY close) and five liquidity targets (previous day, Asia session, London session, prior
-    hour, and a measured move of one range width). Targets carry a stop at the far side of the
-    opening range.</li>
+    hour, and a measured move of one range width).</li>
+    <li><strong>Stop</strong> — every configuration run both with a protective stop at the far
+    side of the opening range and with no stop at all, because whether a "hold to the NY close"
+    rule carries a stop changes what is being measured and should not be left implied.</li>
     <li><strong>Filter</strong> — every configuration run twice, with and without the 20-day
     gold/AUDUSD correlation gate from round two.</li>
     <li><strong>Costs</strong> — $0.30 per round trip, the same as every earlier round.</li>
@@ -214,6 +217,17 @@ a:focus-visible, :focus-visible { outline:2px solid var(--brass); outline-offset
     first bar of the opening range itself. That one mattered on 84 days.</p>
     <p>Both are fixed, and an audit now checks every level against bars that had actually closed.
     Fixing them took the previous-day target from 2.479 to 0.918.</p>
+    <p><strong>Then I had the engine audited</strong> by five independent reviewers working
+    different lenses, each finding put to a skeptic whose job was to kill it. Twenty-four
+    candidate defects, twenty-two refuted, <strong>two survived</strong> — and both were real.</p>
+    <p><strong>Three:</strong> the same inclusive-slice trap once more, this time on the exit
+    path. <code>bars5.loc[t_fill:t_exit]</code> evaluated the bar spanning
+    [t_exit, t_exit+5min), giving every trade five extra minutes of stop and target exposure
+    after it should have been closed. Numerically immaterial — no configuration changes sign —
+    but it is the third instance of one mistake, which is what makes it worth naming.
+    <strong>Four:</strong> the out-of-sample panel ranked candidate configurations by their
+    <em>whole-sample</em> t-statistic and then reported post-2024 as the holdout. The selector
+    had already seen the holdout. That one flattered, and section 06 is the corrected version.</p>
   </div>
 </section>
 
@@ -223,29 +237,47 @@ a:focus-visible, :focus-visible { outline:2px solid var(--brass); outline-offset
   <h3>No filter</h3>
   <div class="tbl-wrap"><table>
     <thead><tr><th class="l">Exit</th><th>5-min range</th><th>15-min range</th><th>30-min range</th><th>60-min range</th></tr></thead>
-    <tbody><tr><td class="lbl">First hour</td><td class="num neg-2">0.885<span class="muted" style="font-size:11px"> (1256)</span></td><td class="num neg-2">0.852<span class="muted" style="font-size:11px"> (1125)</span></td><td class="num neg-2">0.808<span class="muted" style="font-size:11px"> (776)</span></td><td class="num muted">—</td></tr>
-<tr><td class="lbl">First 90 minutes</td><td class="num neg-2">0.888<span class="muted" style="font-size:11px"> (1272)</span></td><td class="num neg-2">0.892<span class="muted" style="font-size:11px"> (1207)</span></td><td class="num neg-2">0.877<span class="muted" style="font-size:11px"> (1002)</span></td><td class="num neg-2">0.605<span class="muted" style="font-size:11px"> (516)</span></td></tr>
-<tr><td class="lbl">First 2 hours</td><td class="num neg-1">0.919<span class="muted" style="font-size:11px"> (1273)</span></td><td class="num neg-1">0.931<span class="muted" style="font-size:11px"> (1214)</span></td><td class="num neg-1">0.946<span class="muted" style="font-size:11px"> (1018)</span></td><td class="num neg-2">0.717<span class="muted" style="font-size:11px"> (556)</span></td></tr>
-<tr><td class="lbl">To NY lunch</td><td class="num neg-1">0.915<span class="muted" style="font-size:11px"> (1273)</span></td><td class="num neg-1">0.929<span class="muted" style="font-size:11px"> (1214)</span></td><td class="num neg-1">0.919<span class="muted" style="font-size:11px"> (1018)</span></td><td class="num neg-2">0.704<span class="muted" style="font-size:11px"> (556)</span></td></tr>
+    <tbody><tr><td class="lbl">First hour</td><td class="num neg-2">0.899<span class="muted" style="font-size:11px"> (1256)</span></td><td class="num neg-2">0.865<span class="muted" style="font-size:11px"> (1125)</span></td><td class="num neg-2">0.824<span class="muted" style="font-size:11px"> (776)</span></td><td class="num muted">—</td></tr>
+<tr><td class="lbl">First 90 minutes</td><td class="num neg-2">0.894<span class="muted" style="font-size:11px"> (1272)</span></td><td class="num neg-2">0.899<span class="muted" style="font-size:11px"> (1207)</span></td><td class="num neg-2">0.886<span class="muted" style="font-size:11px"> (1002)</span></td><td class="num neg-2">0.614<span class="muted" style="font-size:11px"> (516)</span></td></tr>
+<tr><td class="lbl">First 2 hours</td><td class="num neg-1">0.923<span class="muted" style="font-size:11px"> (1273)</span></td><td class="num neg-1">0.934<span class="muted" style="font-size:11px"> (1214)</span></td><td class="num neg-1">0.950<span class="muted" style="font-size:11px"> (1018)</span></td><td class="num neg-2">0.721<span class="muted" style="font-size:11px"> (556)</span></td></tr>
+<tr><td class="lbl">To NY lunch</td><td class="num neg-1">0.917<span class="muted" style="font-size:11px"> (1273)</span></td><td class="num neg-1">0.934<span class="muted" style="font-size:11px"> (1214)</span></td><td class="num neg-1">0.925<span class="muted" style="font-size:11px"> (1018)</span></td><td class="num neg-2">0.708<span class="muted" style="font-size:11px"> (556)</span></td></tr>
 <tr><td class="lbl">To NY close</td><td class="num neg-1">0.954<span class="muted" style="font-size:11px"> (1262)</span></td><td class="num neg-1">0.942<span class="muted" style="font-size:11px"> (1198)</span></td><td class="num neg-1">0.975<span class="muted" style="font-size:11px"> (999)</span></td><td class="num neg-2">0.856<span class="muted" style="font-size:11px"> (548)</span></td></tr>
 <tr><td class="lbl">Previous day high/low</td><td class="num neg-1">0.917<span class="muted" style="font-size:11px"> (920)</span></td><td class="num neg-1">0.918<span class="muted" style="font-size:11px"> (811)</span></td><td class="num neg-1">0.943<span class="muted" style="font-size:11px"> (633)</span></td><td class="num neg-2">0.873<span class="muted" style="font-size:11px"> (313)</span></td></tr>
-<tr><td class="lbl">Asia high/low</td><td class="num neg-2">0.802<span class="muted" style="font-size:11px"> (688)</span></td><td class="num neg-2">0.843<span class="muted" style="font-size:11px"> (558)</span></td><td class="num neg-2">0.849<span class="muted" style="font-size:11px"> (423)</span></td><td class="num neg-1">0.905<span class="muted" style="font-size:11px"> (179)</span></td></tr>
-<tr><td class="lbl">London high/low</td><td class="num neg-1">0.906<span class="muted" style="font-size:11px"> (918)</span></td><td class="num neg-1">0.937<span class="muted" style="font-size:11px"> (701)</span></td><td class="num neg-2">0.879<span class="muted" style="font-size:11px"> (507)</span></td><td class="num neg-2">0.858<span class="muted" style="font-size:11px"> (209)</span></td></tr>
-<tr><td class="lbl">Prior hour high/low</td><td class="num neg-2">0.809<span class="muted" style="font-size:11px"> (673)</span></td><td class="num neg-2">0.859<span class="muted" style="font-size:11px"> (456)</span></td><td class="num neg-2">0.877<span class="muted" style="font-size:11px"> (289)</span></td><td class="num neg-2">0.786<span class="muted" style="font-size:11px"> (100)</span></td></tr>
+<tr><td class="lbl">Asia high/low</td><td class="num neg-2">0.802<span class="muted" style="font-size:11px"> (688)</span></td><td class="num neg-2">0.843<span class="muted" style="font-size:11px"> (558)</span></td><td class="num neg-2">0.847<span class="muted" style="font-size:11px"> (423)</span></td><td class="num neg-1">0.905<span class="muted" style="font-size:11px"> (179)</span></td></tr>
+<tr><td class="lbl">London high/low</td><td class="num neg-1">0.906<span class="muted" style="font-size:11px"> (918)</span></td><td class="num neg-1">0.937<span class="muted" style="font-size:11px"> (701)</span></td><td class="num neg-2">0.878<span class="muted" style="font-size:11px"> (507)</span></td><td class="num neg-2">0.858<span class="muted" style="font-size:11px"> (209)</span></td></tr>
+<tr><td class="lbl">Prior hour high/low</td><td class="num neg-2">0.809<span class="muted" style="font-size:11px"> (673)</span></td><td class="num neg-2">0.858<span class="muted" style="font-size:11px"> (456)</span></td><td class="num neg-2">0.877<span class="muted" style="font-size:11px"> (289)</span></td><td class="num neg-2">0.786<span class="muted" style="font-size:11px"> (100)</span></td></tr>
 <tr><td class="lbl">Measured move (1× range)</td><td class="num neg-2">0.849<span class="muted" style="font-size:11px"> (1273)</span></td><td class="num neg-1">0.943<span class="muted" style="font-size:11px"> (1208)</span></td><td class="num pos-1">1.003<span class="muted" style="font-size:11px"> (1003)</span></td><td class="num neg-1">0.909<span class="muted" style="font-size:11px"> (548)</span></td></tr></tbody>
   </table></div>
+  <h3>No protective stop — a pure hold to the exit</h3>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th class="l">Exit</th><th>5-min range</th><th>15-min range</th><th>30-min range</th><th>60-min range</th></tr></thead>
+    <tbody><tr><td class="lbl">First hour</td><td class="num neg-2">0.877<span class="muted" style="font-size:11px"> (1256)</span></td><td class="num neg-2">0.883<span class="muted" style="font-size:11px"> (1125)</span></td><td class="num neg-2">0.827<span class="muted" style="font-size:11px"> (776)</span></td><td class="num muted">—</td></tr>
+<tr><td class="lbl">First 90 minutes</td><td class="num neg-2">0.864<span class="muted" style="font-size:11px"> (1272)</span></td><td class="num neg-2">0.892<span class="muted" style="font-size:11px"> (1207)</span></td><td class="num neg-2">0.863<span class="muted" style="font-size:11px"> (1002)</span></td><td class="num neg-2">0.614<span class="muted" style="font-size:11px"> (516)</span></td></tr>
+<tr><td class="lbl">First 2 hours</td><td class="num neg-2">0.870<span class="muted" style="font-size:11px"> (1273)</span></td><td class="num neg-2">0.896<span class="muted" style="font-size:11px"> (1214)</span></td><td class="num neg-1">0.909<span class="muted" style="font-size:11px"> (1018)</span></td><td class="num neg-2">0.723<span class="muted" style="font-size:11px"> (556)</span></td></tr>
+<tr><td class="lbl">To NY lunch</td><td class="num neg-2">0.888<span class="muted" style="font-size:11px"> (1273)</span></td><td class="num neg-1">0.906<span class="muted" style="font-size:11px"> (1214)</span></td><td class="num neg-2">0.884<span class="muted" style="font-size:11px"> (1018)</span></td><td class="num neg-2">0.705<span class="muted" style="font-size:11px"> (556)</span></td></tr>
+<tr><td class="lbl">To NY close</td><td class="num neg-1">0.914<span class="muted" style="font-size:11px"> (1232)</span></td><td class="num neg-1">0.911<span class="muted" style="font-size:11px"> (1174)</span></td><td class="num neg-1">0.920<span class="muted" style="font-size:11px"> (987)</span></td><td class="num neg-2">0.821<span class="muted" style="font-size:11px"> (544)</span></td></tr>
+<tr><td class="lbl">Previous day high/low</td><td class="num neg-2">0.889<span class="muted" style="font-size:11px"> (893)</span></td><td class="num neg-2">0.842<span class="muted" style="font-size:11px"> (788)</span></td><td class="num neg-2">0.842<span class="muted" style="font-size:11px"> (623)</span></td><td class="num neg-2">0.833<span class="muted" style="font-size:11px"> (310)</span></td></tr>
+<tr><td class="lbl">Asia high/low</td><td class="num neg-2">0.765<span class="muted" style="font-size:11px"> (669)</span></td><td class="num neg-2">0.787<span class="muted" style="font-size:11px"> (541)</span></td><td class="num neg-2">0.746<span class="muted" style="font-size:11px"> (417)</span></td><td class="num neg-2">0.847<span class="muted" style="font-size:11px"> (177)</span></td></tr>
+<tr><td class="lbl">London high/low</td><td class="num neg-2">0.809<span class="muted" style="font-size:11px"> (897)</span></td><td class="num neg-2">0.853<span class="muted" style="font-size:11px"> (685)</span></td><td class="num neg-2">0.759<span class="muted" style="font-size:11px"> (499)</span></td><td class="num neg-2">0.773<span class="muted" style="font-size:11px"> (206)</span></td></tr>
+<tr><td class="lbl">Prior hour high/low</td><td class="num neg-2">0.710<span class="muted" style="font-size:11px"> (666)</span></td><td class="num neg-2">0.771<span class="muted" style="font-size:11px"> (451)</span></td><td class="num neg-2">0.687<span class="muted" style="font-size:11px"> (288)</span></td><td class="num neg-2">0.731<span class="muted" style="font-size:11px"> (99)</span></td></tr>
+<tr><td class="lbl">Measured move (1× range)</td><td class="num neg-2">0.830<span class="muted" style="font-size:11px"> (1262)</span></td><td class="num neg-2">0.898<span class="muted" style="font-size:11px"> (1197)</span></td><td class="num neg-1">0.919<span class="muted" style="font-size:11px"> (994)</span></td><td class="num neg-2">0.858<span class="muted" style="font-size:11px"> (545)</span></td></tr></tbody>
+  </table></div>
+  <p>This is the version most people picture when they say "opening-range breakout, hold to the
+  close". <strong>Not one of the forty configurations clears 1.0</strong>, and the median falls
+  from 0.899 to 0.847. The stop is not decoration here — it is doing most of the
+  work of keeping the strategy near break-even.</p>
   <h3>With the AUD correlation filter</h3>
   <div class="tbl-wrap"><table>
     <thead><tr><th class="l">Exit</th><th>5-min range</th><th>15-min range</th><th>30-min range</th><th>60-min range</th></tr></thead>
-    <tbody><tr><td class="lbl">First hour</td><td class="num neg-1">0.951<span class="muted" style="font-size:11px"> (760)</span></td><td class="num neg-1">0.918<span class="muted" style="font-size:11px"> (676)</span></td><td class="num neg-2">0.823<span class="muted" style="font-size:11px"> (463)</span></td><td class="num muted">—</td></tr>
-<tr><td class="lbl">First 90 minutes</td><td class="num neg-1">0.924<span class="muted" style="font-size:11px"> (771)</span></td><td class="num neg-1">0.937<span class="muted" style="font-size:11px"> (728)</span></td><td class="num neg-1">0.923<span class="muted" style="font-size:11px"> (599)</span></td><td class="num neg-2">0.687<span class="muted" style="font-size:11px"> (311)</span></td></tr>
-<tr><td class="lbl">First 2 hours</td><td class="num neg-1">0.968<span class="muted" style="font-size:11px"> (772)</span></td><td class="num neg-1">0.989<span class="muted" style="font-size:11px"> (731)</span></td><td class="num pos-1">1.002<span class="muted" style="font-size:11px"> (607)</span></td><td class="num neg-2">0.801<span class="muted" style="font-size:11px"> (330)</span></td></tr>
-<tr><td class="lbl">To NY lunch</td><td class="num neg-1">0.990<span class="muted" style="font-size:11px"> (772)</span></td><td class="num neg-1">0.998<span class="muted" style="font-size:11px"> (731)</span></td><td class="num neg-1">0.985<span class="muted" style="font-size:11px"> (607)</span></td><td class="num neg-2">0.791<span class="muted" style="font-size:11px"> (330)</span></td></tr>
+    <tbody><tr><td class="lbl">First hour</td><td class="num neg-1">0.959<span class="muted" style="font-size:11px"> (760)</span></td><td class="num neg-1">0.930<span class="muted" style="font-size:11px"> (676)</span></td><td class="num neg-2">0.844<span class="muted" style="font-size:11px"> (463)</span></td><td class="num muted">—</td></tr>
+<tr><td class="lbl">First 90 minutes</td><td class="num neg-1">0.930<span class="muted" style="font-size:11px"> (771)</span></td><td class="num neg-1">0.945<span class="muted" style="font-size:11px"> (728)</span></td><td class="num neg-1">0.935<span class="muted" style="font-size:11px"> (599)</span></td><td class="num neg-2">0.703<span class="muted" style="font-size:11px"> (311)</span></td></tr>
+<tr><td class="lbl">First 2 hours</td><td class="num neg-1">0.974<span class="muted" style="font-size:11px"> (772)</span></td><td class="num neg-1">0.995<span class="muted" style="font-size:11px"> (731)</span></td><td class="num pos-1">1.008<span class="muted" style="font-size:11px"> (607)</span></td><td class="num neg-2">0.807<span class="muted" style="font-size:11px"> (330)</span></td></tr>
+<tr><td class="lbl">To NY lunch</td><td class="num neg-1">0.993<span class="muted" style="font-size:11px"> (772)</span></td><td class="num pos-1">1.006<span class="muted" style="font-size:11px"> (731)</span></td><td class="num neg-1">0.994<span class="muted" style="font-size:11px"> (607)</span></td><td class="num neg-2">0.798<span class="muted" style="font-size:11px"> (330)</span></td></tr>
 <tr><td class="lbl">To NY close</td><td class="num neg-1">0.981<span class="muted" style="font-size:11px"> (765)</span></td><td class="num neg-1">0.964<span class="muted" style="font-size:11px"> (721)</span></td><td class="num neg-1">0.985<span class="muted" style="font-size:11px"> (594)</span></td><td class="num neg-2">0.891<span class="muted" style="font-size:11px"> (323)</span></td></tr>
 <tr><td class="lbl">Previous day high/low</td><td class="num pos-1">1.022<span class="muted" style="font-size:11px"> (550)</span></td><td class="num pos-1">1.018<span class="muted" style="font-size:11px"> (491)</span></td><td class="num neg-1">0.992<span class="muted" style="font-size:11px"> (382)</span></td><td class="num neg-1">0.966<span class="muted" style="font-size:11px"> (185)</span></td></tr>
 <tr><td class="lbl">Asia high/low</td><td class="num neg-1">0.901<span class="muted" style="font-size:11px"> (410)</span></td><td class="num neg-1">0.904<span class="muted" style="font-size:11px"> (335)</span></td><td class="num neg-2">0.872<span class="muted" style="font-size:11px"> (258)</span></td><td class="num pos-2">1.123<span class="muted" style="font-size:11px"> (116)</span></td></tr>
 <tr><td class="lbl">London high/low</td><td class="num pos-1">1.047<span class="muted" style="font-size:11px"> (556)</span></td><td class="num pos-1">1.022<span class="muted" style="font-size:11px"> (433)</span></td><td class="num neg-1">0.957<span class="muted" style="font-size:11px"> (315)</span></td><td class="num pos-1">1.018<span class="muted" style="font-size:11px"> (127)</span></td></tr>
-<tr><td class="lbl">Prior hour high/low</td><td class="num neg-2">0.854<span class="muted" style="font-size:11px"> (411)</span></td><td class="num neg-1">0.956<span class="muted" style="font-size:11px"> (287)</span></td><td class="num neg-1">0.975<span class="muted" style="font-size:11px"> (183)</span></td><td class="num pos-2">1.117<span class="muted" style="font-size:11px"> (64)</span></td></tr>
+<tr><td class="lbl">Prior hour high/low</td><td class="num neg-2">0.853<span class="muted" style="font-size:11px"> (411)</span></td><td class="num neg-1">0.955<span class="muted" style="font-size:11px"> (287)</span></td><td class="num neg-1">0.974<span class="muted" style="font-size:11px"> (183)</span></td><td class="num pos-2">1.117<span class="muted" style="font-size:11px"> (64)</span></td></tr>
 <tr><td class="lbl">Measured move (1× range)</td><td class="num neg-2">0.850<span class="muted" style="font-size:11px"> (772)</span></td><td class="num pos-1">1.016<span class="muted" style="font-size:11px"> (726)</span></td><td class="num pos-2">1.057<span class="muted" style="font-size:11px"> (596)</span></td><td class="num pos-2">1.057<span class="muted" style="font-size:11px"> (323)</span></td></tr></tbody>
   </table></div>
   <p>Three patterns hold across the whole grid. <strong>Later exits beat earlier ones</strong> —
@@ -257,7 +289,8 @@ a:focus-visible, :focus-visible { outline:2px solid var(--brass); outline-offset
   <h3>The best of the eighty</h3>
   <div class="tbl-wrap"><table>
     <thead><tr><th class="l">Range</th><th class="l">Exit</th><th class="l">Filter</th>
-    <th>Trades</th><th>Win rate</th><th>Profit factor</th><th>Exp. $/oz</th><th>t-stat</th></tr></thead>
+    <th class="l">Stop</th><th>Trades</th><th>Win rate</th><th>Profit factor</th>
+    <th>Exp. $/oz</th><th>t-stat</th></tr></thead>
     <tbody><tr><td class="lbl">60-min</td><td class="lbl">Asia high/low</td><td class="lbl muted">corr<=0.5</td><td class="num">116</td><td class="num">59.5%</td><td class="num pos-1">1.123</td><td class="num">+0.33</td><td class="num muted">+0.70</td></tr>
 <tr><td class="lbl">30-min</td><td class="lbl">Measured move (1× range)</td><td class="lbl muted">corr<=0.5</td><td class="num">596</td><td class="num">52.5%</td><td class="num pos-1">1.057</td><td class="num">+0.17</td><td class="num muted">+0.59</td></tr>
 <tr><td class="lbl">60-min</td><td class="lbl">Measured move (1× range)</td><td class="lbl muted">corr<=0.5</td><td class="num">323</td><td class="num">51.4%</td><td class="num pos-1">1.057</td><td class="num">+0.17</td><td class="num muted">+0.49</td></tr>
@@ -268,10 +301,11 @@ a:focus-visible, :focus-visible { outline:2px solid var(--brass); outline-offset
 <tr><td class="lbl">30-min</td><td class="lbl">Measured move (1× range)</td><td class="lbl muted">all</td><td class="num">1003</td><td class="num">52.2%</td><td class="num pos-1">1.003</td><td class="num">+0.01</td><td class="num muted">+0.14</td></tr></tbody>
   </table></div>
   <p>The top of this table is where a reader normally starts looking for the strategy. There
-  isn't one. The strongest t-statistic in the entire grid is <strong>+0.70</strong>,
-  on 116 trades. Eighty correlated tests over data with no signal would ordinarily
-  produce a best t of around +2. Getting +0.70 means this grid is not merely
-  unprofitable — it is consistently, systematically negative.</p>
+  isn't one. The strongest t-statistic across all 117 scored cells is
+  <strong>+0.70</strong>, on 116 trades. A correlated search of this size
+  over data with no signal would ordinarily produce a best t of around +2. Getting
+  +0.70 means this grid is not merely unprofitable — it is consistently,
+  systematically negative.</p>
 </section>
 
 <section>
@@ -335,13 +369,13 @@ a:focus-visible, :focus-visible { outline:2px solid var(--brass); outline-offset
   <div class="tbl-wrap"><table>
     <thead><tr><th class="l">Range</th><th class="l">Confirmation</th><th>Trades</th>
     <th>Profit factor</th><th>t-stat</th></tr></thead>
-    <tbody><tr><td class="lbl">15-min range</td><td class="lbl">5-min</td><td class="num">1207</td><td class="num neg-1">0.892</td><td class="num muted">-1.50</td></tr>
-<tr><td class="lbl">30-min range</td><td class="lbl">5-min</td><td class="num">1002</td><td class="num neg-1">0.877</td><td class="num muted">-1.47</td></tr>
-<tr><td class="lbl">15-min range</td><td class="lbl">15-min</td><td class="num">1093</td><td class="num neg-1">0.835</td><td class="num muted">-2.26</td></tr>
-<tr><td class="lbl">30-min range</td><td class="lbl">15-min</td><td class="num">810</td><td class="num neg-1">0.925</td><td class="num muted">-0.99</td></tr>
-<tr><td class="lbl">15-min range</td><td class="lbl">30-min</td><td class="num">972</td><td class="num neg-1">0.799</td><td class="num muted">-2.71</td></tr>
-<tr><td class="lbl">30-min range</td><td class="lbl">30-min</td><td class="num">553</td><td class="num pos-1">1.036</td><td class="num muted">-0.12</td></tr>
-<tr><td class="lbl">15-min range</td><td class="lbl">60-min</td><td class="num">811</td><td class="num neg-1">0.722</td><td class="num muted">-3.51</td></tr></tbody>
+    <tbody><tr><td class="lbl">15-min range</td><td class="lbl">5-min</td><td class="num">1207</td><td class="num neg-1">0.899</td><td class="num muted">-1.41</td></tr>
+<tr><td class="lbl">30-min range</td><td class="lbl">5-min</td><td class="num">1002</td><td class="num neg-1">0.886</td><td class="num muted">-1.36</td></tr>
+<tr><td class="lbl">15-min range</td><td class="lbl">15-min</td><td class="num">1093</td><td class="num neg-1">0.842</td><td class="num muted">-2.15</td></tr>
+<tr><td class="lbl">30-min range</td><td class="lbl">15-min</td><td class="num">810</td><td class="num neg-1">0.937</td><td class="num muted">-0.86</td></tr>
+<tr><td class="lbl">15-min range</td><td class="lbl">30-min</td><td class="num">972</td><td class="num neg-1">0.808</td><td class="num muted">-2.58</td></tr>
+<tr><td class="lbl">30-min range</td><td class="lbl">30-min</td><td class="num">553</td><td class="num pos-1">1.057</td><td class="num muted">+0.03</td></tr>
+<tr><td class="lbl">15-min range</td><td class="lbl">60-min</td><td class="num">811</td><td class="num neg-1">0.733</td><td class="num muted">-3.39</td></tr></tbody>
   </table></div>
   <p>On the 15-minute range you asked about, finer confirmation is monotonically better —
   0.892 at 5 minutes, 0.835 at 15, 0.799 at 30, 0.722 at 60. Extrapolating that slope, a
@@ -392,14 +426,45 @@ a:focus-visible, :focus-visible { outline:2px solid var(--brass); outline-offset
 </section>
 
 <section>
-  <h2><span class="n">06</span>Does the AUD filter carry over?</h2>
+  <h2><span class="n">06</span>An honest out-of-sample test</h2>
+  <p class="lede">The audit's second surviving finding was in this panel, and it is worth showing
+  rather than quietly fixing.</p>
+  <p>The first version ranked candidate configurations by their t-statistic <em>over the whole
+  sample</em>, then reported everything from 2024 onward as the out-of-sample block. The ranking
+  had already seen that block. Four of the five "survivors" cleared 1.0 out of sample, which
+  looked like a genuine holdout result and was nothing of the kind.</p>
+  <p>Done properly — rank on pre-2024 only, then read 2024–25:</p>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th class="l">Configuration</th><th class="l">Filter</th>
+    <th>IS trades</th><th>IS PF</th><th>IS t</th><th>OS trades</th><th>OS PF</th></tr></thead>
+    <tbody><tr><td class="lbl">60-min · Asia high/low</td><td class="lbl muted">corr<=0.5</td><td class="num">62</td><td class="num">1.452</td><td class="num muted">+1.19</td><td class="num">54</td><td class="num neg-1">0.954</td></tr>
+<tr><td class="lbl">5-min · Asia high/low</td><td class="lbl muted">corr<=0.5</td><td class="num">242</td><td class="num">1.106</td><td class="num muted">+0.66</td><td class="num">168</td><td class="num neg-1">0.720</td></tr>
+<tr><td class="lbl">30-min · To NY lunch</td><td class="lbl muted">corr<=0.5</td><td class="num">362</td><td class="num">1.068</td><td class="num muted">+0.53</td><td class="num">245</td><td class="num neg-1">0.930</td></tr>
+<tr><td class="lbl">30-min · Measured move (1× range)</td><td class="lbl muted">corr<=0.5</td><td class="num">356</td><td class="num">1.050</td><td class="num muted">+0.47</td><td class="num">240</td><td class="num pos-1">1.063</td></tr>
+<tr><td class="lbl">60-min · Measured move (1× range)</td><td class="lbl muted">corr<=0.5</td><td class="num">183</td><td class="num">1.074</td><td class="num muted">+0.41</td><td class="num">140</td><td class="num pos-1">1.043</td></tr></tbody>
+  </table></div>
+  <div class="stats">
+    <div class="stat"><div class="k">Selected honestly, OS median PF</div>
+      <div class="v">0.954</div></div>
+    <div class="stat"><div class="k">All 77 cells, OS median PF</div>
+      <div class="v dim">0.930</div></div>
+  </div>
+  <p><strong>Picking the strongest in-sample configurations buys no out-of-sample advantage
+  at all</strong> — they land on top of the population median. That is the cleanest possible
+  statement that the in-sample variation across these 77 cells is noise:
+  knowing which configuration looked best over three and a half years tells you nothing about
+  which will look best over the next eighteen months.</p>
+</section>
+
+<section>
+  <h2><span class="n">07</span>Does the AUD filter carry over?</h2>
   <p class="lede">This is close to an independent test of round two's finding: different session,
   different range, different exits, different holding period, same instrument.</p>
   <div class="stats">
     <div class="stat"><div class="k">Cells improved</div><div class="v">39<span style="font-size:15px;color:var(--ink-3)">/39</span></div></div>
-    <div class="stat"><div class="k">Median PF lift</div><div class="v">+0.066</div></div>
-    <div class="stat"><div class="k">Median PF, unfiltered</div><div class="v dim">0.888</div></div>
-    <div class="stat"><div class="k">Median PF, filtered</div><div class="v dim">0.968</div></div>
+    <div class="stat"><div class="k">Median PF lift</div><div class="v">+0.070</div></div>
+    <div class="stat"><div class="k">Median PF, unfiltered</div><div class="v dim">0.899</div></div>
+    <div class="stat"><div class="k">Median PF, filtered</div><div class="v dim">0.974</div></div>
   </div>
   <p>The filter improved <strong>every single one of the 39 configurations</strong>.
   That looks overwhelming, and a naive signed-rank test returns p &lt; 0.00001. It is not that
@@ -428,7 +493,7 @@ a:focus-visible, :focus-visible { outline:2px solid var(--brass); outline-offset
 </section>
 
 <section>
-  <h2><span class="n">07</span>Where that leaves both strategies</h2>
+  <h2><span class="n">08</span>Where that leaves both strategies</h2>
   <div class="tbl-wrap"><table>
     <thead><tr><th class="l">Setup</th><th>Trades</th><th>Win rate</th><th>Profit factor</th>
     <th>t-stat</th></tr></thead>
@@ -460,7 +525,7 @@ a:focus-visible, :focus-visible { outline:2px solid var(--brass); outline-offset
 </section>
 
 <section>
-  <h2><span class="n">08</span>Caveats</h2>
+  <h2><span class="n">09</span>Caveats</h2>
   <ul>
     <li><strong>One instrument, five years, one data source.</strong> Everything here inherits the
     caveats of rounds one to six.</li>

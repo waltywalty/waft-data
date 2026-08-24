@@ -19,8 +19,9 @@ LABEL = {"ny+60m": "First hour", "ny+90m": "First 90 minutes", "ny+2h": "First 2
          "london": "London high/low", "prev_hour": "Prior hour high/low",
          "measured_move": "Measured move (1× range)"}
 
-def cell(R, E, filt):
-    m = [r for r in rows if r["range"] == R and r["exit"] == E and r["filter"] == filt]
+def cell(R, E, filt, stop="range_opp"):
+    m = [r for r in rows if r["range"] == R and r["exit"] == E
+         and r["filter"] == filt and r.get("stop", "range_opp") == stop]
     if not m:
         return '<td class="num muted">—</td>'
     v, n = m[0]["pf"], int(m[0]["n"])
@@ -28,9 +29,9 @@ def cell(R, E, filt):
     return (f'<td class="num {c}">{v:.3f}'
             f'<span class="muted" style="font-size:11px"> ({n})</span></td>')
 
-def grid_rows(filt):
+def grid_rows(filt, stop="range_opp"):
     return "\n".join(
-        f'<tr><td class="lbl">{LABEL[e]}</td>' + "".join(cell(r, e, filt) for r in RANGES) + "</tr>"
+        f'<tr><td class="lbl">{LABEL[e]}</td>' + "".join(cell(r, e, filt, stop) for r in RANGES) + "</tr>"
         for e in EXITS)
 
 top = sorted([r for r in rows], key=lambda r: -r["t"])[:8]
@@ -74,14 +75,29 @@ ft_rows = "\n".join(
     f'<td class="num">{c["n_hi"]}</td><td class="num">{c["pf_hi"]:.3f}</td>'
     f'<td class="num muted">{c["p"]:.3f}</td></tr>' for c in FT["cells"])
 
+ISOS = S.get("isos", {})
+isos_rows = "\n".join(
+    f'<tr><td class="lbl">{r["range"]}-min · {LABEL[r["exit"]]}</td>'
+    f'<td class="lbl muted">{r["filter"]}</td>'
+    f'<td class="num">{int(r["is_n"])}</td><td class="num">{r["is_pf"]:.3f}</td>'
+    f'<td class="num muted">{r["is_t"]:+.2f}</td>'
+    f'<td class="num">{int(r["os_n"])}</td>'
+    f'<td class="num {"pos-1" if r["os_pf"]>=1 else "neg-1"}">{r["os_pf"]:.3f}</td></tr>'
+    for r in ISOS.get("honest_top5", []))
+
 FG = S["filter_generalisation"]
 best = top[0]
-n_pass_all = sum(1 for r in rows if r["filter"] == "all" and r["pf"] > 1)
-n_all = sum(1 for r in rows if r["filter"] == "all")
-n_pass_f = sum(1 for r in rows if r["filter"] != "all" and r["pf"] > 1)
-n_f = sum(1 for r in rows if r["filter"] != "all")
-med_all = sorted(r["pf"] for r in rows if r["filter"] == "all")[n_all // 2]
-med_f = sorted(r["pf"] for r in rows if r["filter"] != "all")[n_f // 2]
+def sel(filt, stop="range_opp"):
+    return [r for r in rows if r["filter"] == filt and r.get("stop", "range_opp") == stop]
+A, F, N = sel("all"), sel("corr<=0.5"), sel("all", "none")
+n_pass_all, n_all = sum(1 for r in A if r["pf"] > 1), len(A)
+n_pass_f, n_f = sum(1 for r in F if r["pf"] > 1), len(F)
+n_pass_n, n_n = sum(1 for r in N if r["pf"] > 1), len(N)
+med_all = sorted(r["pf"] for r in A)[n_all // 2]
+med_f = sorted(r["pf"] for r in F)[n_f // 2]
+med_n = sorted(r["pf"] for r in N)[n_n // 2]
+best_n = max(r["pf"] for r in N)
+n_cells_total = len(rows)
 
 # chart: forward move after fill, NY ranges vs Asia
 bars, x = [], 70
@@ -117,25 +133,26 @@ DOC = f"""<title>Gold at the New York Open</title>
 <header>
   <p class="eyebrow">XAUUSD · Round 7 · New York session</p>
   <h1>Gold at the New York Open</h1>
-  <p class="standfirst">Eighty configurations of the 09:30 ET opening-range breakout. One of the
-  thirty-nine unfiltered ones clears a profit factor of 1.0. The best t-statistic anywhere in the
-  grid is <strong>+{best["t"]:.2f}</strong> — a search this size over pure noise would normally
-  throw up something better than that.</p>
+  <p class="standfirst">One hundred and seventeen configurations of the 09:30 ET opening-range
+  breakout. Without a protective stop, <strong>none of them</strong> clears a profit factor of
+  1.0. The best t-statistic anywhere is <strong>+{best["t"]:.2f}</strong> — a search this size
+  over pure noise would normally throw up something better.</p>
   <div class="provenance">
-    <span><b>{G["n_tests"]}</b> configurations</span>
+    <span><b>{n_cells_total}</b> configurations</span>
     <span><b>4</b> range lengths</span>
     <span><b>10</b> exits</span>
-    <span><b>2</b> lookahead bugs caught</span>
+    <span><b>4</b> defects caught and fixed</span>
   </div>
 </header>
 
 <section>
   <div class="verdict">
     <div class="head">Verdict</div>
-    <p><strong>The New York opening range does not work on gold.</strong> Unfiltered,
-    {n_pass_all} of {n_all} configurations clear a 1.0 profit factor; the median is
-    {med_all:.3f}. With the AUD correlation filter applied, {n_pass_f} of {n_f} clear it and the
-    median rises to {med_f:.3f} — still below break-even.</p>
+    <p><strong>The New York opening range does not work on gold.</strong> With a protective stop
+    at the far side of the range, {n_pass_all} of {n_all} configurations clear a 1.0 profit
+    factor (median {med_all:.3f}). <strong>Without a stop, {n_pass_n} of {n_n} do</strong> —
+    median {med_n:.3f}, best {best_n:.3f}. Adding the AUD correlation filter lifts
+    {n_pass_f} of {n_f} above 1.0 (median {med_f:.3f}), still short of break-even.</p>
     <p><strong>It is not close, and it is not noise.</strong> At zero transaction cost the
     strategy runs a {S["costs"][0]["pf"]:.3f} profit factor: essentially break-even gross. There
     is no edge there to pay a spread out of.</p>
@@ -155,8 +172,10 @@ DOC = f"""<title>Gold at the New York Open</title>
     90 minutes.</li>
     <li><strong>Exits</strong> — five clock exits (first hour, 90 minutes, two hours, NY lunch,
     NY close) and five liquidity targets (previous day, Asia session, London session, prior
-    hour, and a measured move of one range width). Targets carry a stop at the far side of the
-    opening range.</li>
+    hour, and a measured move of one range width).</li>
+    <li><strong>Stop</strong> — every configuration run both with a protective stop at the far
+    side of the opening range and with no stop at all, because whether a "hold to the NY close"
+    rule carries a stop changes what is being measured and should not be left implied.</li>
     <li><strong>Filter</strong> — every configuration run twice, with and without the 20-day
     gold/AUDUSD correlation gate from round two.</li>
     <li><strong>Costs</strong> — $0.30 per round trip, the same as every earlier round.</li>
@@ -173,7 +192,18 @@ DOC = f"""<title>Gold at the New York Open</title>
     endpoint, so the London window ending "at the NY open" swallowed the 09:30–09:35 bar — the
     first bar of the opening range itself. That one mattered on 84 days.</p>
     <p>Both are fixed, and an audit now checks every level against bars that had actually closed.
-    Fixing them took the previous-day target from 2.479 to {[r for r in rows if r["range"]==15 and r["exit"]=="prev_day" and r["filter"]=="all"][0]["pf"]:.3f}.</p>
+    Fixing them took the previous-day target from 2.479 to {[r for r in rows if r["range"]==15 and r["exit"]=="prev_day" and r["filter"]=="all" and r.get("stop","range_opp")=="range_opp"][0]["pf"]:.3f}.</p>
+    <p><strong>Then I had the engine audited</strong> by five independent reviewers working
+    different lenses, each finding put to a skeptic whose job was to kill it. Twenty-four
+    candidate defects, twenty-two refuted, <strong>two survived</strong> — and both were real.</p>
+    <p><strong>Three:</strong> the same inclusive-slice trap once more, this time on the exit
+    path. <code>bars5.loc[t_fill:t_exit]</code> evaluated the bar spanning
+    [t_exit, t_exit+5min), giving every trade five extra minutes of stop and target exposure
+    after it should have been closed. Numerically immaterial — no configuration changes sign —
+    but it is the third instance of one mistake, which is what makes it worth naming.
+    <strong>Four:</strong> the out-of-sample panel ranked candidate configurations by their
+    <em>whole-sample</em> t-statistic and then reported post-2024 as the holdout. The selector
+    had already seen the holdout. That one flattered, and section 06 is the corrected version.</p>
   </div>
 </section>
 
@@ -185,6 +215,15 @@ DOC = f"""<title>Gold at the New York Open</title>
     <thead><tr><th class="l">Exit</th>{"".join(f"<th>{r}-min range</th>" for r in RANGES)}</tr></thead>
     <tbody>{grid_rows("all")}</tbody>
   </table></div>
+  <h3>No protective stop — a pure hold to the exit</h3>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th class="l">Exit</th>{"".join(f"<th>{r}-min range</th>" for r in RANGES)}</tr></thead>
+    <tbody>{grid_rows("all", "none")}</tbody>
+  </table></div>
+  <p>This is the version most people picture when they say "opening-range breakout, hold to the
+  close". <strong>Not one of the forty configurations clears 1.0</strong>, and the median falls
+  from {med_all:.3f} to {med_n:.3f}. The stop is not decoration here — it is doing most of the
+  work of keeping the strategy near break-even.</p>
   <h3>With the AUD correlation filter</h3>
   <div class="tbl-wrap"><table>
     <thead><tr><th class="l">Exit</th>{"".join(f"<th>{r}-min range</th>" for r in RANGES)}</tr></thead>
@@ -199,14 +238,16 @@ DOC = f"""<title>Gold at the New York Open</title>
   <h3>The best of the eighty</h3>
   <div class="tbl-wrap"><table>
     <thead><tr><th class="l">Range</th><th class="l">Exit</th><th class="l">Filter</th>
-    <th>Trades</th><th>Win rate</th><th>Profit factor</th><th>Exp. $/oz</th><th>t-stat</th></tr></thead>
+    <th class="l">Stop</th><th>Trades</th><th>Win rate</th><th>Profit factor</th>
+    <th>Exp. $/oz</th><th>t-stat</th></tr></thead>
     <tbody>{top_rows}</tbody>
   </table></div>
   <p>The top of this table is where a reader normally starts looking for the strategy. There
-  isn't one. The strongest t-statistic in the entire grid is <strong>+{best["t"]:.2f}</strong>,
-  on {int(best["n"])} trades. Eighty correlated tests over data with no signal would ordinarily
-  produce a best t of around +2. Getting +{best["t"]:.2f} means this grid is not merely
-  unprofitable — it is consistently, systematically negative.</p>
+  isn't one. The strongest t-statistic across all {n_cells_total} scored cells is
+  <strong>+{best["t"]:.2f}</strong>, on {int(best["n"])} trades. A correlated search of this size
+  over data with no signal would ordinarily produce a best t of around +2. Getting
+  +{best["t"]:.2f} means this grid is not merely unprofitable — it is consistently,
+  systematically negative.</p>
 </section>
 
 <section>
@@ -297,7 +338,34 @@ DOC = f"""<title>Gold at the New York Open</title>
 </section>
 
 <section>
-  <h2><span class="n">06</span>Does the AUD filter carry over?</h2>
+  <h2><span class="n">06</span>An honest out-of-sample test</h2>
+  <p class="lede">The audit's second surviving finding was in this panel, and it is worth showing
+  rather than quietly fixing.</p>
+  <p>The first version ranked candidate configurations by their t-statistic <em>over the whole
+  sample</em>, then reported everything from 2024 onward as the out-of-sample block. The ranking
+  had already seen that block. Four of the five "survivors" cleared 1.0 out of sample, which
+  looked like a genuine holdout result and was nothing of the kind.</p>
+  <p>Done properly — rank on pre-2024 only, then read 2024–25:</p>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th class="l">Configuration</th><th class="l">Filter</th>
+    <th>IS trades</th><th>IS PF</th><th>IS t</th><th>OS trades</th><th>OS PF</th></tr></thead>
+    <tbody>{isos_rows}</tbody>
+  </table></div>
+  <div class="stats">
+    <div class="stat"><div class="k">Selected honestly, OS median PF</div>
+      <div class="v">{ISOS.get("honest_median_os_pf", 0):.3f}</div></div>
+    <div class="stat"><div class="k">All {ISOS.get("n_cells", 0)} cells, OS median PF</div>
+      <div class="v dim">{ISOS.get("population_median_os_pf", 0):.3f}</div></div>
+  </div>
+  <p><strong>Picking the strongest in-sample configurations buys no out-of-sample advantage
+  at all</strong> — they land on top of the population median. That is the cleanest possible
+  statement that the in-sample variation across these {ISOS.get("n_cells", 0)} cells is noise:
+  knowing which configuration looked best over three and a half years tells you nothing about
+  which will look best over the next eighteen months.</p>
+</section>
+
+<section>
+  <h2><span class="n">07</span>Does the AUD filter carry over?</h2>
   <p class="lede">This is close to an independent test of round two's finding: different session,
   different range, different exits, different holding period, same instrument.</p>
   <div class="stats">
@@ -329,7 +397,7 @@ DOC = f"""<title>Gold at the New York Open</title>
 </section>
 
 <section>
-  <h2><span class="n">07</span>Where that leaves both strategies</h2>
+  <h2><span class="n">08</span>Where that leaves both strategies</h2>
   <div class="tbl-wrap"><table>
     <thead><tr><th class="l">Setup</th><th>Trades</th><th>Win rate</th><th>Profit factor</th>
     <th>t-stat</th></tr></thead>
@@ -361,7 +429,7 @@ DOC = f"""<title>Gold at the New York Open</title>
 </section>
 
 <section>
-  <h2><span class="n">08</span>Caveats</h2>
+  <h2><span class="n">09</span>Caveats</h2>
   <ul>
     <li><strong>One instrument, five years, one data source.</strong> Everything here inherits the
     caveats of rounds one to six.</li>

@@ -78,13 +78,17 @@ def run(bars5: pd.DataFrame, range_min: int = 15, exit_spec: str = "ny+90m",
         stop_mode: str = "range_opp", stop_mult: float = 1.0,
         entry_deadline_min: int = 90, cost: float = 0.30,
         target_first: bool = False, min_target_r: float = 0.25,
-        levels: dict | None = None, confirm_min: int = 5) -> pd.DataFrame:
+        levels: dict | None = None, confirm_min: int = 5,
+        use_stop: bool = True) -> pd.DataFrame:
     """exit_spec: a key of TIME_EXITS, or a name in LEVELS (target + stop).
        stop_mode : 'range_opp' (far side of the opening range) or 'mult' (stop_mult x range).
        target_first: if a bar contains both stop and target, assume the target filled.
                      Default False (stop first) is the conservative choice.
        levels    : output of build_levels(); computed on demand if not supplied.
-       confirm_min: confirmation-candle length in minutes (5 is the finest the data allows)."""
+       confirm_min: confirmation-candle length in minutes (5 is the finest the data allows).
+       use_stop  : whether a protective stop is carried. Applies to clock exits as well as
+                   target exits - a clock exit with use_stop=False is a pure hold to the
+                   clock, with nothing between entry and that time."""
     if levels is None and exit_spec not in TIME_EXITS and exit_spec != "measured_move":
         levels = build_levels(bars5)
     rows = []
@@ -132,8 +136,10 @@ def run(bars5: pd.DataFrame, range_min: int = 15, exit_spec: str = "ny+90m",
             continue
 
         # ---- exit specification
-        stop = (rlow if side == 1 else rhigh) if stop_mode == "range_opp" \
-            else entry - side * stop_mult * rsize
+        stop = None
+        if use_stop:
+            stop = (rlow if side == 1 else rhigh) if stop_mode == "range_opp" \
+                else entry - side * stop_mult * rsize
         target, t_exit, kind = None, t_sess_end, "time"
         if exit_spec in TIME_EXITS:
             t_exit = t_open + pd.Timedelta(minutes=TIME_EXITS[exit_spec])
@@ -155,11 +161,16 @@ def run(bars5: pd.DataFrame, range_min: int = 15, exit_spec: str = "ny+90m",
                 rows.append({**rec, "side": side, "traded": False, "reason": "target_behind"})
                 continue
 
-        # ---- walk the path
-        path = bars5.loc[t_fill:t_exit]
+        # ---- walk the path.
+        # Stop one bar short of t_exit. A .loc slice is inclusive of its right endpoint, and
+        # bars are open-stamped, so ending at t_exit would evaluate the bar spanning
+        # [t_exit, t_exit+5min) - five minutes of stop and target exposure that happen AFTER
+        # the position was supposed to be closed. The time exit itself is priced at the open
+        # of that bar, which is the price at t_exit exactly.
+        path = bars5.loc[t_fill:t_exit - pd.Timedelta(minutes=5)]
         px, why, t_out = None, "time", t_exit
         for ts, b in path.iterrows():
-            hit_s = (b.low <= stop) if side == 1 else (b.high >= stop)
+            hit_s = stop is not None and ((b.low <= stop) if side == 1 else (b.high >= stop))
             hit_t = target is not None and ((b.high >= target) if side == 1 else (b.low <= target))
             if hit_s and hit_t:
                 px, why, t_out = (target, "target", ts) if target_first else (stop, "stop", ts)
