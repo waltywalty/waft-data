@@ -18,9 +18,16 @@ string _Symbol = "XAUUSD";
 //|  All session times are handled in UTC with explicit European and |
 //|  US daylight-saving rules, because 09:30 Hong Kong lands on a    |
 //|  DIFFERENT broker-server hour in summer than in winter.          |
+//|                                                                  |
+//|  Forward-test diagnostics (v1.10): each trade also logs, to      |
+//|  MQL5\Files\AsiaOpenGold_forward.csv, the two round-8 research   |
+//|  leads - opening-range relative tick volume and the prior        |
+//|  inside-day flag. PURELY DIAGNOSTIC: they never gate an order.   |
+//|  Join the CSV with account history by date to score the gated    |
+//|  variants on data no backtest has touched.                       |
 //+------------------------------------------------------------------+
 // [stripped] #property copyright "Asia-open gold breakout"
-// [stripped] #property version   "1.00"
+// [stripped] #property version   "1.10"
 
 // [stripped] #include <Trade\Trade.mqh>
 
@@ -44,6 +51,11 @@ double          InpMaxLots        = 0.0;        // Hard lot cap (0 = no cap)
 int             InpMagic          = 930115;     // Magic number
 int             InpSlippage       = 20;         // Max deviation, points
 int             InpExitHourNY     = 16;         // Exit hour, New York time
+// [stripped] input group           "Forward-test diagnostics (never affect trading)"
+bool            InpLogDiagnostics = true;       // Log rvol + inside-day per trade
+string          InpDiagFile       = "AsiaOpenGold_forward.csv"; // CSV in MQL5\Files
+int             InpRvolLookback   = 14;         // Sessions in the rel-volume baseline
+double          InpRvolGate       = 1.25;       // Research top-quintile boundary
 
 //--- state
 CTrade   trade;
@@ -55,6 +67,9 @@ double   g_rangeHigh = 0.0, g_rangeLow = 0.0;
 datetime g_rangeDay = 0;          // UTC date the current range belongs to
 bool     g_rangeValid = false;
 bool     g_filterPassed = false;
+double   g_corrToday = 0.0;       // diagnostics captured once per day
+double   g_rvolToday = -1.0;      // -1 = could not be computed
+int      g_insideToday = -1;      // 1 / 0 / -1 = unknown
 
 //+------------------------------------------------------------------+
 //| Helpers: calendar                                                |
@@ -236,6 +251,79 @@ bool BuildRange(datetime dayUtc)
   }
 
 //+------------------------------------------------------------------+
+//| Forward-test diagnostics. Never gate an order - they only record |
+//| what the round-8 research leads would have done, so the gated    |
+//| variants can be scored later on genuinely unseen data.           |
+//+------------------------------------------------------------------+
+//--- opening-range tick volume relative to the average of the same window
+//--- over the last InpRvolLookback sessions. Everything here is fully
+//--- known when the range completes, before any entry can fire.
+double RangeRelVolume(datetime dayUtc)
+  {
+   int expect = InpRangeMinutes / 5;
+   datetime s0 = dayUtc + InpRangeStartUtcH * 3600 + InpRangeStartUtcM * 60;
+   MqlArray<MqlRates> r;
+   int n = CopyRates(_Symbol, PERIOD_M5, UtcToServer(s0),
+                     UtcToServer(s0 + InpRangeMinutes * 60 - 300), r);
+   if(n < expect) return(-1.0);
+   double today = 0.0;
+   for(int i = 0; i < n; i++) today += (double)r[i].tick_volume;
+   if(today <= 0.0) return(-1.0);
+
+   double sum = 0.0; int got = 0;
+   // walk back calendar days; weekends and holidays simply fail the bar-count
+   // test and are skipped, so the baseline is the last N real sessions
+   for(int back = 1; back <= InpRvolLookback * 3 && got < InpRvolLookback; back++)
+     {
+      datetime d0 = s0 - (datetime)(back * 86400);
+      MqlArray<MqlRates> p;
+      int m = CopyRates(_Symbol, PERIOD_M5, UtcToServer(d0),
+                        UtcToServer(d0 + InpRangeMinutes * 60 - 300), p);
+      if(m < expect) continue;
+      double v = 0.0;
+      for(int i = 0; i < m; i++) v += (double)p[i].tick_volume;
+      if(v <= 0.0) continue;
+      sum += v; got++;
+     }
+   if(got < InpRvolLookback) return(-1.0);
+   return today / (sum / got);
+  }
+
+//--- was the last CLOSED session an inside day? On an EET broker the D1 bars
+//--- close at 17:00 New York, the same session convention the research used.
+int PrevInsideDay()
+  {
+   MqlArray<MqlRates> d;
+   ArraySetAsSeries(d, true);
+   if(CopyRates(_Symbol, PERIOD_D1, 0, 4, d) < 3) return(-1);
+   // bar 0 is the forming session; 1 and 2 are the last two closed days
+   return (d[1].high < d[2].high && d[1].low > d[2].low) ? 1 : 0;
+  }
+
+void LogForwardTest(datetime dayUtc, int dir, double lots)
+  {
+   if(!InpLogDiagnostics) return;
+   bool fresh = !FileIsExist(InpDiagFile);
+   int h = FileOpen(InpDiagFile, FILE_READ | FILE_WRITE | FILE_CSV | FILE_ANSI, ',');
+   if(h == INVALID_HANDLE)
+     {
+      PrintFormat("Forward-test log: cannot open %s (error %d)", InpDiagFile, GetLastError());
+      return;
+     }
+   FileSeek(h, 0, SEEK_END);
+   if(fresh)
+      FileWrite(h, "date", "dir", "lots", "corr", "rvol", "rvol_pass", "inside_day");
+   FileWrite(h, TimeToString(dayUtc, TIME_DATE), dir, DoubleToString(lots, 2),
+             DoubleToString(g_corrToday, 3), DoubleToString(g_rvolToday, 3),
+             (g_rvolToday >= InpRvolGate) ? 1 : 0, g_insideToday);
+   FileClose(h);
+   PrintFormat("FORWARD-TEST rvol=%.3f (gate %.2f -> %s)  inside_day=%s",
+               g_rvolToday, InpRvolGate,
+               (g_rvolToday >= InpRvolGate) ? "in" : "out",
+               g_insideToday == 1 ? "yes" : (g_insideToday == 0 ? "no" : "unknown"));
+  }
+
+//+------------------------------------------------------------------+
 //| Position sizing from the stop distance                           |
 //+------------------------------------------------------------------+
 double LotsForRisk(double stopDistancePrice)
@@ -375,6 +463,15 @@ void OnTick()
          if(!g_filterPassed) { g_lastTradedDay = dayUtc; return; }
         }
       else g_filterPassed = true;
+
+      //--- capture the day's forward-test diagnostics once, alongside the filter.
+      //--- Both are fully determined when the range completes; neither is traded on.
+      g_corrToday = corr;
+      if(InpLogDiagnostics)
+        {
+         g_rvolToday = RangeRelVolume(dayUtc);
+         g_insideToday = PrevInsideDay();
+        }
      }
    if(!g_rangeValid || !g_filterPassed) return;
 
@@ -414,6 +511,7 @@ void OnTick()
       g_lastTradedDay = dayUtc;
       PrintFormat("%s %.2f lots, range width %.2f, stop %.2f away",
                   dir > 0 ? "BUY" : "SELL", lots, width, stopDist);
+      LogForwardTest(dayUtc, dir, lots);
      }
    else
       PrintFormat("Order failed: %d %s", trade.ResultRetcode(), trade.ResultRetcodeDescription());

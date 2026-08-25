@@ -92,3 +92,39 @@ the EA's stricter version is the better one. The research engine now enforces th
 the reported figures are the corrected ones.
 
 None of this substitutes for a MetaEditor compile. Expect to fix something on first build.
+
+## Forward-test diagnostics (v1.10)
+
+Round 8 produced two subgroup leads on this strategy that survived a 2020-23 / 2024-25
+sign check but sit on ~50 exploratory tests of an already-mined sample: **top-quintile
+relative tick volume in the opening range** (backtest PF 1.843 vs 1.320 overall) and a
+**prior inside day** (PF 1.616, n=94). The honest way to promote either is a forward
+test on data no search has touched, so the EA now logs both per trade — and changes
+nothing about what it trades.
+
+Each filled entry appends one line to `MQL5\Files\AsiaOpenGold_forward.csv`:
+
+```
+date, dir, lots, corr, rvol, rvol_pass, inside_day
+```
+
+* `rvol` — tick volume of the 60-minute opening range divided by the average of the
+  same window over the last 14 sessions (`InpRvolLookback`). The EA's walk-back
+  computation was cross-checked against the research series: identical to machine
+  precision on all 1,263 comparable historical days.
+* `rvol_pass` — 1 when `rvol >= InpRvolGate` (default 1.25, the research top-quintile
+  boundary, which keeps 131 of the 652 backtest trades).
+* `inside_day` — 1 if the last closed D1 session's high/low sit inside the one
+  before it (EET brokers close D1 at 17:00 New York, matching the research session
+  convention); 0 otherwise, -1 if history was unavailable.
+
+**Evaluating it later:** join the CSV with the account history by date, then compare
+the P&L of `rvol_pass == 1` (and separately `inside_day == 1`) against all trades.
+The gated variants trade ~20% and ~14% of days respectively, so expect to need
+6-12 months before the comparison says anything. If the gated subsets do not beat
+the unconditioned strategy out of sample, the leads die the way most subgroup
+findings should.
+
+The diagnostics never gate an order (`InpLogDiagnostics` only controls logging), so
+the replay verification above still describes the trading logic. The shim type-check
+covers the new code (`FileOpen`/`FileWrite` stubs added to `mql5_shim.h`).

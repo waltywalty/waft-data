@@ -58,6 +58,17 @@ inline double MathRound(double a) { return std::round(a); }
 inline double MathFloor(double a) { return std::floor(a); }
 inline double NormalizeDouble(double v, int d) { return v; }
 
+// file API (SEEK_SET/SEEK_END come from <cstdio>, same values as MQL5)
+enum { FILE_READ = 1, FILE_WRITE = 2, FILE_CSV = 8, FILE_ANSI = 32 };
+const int INVALID_HANDLE = -1;
+inline int  FileOpen(string name, int flags, unsigned short delim = ';') { return 1; }
+inline bool FileIsExist(string name, int flags = 0) { return false; }
+inline bool FileSeek(int h, long off, int origin) { return true; }
+inline void FileClose(int h) {}
+template <class... A> uint FileWrite(int h, A... a) { return 0; }
+inline int  GetLastError() { return 0; }
+inline string DoubleToString(double v, int digits = 8) { return ""; }
+
 int  CopyRates(string sym, ENUM_TIMEFRAMES tf, int start, int count, MqlArray<MqlRates> &r);
 int  CopyRates(string sym, ENUM_TIMEFRAMES tf, datetime from, datetime to, MqlArray<MqlRates> &r);
 datetime iTime(string sym, ENUM_TIMEFRAMES tf, int shift);
