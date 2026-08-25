@@ -334,3 +334,30 @@ when 2026 data accumulates. The TJR (NY-vs-London) window is the fourth independ
 session-sweep construction to fail here. Playbook graveyard and watch list updated.
 
 Write-up: `results/report9.html`.
+
+## Round eleven — ORB filters, EMA pullback, point targets, volume profile
+
+```bash
+python3 run_orb_filters.py   # impulse / rvol / ATR-regime filters on the NY ORB
+python3 run_ema_pullback.py  # 30m range + 10m confirm + EMA-pullback entry, plus
+                             # the micro-futures 15/20-point RR 1-3 panel
+python3 run_vprofile.py      # volume-profile value-area reversion, absorption gates
+python3 build_report10.py
+```
+
+230 cells across four markets. **The ORB filters produced the repo's sharpest in-sample
+mirage**: strong-volume/impulsive-range gold cells at IS t +2.32 collapsed to OS PF 0.77;
+on the indices the surviving direction inverts the intuition (quiet, weak-volume opens
+break out better - Crabel's compression) and still loses net. The EMA-pullback entry gets
+better fills than the raw break and still dies inside the spread; prior-hour-level exits
+are the worst tested. Fixed 15-20-point brackets: dead on every NY entry, structurally
+terrible on MNQ (0.35% targets vs a 2-point spread, t to -13); on the Asia gold entry a
++/-20pt MGC bracket posts PF 1.374 / t +3.46 with halves agreeing - but 56% of trades
+still exit on the clock, so it re-derives the wide-stop result between the deployed 2R
+(1.320) and no-stop (1.450) benchmarks rather than finding anything new. The
+volume-profile reversion is not deployable (population median OS 0.990) but the
+absorption gates improve the raw fade on nearly every market, and gold's gated
+overnight-profile cell is the grid's only both-halves survivor (PF 1.045, t +0.31) -
+watch-list entry #2.
+
+Write-up: `results/report10.html`. Playbook graveyard and watch list updated.

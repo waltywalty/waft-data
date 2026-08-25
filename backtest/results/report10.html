@@ -1,0 +1,386 @@
+<title>Filters, Pullbacks, and the Profile</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root {
+  --ground:#FBFBFC; --surface:#FFFFFF; --sunk:#F3F4F7;
+  --ink:#16191F; --ink-2:#4A515E; --ink-3:#7C8496;
+  --rule:#DFE2E9; --rule-2:#EDEFF3;
+  --brass:#8A6420; --brass-soft:#F0E4CC;
+  --pos:#1B6E55; --pos-bg:#E4F1EB; --pos-bg-2:#C9E4D8;
+  --neg:#A83226; --neg-bg:#FAE7E4; --neg-bg-2:#F3CDC7;
+  --maxw:74ch;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ground:#0E1116; --surface:#161A21; --sunk:#1B2029;
+    --ink:#E8EAEF; --ink-2:#A7AEBC; --ink-3:#767E8E;
+    --rule:#272D38; --rule-2:#1F242D;
+    --brass:#D5A64A; --brass-soft:#3A2F18;
+    --pos:#5CBE99; --pos-bg:#14291F; --pos-bg-2:#1C4132;
+    --neg:#E58275; --neg-bg:#2C1714; --neg-bg-2:#4A211B;
+  }
+}
+:root[data-theme="dark"] {
+  --ground:#0E1116; --surface:#161A21; --sunk:#1B2029;
+  --ink:#E8EAEF; --ink-2:#A7AEBC; --ink-3:#767E8E;
+  --rule:#272D38; --rule-2:#1F242D;
+  --brass:#D5A64A; --brass-soft:#3A2F18;
+  --pos:#5CBE99; --pos-bg:#14291F; --pos-bg-2:#1C4132;
+  --neg:#E58275; --neg-bg:#2C1714; --neg-bg-2:#4A211B;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:"IBM Plex Sans",system-ui,sans-serif; font-size:16.5px; line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap { max-width:940px; margin:0 auto; padding:0 28px 96px; }
+header { padding:64px 0 34px; border-bottom:1px solid var(--rule); }
+.eyebrow {
+  font-family:"IBM Plex Mono",monospace; font-size:11.5px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--brass); margin:0 0 14px;
+}
+h1 {
+  font-family:Spectral,Georgia,serif; font-weight:600; font-size:clamp(34px,5.2vw,50px);
+  line-height:1.1; letter-spacing:-.015em; margin:0 0 16px; text-wrap:balance;
+}
+.standfirst { font-size:19px; color:var(--ink-2); max-width:62ch; margin:0; text-wrap:pretty; }
+.provenance {
+  display:flex; flex-wrap:wrap; gap:0 26px; margin-top:26px;
+  font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--ink-3);
+}
+.provenance b { color:var(--ink-2); font-weight:500; }
+section { padding-top:52px; }
+h2 {
+  font-family:Spectral,Georgia,serif; font-weight:600; font-size:26px; letter-spacing:-.01em;
+  margin:0 0 6px; text-wrap:balance;
+}
+h2 .n {
+  font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--brass);
+  letter-spacing:.1em; display:block; margin-bottom:8px; font-weight:500;
+}
+h3 { font-size:15px; font-weight:600; margin:32px 0 8px; letter-spacing:.005em; }
+p { max-width:var(--maxw); margin:14px 0; text-wrap:pretty; }
+.lede { color:var(--ink-2); }
+ul { max-width:var(--maxw); padding-left:20px; }
+li { margin:7px 0; }
+strong { font-weight:600; }
+code { font-family:"IBM Plex Mono",monospace; font-size:.9em; background:var(--sunk);
+        padding:1px 5px; border-radius:3px; }
+.verdict {
+  margin-top:36px; background:var(--surface); border:1px solid var(--rule);
+  border-left:3px solid var(--brass); border-radius:4px; padding:24px 26px;
+}
+.verdict p { margin:0 0 12px; }
+.verdict p:last-child { margin-bottom:0; }
+.verdict .head {
+  font-family:"IBM Plex Mono",monospace; font-size:11.5px; letter-spacing:.13em;
+  text-transform:uppercase; color:var(--brass); margin-bottom:12px;
+}
+.stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(148px,1fr)); gap:1px;
+          background:var(--rule); border:1px solid var(--rule); border-radius:4px;
+          overflow:hidden; margin:28px 0; }
+.stat { background:var(--surface); padding:16px 18px; }
+.stat .k { font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.1em;
+            text-transform:uppercase; color:var(--ink-3); }
+.stat .v { font-family:"IBM Plex Mono",monospace; font-size:24px; font-weight:500;
+            margin-top:5px; font-variant-numeric:tabular-nums; }
+.stat .v.dim { color:var(--ink-2); }
+.tbl-wrap { overflow-x:auto; margin:22px 0; border:1px solid var(--rule); border-radius:4px;
+             background:var(--surface); }
+table { border-collapse:collapse; width:100%; font-size:13.5px; }
+th {
+  font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--ink-3); font-weight:500; text-align:right;
+  padding:12px 14px; border-bottom:1px solid var(--rule); white-space:nowrap;
+}
+th:first-child, th.l { text-align:left; }
+td { padding:9px 14px; border-bottom:1px solid var(--rule-2); white-space:nowrap; }
+tbody tr:last-child td { border-bottom:none; }
+.num { text-align:right; font-family:"IBM Plex Mono",monospace;
+        font-variant-numeric:tabular-nums; }
+.lbl { color:var(--ink-2); }
+.muted { color:var(--ink-3); }
+.pos-1 { background:var(--pos-bg); color:var(--pos); }
+.pos-2 { background:var(--pos-bg-2); color:var(--pos); font-weight:500; }
+.neg-1 { background:var(--neg-bg); color:var(--neg); }
+.neg-2 { background:var(--neg-bg-2); color:var(--neg); font-weight:500; }
+.pos-t { color:var(--pos); } .neg-t { color:var(--neg); }
+figure { margin:26px 0; }
+figcaption { font-size:13px; color:var(--ink-3); margin-top:10px; max-width:66ch; }
+.chart { background:var(--surface); border:1px solid var(--rule); border-radius:4px;
+          padding:18px 10px 8px; overflow-x:auto; }
+svg { display:block; max-width:100%; height:auto; }
+.bar-open { fill:var(--ink-3); }
+.bar-entry { fill:var(--brass); }
+.bar-val { font-family:"IBM Plex Mono",monospace; font-size:11px; fill:var(--ink-2);
+            text-anchor:middle; font-variant-numeric:tabular-nums; }
+.bar-lbl { font-family:"IBM Plex Sans",sans-serif; font-size:12px; fill:var(--ink-2);
+            text-anchor:middle; }
+.baseline { stroke:var(--neg); stroke-width:1.2; stroke-dasharray:5 4; }
+.baseline-lbl { font-family:"IBM Plex Mono",monospace; font-size:10.5px; fill:var(--neg); }
+.curve { fill:none; stroke-width:1.7; }
+.c0 { stroke:var(--brass); stroke-width:2.2; }
+.c1 { stroke:var(--pos); }
+.c2 { stroke:var(--neg); }
+.c3 { stroke:var(--ink-3); }
+.c4 { stroke:var(--ink-3); stroke-dasharray:4 3; stroke-width:1.3; }
+.ax { font-family:"IBM Plex Mono",monospace; font-size:10.5px; fill:var(--ink-3); }
+.zero { stroke:var(--rule); stroke-width:1; }
+.legend { display:flex; flex-wrap:wrap; gap:16px; margin-top:12px; font-size:12.5px;
+           color:var(--ink-2); }
+.legend span { display:inline-flex; align-items:center; gap:7px; }
+.swatch { width:16px; height:3px; border-radius:2px; display:inline-block; }
+.note { background:var(--sunk); border-radius:4px; padding:18px 20px; margin:26px 0;
+         font-size:14.5px; color:var(--ink-2); }
+.note p { margin:0 0 10px; max-width:none; } .note p:last-child { margin:0; }
+footer { margin-top:64px; padding-top:22px; border-top:1px solid var(--rule);
+          font-size:13px; color:var(--ink-3); }
+a { color:var(--brass); text-underline-offset:2px; }
+a:focus-visible, :focus-visible { outline:2px solid var(--brass); outline-offset:2px; }
+@media (max-width:620px) { .wrap { padding:0 18px 64px; } header { padding-top:40px; } }
+</style>
+<div class="wrap">
+<header>
+<p class="eyebrow">XAUUSD research &middot; round 11</p>
+<h1>Filters, pullbacks, point targets, and the profile</h1>
+<p class="standfirst">Four commissions: volatility and volume filters on the opening-range
+breakout, a 30-minute-range EMA-pullback continuation entry, the micro-futures
+point-target framing, and a volume-profile value-area reversion with absorption
+confirmation. 230 cells. The filters produce the cleanest in-sample mirage this repo has
+recorded, the point panel quietly re-derives a known truth about the one strategy that
+works, and the absorption idea earns a spot on the watch list.</p>
+<div class="provenance">
+<span>markets <b>XAU &middot; SPX &middot; NDX &middot; RTY</b></span>
+<span>cells <b>72 + 86 + 72</b></span>
+<span>micro contracts <b>MGC &middot; MES &middot; MNQ &middot; M2K</b></span>
+</div>
+</header>
+
+<section>
+<h2><span class="n">01</span>ORB filters: the mirage, photographed</h2>
+<p class="lede">Impulse (range width / ATR), relative volume, and ATR regime, as terciles
+and median splits on the fixed 15m/30m NY ORB. Gold first &mdash; watch the IS and OS
+columns:</p>
+<div class="tbl-wrap"><table><thead><tr><th class="l">Mkt</th><th class="l">Cell</th><th>n</th><th>win</th><th>PF</th><th>t</th><th>PF@0</th><th>IS</th><th>OS</th></tr></thead><tbody><tr><td class="lbl">XAU</td><td class="lbl">ORB 15m follow/eod - unfiltered</td><td class="num">1,219</td><td class="num">39.2%</td><td class="num neg-1">0.947</td><td class="num">-0.77</td><td class="num muted">1.037</td><td class="num muted">0.984</td><td class="num muted">0.896</td></tr>
+<tr><td class="lbl">XAU</td><td class="lbl">ORB 15m + impulse T1 (quiet range)</td><td class="num">407</td><td class="num">32.2%</td><td class="num neg-1">0.953</td><td class="num">-0.61</td><td class="num muted">1.045</td><td class="num muted">0.878</td><td class="num muted">1.039</td></tr>
+<tr><td class="lbl">XAU</td><td class="lbl">ORB 15m + impulse T2</td><td class="num">406</td><td class="num">41.6%</td><td class="num pos-1">1.081</td><td class="num">+0.57</td><td class="num muted">1.185</td><td class="num muted">1.009</td><td class="num muted">1.190</td></tr>
+<tr><td class="lbl">XAU</td><td class="lbl">ORB 15m + impulse T3 (impulsive range)</td><td class="num">406</td><td class="num">43.8%</td><td class="num neg-1">0.830</td><td class="num">-1.22</td><td class="num muted">0.905</td><td class="num muted">1.048</td><td class="num muted">0.499</td></tr>
+<tr><td class="lbl">XAU</td><td class="lbl">ORB 15m + rvol T1 (weak)</td><td class="num">407</td><td class="num">33.9%</td><td class="num neg-1">0.860</td><td class="num">-1.34</td><td class="num muted">0.946</td><td class="num muted">0.815</td><td class="num muted">0.917</td></tr>
+<tr><td class="lbl">XAU</td><td class="lbl">ORB 15m + rvol T2</td><td class="num">406</td><td class="num">40.9%</td><td class="num neg-1">0.985</td><td class="num">-0.08</td><td class="num muted">1.080</td><td class="num muted">1.004</td><td class="num muted">0.948</td></tr>
+<tr><td class="lbl">XAU</td><td class="lbl">ORB 15m + rvol T3 (strong breakout)</td><td class="num">406</td><td class="num">42.9%</td><td class="num neg-1">0.994</td><td class="num">+0.01</td><td class="num muted">1.080</td><td class="num muted">1.128</td><td class="num muted">0.843</td></tr>
+<tr><td class="lbl">XAU</td><td class="lbl">ORB 15m + low-vol regime (ATR < 1yr median)</td><td class="num">526</td><td class="num">41.1%</td><td class="num neg-1">0.959</td><td class="num">-0.38</td><td class="num muted">1.067</td><td class="num muted">0.989</td><td class="num muted">0.815</td></tr>
+<tr><td class="lbl">XAU</td><td class="lbl">ORB 15m + high-vol regime (ATR > 1yr median)</td><td class="num">637</td><td class="num">38.3%</td><td class="num neg-1">0.951</td><td class="num">-0.52</td><td class="num muted">1.030</td><td class="num muted">1.014</td><td class="num muted">0.910</td></tr>
+<tr><td class="lbl">XAU</td><td class="lbl">ORB 30m follow/eod - unfiltered</td><td class="num">1,104</td><td class="num">44.8%</td><td class="num pos-1">1.018</td><td class="num">+0.23</td><td class="num muted">1.117</td><td class="num muted">1.063</td><td class="num muted">0.959</td></tr>
+<tr><td class="lbl">XAU</td><td class="lbl">ORB 30m + impulse T1 (quiet range)</td><td class="num">368</td><td class="num">41.6%</td><td class="num pos-1">1.033</td><td class="num">-0.14</td><td class="num muted">1.139</td><td class="num muted">0.945</td><td class="num muted">1.132</td></tr>
+<tr><td class="lbl">XAU</td><td class="lbl">ORB 30m + impulse T2</td><td class="num">368</td><td class="num">42.4%</td><td class="num neg-1">0.933</td><td class="num">-0.77</td><td class="num muted">1.030</td><td class="num muted">0.861</td><td class="num muted">1.042</td></tr>
+<tr><td class="lbl">XAU</td><td class="lbl">ORB 30m + impulse T3 (impulsive range)</td><td class="num">368</td><td class="num">50.5%</td><td class="num pos-1">1.082</td><td class="num">+1.10</td><td class="num muted">1.178</td><td class="num muted">1.371</td><td class="num muted">0.725</td></tr>
+<tr><td class="lbl">XAU</td><td class="lbl">ORB 30m + rvol T1 (weak)</td><td class="num">368</td><td class="num">43.5%</td><td class="num neg-1">0.999</td><td class="num">-0.38</td><td class="num muted">1.104</td><td class="num muted">0.888</td><td class="num muted">1.163</td></tr>
+<tr><td class="lbl">XAU</td><td class="lbl">ORB 30m + rvol T2</td><td class="num">368</td><td class="num">42.1%</td><td class="num neg-1">0.955</td><td class="num">-0.44</td><td class="num muted">1.044</td><td class="num muted">0.923</td><td class="num muted">1.005</td></tr>
+<tr><td class="lbl">XAU</td><td class="lbl">ORB 30m + rvol T3 (strong breakout)</td><td class="num">368</td><td class="num">48.9%</td><td class="num pos-1">1.104</td><td class="num">+1.18</td><td class="num muted">1.209</td><td class="num muted">1.474</td><td class="num muted">0.771</td></tr>
+<tr><td class="lbl">XAU</td><td class="lbl">ORB 30m + low-vol regime (ATR < 1yr median)</td><td class="num">474</td><td class="num">46.8%</td><td class="num pos-1">1.083</td><td class="num">+0.84</td><td class="num muted">1.215</td><td class="num muted">1.180</td><td class="num muted">0.706</td></tr>
+<tr><td class="lbl">XAU</td><td class="lbl">ORB 30m + high-vol regime (ATR > 1yr median)</td><td class="num">576</td><td class="num">43.9%</td><td class="num pos-1">1.021</td><td class="num">+0.09</td><td class="num muted">1.107</td><td class="num muted">1.044</td><td class="num muted">1.007</td></tr></tbody></table></div>
+<div class="tbl-wrap" style="max-width:640px"><table>
+<thead><tr><th class="l">Honest OOS: top 8 by IS t</th><th>IS PF</th><th>IS t</th><th>OS PF</th></tr></thead>
+<tbody><tr><td class="lbl">XAU ORB 30m + rvol T3 (strong breakout)</td><td class="num">1.474</td><td class="num muted">+2.32</td><td class="num neg-1">0.771</td></tr>
+<tr><td class="lbl">XAU ORB 30m + impulse T3 (impulsive range)</td><td class="num">1.371</td><td class="num muted">+2.08</td><td class="num neg-1">0.725</td></tr>
+<tr><td class="lbl">XAU ORB 30m + low-vol regime (ATR < 1yr median)</td><td class="num">1.180</td><td class="num muted">+1.26</td><td class="num neg-1">0.706</td></tr>
+<tr><td class="lbl">XAU ORB 15m + rvol T3 (strong breakout)</td><td class="num">1.128</td><td class="num muted">+0.69</td><td class="num neg-1">0.843</td></tr>
+<tr><td class="lbl">XAU ORB 30m follow/eod - unfiltered</td><td class="num">1.063</td><td class="num muted">+0.66</td><td class="num neg-1">0.959</td></tr>
+<tr><td class="lbl">XAU ORB 30m + high-vol regime (ATR > 1yr median)</td><td class="num">1.044</td><td class="num muted">+0.31</td><td class="num pos-1">1.007</td></tr>
+<tr><td class="lbl">XAU ORB 15m + impulse T3 (impulsive range)</td><td class="num">1.048</td><td class="num muted">+0.23</td><td class="num neg-1">0.499</td></tr>
+<tr><td class="lbl">XAU ORB 15m + high-vol regime (ATR > 1yr median)</td><td class="num">1.014</td><td class="num muted">+0.13</td><td class="num neg-1">0.910</td></tr></tbody></table></div>
+<p><strong>This is the sharpest selection mirage in eleven rounds.</strong> Strong-volume
+and impulsive-range breakouts on gold posted the best in-sample numbers the NY family has
+ever shown (PF 1.474, t +2.32) and collapsed out of sample (0.771, 0.725). Had we skipped
+the honest split, these filters would have looked like a rescue. On the indices the
+surviving direction actually <em>inverts</em> the intuition: quiet, weak-volume opens
+break out better than strong ones (Crabel&rsquo;s compression logic) &mdash; and still
+nothing clears water net:</p>
+<div class="tbl-wrap"><table><thead><tr><th class="l">Mkt</th><th class="l">Cell</th><th>n</th><th>win</th><th>PF</th><th>t</th><th>PF@0</th><th>IS</th><th>OS</th></tr></thead><tbody><tr><td class="lbl">SPX</td><td class="lbl">ORB 15m follow/eod - unfiltered</td><td class="num">5,165</td><td class="num">33.8%</td><td class="num neg-1">0.916</td><td class="num">-3.21</td><td class="num muted">1.030</td><td class="num muted">0.851</td><td class="num muted">0.982</td></tr>
+<tr><td class="lbl">SPX</td><td class="lbl">ORB 15m + rvol T1 (weak)</td><td class="num">1,722</td><td class="num">29.6%</td><td class="num neg-1">0.952</td><td class="num">-1.76</td><td class="num muted">1.087</td><td class="num muted">0.738</td><td class="num muted">1.111</td></tr>
+<tr><td class="lbl">SPX</td><td class="lbl">ORB 15m + rvol T2</td><td class="num">1,721</td><td class="num">35.9%</td><td class="num pos-1">1.031</td><td class="num">-0.65</td><td class="num muted">1.187</td><td class="num muted">0.943</td><td class="num muted">1.218</td></tr>
+<tr><td class="lbl">SPX</td><td class="lbl">ORB 15m + rvol T3 (strong breakout)</td><td class="num">1,722</td><td class="num">36.0%</td><td class="num neg-1">0.821</td><td class="num">-3.21</td><td class="num muted">0.900</td><td class="num muted">0.838</td><td class="num muted">0.807</td></tr>
+<tr><td class="lbl">NDX</td><td class="lbl">ORB 15m follow/eod - unfiltered</td><td class="num">4,958</td><td class="num">35.2%</td><td class="num neg-1">0.980</td><td class="num">-4.52</td><td class="num muted">1.098</td><td class="num muted">0.802</td><td class="num muted">1.123</td></tr>
+<tr><td class="lbl">NDX</td><td class="lbl">ORB 15m + rvol T1 (weak)</td><td class="num">1,653</td><td class="num">32.1%</td><td class="num pos-1">1.135</td><td class="num">-1.19</td><td class="num muted">1.305</td><td class="num muted">0.833</td><td class="num muted">1.357</td></tr>
+<tr><td class="lbl">NDX</td><td class="lbl">ORB 15m + rvol T2</td><td class="num">1,652</td><td class="num">34.9%</td><td class="num neg-1">0.958</td><td class="num">-3.36</td><td class="num muted">1.081</td><td class="num muted">0.776</td><td class="num muted">1.148</td></tr>
+<tr><td class="lbl">NDX</td><td class="lbl">ORB 15m + rvol T3 (strong breakout)</td><td class="num">1,653</td><td class="num">38.5%</td><td class="num neg-1">0.899</td><td class="num">-2.95</td><td class="num muted">0.987</td><td class="num muted">0.806</td><td class="num muted">0.963</td></tr>
+<tr><td class="lbl">RTY</td><td class="lbl">ORB 15m follow/eod - unfiltered</td><td class="num">3,709</td><td class="num">40.6%</td><td class="num neg-1">0.923</td><td class="num">-1.79</td><td class="num muted">1.052</td><td class="num muted">0.929</td><td class="num muted">0.910</td></tr>
+<tr><td class="lbl">RTY</td><td class="lbl">ORB 15m + rvol T1 (weak)</td><td class="num">1,237</td><td class="num">37.4%</td><td class="num neg-1">0.901</td><td class="num">-1.12</td><td class="num muted">1.042</td><td class="num muted">0.910</td><td class="num muted">0.876</td></tr>
+<tr><td class="lbl">RTY</td><td class="lbl">ORB 15m + rvol T2</td><td class="num">1,236</td><td class="num">42.7%</td><td class="num pos-1">1.008</td><td class="num">-0.02</td><td class="num muted">1.158</td><td class="num muted">1.002</td><td class="num muted">1.025</td></tr>
+<tr><td class="lbl">RTY</td><td class="lbl">ORB 15m + rvol T3 (strong breakout)</td><td class="num">1,236</td><td class="num">41.6%</td><td class="num neg-1">0.876</td><td class="num">-1.83</td><td class="num muted">0.981</td><td class="num muted">0.883</td><td class="num muted">0.861</td></tr></tbody></table></div>
+</section>
+
+<section>
+<h2><span class="n">02</span>The EMA-pullback continuation</h2>
+<p class="lede">30-minute range, 10-minute close outside it, pullback to the EMA, entry on
+the continuation close. The 2-minute 20-EMA is a 40-minute smoothing span, implemented as
+its exact time-equivalent (8-period EMA on 5m) with a 20-period 5m variant alongside; the
+2-minute microstructure itself is bracketed, not simulated.</p>
+<div class="tbl-wrap"><table><thead><tr><th class="l">Mkt</th><th class="l">Cell</th><th>n</th><th>win</th><th>PF</th><th>t</th><th>PF@0</th><th>IS</th><th>OS</th></tr></thead><tbody><tr><td class="lbl">XAU</td><td class="lbl">8-EMA (2m-20 equivalent) / exit prev_day</td><td class="num">447</td><td class="num">36.0%</td><td class="num neg-1">0.837</td><td class="num">-1.38</td><td class="num muted">0.980</td><td class="num muted">0.934</td><td class="num muted">0.685</td></tr>
+<tr><td class="lbl">XAU</td><td class="lbl">8-EMA (2m-20 equivalent) / exit prev_hour</td><td class="num">361</td><td class="num">52.4%</td><td class="num neg-1">0.705</td><td class="num">-2.52</td><td class="num muted">0.867</td><td class="num muted">0.789</td><td class="num muted">0.580</td></tr>
+<tr><td class="lbl">XAU</td><td class="lbl">8-EMA (2m-20 equivalent) / exit 2R</td><td class="num">894</td><td class="num">40.8%</td><td class="num neg-1">0.965</td><td class="num">-0.42</td><td class="num muted">1.116</td><td class="num muted">1.005</td><td class="num muted">0.909</td></tr>
+<tr><td class="lbl">XAU</td><td class="lbl">8-EMA (2m-20 equivalent) / exit eod</td><td class="num">893</td><td class="num">35.4%</td><td class="num neg-1">0.947</td><td class="num">-0.54</td><td class="num muted">1.088</td><td class="num muted">1.035</td><td class="num muted">0.820</td></tr>
+<tr><td class="lbl">XAU</td><td class="lbl">20-EMA on 5m / exit prev_day</td><td class="num">370</td><td class="num">36.5%</td><td class="num neg-1">0.786</td><td class="num">-1.78</td><td class="num muted">0.923</td><td class="num muted">0.846</td><td class="num muted">0.695</td></tr>
+<tr><td class="lbl">XAU</td><td class="lbl">20-EMA on 5m / exit prev_hour</td><td class="num">499</td><td class="num">51.7%</td><td class="num neg-1">0.923</td><td class="num">-1.09</td><td class="num muted">1.116</td><td class="num muted">0.810</td><td class="num muted">1.103</td></tr>
+<tr><td class="lbl">XAU</td><td class="lbl">20-EMA on 5m / exit 2R</td><td class="num">716</td><td class="num">40.2%</td><td class="num neg-1">0.979</td><td class="num">-0.27</td><td class="num muted">1.133</td><td class="num muted">0.954</td><td class="num muted">1.012</td></tr>
+<tr><td class="lbl">XAU</td><td class="lbl">20-EMA on 5m / exit eod</td><td class="num">716</td><td class="num">36.3%</td><td class="num neg-1">0.952</td><td class="num">-0.53</td><td class="num muted">1.097</td><td class="num muted">0.963</td><td class="num muted">0.936</td></tr>
+<tr><td class="lbl">SPX</td><td class="lbl">8-EMA (2m-20 equivalent) / exit prev_day</td><td class="num">2,188</td><td class="num">36.8%</td><td class="num neg-1">0.974</td><td class="num">-1.70</td><td class="num muted">1.161</td><td class="num muted">0.778</td><td class="num muted">1.151</td></tr>
+<tr><td class="lbl">SPX</td><td class="lbl">8-EMA (2m-20 equivalent) / exit prev_hour</td><td class="num">1,426</td><td class="num">55.6%</td><td class="num neg-1">0.724</td><td class="num">-5.66</td><td class="num muted">0.992</td><td class="num muted">0.527</td><td class="num muted">0.978</td></tr>
+<tr><td class="lbl">SPX</td><td class="lbl">8-EMA (2m-20 equivalent) / exit 2R</td><td class="num">4,063</td><td class="num">37.9%</td><td class="num neg-1">0.951</td><td class="num">-2.37</td><td class="num muted">1.128</td><td class="num muted">0.835</td><td class="num muted">1.053</td></tr>
+<tr><td class="lbl">SPX</td><td class="lbl">8-EMA (2m-20 equivalent) / exit eod</td><td class="num">4,049</td><td class="num">30.6%</td><td class="num pos-1">1.029</td><td class="num">-0.55</td><td class="num muted">1.202</td><td class="num muted">0.912</td><td class="num muted">1.135</td></tr>
+<tr><td class="lbl">SPX</td><td class="lbl">20-EMA on 5m / exit prev_day</td><td class="num">1,848</td><td class="num">38.6%</td><td class="num pos-1">1.096</td><td class="num">-0.11</td><td class="num muted">1.294</td><td class="num muted">0.815</td><td class="num muted">1.344</td></tr>
+<tr><td class="lbl">SPX</td><td class="lbl">20-EMA on 5m / exit prev_hour</td><td class="num">1,963</td><td class="num">53.0%</td><td class="num neg-1">0.821</td><td class="num">-4.87</td><td class="num muted">1.070</td><td class="num muted">0.655</td><td class="num muted">1.013</td></tr>
+<tr><td class="lbl">SPX</td><td class="lbl">20-EMA on 5m / exit 2R</td><td class="num">3,201</td><td class="num">38.4%</td><td class="num neg-1">0.978</td><td class="num">-1.39</td><td class="num muted">1.151</td><td class="num muted">0.851</td><td class="num muted">1.080</td></tr>
+<tr><td class="lbl">SPX</td><td class="lbl">20-EMA on 5m / exit eod</td><td class="num">3,189</td><td class="num">31.6%</td><td class="num pos-1">1.057</td><td class="num">-0.10</td><td class="num muted">1.226</td><td class="num muted">0.912</td><td class="num muted">1.176</td></tr>
+<tr><td class="lbl">NDX</td><td class="lbl">8-EMA (2m-20 equivalent) / exit prev_day</td><td class="num">2,013</td><td class="num">35.6%</td><td class="num neg-1">0.896</td><td class="num">-4.79</td><td class="num muted">1.053</td><td class="num muted">0.686</td><td class="num muted">1.012</td></tr>
+<tr><td class="lbl">NDX</td><td class="lbl">8-EMA (2m-20 equivalent) / exit prev_hour</td><td class="num">1,322</td><td class="num">48.1%</td><td class="num neg-1">0.716</td><td class="num">-9.01</td><td class="num muted">0.965</td><td class="num muted">0.451</td><td class="num muted">0.971</td></tr>
+<tr><td class="lbl">NDX</td><td class="lbl">8-EMA (2m-20 equivalent) / exit 2R</td><td class="num">3,887</td><td class="num">37.6%</td><td class="num neg-1">0.917</td><td class="num">-5.97</td><td class="num muted">1.076</td><td class="num muted">0.808</td><td class="num muted">0.980</td></tr>
+<tr><td class="lbl">NDX</td><td class="lbl">8-EMA (2m-20 equivalent) / exit eod</td><td class="num">3,873</td><td class="num">30.9%</td><td class="num pos-1">1.014</td><td class="num">-3.64</td><td class="num muted">1.173</td><td class="num muted">0.806</td><td class="num muted">1.137</td></tr>
+<tr><td class="lbl">NDX</td><td class="lbl">20-EMA on 5m / exit prev_day</td><td class="num">1,679</td><td class="num">38.8%</td><td class="num neg-1">0.929</td><td class="num">-3.26</td><td class="num muted">1.082</td><td class="num muted">0.719</td><td class="num muted">1.035</td></tr>
+<tr><td class="lbl">NDX</td><td class="lbl">20-EMA on 5m / exit prev_hour</td><td class="num">1,882</td><td class="num">49.7%</td><td class="num neg-1">0.863</td><td class="num">-8.20</td><td class="num muted">1.120</td><td class="num muted">0.574</td><td class="num muted">1.140</td></tr>
+<tr><td class="lbl">NDX</td><td class="lbl">20-EMA on 5m / exit 2R</td><td class="num">3,016</td><td class="num">38.6%</td><td class="num neg-1">0.943</td><td class="num">-4.69</td><td class="num muted">1.098</td><td class="num muted">0.794</td><td class="num muted">1.021</td></tr>
+<tr><td class="lbl">NDX</td><td class="lbl">20-EMA on 5m / exit eod</td><td class="num">3,007</td><td class="num">32.9%</td><td class="num pos-1">1.044</td><td class="num">-2.39</td><td class="num muted">1.201</td><td class="num muted">0.802</td><td class="num muted">1.174</td></tr>
+<tr><td class="lbl">RTY</td><td class="lbl">8-EMA (2m-20 equivalent) / exit prev_day</td><td class="num">1,486</td><td class="num">38.3%</td><td class="num neg-1">0.909</td><td class="num">-1.41</td><td class="num muted">1.145</td><td class="num muted">0.909</td><td class="num muted">0.910</td></tr>
+<tr><td class="lbl">RTY</td><td class="lbl">8-EMA (2m-20 equivalent) / exit prev_hour</td><td class="num">1,063</td><td class="num">54.0%</td><td class="num neg-1">0.620</td><td class="num">-5.52</td><td class="num muted">0.881</td><td class="num muted">0.638</td><td class="num muted">0.576</td></tr>
+<tr><td class="lbl">RTY</td><td class="lbl">8-EMA (2m-20 equivalent) / exit 2R</td><td class="num">2,866</td><td class="num">38.3%</td><td class="num neg-1">0.864</td><td class="num">-2.76</td><td class="num muted">1.071</td><td class="num muted">0.858</td><td class="num muted">0.878</td></tr>
+<tr><td class="lbl">RTY</td><td class="lbl">8-EMA (2m-20 equivalent) / exit eod</td><td class="num">2,858</td><td class="num">31.6%</td><td class="num neg-1">0.922</td><td class="num">-1.21</td><td class="num muted">1.123</td><td class="num muted">0.934</td><td class="num muted">0.892</td></tr>
+<tr><td class="lbl">RTY</td><td class="lbl">20-EMA on 5m / exit prev_day</td><td class="num">1,167</td><td class="num">40.0%</td><td class="num neg-1">0.947</td><td class="num">-0.44</td><td class="num muted">1.192</td><td class="num muted">1.015</td><td class="num muted">0.771</td></tr>
+<tr><td class="lbl">RTY</td><td class="lbl">20-EMA on 5m / exit prev_hour</td><td class="num">1,420</td><td class="num">52.5%</td><td class="num neg-1">0.728</td><td class="num">-4.70</td><td class="num muted">0.990</td><td class="num muted">0.718</td><td class="num muted">0.753</td></tr>
+<tr><td class="lbl">RTY</td><td class="lbl">20-EMA on 5m / exit 2R</td><td class="num">2,133</td><td class="num">39.0%</td><td class="num neg-1">0.873</td><td class="num">-2.19</td><td class="num muted">1.080</td><td class="num muted">0.894</td><td class="num muted">0.825</td></tr>
+<tr><td class="lbl">RTY</td><td class="lbl">20-EMA on 5m / exit eod</td><td class="num">2,127</td><td class="num">33.0%</td><td class="num neg-1">0.914</td><td class="num">-1.02</td><td class="num muted">1.114</td><td class="num muted">0.969</td><td class="num muted">0.784</td></tr></tbody></table></div>
+<p>The pullback gets a better fill than the raw break &mdash; zero-cost PFs sit near or
+above 1.1 in half the cells &mdash; but nothing survives costs, and the prior-hour-level
+exit is the worst of every exit tested (PF 0.62-0.86: the level is too close, so it
+harvests noise and forfeits the day). Same physics as every NY-session entry before it:
+the confirmation structure pays the spread, the market keeps the rest.</p>
+</section>
+
+<section>
+<h2><span class="n">03</span>Micro-futures point targets</h2>
+<p class="lede">Target +15 or +20 points, stop = target / RR for RR 1-3, flat at the close
+if neither hits. MGC $10/pt &middot; MES $5/pt &middot; MNQ $2/pt &middot; M2K $5/pt. A
+fixed point target is a very different object per market: 15 points is 0.78% of gold,
+0.73% of SPX, 1.78% of RTY &mdash; and just 0.35% of NDX.</p>
+<div class="tbl-wrap"><table><thead><tr><th class="l">Mkt</th><th class="l">Cell</th><th>n</th><th>win</th><th>PF</th><th>t</th><th>PF@0</th><th>IS</th><th>OS</th></tr></thead><tbody><tr><td class="lbl">XAU</td><td class="lbl">30m ORB break: +15pt (0.78%), RR 1:1</td><td class="num">1,103</td><td class="num">48.1%</td><td class="num neg-1">0.982</td><td class="num">-0.10</td><td class="num muted">1.069</td><td class="num muted">1.011</td><td class="num muted">0.939</td></tr>
+<tr><td class="lbl">XAU</td><td class="lbl">30m ORB break: +15pt (0.78%), RR 1:2</td><td class="num">1,104</td><td class="num">44.1%</td><td class="num pos-1">1.007</td><td class="num">+0.26</td><td class="num muted">1.107</td><td class="num muted">1.045</td><td class="num muted">0.948</td></tr>
+<tr><td class="lbl">XAU</td><td class="lbl">30m ORB break: +15pt (0.78%), RR 1:3</td><td class="num">1,109</td><td class="num">39.6%</td><td class="num pos-1">1.021</td><td class="num">+0.37</td><td class="num muted">1.137</td><td class="num muted">1.035</td><td class="num muted">0.997</td></tr>
+<tr><td class="lbl">XAU</td><td class="lbl">30m ORB break: +20pt (1.04%), RR 1:1</td><td class="num">1,103</td><td class="num">47.8%</td><td class="num neg-1">0.988</td><td class="num">-0.06</td><td class="num muted">1.075</td><td class="num muted">1.021</td><td class="num muted">0.944</td></tr>
+<tr><td class="lbl">XAU</td><td class="lbl">30m ORB break: +20pt (1.04%), RR 1:2</td><td class="num">1,104</td><td class="num">46.1%</td><td class="num pos-1">1.025</td><td class="num">+0.31</td><td class="num muted">1.121</td><td class="num muted">1.030</td><td class="num muted">1.018</td></tr>
+<tr><td class="lbl">XAU</td><td class="lbl">30m ORB break: +20pt (1.04%), RR 1:3</td><td class="num">1,106</td><td class="num">42.0%</td><td class="num neg-1">0.998</td><td class="num">+0.06</td><td class="num muted">1.100</td><td class="num muted">1.022</td><td class="num muted">0.961</td></tr>
+<tr><td class="lbl">XAU</td><td class="lbl">EMA pullback: +15pt (0.78%), RR 1:1</td><td class="num">875</td><td class="num">49.8%</td><td class="num pos-1">1.045</td><td class="num">+0.29</td><td class="num muted">1.165</td><td class="num muted">1.010</td><td class="num muted">1.102</td></tr>
+<tr><td class="lbl">XAU</td><td class="lbl">EMA pullback: +15pt (0.78%), RR 1:2</td><td class="num">876</td><td class="num">46.7%</td><td class="num neg-1">0.978</td><td class="num">-0.03</td><td class="num muted">1.097</td><td class="num muted">1.083</td><td class="num muted">0.830</td></tr>
+<tr><td class="lbl">XAU</td><td class="lbl">EMA pullback: +15pt (0.78%), RR 1:3</td><td class="num">879</td><td class="num">41.5%</td><td class="num neg-1">0.908</td><td class="num">-0.82</td><td class="num muted">1.029</td><td class="num muted">1.038</td><td class="num muted">0.718</td></tr>
+<tr><td class="lbl">XAU</td><td class="lbl">EMA pullback: +20pt (1.04%), RR 1:1</td><td class="num">875</td><td class="num">49.9%</td><td class="num pos-1">1.048</td><td class="num">+0.24</td><td class="num muted">1.166</td><td class="num muted">0.988</td><td class="num muted">1.152</td></tr>
+<tr><td class="lbl">XAU</td><td class="lbl">EMA pullback: +20pt (1.04%), RR 1:2</td><td class="num">876</td><td class="num">48.7%</td><td class="num pos-1">1.030</td><td class="num">+0.33</td><td class="num muted">1.151</td><td class="num muted">1.058</td><td class="num muted">0.986</td></tr>
+<tr><td class="lbl">XAU</td><td class="lbl">EMA pullback: +20pt (1.04%), RR 1:3</td><td class="num">877</td><td class="num">45.5%</td><td class="num neg-1">0.991</td><td class="num">+0.05</td><td class="num muted">1.113</td><td class="num muted">1.071</td><td class="num muted">0.874</td></tr>
+<tr><td class="lbl">SPX</td><td class="lbl">30m ORB break: +15pt (0.73%), RR 1:1</td><td class="num">4,933</td><td class="num">47.5%</td><td class="num neg-1">0.882</td><td class="num">-4.21</td><td class="num muted">1.002</td><td class="num muted">0.842</td><td class="num muted">0.936</td></tr>
+<tr><td class="lbl">SPX</td><td class="lbl">30m ORB break: +15pt (0.73%), RR 1:2</td><td class="num">4,952</td><td class="num">39.7%</td><td class="num neg-1">0.858</td><td class="num">-4.51</td><td class="num muted">1.006</td><td class="num muted">0.840</td><td class="num muted">0.888</td></tr>
+<tr><td class="lbl">SPX</td><td class="lbl">30m ORB break: +15pt (0.73%), RR 1:3</td><td class="num">4,959</td><td class="num">33.1%</td><td class="num neg-1">0.827</td><td class="num">-5.71</td><td class="num muted">1.000</td><td class="num muted">0.798</td><td class="num muted">0.881</td></tr>
+<tr><td class="lbl">SPX</td><td class="lbl">30m ORB break: +20pt (0.97%), RR 1:1</td><td class="num">4,926</td><td class="num">47.4%</td><td class="num neg-1">0.904</td><td class="num">-3.65</td><td class="num muted">1.014</td><td class="num muted">0.841</td><td class="num muted">0.980</td></tr>
+<tr><td class="lbl">SPX</td><td class="lbl">30m ORB break: +20pt (0.97%), RR 1:2</td><td class="num">4,938</td><td class="num">41.0%</td><td class="num neg-1">0.863</td><td class="num">-4.32</td><td class="num muted">0.989</td><td class="num muted">0.833</td><td class="num muted">0.906</td></tr>
+<tr><td class="lbl">SPX</td><td class="lbl">30m ORB break: +20pt (0.97%), RR 1:3</td><td class="num">4,948</td><td class="num">36.3%</td><td class="num neg-1">0.878</td><td class="num">-3.96</td><td class="num muted">1.030</td><td class="num muted">0.842</td><td class="num muted">0.936</td></tr>
+<tr><td class="lbl">SPX</td><td class="lbl">EMA pullback: +15pt (0.73%), RR 1:1</td><td class="num">4,020</td><td class="num">49.0%</td><td class="num neg-1">0.951</td><td class="num">-1.85</td><td class="num muted">1.090</td><td class="num muted">0.906</td><td class="num muted">1.009</td></tr>
+<tr><td class="lbl">SPX</td><td class="lbl">EMA pullback: +15pt (0.73%), RR 1:2</td><td class="num">4,035</td><td class="num">41.6%</td><td class="num neg-1">0.922</td><td class="num">-1.94</td><td class="num muted">1.089</td><td class="num muted">0.925</td><td class="num muted">0.918</td></tr>
+<tr><td class="lbl">SPX</td><td class="lbl">EMA pullback: +15pt (0.73%), RR 1:3</td><td class="num">4,040</td><td class="num">35.6%</td><td class="num neg-1">0.895</td><td class="num">-2.65</td><td class="num muted">1.091</td><td class="num muted">0.907</td><td class="num muted">0.876</td></tr>
+<tr><td class="lbl">SPX</td><td class="lbl">EMA pullback: +20pt (0.98%), RR 1:1</td><td class="num">4,015</td><td class="num">48.7%</td><td class="num neg-1">0.959</td><td class="num">-1.53</td><td class="num muted">1.084</td><td class="num muted">0.908</td><td class="num muted">1.017</td></tr>
+<tr><td class="lbl">SPX</td><td class="lbl">EMA pullback: +20pt (0.98%), RR 1:2</td><td class="num">4,021</td><td class="num">43.0%</td><td class="num neg-1">0.937</td><td class="num">-1.71</td><td class="num muted">1.083</td><td class="num muted">0.913</td><td class="num muted">0.969</td></tr>
+<tr><td class="lbl">SPX</td><td class="lbl">EMA pullback: +20pt (0.98%), RR 1:3</td><td class="num">4,034</td><td class="num">38.0%</td><td class="num neg-1">0.924</td><td class="num">-1.69</td><td class="num muted">1.094</td><td class="num muted">0.924</td><td class="num muted">0.926</td></tr>
+<tr><td class="lbl">NDX</td><td class="lbl">30m ORB break: +15pt (0.35%), RR 1:1</td><td class="num">4,754</td><td class="num">45.5%</td><td class="num neg-1">0.676</td><td class="num">-9.33</td><td class="num muted">0.923</td><td class="num muted">0.705</td><td class="num muted">0.614</td></tr>
+<tr><td class="lbl">NDX</td><td class="lbl">30m ORB break: +15pt (0.35%), RR 1:2</td><td class="num">4,770</td><td class="num">32.7%</td><td class="num neg-1">0.621</td><td class="num">-10.93</td><td class="num muted">0.933</td><td class="num muted">0.659</td><td class="num muted">0.529</td></tr>
+<tr><td class="lbl">NDX</td><td class="lbl">30m ORB break: +15pt (0.35%), RR 1:3</td><td class="num">4,777</td><td class="num">24.7%</td><td class="num neg-1">0.559</td><td class="num">-13.16</td><td class="num muted">0.923</td><td class="num muted">0.595</td><td class="num muted">0.466</td></tr>
+<tr><td class="lbl">NDX</td><td class="lbl">30m ORB break: +20pt (0.47%), RR 1:1</td><td class="num">4,743</td><td class="num">45.0%</td><td class="num neg-1">0.717</td><td class="num">-7.86</td><td class="num muted">0.927</td><td class="num muted">0.736</td><td class="num muted">0.682</td></tr>
+<tr><td class="lbl">NDX</td><td class="lbl">30m ORB break: +20pt (0.47%), RR 1:2</td><td class="num">4,756</td><td class="num">34.0%</td><td class="num neg-1">0.681</td><td class="num">-9.43</td><td class="num muted">0.947</td><td class="num muted">0.698</td><td class="num muted">0.641</td></tr>
+<tr><td class="lbl">NDX</td><td class="lbl">30m ORB break: +20pt (0.47%), RR 1:3</td><td class="num">4,769</td><td class="num">27.0%</td><td class="num neg-1">0.644</td><td class="num">-10.09</td><td class="num muted">0.962</td><td class="num muted">0.666</td><td class="num muted">0.588</td></tr>
+<tr><td class="lbl">NDX</td><td class="lbl">EMA pullback: +15pt (0.35%), RR 1:1</td><td class="num">3,864</td><td class="num">45.8%</td><td class="num neg-1">0.685</td><td class="num">-8.19</td><td class="num muted">0.948</td><td class="num muted">0.720</td><td class="num muted">0.616</td></tr>
+<tr><td class="lbl">NDX</td><td class="lbl">EMA pullback: +15pt (0.35%), RR 1:2</td><td class="num">3,878</td><td class="num">33.9%</td><td class="num neg-1">0.631</td><td class="num">-9.34</td><td class="num muted">0.960</td><td class="num muted">0.689</td><td class="num muted">0.502</td></tr>
+<tr><td class="lbl">NDX</td><td class="lbl">EMA pullback: +15pt (0.35%), RR 1:3</td><td class="num">3,884</td><td class="num">26.2%</td><td class="num neg-1">0.579</td><td class="num">-11.32</td><td class="num muted">0.966</td><td class="num muted">0.620</td><td class="num muted">0.480</td></tr>
+<tr><td class="lbl">NDX</td><td class="lbl">EMA pullback: +20pt (0.47%), RR 1:1</td><td class="num">3,854</td><td class="num">46.3%</td><td class="num neg-1">0.754</td><td class="num">-6.53</td><td class="num muted">0.989</td><td class="num muted">0.770</td><td class="num muted">0.726</td></tr>
+<tr><td class="lbl">NDX</td><td class="lbl">EMA pullback: +20pt (0.47%), RR 1:2</td><td class="num">3,869</td><td class="num">35.8%</td><td class="num neg-1">0.696</td><td class="num">-7.78</td><td class="num muted">0.983</td><td class="num muted">0.728</td><td class="num muted">0.630</td></tr>
+<tr><td class="lbl">NDX</td><td class="lbl">EMA pullback: +20pt (0.47%), RR 1:3</td><td class="num">3,875</td><td class="num">28.9%</td><td class="num neg-1">0.656</td><td class="num">-8.76</td><td class="num muted">0.997</td><td class="num muted">0.693</td><td class="num muted">0.573</td></tr>
+<tr><td class="lbl">RTY</td><td class="lbl">30m ORB break: +15pt (1.78%), RR 1:1</td><td class="num">3,506</td><td class="num">47.9%</td><td class="num neg-1">0.877</td><td class="num">-2.89</td><td class="num muted">0.995</td><td class="num muted">0.879</td><td class="num muted">0.871</td></tr>
+<tr><td class="lbl">RTY</td><td class="lbl">30m ORB break: +15pt (1.78%), RR 1:2</td><td class="num">3,509</td><td class="num">44.6%</td><td class="num neg-1">0.893</td><td class="num">-2.66</td><td class="num muted">1.023</td><td class="num muted">0.887</td><td class="num muted">0.907</td></tr>
+<tr><td class="lbl">RTY</td><td class="lbl">30m ORB break: +15pt (1.78%), RR 1:3</td><td class="num">3,516</td><td class="num">40.0%</td><td class="num neg-1">0.918</td><td class="num">-2.23</td><td class="num muted">1.070</td><td class="num muted">0.898</td><td class="num muted">0.977</td></tr>
+<tr><td class="lbl">RTY</td><td class="lbl">30m ORB break: +20pt (2.37%), RR 1:1</td><td class="num">3,505</td><td class="num">48.0%</td><td class="num neg-1">0.889</td><td class="num">-2.73</td><td class="num muted">1.006</td><td class="num muted">0.877</td><td class="num muted">0.919</td></tr>
+<tr><td class="lbl">RTY</td><td class="lbl">30m ORB break: +20pt (2.37%), RR 1:2</td><td class="num">3,507</td><td class="num">46.3%</td><td class="num neg-1">0.883</td><td class="num">-2.87</td><td class="num muted">1.004</td><td class="num muted">0.868</td><td class="num muted">0.922</td></tr>
+<tr><td class="lbl">RTY</td><td class="lbl">30m ORB break: +20pt (2.37%), RR 1:3</td><td class="num">3,511</td><td class="num">43.0%</td><td class="num neg-1">0.898</td><td class="num">-2.49</td><td class="num muted">1.032</td><td class="num muted">0.894</td><td class="num muted">0.909</td></tr>
+<tr><td class="lbl">RTY</td><td class="lbl">EMA pullback: +15pt (1.78%), RR 1:1</td><td class="num">2,829</td><td class="num">48.9%</td><td class="num neg-1">0.948</td><td class="num">-1.01</td><td class="num muted">1.092</td><td class="num muted">0.968</td><td class="num muted">0.899</td></tr>
+<tr><td class="lbl">RTY</td><td class="lbl">EMA pullback: +15pt (1.78%), RR 1:2</td><td class="num">2,832</td><td class="num">46.7%</td><td class="num neg-1">0.973</td><td class="num">-0.64</td><td class="num muted">1.134</td><td class="num muted">0.974</td><td class="num muted">0.973</td></tr>
+<tr><td class="lbl">RTY</td><td class="lbl">EMA pullback: +15pt (1.78%), RR 1:3</td><td class="num">2,838</td><td class="num">42.6%</td><td class="num neg-1">0.962</td><td class="num">-0.85</td><td class="num muted">1.137</td><td class="num muted">0.963</td><td class="num muted">0.959</td></tr>
+<tr><td class="lbl">RTY</td><td class="lbl">EMA pullback: +20pt (2.38%), RR 1:1</td><td class="num">2,828</td><td class="num">49.0%</td><td class="num neg-1">0.965</td><td class="num">-0.69</td><td class="num muted">1.109</td><td class="num muted">0.983</td><td class="num muted">0.923</td></tr>
+<tr><td class="lbl">RTY</td><td class="lbl">EMA pullback: +20pt (2.38%), RR 1:2</td><td class="num">2,830</td><td class="num">48.0%</td><td class="num neg-1">0.967</td><td class="num">-0.70</td><td class="num muted">1.117</td><td class="num muted">0.966</td><td class="num muted">0.971</td></tr>
+<tr><td class="lbl">RTY</td><td class="lbl">EMA pullback: +20pt (2.38%), RR 1:3</td><td class="num">2,833</td><td class="num">45.9%</td><td class="num neg-1">0.998</td><td class="num">-0.13</td><td class="num muted">1.166</td><td class="num muted">0.989</td><td class="num muted">1.023</td></tr></tbody></table></div>
+<p><strong>MNQ is the cautionary row.</strong> A 15-20-point Nasdaq target is 0.35-0.47%
+&mdash; a scalp target carrying a 2-point spread, i.e. 10-13% of the prize on every
+attempt. Every MNQ cell is a disaster (PF 0.56-0.75, t to &minus;13). Fixed point
+brackets must be denominated per market or they quietly become ten different strategies.</p>
+<h3>The Asia gold entry, re-priced as MGC brackets</h3>
+<div class="tbl-wrap"><table><thead><tr><th class="l">Mkt</th><th class="l">Cell</th><th>n</th><th>win</th><th>PF</th><th>t</th><th>PF@0</th><th>IS</th><th>OS</th></tr></thead><tbody><tr><td class="lbl">XAU</td><td class="lbl">Asia gold entry as MGC: +15pt, RR 1:1</td><td class="num">645</td><td class="num">53.2%</td><td class="num pos-1">1.216</td><td class="num">+2.30</td><td class="num muted">1.281</td><td class="num muted">1.235</td><td class="num muted">1.192</td></tr>
+<tr><td class="lbl">XAU</td><td class="lbl">Asia gold entry as MGC: +15pt, RR 1:2</td><td class="num">645</td><td class="num">40.9%</td><td class="num pos-1">1.145</td><td class="num">+1.66</td><td class="num muted">1.222</td><td class="num muted">1.146</td><td class="num muted">1.145</td></tr>
+<tr><td class="lbl">XAU</td><td class="lbl">Asia gold entry as MGC: +15pt, RR 1:3</td><td class="num">645</td><td class="num">32.7%</td><td class="num pos-1">1.192</td><td class="num">+2.13</td><td class="num muted">1.294</td><td class="num muted">1.200</td><td class="num muted">1.181</td></tr>
+<tr><td class="lbl">XAU</td><td class="lbl">Asia gold entry as MGC: +20pt, RR 1:1</td><td class="num">645</td><td class="num">53.3%</td><td class="num pos-1">1.374</td><td class="num">+3.46</td><td class="num muted">1.442</td><td class="num muted">1.362</td><td class="num muted">1.390</td></tr>
+<tr><td class="lbl">XAU</td><td class="lbl">Asia gold entry as MGC: +20pt, RR 1:2</td><td class="num">645</td><td class="num">43.6%</td><td class="num pos-1">1.185</td><td class="num">+1.85</td><td class="num muted">1.251</td><td class="num muted">1.164</td><td class="num muted">1.215</td></tr>
+<tr><td class="lbl">XAU</td><td class="lbl">Asia gold entry as MGC: +20pt, RR 1:3</td><td class="num">645</td><td class="num">35.0%</td><td class="num pos-1">1.169</td><td class="num">+1.75</td><td class="num muted">1.248</td><td class="num muted">1.167</td><td class="num muted">1.172</td></tr></tbody></table></div>
+<p>These look exciting &mdash; +20pt RR 1:1 shows PF 1.374, t +3.46, halves agreeing
+1.36/1.39 &mdash; and the honest reading is that <strong>they re-derive a known result
+rather than find a new one</strong>. At +20 points, 56% of trades still exit on the
+16:00-NY clock: the bracket is wide enough to mostly not bind, so the cell converges
+toward the round-8/9 benchmarks (deployed 2R/clock 1.320, t +2.54; no-stop/clock 1.450,
+t +3.42) and lands between them. A $200-risk, $200-target MGC bracket on the Asia entry
+is a perfectly reasonable way to <em>express</em> the strategy on futures &mdash; roughly
+equivalent to a wide stop &mdash; but it adds nothing beyond what the stop-width gradient
+already established, and the deployed configuration stands.</p>
+</section>
+
+<section>
+<h2><span class="n">04</span>The volume-profile value-area reversion</h2>
+<p class="lede">Profile over a completed window (prior RTH / overnight / prior 24h), 70%
+value area from the POC out; breakdown through the edge on declining volume, reclaim on
+growing volume, stop at the extreme, targets POC / opposite edge / EoD. Tick-volume
+caveat applies to every volume gate. 72 cells; per-market summary:</p>
+<div class="tbl-wrap"><table>
+<thead><tr><th class="l">Mkt</th><th class="l">Volume gates</th><th>cells</th>
+<th>median PF</th><th>best PF</th><th class="l">best cell</th></tr></thead>
+<tbody><tr><td class="lbl">XAU</td><td class="lbl">no volume gates</td><td class="num">9</td><td class="num neg-1">0.801</td><td class="num">0.941</td><td class="lbl muted">no volume gates / target eod</td></tr>
+<tr><td class="lbl">XAU</td><td class="lbl">absorb+grow gates</td><td class="num">9</td><td class="num neg-1">0.749</td><td class="num">1.045</td><td class="lbl muted">absorb+grow gates / target va_opp</td></tr>
+<tr><td class="lbl">SPX</td><td class="lbl">no volume gates</td><td class="num">9</td><td class="num neg-1">0.905</td><td class="num">1.035</td><td class="lbl muted">no volume gates / target va_opp</td></tr>
+<tr><td class="lbl">SPX</td><td class="lbl">absorb+grow gates</td><td class="num">9</td><td class="num neg-1">0.920</td><td class="num">1.074</td><td class="lbl muted">absorb+grow gates / target va_opp</td></tr>
+<tr><td class="lbl">NDX</td><td class="lbl">no volume gates</td><td class="num">9</td><td class="num neg-1">0.962</td><td class="num">1.106</td><td class="lbl muted">no volume gates / target eod</td></tr>
+<tr><td class="lbl">NDX</td><td class="lbl">absorb+grow gates</td><td class="num">9</td><td class="num pos-1">1.099</td><td class="num">1.209</td><td class="lbl muted">absorb+grow gates / target poc</td></tr>
+<tr><td class="lbl">RTY</td><td class="lbl">no volume gates</td><td class="num">9</td><td class="num neg-1">0.840</td><td class="num">0.935</td><td class="lbl muted">no volume gates / target eod</td></tr>
+<tr><td class="lbl">RTY</td><td class="lbl">absorb+grow gates</td><td class="num">9</td><td class="num neg-1">0.813</td><td class="num">1.016</td><td class="lbl muted">absorb+grow gates / target va_opp</td></tr>
+</tbody></table></div>
+<p>Not deployable anywhere &mdash; but two things deserve their ink. First, the
+<strong>absorption gates improve the raw fade on nearly every market and window</strong>
+(NDX 1.08&rarr;1.21, RTY 0.88&rarr;1.02, SPX 0.88&rarr;1.03 on matched cells): a
+mechanism-consistent, cross-market direction that random filters do not produce, even
+through the fog of tick volume. Second, exactly one cell passes the both-halves sign
+check above water: gold, overnight profile, gated, opposite-edge target &mdash;
+PF 1.045 (n=271, IS 1.065 / OS 1.026,
+t +0.31). At that t it is a watch-list entry, not a strategy.</p>
+<div class="verdict"><div class="head">Round-11 disposition</div>
+<p>Nothing changes the deployed strategy. The ORB filters and the EMA-pullback join the
+graveyard; the point-target panel is answered (viable as an MGC expression of the Asia
+entry, structurally poor on MNQ, dead on every NY entry); and the watch list gains its
+second entry: the gated volume-profile reversion on gold&rsquo;s overnight profile,
+alongside the CISD short. Both are re-tests for when new gold data accumulates &mdash;
+neither touches live capital.</p></div>
+</section>
+
+<section>
+<h2><span class="n">05</span>Methods</h2>
+<ul>
+<li>All entries at bar closes; conservative stop-first path walks; causal features
+(prior-session ATR, rolling 1-year ATR median, 14-session volume baselines) throughout;
+value areas computed only from completed windows.</li>
+<li>The 2-minute chart does not exist in this data; its EMA was mapped to the identical
+smoothing span on 5m bars and labelled as such. Point-target fills inside 5-minute bars
+use the same conservative both-touch rule as everywhere else.</li>
+<li>230 cells this round, all reported; the only positive-t families are re-derivations
+of the validated Asia entry. No significance claimed for anything new.</li>
+</ul>
+<footer><p>Round 11. Engines: <code>mkts.py</code>, <code>run_orb_filters.py</code>,
+<code>run_ema_pullback.py</code>, <code>run_vprofile.py</code>. Results:
+<code>orb_filters.json</code>, <code>ema_points.json</code>, <code>vprofile.json</code>.</p></footer>
+</section>
+</div>

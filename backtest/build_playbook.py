@@ -12,7 +12,7 @@ HTML = f"""<title>Asia Gold Playbook</title>
 {CSS}
 <div class="wrap">
 <header>
-<p class="eyebrow">Living document &middot; last updated 2026-08-25 &middot; after round 10</p>
+<p class="eyebrow">Living document &middot; last updated 2026-08-25 &middot; after round 11</p>
 <h1>The Asia gold playbook</h1>
 <p class="standfirst">One strategy survived nine rounds of testing: the Asia-open
 range breakout on gold, gated by the gold/AUDUSD correlation regime. This page is the
@@ -155,13 +155,27 @@ inverted by Pine&rsquo;s supertrend direction semantics (round 10).</li>
 <li>ICT CISD reversals in the TJR (NY-vs-London) and strict 10-11 Silver Bullet
 windows, on gold and all three indices (round 10) &mdash; the fourth and fifth
 independent session-sweep constructions to fail here.</li>
+<li>Volatility and volume filters on the NY ORB &mdash; the strong-breakout cuts
+produced the repo&rsquo;s sharpest in-sample mirage (gold IS t +2.32 &rarr; OS PF 0.77);
+on the indices the surviving direction inverts the intuition and still loses (round 11).</li>
+<li>The 30m-range / 10m-confirm / EMA-pullback continuation entry &mdash; better fills
+than the raw break, still inside the spread; prior-hour-level exits worst of all
+(round 11).</li>
+<li>Fixed 15-20-point brackets on NY-session entries &mdash; dead everywhere, and
+structurally terrible on MNQ where 15 points is 0.35% against a 2-point spread. On the
+Asia gold entry a &plusmn;20pt MGC bracket works (PF 1.37) because it barely binds:
+it re-derives the wide-stop result, adds nothing (round 11).</li>
 </ul>
-<div class="note"><p><strong>Watch list (not tradeable, not forgotten):</strong> the
-gold CISD-to-EoD reversal (09:00-10:00 ET range, entry against the first break on a
-close back through the driving candle run, held to the close) &mdash; PF 1.068 net,
-t +0.52, zero-cost 1.20, with its strength in the short side (PF 1.247, post-hoc cut)
-and in 2024-25. Fails the both-halves standard today; re-test when 2026 gold data
-accumulates. It changes nothing about the deployed rule.</p></div>
+<div class="note"><p><strong>Watch list (not tradeable, not forgotten):</strong>
+(1) the gold CISD-to-EoD reversal (09:00-10:00 ET range, entry against the first break
+on a close back through the driving candle run, held to the close) &mdash; PF 1.068 net,
+t +0.52, zero-cost 1.20, strength in the short side (PF 1.247, post-hoc) and in 2024-25;
+(2) the gated volume-profile reversion on gold&rsquo;s overnight profile (breakdown
+through a value-area edge on declining volume, reclaim on growing volume, target the
+opposite edge) &mdash; PF 1.045, the round-11 grid&rsquo;s only both-halves survivor
+(1.07/1.03) at t +0.31, with the absorption gates improving results directionally on
+every market. Both fail today&rsquo;s standard; both are re-tests for when 2026 gold
+data accumulates. Neither touches the deployed rule.</p></div>
 <div class="note"><p><strong>One sentence:</strong> trade the Asia open only when gold
 is not a dollar proxy, hold to the New York close with a wide stop at flat 1% risk, and
 let the forward log &mdash; not another backtest &mdash; earn every change.</p></div>
