@@ -92,7 +92,7 @@ a ~9% dent: designed to be survivable.</p>
 <h2><span class="n">03</span>Execution</h2>
 <ul>
 <li><strong>Platform:</strong> MT5 (never MT4 &mdash; the filter reads a second symbol
-in the tester). <code>backtest/mt5/AsiaOpenGold.mq5</code> v1.10 implements the exact
+in the tester). <code>backtest/mt5/AsiaOpenGold.mq5</code> v1.20 implements the exact
 rule; verified by DST transliteration vs the IANA database (0/2,557 mismatches), a
 C++ type-check, and an independent Python replay reproducing all 652 trades. First
 MetaEditor compile may still need a trivial fix.</li>
@@ -122,7 +122,7 @@ factor sits below 1.0.</li>
 <h2><span class="n">04</span>The forward test that earns changes</h2>
 <p class="lede">Nothing changes the deployed rule on backtest evidence &mdash; the
 sample is mined out. The EA logs two candidates per trade to
-<code>AsiaOpenGold_forward.csv</code>; live data decides.</p>
+<code>AsiaOpenGold_forward_v2.csv</code> (one line per trade, written after the exit; scored with <code>analyze_forward.py</code>); live data decides.</p>
 <div class="tbl-wrap"><table>
 <thead><tr><th class="l">Candidate</th><th class="l">Backtest claim</th><th class="l">Fires on</th><th class="l">Promote if</th></tr></thead>
 <tbody>
@@ -135,8 +135,7 @@ sample is mined out. The EA logs two candidates per trade to
 <tr><td class="lbl">London 08:00 add to a winner (round 12)</td>
 <td class="lbl">standalone PF 1.592, t +2.98, halves 1.24 / 2.27 &mdash; pre-registered,
 derived from the drift structure itself</td><td class="num">~50% of trades</td>
-<td class="lbl">needs an EA logging extension (London price + in-profit flag),
-then the same 6-12-month bar</td></tr>
+<td class="lbl">EA v1.20 logs it; score with <code>analyze_forward.py</code>, same 6-12-month bar</td></tr>
 </tbody></table></div>
 <p>Round 12 also settled the mechanism&rsquo;s geography: the identical construction
 moved to the London open is dead (PF 0.87-0.91, both halves), completing the gradient
