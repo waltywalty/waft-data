@@ -1,0 +1,570 @@
+<title>Borrowed Edges</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root {
+  --ground:#FBFBFC; --surface:#FFFFFF; --sunk:#F3F4F7;
+  --ink:#16191F; --ink-2:#4A515E; --ink-3:#7C8496;
+  --rule:#DFE2E9; --rule-2:#EDEFF3;
+  --brass:#8A6420; --brass-soft:#F0E4CC;
+  --pos:#1B6E55; --pos-bg:#E4F1EB; --pos-bg-2:#C9E4D8;
+  --neg:#A83226; --neg-bg:#FAE7E4; --neg-bg-2:#F3CDC7;
+  --maxw:74ch;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ground:#0E1116; --surface:#161A21; --sunk:#1B2029;
+    --ink:#E8EAEF; --ink-2:#A7AEBC; --ink-3:#767E8E;
+    --rule:#272D38; --rule-2:#1F242D;
+    --brass:#D5A64A; --brass-soft:#3A2F18;
+    --pos:#5CBE99; --pos-bg:#14291F; --pos-bg-2:#1C4132;
+    --neg:#E58275; --neg-bg:#2C1714; --neg-bg-2:#4A211B;
+  }
+}
+:root[data-theme="dark"] {
+  --ground:#0E1116; --surface:#161A21; --sunk:#1B2029;
+  --ink:#E8EAEF; --ink-2:#A7AEBC; --ink-3:#767E8E;
+  --rule:#272D38; --rule-2:#1F242D;
+  --brass:#D5A64A; --brass-soft:#3A2F18;
+  --pos:#5CBE99; --pos-bg:#14291F; --pos-bg-2:#1C4132;
+  --neg:#E58275; --neg-bg:#2C1714; --neg-bg-2:#4A211B;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:"IBM Plex Sans",system-ui,sans-serif; font-size:16.5px; line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap { max-width:940px; margin:0 auto; padding:0 28px 96px; }
+header { padding:64px 0 34px; border-bottom:1px solid var(--rule); }
+.eyebrow {
+  font-family:"IBM Plex Mono",monospace; font-size:11.5px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--brass); margin:0 0 14px;
+}
+h1 {
+  font-family:Spectral,Georgia,serif; font-weight:600; font-size:clamp(34px,5.2vw,50px);
+  line-height:1.1; letter-spacing:-.015em; margin:0 0 16px; text-wrap:balance;
+}
+.standfirst { font-size:19px; color:var(--ink-2); max-width:62ch; margin:0; text-wrap:pretty; }
+.provenance {
+  display:flex; flex-wrap:wrap; gap:0 26px; margin-top:26px;
+  font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--ink-3);
+}
+.provenance b { color:var(--ink-2); font-weight:500; }
+section { padding-top:52px; }
+h2 {
+  font-family:Spectral,Georgia,serif; font-weight:600; font-size:26px; letter-spacing:-.01em;
+  margin:0 0 6px; text-wrap:balance;
+}
+h2 .n {
+  font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--brass);
+  letter-spacing:.1em; display:block; margin-bottom:8px; font-weight:500;
+}
+h3 { font-size:15px; font-weight:600; margin:32px 0 8px; letter-spacing:.005em; }
+p { max-width:var(--maxw); margin:14px 0; text-wrap:pretty; }
+.lede { color:var(--ink-2); }
+ul { max-width:var(--maxw); padding-left:20px; }
+li { margin:7px 0; }
+strong { font-weight:600; }
+code { font-family:"IBM Plex Mono",monospace; font-size:.9em; background:var(--sunk);
+        padding:1px 5px; border-radius:3px; }
+.verdict {
+  margin-top:36px; background:var(--surface); border:1px solid var(--rule);
+  border-left:3px solid var(--brass); border-radius:4px; padding:24px 26px;
+}
+.verdict p { margin:0 0 12px; }
+.verdict p:last-child { margin-bottom:0; }
+.verdict .head {
+  font-family:"IBM Plex Mono",monospace; font-size:11.5px; letter-spacing:.13em;
+  text-transform:uppercase; color:var(--brass); margin-bottom:12px;
+}
+.stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(148px,1fr)); gap:1px;
+          background:var(--rule); border:1px solid var(--rule); border-radius:4px;
+          overflow:hidden; margin:28px 0; }
+.stat { background:var(--surface); padding:16px 18px; }
+.stat .k { font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.1em;
+            text-transform:uppercase; color:var(--ink-3); }
+.stat .v { font-family:"IBM Plex Mono",monospace; font-size:24px; font-weight:500;
+            margin-top:5px; font-variant-numeric:tabular-nums; }
+.stat .v.dim { color:var(--ink-2); }
+.tbl-wrap { overflow-x:auto; margin:22px 0; border:1px solid var(--rule); border-radius:4px;
+             background:var(--surface); }
+table { border-collapse:collapse; width:100%; font-size:13.5px; }
+th {
+  font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--ink-3); font-weight:500; text-align:right;
+  padding:12px 14px; border-bottom:1px solid var(--rule); white-space:nowrap;
+}
+th:first-child, th.l { text-align:left; }
+td { padding:9px 14px; border-bottom:1px solid var(--rule-2); white-space:nowrap; }
+tbody tr:last-child td { border-bottom:none; }
+.num { text-align:right; font-family:"IBM Plex Mono",monospace;
+        font-variant-numeric:tabular-nums; }
+.lbl { color:var(--ink-2); }
+.muted { color:var(--ink-3); }
+.pos-1 { background:var(--pos-bg); color:var(--pos); }
+.pos-2 { background:var(--pos-bg-2); color:var(--pos); font-weight:500; }
+.neg-1 { background:var(--neg-bg); color:var(--neg); }
+.neg-2 { background:var(--neg-bg-2); color:var(--neg); font-weight:500; }
+.pos-t { color:var(--pos); } .neg-t { color:var(--neg); }
+figure { margin:26px 0; }
+figcaption { font-size:13px; color:var(--ink-3); margin-top:10px; max-width:66ch; }
+.chart { background:var(--surface); border:1px solid var(--rule); border-radius:4px;
+          padding:18px 10px 8px; overflow-x:auto; }
+svg { display:block; max-width:100%; height:auto; }
+.bar-open { fill:var(--ink-3); }
+.bar-entry { fill:var(--brass); }
+.bar-val { font-family:"IBM Plex Mono",monospace; font-size:11px; fill:var(--ink-2);
+            text-anchor:middle; font-variant-numeric:tabular-nums; }
+.bar-lbl { font-family:"IBM Plex Sans",sans-serif; font-size:12px; fill:var(--ink-2);
+            text-anchor:middle; }
+.baseline { stroke:var(--neg); stroke-width:1.2; stroke-dasharray:5 4; }
+.baseline-lbl { font-family:"IBM Plex Mono",monospace; font-size:10.5px; fill:var(--neg); }
+.curve { fill:none; stroke-width:1.7; }
+.c0 { stroke:var(--brass); stroke-width:2.2; }
+.c1 { stroke:var(--pos); }
+.c2 { stroke:var(--neg); }
+.c3 { stroke:var(--ink-3); }
+.c4 { stroke:var(--ink-3); stroke-dasharray:4 3; stroke-width:1.3; }
+.ax { font-family:"IBM Plex Mono",monospace; font-size:10.5px; fill:var(--ink-3); }
+.zero { stroke:var(--rule); stroke-width:1; }
+.legend { display:flex; flex-wrap:wrap; gap:16px; margin-top:12px; font-size:12.5px;
+           color:var(--ink-2); }
+.legend span { display:inline-flex; align-items:center; gap:7px; }
+.swatch { width:16px; height:3px; border-radius:2px; display:inline-block; }
+.note { background:var(--sunk); border-radius:4px; padding:18px 20px; margin:26px 0;
+         font-size:14.5px; color:var(--ink-2); }
+.note p { margin:0 0 10px; max-width:none; } .note p:last-child { margin:0; }
+footer { margin-top:64px; padding-top:22px; border-top:1px solid var(--rule);
+          font-size:13px; color:var(--ink-3); }
+a { color:var(--brass); text-underline-offset:2px; }
+a:focus-visible, :focus-visible { outline:2px solid var(--brass); outline-offset:2px; }
+@media (max-width:620px) { .wrap { padding:0 18px 64px; } header { padding-top:40px; } }
+</style>
+<div class="wrap">
+<header>
+<p class="eyebrow">XAUUSD research &middot; round 8</p>
+<h1>Three strategies from the wild, and a fade</h1>
+<p class="standfirst">We fetched what practitioners actually do to make the opening-range
+breakout, the 2.6-standard-deviation pullback, and the ICT &ldquo;Judas sweep&rdquo; work
+&mdash; 56 sources across three research sweeps &mdash; then ran their mechanical
+versions and our own adaptations through the house battery. Three clean negatives, one
+mirror-image confirmation of our filter&rsquo;s mechanism, and two forward-test leads for
+the one strategy that already works.</p>
+<div class="provenance">
+<span>data <b>350,903 &times; 5-min bars, Aug 2020 &ndash; Aug 2025</b></span>
+<span>cost <b>$0.30/oz round trip</b></span>
+<span>tests this round <b>&asymp; 330</b></span>
+</div>
+</header>
+
+<section>
+<h2><span class="n">01</span>The verdict up front</h2>
+<div class="stats">
+<div class="stat"><div class="k">NY fade &middot; 123 cells</div><div class="v neg-t">loses gross</div></div>
+<div class="stat"><div class="k">2.6&sigma; fade &middot; zero-cost PF</div><div class="v dim">1.006</div></div>
+<div class="stat"><div class="k">Judas sweep &middot; honest OOS PF</div><div class="v neg-t">0.201</div></div>
+<div class="stat"><div class="k">Asia-ORB leads found</div><div class="v pos-t">2</div></div>
+</div>
+<div class="verdict">
+<div class="head">Round-8 verdict</div>
+<p><strong>Fading the New York open fails</strong> exactly as following it did: the fixed
+reference cell loses $0.13/oz <em>before</em> costs. The NY open is two-sided noise once the
+confirmation candle has closed &mdash; the candle itself consumes the move, in both directions.</p>
+<p><strong>The 2.6&sigma; pullback is a spread-sized effect.</strong> Gold&rsquo;s 15-minute
+closes do revert after a 2.6&sigma; stretch &mdash; by almost exactly one bid-ask spread.
+Zero-cost PF 1.006; net PF 0.860. No practitioner gate (ADX regime, band-walk veto, news
+scrub, VWAP anchoring) finds a sub-population that pays more.</p>
+<p><strong>The Judas sweep is adversely selected on gold.</strong> It loses at zero cost
+(PF 0.735 gross), every one of 45 + 12 cells and every canonical refinement stays under
+water, and our take-everything win rate (27.1%) lands within 2.5 points of the one
+independent mechanical ICT test we could find (29.6%). This replicates round 2&rsquo;s
+sweep-entry result on a completely different construction.</p>
+<p><strong>The useful output is on our own strategy:</strong> the practitioner research
+suggested activity gating and exit-structure tests for the Asia ORB. Two survive with the
+same sign in both halves &mdash; high relative volume in the opening range (top-quintile
+PF 1.843) and Crabel&rsquo;s inside-day conditioning (PF 1.616) &mdash; and the stop-distance
+gradient confirms tight stops only hurt. All of it stays a forward-test candidate; the
+deployed configuration does not change on subgroup evidence this thin.</p>
+</div>
+</section>
+
+<section>
+<h2><span class="n">02</span>Fading the New York open</h2>
+<p class="lede">Round 7 ended with a hypothesis: NY-open breaks hold direction but leave
+nothing after the fill, so perhaps the money is on the other side. We built the mirror
+engine &mdash; identical trigger, position inverted, stops beyond the break, reversion
+targets &mdash; and proved it exact: on 1,174 matched trades the fade&rsquo;s
+P&amp;L is the follow&rsquo;s negated to machine precision, so any difference in results is
+the strategy, not the code.</p>
+<p>It loses. 1 of 41 unfiltered cells clear PF 1.0, the
+best <em>t</em> anywhere unfiltered is +0.13, and the zero-cost
+expectancy of the reference cell is &minus;$0.13/oz &mdash; both directions of the NY open
+lose before costs. One result is genuinely informative: the correlation filter&rsquo;s
+ordering <strong>inverts</strong>, exactly as its mechanism predicts.</p>
+<div class="tbl-wrap"><table>
+<thead><tr><th class="l">Correlation regime</th><th>cells</th><th>median PF</th><th>best t</th><th>PF &gt; 1</th></tr></thead>
+<tbody><tr><td class="lbl">all</td><td class="num">41</td><td class="num neg-1">0.881</td><td class="num">+0.13</td><td class="num">1/41</td></tr>
+<tr><td class="lbl">corr<=0.5</td><td class="num">41</td><td class="num neg-1">0.845</td><td class="num">-0.44</td><td class="num">0/41</td></tr>
+<tr><td class="lbl">corr>0.5</td><td class="num">41</td><td class="num neg-1">0.942</td><td class="num">+1.40</td><td class="num">9/41</td></tr></tbody></table></div>
+<p>Fading is <em>worst</em> on low-correlation days &mdash; the days our Asia filter
+selects because breakouts follow through &mdash; and least bad when gold trades as a dollar
+proxy. The filter fails to produce a tradeable NY edge in either direction, but its
+regime-ordering survives a mirror test it was never designed for. That is independent
+evidence the regime is real.</p>
+<h3>Best cells of 123 (in-sample, for the record)</h3>
+<div class="tbl-wrap"><table>
+<thead><tr><th class="l">Range</th><th class="l">Exit</th><th class="l">Filter</th><th>n</th><th>win</th><th>PF</th><th>t</th></tr></thead>
+<tbody><tr><td class="lbl">60-min</td><td class="lbl">To NY lunch</td><td class="lbl muted">corr>0.5</td><td class="num">214</td><td class="num">54.2%</td><td class="num pos-1">1.272</td><td class="num">+1.40</td></tr>
+<tr><td class="lbl">60-min</td><td class="lbl">To NY close</td><td class="lbl muted">corr>0.5</td><td class="num">211</td><td class="num">48.3%</td><td class="num pos-1">1.162</td><td class="num">+1.12</td></tr>
+<tr><td class="lbl">60-min</td><td class="lbl">Far side of range</td><td class="lbl muted">corr>0.5</td><td class="num">213</td><td class="num">48.8%</td><td class="num pos-1">1.092</td><td class="num">+0.79</td></tr>
+<tr><td class="lbl">60-min</td><td class="lbl">London H/L</td><td class="lbl muted">corr>0.5</td><td class="num">211</td><td class="num">48.3%</td><td class="num pos-1">1.087</td><td class="num">+0.73</td></tr>
+<tr><td class="lbl">60-min</td><td class="lbl">First 2 hours</td><td class="lbl muted">corr>0.5</td><td class="num">214</td><td class="num">52.3%</td><td class="num pos-1">1.142</td><td class="num">+0.69</td></tr>
+<tr><td class="lbl">60-min</td><td class="lbl">Range midpoint</td><td class="lbl muted">corr>0.5</td><td class="num">214</td><td class="num">55.1%</td><td class="num pos-1">1.100</td><td class="num">+0.68</td></tr>
+<tr><td class="lbl">60-min</td><td class="lbl">Previous day H/L</td><td class="lbl muted">corr>0.5</td><td class="num">193</td><td class="num">47.7%</td><td class="num pos-1">1.041</td><td class="num">+0.40</td></tr>
+<tr><td class="lbl">60-min</td><td class="lbl">First 90 min</td><td class="lbl muted">corr>0.5</td><td class="num">194</td><td class="num">54.6%</td><td class="num pos-1">1.069</td><td class="num">+0.28</td></tr></tbody></table></div>
+<h3>Parameter variations (fixed cell: 15-min range, midpoint target)</h3>
+<div class="tbl-wrap"><table>
+<thead><tr><th class="l">Variant</th><th>n</th><th>PF</th><th>exp $/oz</th><th>t</th></tr></thead>
+<tbody><tr><td class="lbl">stop at 0.5 x range beyond entry</td><td class="num">1214</td><td class="num neg-1">0.780</td><td class="num">-0.41</td><td class="num">-3.97</td></tr>
+<tr><td class="lbl">stop at 1.0 x range beyond entry</td><td class="num">1214</td><td class="num neg-1">0.825</td><td class="num">-0.43</td><td class="num">-3.23</td></tr>
+<tr><td class="lbl">stop at 2.0 x range beyond entry</td><td class="num">1211</td><td class="num neg-1">0.861</td><td class="num">-0.38</td><td class="num">-2.12</td></tr>
+<tr><td class="lbl">no stop</td><td class="num">1209</td><td class="num neg-1">0.839</td><td class="num">-0.47</td><td class="num">-2.22</td></tr>
+<tr><td class="lbl">fade only closes >= 0.00 x range out</td><td class="num">1214</td><td class="num neg-1">0.825</td><td class="num">-0.43</td><td class="num">-3.23</td></tr>
+<tr><td class="lbl">fade only closes >= 0.10 x range out</td><td class="num">824</td><td class="num neg-1">0.835</td><td class="num">-0.42</td><td class="num">-2.39</td></tr>
+<tr><td class="lbl">fade only closes >= 0.25 x range out</td><td class="num">458</td><td class="num neg-1">0.735</td><td class="num">-0.72</td><td class="num">-3.11</td></tr>
+<tr><td class="lbl">fade only closes >= 0.50 x range out</td><td class="num">182</td><td class="num neg-1">0.770</td><td class="num">-0.63</td><td class="num">-1.39</td></tr></tbody></table></div>
+<div class="tbl-wrap" style="max-width:420px"><table>
+<thead><tr><th class="l">Round trip</th><th>PF</th><th>exp $/oz</th></tr></thead>
+<tbody><tr><td class="lbl">$0.00</td><td class="num neg-1">0.945</td><td class="num">-0.13</td></tr>
+<tr><td class="lbl">$0.15</td><td class="num neg-1">0.883</td><td class="num">-0.28</td></tr>
+<tr><td class="lbl">$0.30</td><td class="num neg-1">0.825</td><td class="num">-0.43</td></tr>
+<tr><td class="lbl">$0.60</td><td class="num neg-1">0.718</td><td class="num">-0.73</td></tr></tbody></table></div>
+<h3>The honest out-of-sample gate</h3>
+<p>Ranked on pre-2024 <em>t</em> only, then read on 2024-25. The in-sample winners &mdash;
+all high-correlation fade cells &mdash; collapse out of sample: median OS PF
+0.655 against a population median of
+0.925. The corr&gt;0.5 fade &ldquo;edge&rdquo; was a
+2020-23 artifact.</p>
+<div class="tbl-wrap"><table>
+<thead><tr><th class="l">Cell</th><th class="l">Filter</th><th>IS n</th><th>IS PF</th><th>IS t</th><th>OS n</th><th>OS PF</th></tr></thead>
+<tbody><tr><td class="lbl">60-min · To NY lunch</td><td class="lbl muted">corr>0.5</td><td class="num">171</td><td class="num">1.602</td><td class="num muted">+2.34</td><td class="num">43</td><td class="num neg-1">0.729</td></tr>
+<tr><td class="lbl">60-min · To NY close</td><td class="lbl muted">corr>0.5</td><td class="num">168</td><td class="num">1.413</td><td class="num muted">+1.87</td><td class="num">43</td><td class="num neg-1">0.655</td></tr>
+<tr><td class="lbl">60-min · Far side of range</td><td class="lbl muted">corr>0.5</td><td class="num">170</td><td class="num">1.353</td><td class="num muted">+1.70</td><td class="num">43</td><td class="num neg-1">0.564</td></tr>
+<tr><td class="lbl">60-min · London H/L</td><td class="lbl muted">corr>0.5</td><td class="num">168</td><td class="num">1.312</td><td class="num muted">+1.51</td><td class="num">43</td><td class="num neg-1">0.632</td></tr>
+<tr><td class="lbl">60-min · Range midpoint</td><td class="lbl muted">corr>0.5</td><td class="num">171</td><td class="num">1.283</td><td class="num muted">+1.40</td><td class="num">43</td><td class="num neg-1">0.742</td></tr></tbody></table></div>
+</section>
+
+<section>
+<h2><span class="n">03</span>What practitioners actually do</h2>
+<p class="lede">Three research sweeps, 56 sources: academic papers, independent
+replications, quant-practitioner backtests, and the retail material itself. The short
+versions, with what we chose to test:</p>
+<div class="verdict"><div class="head">Opening Range Breakout (ORB)</div>
+<p>Define a range from the first N minutes of a session (5/15/30/60 min are the common choices), then trade in the direction the market resolves that range, with a stop tied to the range or to ATR and a time-based exit at end of day. Two distinct lineages exist: Toby Crabel's 1990 futures work (buy/sell stops a "Stretch" away from the open, conditioned on range-contraction patterns like NR7/inside days) and the 2023-24 Zarattini-Aziz papers (a directional first-5-minute-bar rule on QQQ and on high-relative-volume "Stocks in Play", tight ATR stops, 1%-risk sizing under a 4x leverage cap, exit at end of day). As actually traded by practitioners it is a momentum-continuation bet that the open's imbalance persists, and nearly all of the documented edge comes from a minority of large trend days — win rates are ~25-55% depending on variant, with EoD holds or ~10R targets doing the earning.</p><p><strong>What has evidence:</strong> the Zarattini&ndash;Aziz papers (QQQ and
+&ldquo;Stocks in Play&rdquo;) are the only ORB results with audited-quality replication, and
+the replication is sobering: the QQQ edge is $0.07/share gross and dies at ~2.2&cent; of
+slippage; 76% of the filtered variant&rsquo;s profit came from 2022 alone. The one filter
+that beat a placebo was cross-asset confirmation (t=2.05). QuantifiedStrategies found the
+same ORB rules <em>negative</em> on gold futures &mdash; independently corroborating our
+117-cell NY null. <strong>We tested:</strong> their ATR-fraction stops, Crabel&rsquo;s
+NR7/inside-day conditioning, relative-volume gating, trigger-time, prior-day-range veto,
+and the first-bar-direction entry &mdash; all transplanted onto the Asia ORB (section 06).</p>
+<p class="muted" style="font-size:13.5px">18 sources reviewed; full structured notes in
+<code>backtest/reference/strategy_research.json</code>.</p></div>
+<div class="verdict"><div class="head">2.6 standard deviation pullback and mean reversion</div>
+<p>A counter-trend fade of a price excursion roughly 2.6 standard deviations from a reference mean, entering as price pulls back toward the mean and targeting the mean itself. There is no single canonical "2.6 SD" strategy in the searchable record; the number maps onto three real families: (1) Mostafa Belkhayate's Centre of Gravity system — a gold-famous mean-reversion method whose bands sit at golden-ratio multiples of SD (1.618, 2.618, 4.236) around a repainting polynomial regression, so the "2.6" band is the classic entry zone; (2) generic 99%-confidence bands, since z = 2.576 ≈ 2.6 (Bollinger/linear-regression channels set to ~2.5-2.6 SD, and VWAP band ladders whose 2.51 multiplier is the 98.8% quantile); (3) ICT-style "standard deviation" projections of a session range (multiples of the range, not statistical SDs), where the documented reversal zone is 2-2.5 with 4 as extension. In all variants the trade is: extreme deviation → confirmation of rejection → revert-to-mean target, with an explicit trend/regime filter because band tags in trends are continuation, not reversal.</p><p><strong>What has evidence:</strong> there is no canonical &ldquo;2.6 SD&rdquo;
+strategy; the number maps onto Belkhayate&rsquo;s gold-famous Centre-of-Gravity bands
+(2.618), 99%-confidence Bollinger variants (z = 2.576), and VWAP band ladders. The honest
+literature is negative for gold specifically: an OU mean-reversion falsification study
+found <em>every</em> micro-gold-future configuration unprofitable after realistic friction,
+and Bollinger&rsquo;s own canon warns that closes outside the band are continuation, not
+reversion, signals. <strong>We tested:</strong> the full k-gradient (1.5&ndash;3.5&sigma;)
+across three timeframes and both trigger styles, plus every gate practitioners claim
+rescues it (section 04).</p>
+<p class="muted" style="font-size:13.5px">20 sources reviewed; full structured notes in
+<code>backtest/reference/strategy_research.json</code>.</p></div>
+<div class="verdict"><div class="head">Judas swing / session-open liquidity sweep with higher-timeframe bias (ICT-style smart money concepts)</div>
+<p>The Judas swing is ICT's name for the false move early in a session: a push shortly after a session open that runs resting stops beyond an obvious level (Asian range high/low, London high/low, previous day high/low, equal highs/lows) before the day's real move develops the other way. Canonically it forms between the New York midnight open (00:00 NY) and ~05:00 NY, with the highest-probability window at the London open 02:00-05:00 ET (the 02:00-03:00 "witching hour"); a second variant plays at the NY open, 8:30-10:00 ET, sweeping London/overnight extremes. As traded, it is a stop-run fade: hold a daily-timeframe bias, wait for a counter-bias sweep of an unswept liquidity level, require a lower-timeframe market structure shift (body close, with displacement, ideally leaving an FVG), enter on the retrace, stop beyond the sweep wick, target the opposite side of the swept range and then the previous day's high/low. It is a repackaging of Connors/Raschke's 1995 "Turtle Soup" failed-breakout setup with a session-timing overlay.</p><p><strong>What has evidence:</strong> nothing audited. ICT&rsquo;s Judas swing has
+no verified track record; claimed 55-65% win rates come from discretionary backtests that
+exclude invalid setups after the fact. The one independent mechanical test we found
+(OffBeatForex) won 29.6% of take-everything setups and only profited by discarding 92% of
+them. The canonical spec is real enough to freeze, though: killzone windows (London 02:00-05:00 ET,
+NY 08:30-10:00 ET), PDH/PDL 4-scenario bias, wick-through-close-back sweeps, stops beyond
+the sweep wick. <strong>We tested:</strong> the frozen spec across 45 cells, then the
+canonical refinements &mdash; killzones, PDH/PDL bias, minimum sweep depth (section 05).</p>
+<p class="muted" style="font-size:13.5px">18 sources reviewed; full structured notes in
+<code>backtest/reference/strategy_research.json</code>.</p></div>
+</section>
+
+<section>
+<h2><span class="n">04</span>The 2.6&sigma; pullback: a spread-sized truth</h2>
+<p class="lede">Judged the house way: on the gradient, not at the advertised point.
+Profit factor at $0.30/oz cost, by band width, timeframe and trigger
+(<code>close_out</code> enters on the first close beyond the band;
+<code>close_back</code> waits for the close back inside &mdash; the practitioners&rsquo;
+confirmation):</p>
+<div class="tbl-wrap"><table>
+<thead><tr><th class="l">Band width</th><th>5m out</th><th>5m back</th><th>15m out</th><th>15m back</th><th>60m out</th><th>60m back</th></tr></thead>
+<tbody><tr><td class="lbl">1.5&sigma;</td><td class="num neg-2">0.737<span class="muted" style="font-size:11px"> (26467)</span></td><td class="num neg-2">0.696<span class="muted" style="font-size:11px"> (27749)</span></td><td class="num neg-1">0.829<span class="muted" style="font-size:11px"> (9696)</span></td><td class="num neg-1">0.808<span class="muted" style="font-size:11px"> (9788)</span></td><td class="num neg-1">0.931<span class="muted" style="font-size:11px"> (2454)</span></td><td class="num neg-1">0.838<span class="muted" style="font-size:11px"> (2336)</span></td></tr>
+<tr><td class="lbl">2.0&sigma;</td><td class="num neg-2">0.751<span class="muted" style="font-size:11px"> (17814)</span></td><td class="num neg-2">0.733<span class="muted" style="font-size:11px"> (18059)</span></td><td class="num neg-1">0.817<span class="muted" style="font-size:11px"> (6614)</span></td><td class="num neg-1">0.804<span class="muted" style="font-size:11px"> (6684)</span></td><td class="num neg-1">0.966<span class="muted" style="font-size:11px"> (1626)</span></td><td class="num neg-1">0.802<span class="muted" style="font-size:11px"> (1582)</span></td></tr>
+<tr><td class="lbl">2.6&sigma; <span class="muted">&larr; as advertised</span></td><td class="num neg-2">0.752<span class="muted" style="font-size:11px"> (6081)</span></td><td class="num neg-2">0.757<span class="muted" style="font-size:11px"> (6005)</span></td><td class="num neg-1">0.887<span class="muted" style="font-size:11px"> (2700)</span></td><td class="num neg-1">0.860<span class="muted" style="font-size:11px"> (2661)</span></td><td class="num neg-1">0.841<span class="muted" style="font-size:11px"> (717)</span></td><td class="num neg-2">0.721<span class="muted" style="font-size:11px"> (697)</span></td></tr>
+<tr><td class="lbl">3.0&sigma;</td><td class="num neg-2">0.749<span class="muted" style="font-size:11px"> (2177)</span></td><td class="num neg-2">0.791<span class="muted" style="font-size:11px"> (2159)</span></td><td class="num neg-1">0.819<span class="muted" style="font-size:11px"> (1109)</span></td><td class="num neg-1">0.884<span class="muted" style="font-size:11px"> (1102)</span></td><td class="num neg-1">0.985<span class="muted" style="font-size:11px"> (336)</span></td><td class="num pos-1">1.058<span class="muted" style="font-size:11px"> (330)</span></td></tr>
+<tr><td class="lbl">3.5&sigma;</td><td class="num neg-2">0.752<span class="muted" style="font-size:11px"> (434)</span></td><td class="num neg-1">0.879<span class="muted" style="font-size:11px"> (431)</span></td><td class="num pos-1">1.152<span class="muted" style="font-size:11px"> (239)</span></td><td class="num pos-1">1.020<span class="muted" style="font-size:11px"> (239)</span></td><td class="num neg-1">0.889<span class="muted" style="font-size:11px"> (87)</span></td><td class="num pos-2">1.372<span class="muted" style="font-size:11px"> (87)</span></td></tr>
+</tbody></table></div>
+<p>Everything liquid is negative; the only PF &gt; 1 cells are n &le; 250 tails at
+3.5&sigma; &mdash; spikes, not slopes. The mechanism is in the cost ladder of the fixed
+cell (15m, 2.6&sigma;, close-back):</p>
+<div class="tbl-wrap" style="max-width:420px"><table>
+<thead><tr><th class="l">Round trip</th><th>PF</th><th>exp $/oz</th></tr></thead>
+<tbody><tr><td class="lbl">$0.00</td><td class="num pos-1">1.006</td><td class="num">+0.01</td></tr>
+<tr><td class="lbl">$0.15</td><td class="num neg-1">0.929</td><td class="num">-0.14</td></tr>
+<tr><td class="lbl">$0.30</td><td class="num neg-1">0.860</td><td class="num">-0.29</td></tr>
+<tr><td class="lbl">$0.60</td><td class="num neg-1">0.739</td><td class="num">-0.59</td></tr></tbody></table></div>
+<p><strong>At zero cost the strategy is exactly breakeven (PF 1.006, +$0.01/oz).</strong>
+The mean reversion is real and worth one spread. There is nothing to harvest and nothing
+mysterious to explain: gold&rsquo;s intraday stretches revert by precisely the amount the
+market charges you to trade them.</p>
+<h3>Sessions, and every gate the practitioners recommend</h3>
+<div class="tbl-wrap"><table>
+<thead><tr><th class="l">Session</th><th class="l">Trigger</th><th>n</th><th>win</th><th>PF</th><th>t</th></tr></thead>
+<tbody><tr><td class="lbl">asia</td><td class="lbl muted">close_out</td><td class="num">929</td><td class="num">26.5%</td><td class="num neg-1">0.807</td><td class="num">-2.76</td></tr>
+<tr><td class="lbl">london</td><td class="lbl muted">close_out</td><td class="num">828</td><td class="num">28.5%</td><td class="num neg-1">0.927</td><td class="num">-0.75</td></tr>
+<tr><td class="lbl">ny</td><td class="lbl muted">close_out</td><td class="num">839</td><td class="num">32.7%</td><td class="num neg-1">0.899</td><td class="num">-1.09</td></tr>
+<tr><td class="lbl">asia</td><td class="lbl muted">close_back</td><td class="num">878</td><td class="num">31.9%</td><td class="num neg-1">0.739</td><td class="num">-3.88</td></tr>
+<tr><td class="lbl">london</td><td class="lbl muted">close_back</td><td class="num">717</td><td class="num">36.5%</td><td class="num neg-1">0.888</td><td class="num">-1.22</td></tr>
+<tr><td class="lbl">ny</td><td class="lbl muted">close_back</td><td class="num">967</td><td class="num">39.2%</td><td class="num neg-1">0.847</td><td class="num">-2.18</td></tr></tbody></table></div>
+<div class="tbl-wrap"><table>
+<thead><tr><th class="l">Gate (fixed cell)</th><th>n</th><th>PF</th><th>exp</th><th>t</th><th>20-23</th><th>24-25</th><th>sign</th></tr></thead>
+<tbody><tr><td class="lbl">ADX &lt; 20 (quiet)</td><td class="num">909</td><td class="num neg-1">0.872</td><td class="num">-0.24</td><td class="num">-1.71</td><td class="num muted">0.789</td><td class="num muted">0.985</td><td class="lbl"><span class="pos-t">agree</span></td></tr><tr><td class="lbl">ADX &ge; 20 (trending)</td><td class="num">1752</td><td class="num neg-1">0.855</td><td class="num">-0.31</td><td class="num">-2.71</td><td class="num muted">0.838</td><td class="num muted">0.877</td><td class="lbl"><span class="pos-t">agree</span></td></tr><tr><td class="lbl">ADX &lt; 25 (quiet)</td><td class="num">1420</td><td class="num neg-1">0.853</td><td class="num">-0.29</td><td class="num">-2.53</td><td class="num muted">0.780</td><td class="num muted">0.956</td><td class="lbl"><span class="pos-t">agree</span></td></tr><tr><td class="lbl">ADX &ge; 25 (trending)</td><td class="num">1241</td><td class="num neg-1">0.868</td><td class="num">-0.28</td><td class="num">-2.02</td><td class="num muted">0.870</td><td class="num muted">0.866</td><td class="lbl"><span class="pos-t">agree</span></td></tr><tr><td class="lbl">ADX &lt; 30 (quiet)</td><td class="num">1827</td><td class="num neg-1">0.843</td><td class="num">-0.32</td><td class="num">-3.11</td><td class="num muted">0.794</td><td class="num muted">0.911</td><td class="lbl"><span class="pos-t">agree</span></td></tr><tr><td class="lbl">ADX &ge; 30 (trending)</td><td class="num">834</td><td class="num neg-1">0.895</td><td class="num">-0.23</td><td class="num">-1.27</td><td class="num muted">0.882</td><td class="num muted">0.914</td><td class="lbl"><span class="pos-t">agree</span></td></tr><tr><td class="lbl">single poke (exc_len = 1)</td><td class="num">1875</td><td class="num neg-1">0.871</td><td class="num">-0.24</td><td class="num">-2.35</td><td class="num muted">0.870</td><td class="num muted">0.872</td><td class="lbl"><span class="pos-t">agree</span></td></tr><tr><td class="lbl">short walk (exc_len 2-3)</td><td class="num">744</td><td class="num neg-1">0.864</td><td class="num">-0.34</td><td class="num">-1.95</td><td class="num muted">0.722</td><td class="num muted">1.079</td><td class="lbl"><span class="neg-t">disagree</span></td></tr><tr><td class="lbl">long walk (exc_len &ge; 4)</td><td class="num">42</td><td class="num neg-1">0.588</td><td class="num">-1.65</td><td class="num">-1.04</td></tr><tr><td class="lbl">outside 8:30/14:00 ET news windows</td><td class="num">2412</td><td class="num neg-1">0.854</td><td class="num">-0.30</td><td class="num">-3.25</td><td class="num muted">0.807</td><td class="num muted">0.919</td><td class="lbl"><span class="pos-t">agree</span></td></tr><tr><td class="lbl">inside news windows</td><td class="num">249</td><td class="num neg-1">0.916</td><td class="num">-0.18</td><td class="num">-0.39</td><td class="num muted">0.959</td><td class="num muted">0.839</td><td class="lbl"><span class="pos-t">agree</span></td></tr><tr><td class="lbl">NY-anchored VWAP bands, k=2.0</td><td class="num">2716</td><td class="num neg-1">0.794</td><td class="num">-0.33</td><td class="num">-5.10</td><td class="num muted">0.768</td><td class="num muted">0.827</td><td class="lbl"><span class="pos-t">agree</span></td></tr><tr><td class="lbl">NY-anchored VWAP bands, k=2.6</td><td class="num">761</td><td class="num neg-1">0.821</td><td class="num">-0.31</td><td class="num">-2.41</td><td class="num muted">0.696</td><td class="num muted">1.024</td><td class="lbl"><span class="neg-t">disagree</span></td></tr></tbody></table></div>
+<p>The claim that &ldquo;the trend gate <em>is</em> the strategy&rdquo; fails on gold: quiet-ADX
+and trending-ADX trades lose at the same rate. So do the band-walk veto, the news scrub
+(trades <em>inside</em> news windows were no worse), and VWAP anchoring (worse than the
+rolling mean, t &minus;5.1 at 2&sigma;). Honest OOS: top-5 by IS <em>t</em> read
+0.959 out of sample, population 0.835
+&mdash; nothing selectable either.</p>
+<div class="tbl-wrap"><table>
+<thead><tr><th class="l">Cell (tf / trigger / k)</th><th>IS n</th><th>IS PF</th><th>IS t</th><th>OS n</th><th>OS PF</th></tr></thead>
+<tbody><tr><td class="lbl">15 / close_out / 3.5</td><td class="num">174</td><td class="num">1.087</td><td class="num muted">+0.40</td><td class="num">65</td><td class="num pos-1">1.273</td></tr>
+<tr><td class="lbl">60 / close_back / 3.0</td><td class="num">239</td><td class="num">1.057</td><td class="num muted">+0.38</td><td class="num">91</td><td class="num pos-1">1.060</td></tr>
+<tr><td class="lbl">5 / close_back / 3.5</td><td class="num">301</td><td class="num">1.012</td><td class="num muted">-0.01</td><td class="num">130</td><td class="num neg-1">0.675</td></tr>
+<tr><td class="lbl">60 / close_out / 3.0</td><td class="num">244</td><td class="num">0.998</td><td class="num muted">-0.08</td><td class="num">92</td><td class="num neg-1">0.959</td></tr>
+<tr><td class="lbl">15 / close_out / 2.6 / london</td><td class="num">592</td><td class="num">0.952</td><td class="num muted">-0.44</td><td class="num">236</td><td class="num neg-1">0.884</td></tr></tbody></table></div>
+</section>
+
+<section>
+<h2><span class="n">05</span>The Judas sweep: adverse selection, measured</h2>
+<p class="lede">The user&rsquo;s spec, made mechanical: daily-structure gate (bullish
+&rarr; longs only), causally-tracked unswept session and prior-day levels, a session-open
+sweep against the bias, first 5-minute close back through the level as confirmation, stop
+beyond the sweep extreme, one trade per session. 45 cells: 3 sessions &times; 3 bias
+definitions &times; 5 targets.</p>
+<div class="stats">
+<div class="stat"><div class="k">grid median PF</div><div class="v neg-t">0.613</div></div>
+<div class="stat"><div class="k">best t of 45</div><div class="v dim">+0.49</div></div>
+<div class="stat"><div class="k">zero-cost PF (fixed cell)</div><div class="v neg-t">0.735</div></div>
+<div class="stat"><div class="k">honest OOS median</div><div class="v neg-t">0.201</div></div>
+</div>
+<p>The fixed London cell loses <strong>$0.38/oz before any costs</strong>. This is not
+friction; it is adverse selection: when a level is swept and reclaimed against the daily
+trend, the reclaim close you buy is systematically followed by more of the original move.
+Round 2 found the same for Asia sweep entries; this is an independent construction reaching
+the same verdict, with a win rate (27.1% at 2R) almost identical to the one independent
+mechanical ICT backtest in the literature (29.6%).</p>
+<h3>Where the setup dies (sma20 bias, 2R target)</h3>
+<div class="tbl-wrap"><table>
+<thead><tr><th class="l">Session</th><th>days</th><th>no bias</th><th>no sweep</th><th>no reclaim</th><th>stop too close</th><th>trades</th></tr></thead>
+<tbody><tr><td class="lbl">asia</td><td class="num">1537</td><td class="num">280</td><td class="num">1134</td><td class="num">18</td><td class="num">24</td><td class="num">81</td></tr>
+<tr><td class="lbl">london</td><td class="num">1537</td><td class="num">280</td><td class="num">991</td><td class="num">44</td><td class="num">30</td><td class="num">192</td></tr>
+<tr><td class="lbl">ny</td><td class="num">1537</td><td class="num">280</td><td class="num">1024</td><td class="num">36</td><td class="num">12</td><td class="num">185</td></tr></tbody></table></div>
+<p>London mostly sweeps Asia&rsquo;s levels (153 of 192 trades), exactly as the ICT story
+says &mdash; the sweeps happen; they just don&rsquo;t reverse. Median stop distance is
+$1.54, so the $0.30 cost alone is 20% of one R before slippage.</p>
+<h3>Least-bad of the 45 cells, and the variations</h3>
+<div class="tbl-wrap"><table>
+<thead><tr><th class="l">Cell</th><th>n</th><th>win</th><th>PF</th><th>t</th></tr></thead>
+<tbody><tr><td class="lbl">ny / mom20 / 3R</td><td class="num">179</td><td class="num">31.8%</td><td class="num pos-1">1.109</td><td class="num">+0.49</td></tr>
+<tr><td class="lbl">ny / mom20 / 2R</td><td class="num">179</td><td class="num">34.6%</td><td class="num pos-1">1.028</td><td class="num">+0.15</td></tr>
+<tr><td class="lbl">ny / mom20 / 1R</td><td class="num">179</td><td class="num">48.6%</td><td class="num pos-1">1.037</td><td class="num">+0.08</td></tr>
+<tr><td class="lbl">ny / sma20 / 3R</td><td class="num">185</td><td class="num">31.4%</td><td class="num pos-1">1.002</td><td class="num">+0.01</td></tr>
+<tr><td class="lbl">ny / mom20 / session_end</td><td class="num">179</td><td class="num">27.9%</td><td class="num pos-1">1.020</td><td class="num">-0.02</td></tr></tbody></table></div>
+<div class="tbl-wrap"><table>
+<thead><tr><th class="l">Variation (london / sma20 / 2R)</th><th>n</th><th>PF</th><th>exp</th><th>t</th></tr></thead>
+<tbody><tr><td class="lbl">sweep window 60 min</td><td class="num">134</td><td class="num neg-1">0.488</td><td class="num">-0.87</td><td class="num">-3.24</td></tr>
+<tr><td class="lbl">sweep window 120 min</td><td class="num">192</td><td class="num neg-1">0.588</td><td class="num">-0.68</td><td class="num">-3.03</td></tr>
+<tr><td class="lbl">sweep window 240 min</td><td class="num">274</td><td class="num neg-1">0.682</td><td class="num">-0.53</td><td class="num">-2.53</td></tr>
+<tr><td class="lbl">stop widened x1.0</td><td class="num">192</td><td class="num neg-1">0.588</td><td class="num">-0.68</td><td class="num">-3.03</td></tr>
+<tr><td class="lbl">stop widened x1.5</td><td class="num">192</td><td class="num neg-1">0.613</td><td class="num">-0.90</td><td class="num">-2.80</td></tr>
+<tr><td class="lbl">stop widened x2.0</td><td class="num">192</td><td class="num neg-1">0.632</td><td class="num">-1.09</td><td class="num">-2.51</td></tr>
+<tr><td class="lbl">stop at the level (aggressive)</td><td class="num">113</td><td class="num neg-1">0.394</td><td class="num">-0.71</td><td class="num">-4.37</td></tr></tbody></table></div>
+<div class="tbl-wrap" style="max-width:420px"><table>
+<thead><tr><th class="l">Round trip</th><th>PF</th><th>exp $/oz</th></tr></thead>
+<tbody><tr><td class="lbl">$0.00</td><td class="num neg-1">0.735</td><td class="num">-0.38</td></tr>
+<tr><td class="lbl">$0.15</td><td class="num neg-1">0.656</td><td class="num">-0.53</td></tr>
+<tr><td class="lbl">$0.30</td><td class="num neg-1">0.588</td><td class="num">-0.68</td></tr>
+<tr><td class="lbl">$0.60</td><td class="num neg-1">0.475</td><td class="num">-0.98</td></tr></tbody></table></div>
+<h3>The canonical-ICT addendum</h3>
+<p>The research surfaced refinements the base grid didn&rsquo;t use: the true killzone
+windows (<code>ldnkz</code> opens 02:00 ET, <code>nykz</code> 08:30 ET), the PDH/PDL
+4-scenario bias, and gold&rsquo;s &ldquo;deep sweep&rdquo; claim as a minimum-depth filter.
+Every refinement moves the needle in the claimed direction; none gets near water:</p>
+<div class="tbl-wrap"><table>
+<thead><tr><th class="l">Cell</th><th>n</th><th>win</th><th>PF</th><th>t</th></tr></thead>
+<tbody><tr><td class="lbl">nykz / sma20 / opp</td><td class="num">252</td><td class="num">29.0%</td><td class="num pos-1">1.140</td><td class="num">+0.61</td></tr>
+<tr><td class="lbl">nykz / sma20 / 2R</td><td class="num">252</td><td class="num">37.7%</td><td class="num pos-1">1.127</td><td class="num">+0.67</td></tr>
+<tr><td class="lbl">nykz / pdhl / opp</td><td class="num">198</td><td class="num">26.3%</td><td class="num neg-1">0.970</td><td class="num">-0.30</td></tr>
+<tr><td class="lbl">nykz / pdhl / 2R</td><td class="num">198</td><td class="num">33.3%</td><td class="num neg-1">0.899</td><td class="num">-0.63</td></tr>
+<tr><td class="lbl">ldnkz / pdhl / opp</td><td class="num">275</td><td class="num">17.1%</td><td class="num neg-1">0.823</td><td class="num">-1.03</td></tr>
+<tr><td class="lbl">ldnkz / pdhl / 2R</td><td class="num">275</td><td class="num">32.7%</td><td class="num neg-1">0.731</td><td class="num">-2.28</td></tr>
+<tr><td class="lbl">ldnkz / sma20 / opp</td><td class="num">319</td><td class="num">16.0%</td><td class="num neg-1">0.674</td><td class="num">-2.22</td></tr>
+<tr><td class="lbl">london / pdhl / 2R</td><td class="num">150</td><td class="num">28.7%</td><td class="num neg-1">0.642</td><td class="num">-2.20</td></tr>
+<tr><td class="lbl">ldnkz / sma20 / 2R</td><td class="num">319</td><td class="num">29.5%</td><td class="num neg-1">0.592</td><td class="num">-3.49</td></tr>
+<tr><td class="lbl">london / sma20 / 2R</td><td class="num">192</td><td class="num">27.1%</td><td class="num neg-1">0.588</td><td class="num">-3.03</td></tr>
+<tr><td class="lbl">london / pdhl / opp</td><td class="num">150</td><td class="num">14.0%</td><td class="num neg-1">0.559</td><td class="num">-2.20</td></tr>
+<tr><td class="lbl">london / sma20 / opp</td><td class="num">192</td><td class="num">12.0%</td><td class="num neg-1">0.510</td><td class="num">-3.27</td></tr></tbody></table></div>
+<div class="tbl-wrap"><table>
+<thead><tr><th class="l">Cell</th><th class="l">Min sweep depth</th><th>n</th><th>PF</th><th>t</th></tr></thead>
+<tbody><tr><td class="lbl">london/sma20/2R</td><td class="lbl">&ge; $0.0</td><td class="num">192</td><td class="num neg-1">0.588</td><td class="num">-3.03</td></tr>
+<tr><td class="lbl">london/sma20/2R</td><td class="lbl">&ge; $0.5</td><td class="num">115</td><td class="num neg-1">0.680</td><td class="num">-1.85</td></tr>
+<tr><td class="lbl">london/sma20/2R</td><td class="lbl">&ge; $1.0</td><td class="num">74</td><td class="num neg-1">0.737</td><td class="num">-1.13</td></tr>
+<tr><td class="lbl">london/sma20/2R</td><td class="lbl">&ge; $2.0</td><td class="num">41</td><td class="num neg-1">0.656</td><td class="num">-1.29</td></tr>
+<tr><td class="lbl">ldnkz/pdhl/2R</td><td class="lbl">&ge; $0.0</td><td class="num">275</td><td class="num neg-1">0.731</td><td class="num">-2.28</td></tr>
+<tr><td class="lbl">ldnkz/pdhl/2R</td><td class="lbl">&ge; $0.5</td><td class="num">167</td><td class="num neg-1">0.740</td><td class="num">-1.92</td></tr>
+<tr><td class="lbl">ldnkz/pdhl/2R</td><td class="lbl">&ge; $1.0</td><td class="num">104</td><td class="num neg-1">0.795</td><td class="num">-1.33</td></tr>
+<tr><td class="lbl">ldnkz/pdhl/2R</td><td class="lbl">&ge; $2.0</td><td class="num">49</td><td class="num neg-1">0.652</td><td class="num">-1.61</td></tr>
+</tbody></table></div>
+<div class="tbl-wrap"><table>
+<thead><tr><th class="l">Cell</th><th>IS n</th><th>IS PF</th><th>IS t</th><th>OS n</th><th>OS PF</th></tr></thead>
+<tbody><tr><td class="lbl">asia / sma20 / opp</td><td class="num">55</td><td class="num">1.108</td><td class="num muted">+0.29</td><td class="num">26</td><td class="num neg-1">0.000</td></tr>
+<tr><td class="lbl">asia / sma20 / session_end</td><td class="num">55</td><td class="num">1.101</td><td class="num muted">+0.27</td><td class="num">26</td><td class="num neg-1">0.000</td></tr>
+<tr><td class="lbl">ny / mom20 / 3R</td><td class="num">127</td><td class="num">1.031</td><td class="num muted">+0.21</td><td class="num">52</td><td class="num pos-1">1.239</td></tr>
+<tr><td class="lbl">asia / sma20 / 3R</td><td class="num">55</td><td class="num">1.037</td><td class="num muted">+0.13</td><td class="num">26</td><td class="num neg-1">0.201</td></tr>
+<tr><td class="lbl">ny / mom20 / 2R</td><td class="num">127</td><td class="num">1.015</td><td class="num muted">+0.13</td><td class="num">52</td><td class="num pos-1">1.050</td></tr></tbody></table></div>
+<p>The honest OOS is the worst this repo has recorded: the two Asia cells selected on
+in-sample strength scored PF 0.000 out of sample &mdash; every 2024-25 trade lost.</p>
+</section>
+
+<section>
+<h2><span class="n">06</span>Adapting the research to the strategy that works</h2>
+<p class="lede">The productive half of the research was never the three new strategies
+&mdash; it was the filter menu it suggested for our validated Asia ORB (n=652, PF 1.320,
+t +2.54, the exact deployed trade set). 50 tests, each read with its 2020-23 / 2024-25
+sign agreement.</p>
+<h3>A. Stops: the Zarattini claim reverses on gold</h3>
+<p>Their papers say tight ATR-fraction stops dominate. On gold the gradient runs smoothly
+the other way &mdash; every tightening costs profit factor, and the no-stop hold is best.
+Stops on this strategy only truncate a positive-drift distribution; the 2&times;-range stop
+we deploy costs ~0.13 of PF and buys drawdown control, which remains a deliberate trade.</p>
+<div class="tbl-wrap"><table>
+<thead><tr><th class="l">Stop</th><th>stop-outs</th><th>n</th><th>PF</th><th>t</th><th>20-23</th><th>24-25</th></tr></thead>
+<tbody><tr><td class="lbl">0.05 &times; ATR14</td><td class="num">91%</td><td class="num">645</td><td class="num pos-1">1.155</td><td class="num">+0.61</td><td class="num muted">1.030</td><td class="num muted">1.311</td></tr>
+<tr><td class="lbl">0.10 &times; ATR14</td><td class="num">82%</td><td class="num">645</td><td class="num pos-1">1.239</td><td class="num">+1.49</td><td class="num muted">1.155</td><td class="num muted">1.341</td></tr>
+<tr><td class="lbl">0.25 &times; ATR14</td><td class="num">58%</td><td class="num">645</td><td class="num pos-2">1.403</td><td class="num">+3.14</td><td class="num muted">1.301</td><td class="num muted">1.533</td></tr>
+<tr><td class="lbl">0.50 &times; ATR14</td><td class="num">31%</td><td class="num">645</td><td class="num pos-2">1.342</td><td class="num">+2.76</td><td class="num muted">1.232</td><td class="num muted">1.481</td></tr>
+<tr><td class="lbl">1.00 &times; ATR14</td><td class="num">7%</td><td class="num">645</td><td class="num pos-2">1.419</td><td class="num">+3.36</td><td class="num muted">1.323</td><td class="num muted">1.541</td></tr>
+<tr><td class="lbl">no stop</td><td class="num">0%</td><td class="num">645</td><td class="num pos-2">1.450</td><td class="num">+3.42</td><td class="num muted">1.303</td><td class="num muted">1.647</td></tr>
+<tr><td class="lbl">2 &times; range (deployed)</td><td class="num"></td><td class="num">652</td><td class="num pos-2">1.320</td><td class="num">+2.54</td><td class="num muted">1.178</td><td class="num muted">1.500</td></tr>
+</tbody></table></div>
+<h3>B. Activity gating: the edge lives on busy Asia opens</h3>
+<div class="tbl-wrap"><table>
+<thead><tr><th class="l">Bucket</th><th>n</th><th>PF</th><th>t</th><th>20-23</th><th>24-25</th><th>sign</th></tr></thead>
+<tbody><tr><td class="lbl">rel. volume quintile 1</td><td class="num">131</td><td class="num pos-1">1.269</td><td class="num">+1.14</td><td class="num muted">1.306</td><td class="num muted">1.232</td><td class="lbl"><span class=pos-t>agree</span></td></tr>
+<tr><td class="lbl">rel. volume quintile 2</td><td class="num">130</td><td class="num pos-1">1.113</td><td class="num">+0.19</td><td class="num muted">0.874</td><td class="num muted">1.346</td><td class="lbl"><span class=neg-t>disagree</span></td></tr>
+<tr><td class="lbl">rel. volume quintile 3</td><td class="num">130</td><td class="num pos-1">1.186</td><td class="num">+0.70</td><td class="num muted">0.965</td><td class="num muted">1.513</td><td class="lbl"><span class=neg-t>disagree</span></td></tr>
+<tr><td class="lbl">rel. volume quintile 4</td><td class="num">130</td><td class="num pos-1">1.221</td><td class="num">+0.71</td><td class="num muted">1.083</td><td class="num muted">1.497</td><td class="lbl"><span class=pos-t>agree</span></td></tr>
+<tr><td class="lbl">rel. volume quintile 5</td><td class="num">131</td><td class="num pos-2">1.843</td><td class="num">+2.54</td><td class="num muted">1.726</td><td class="num muted">1.976</td><td class="lbl"><span class=pos-t>agree</span></td></tr></tbody></table></div>
+<div class="tbl-wrap"><table>
+<thead><tr><th class="l">Bucket</th><th>n</th><th>PF</th><th>t</th><th>20-23</th><th>24-25</th><th>sign</th></tr></thead>
+<tbody><tr><td class="lbl">range/ATR quintile 1</td><td class="num">131</td><td class="num pos-1">1.179</td><td class="num">+0.43</td><td class="num muted">1.048</td><td class="num muted">1.424</td><td class="lbl"><span class=pos-t>agree</span></td></tr>
+<tr><td class="lbl">range/ATR quintile 2</td><td class="num">130</td><td class="num pos-2">1.356</td><td class="num">+1.46</td><td class="num muted">1.493</td><td class="num muted">1.126</td><td class="lbl"><span class=pos-t>agree</span></td></tr>
+<tr><td class="lbl">range/ATR quintile 3</td><td class="num">130</td><td class="num pos-2">1.458</td><td class="num">+1.67</td><td class="num muted">1.224</td><td class="num muted">1.737</td><td class="lbl"><span class=pos-t>agree</span></td></tr>
+<tr><td class="lbl">range/ATR quintile 4</td><td class="num">130</td><td class="num neg-1">0.879</td><td class="num">-0.88</td><td class="num muted">0.634</td><td class="num muted">1.227</td><td class="lbl"><span class=neg-t>disagree</span></td></tr>
+<tr><td class="lbl">range/ATR quintile 5</td><td class="num">131</td><td class="num pos-2">1.733</td><td class="num">+2.50</td><td class="num muted">1.677</td><td class="num muted">1.774</td><td class="lbl"><span class=pos-t>agree</span></td></tr></tbody></table></div>
+<p>Top-quintile relative volume (the gold analogue of &ldquo;Stocks in Play&rdquo;) is the
+strongest subgroup either grid produced: PF 1.843, t +2.54, halves agreeing at 1.73 / 1.98.
+The range-width/ATR version points the same way (q5 PF 1.733, agreeing) but its middle
+quintiles are not monotone. Read both as one finding: <strong>the Asia edge concentrates on
+high-activity opens</strong>, consistent with the ORB literature&rsquo;s
+high-volatility-regime concentration.</p>
+<h3>C. Crabel conditioning, trigger timing, and the rest</h3>
+<div class="tbl-wrap"><table>
+<thead><tr><th class="l">Condition</th><th>n</th><th>PF</th><th>exp</th><th>t</th><th>20-23</th><th>24-25</th><th>sign</th></tr></thead>
+<tbody><tr><td class="lbl">after an NR7 session</td><td class="num">94</td><td class="num pos-1">1.245</td><td class="num">+1.30</td><td class="num">+0.73</td><td class="num muted">0.918</td><td class="num muted">1.632</td><td class="lbl"><span class="neg-t">disagree</span></td></tr><tr><td class="lbl">not after NR7</td><td class="num">558</td><td class="num pos-1">1.333</td><td class="num">+1.68</td><td class="num">+2.43</td><td class="num muted">1.222</td><td class="num muted">1.476</td><td class="lbl"><span class="pos-t">agree</span></td></tr><tr><td class="lbl">after an inside day</td><td class="num">94</td><td class="num pos-1">1.616</td><td class="num">+3.07</td><td class="num">+1.65</td><td class="num muted">1.492</td><td class="num muted">1.782</td><td class="lbl"><span class="pos-t">agree</span></td></tr><tr><td class="lbl">not after inside day</td><td class="num">558</td><td class="num pos-1">1.271</td><td class="num">+1.38</td><td class="num">+2.03</td><td class="num muted">1.124</td><td class="num muted">1.456</td><td class="lbl"><span class="pos-t">agree</span></td></tr><tr><td class="lbl">break on the first post-range candle</td><td class="num">311</td><td class="num pos-1">1.354</td><td class="num">+1.82</td><td class="num">+1.86</td><td class="num muted">1.121</td><td class="num muted">1.632</td><td class="lbl"><span class="pos-t">agree</span></td></tr><tr><td class="lbl">break on a later candle</td><td class="num">341</td><td class="num pos-1">1.288</td><td class="num">+1.44</td><td class="num">+1.73</td><td class="num muted">1.228</td><td class="num muted">1.369</td><td class="lbl"><span class="pos-t">agree</span></td></tr><tr><td class="lbl">trades the veto would drop</td><td class="num">460</td><td class="num pos-1">1.334</td><td class="num">+1.69</td><td class="num">+2.26</td><td class="num muted">1.205</td><td class="num muted">1.501</td><td class="lbl"><span class="pos-t">agree</span></td></tr><tr><td class="lbl">trades the veto keeps</td><td class="num">192</td><td class="num pos-1">1.286</td><td class="num">+1.47</td><td class="num">+1.16</td><td class="num muted">1.112</td><td class="num muted">1.500</td><td class="lbl"><span class="pos-t">agree</span></td></tr></tbody></table></div>
+<p>Inside-day conditioning survives with agreement (PF 1.616 on n=94); NR7 does not
+transfer (worse, and halves disagree). Earliest-break-is-best holds directionally but
+weakly. The prior-day-range veto would delete trades that are <em>better</em> than the ones
+it keeps &mdash; rejected.</p>
+<h3>D. The first-bar-direction entry does not transfer</h3>
+<div class="tbl-wrap"><table>
+<thead><tr><th class="l">Variant</th><th>n (all)</th><th>PF (all)</th><th>n (corr&le;0.5)</th><th>PF (filtered)</th><th>t (filt.)</th></tr></thead>
+<tbody><tr><td class="lbl">5m bar, stop at bar extreme</td><td class="num">1267</td><td class="num neg-1">0.662</td><td class="num">770</td><td class="num neg-1">0.785</td><td class="num">-1.53</td></tr>
+<tr><td class="lbl">5m bar, stop at 0.10&times;ATR</td><td class="num">1249</td><td class="num neg-1">0.939</td><td class="num">766</td><td class="num pos-1">1.053</td><td class="num">+0.42</td></tr>
+<tr><td class="lbl">5m bar, stop at 0.25&times;ATR</td><td class="num">1236</td><td class="num neg-1">0.958</td><td class="num">759</td><td class="num neg-1">0.986</td><td class="num">-0.20</td></tr>
+<tr><td class="lbl">15m bar, stop at bar extreme</td><td class="num">1267</td><td class="num neg-1">0.913</td><td class="num">771</td><td class="num pos-1">1.008</td><td class="num">-0.07</td></tr>
+<tr><td class="lbl">15m bar, stop at 0.10&times;ATR</td><td class="num">1254</td><td class="num neg-1">0.983</td><td class="num">770</td><td class="num pos-1">1.044</td><td class="num">+0.32</td></tr>
+<tr><td class="lbl">15m bar, stop at 0.25&times;ATR</td><td class="num">1240</td><td class="num neg-1">0.980</td><td class="num">763</td><td class="num pos-1">1.013</td><td class="num">+0.02</td></tr>
+</tbody></table></div>
+<p>Zarattini&rsquo;s 9:30-bar entry, transplanted to the Asia open, is dead: unfiltered PF
+0.66&ndash;0.98, filtered at best breakeven, and 8 of 12 variants disagree across halves.
+The 60-minute range confirmation is doing real selection work that a single bar cannot.</p>
+<div class="note">
+<p><strong>What changes, and what does not.</strong> Nothing here re-sizes the deployed
+strategy. These are ~50 exploratory subgroup tests on an already-mined sample; by the
+repo&rsquo;s standards the two survivors &mdash; top-quintile relative volume and inside-day
+conditioning &mdash; are <em>forward-test candidates</em>: log them live alongside the
+unconditioned strategy and evaluate on data neither this search nor the original one has
+touched. The stop-gradient result stands on firmer ground (it is a re-read of a known
+result on a smooth gradient) and its implication is a risk-preference choice, not an edge
+claim.</p>
+</div>
+</section>
+
+<section>
+<h2><span class="n">07</span>The scoreboard</h2>
+<div class="tbl-wrap"><table>
+<thead><tr><th class="l">Round-8 study</th><th>tests</th><th class="l">headline</th><th class="l">verdict</th></tr></thead>
+<tbody>
+<tr><td class="lbl">NY-open fade</td><td class="num">141</td><td class="lbl">loses gross; corr ordering inverts as predicted</td><td class="lbl neg-t">dead</td></tr>
+<tr><td class="lbl">2.6&sigma; pullback</td><td class="num">~90</td><td class="lbl">reversion exists, worth exactly one spread</td><td class="lbl neg-t">dead</td></tr>
+<tr><td class="lbl">Judas sweep + canonical</td><td class="num">~100</td><td class="lbl">loses at zero cost; OOS 0.201</td><td class="lbl neg-t">dead</td></tr>
+<tr><td class="lbl">Asia-ORB adaptations</td><td class="num">50</td><td class="lbl">rvol-q5 &amp; inside-day agree in both halves</td><td class="lbl pos-t">2 forward-test leads</td></tr>
+</tbody></table></div>
+<p>The repo&rsquo;s running tally after eight rounds: one strategy survives everything
+(Asia 09:30-HKT 60-min ORB, corr &le; 0.5 &mdash; forward-test, don&rsquo;t size), and the
+graveyard now holds raw breakouts (11/12), sweep-rejection entries (twice, independently),
+same-day AUD confirmation, CNY as a filter, MGC under $25k, the NY open in both directions,
+band mean reversion at every width, and the Judas sweep with and without its canon.</p>
+</section>
+
+<section>
+<h2><span class="n">08</span>Methods, self-tests, and defects</h2>
+<ul>
+<li><strong>Symmetry proof.</strong> The fade engine is verified against the round-7 follow
+engine: identical trade set, P&amp;L mirrored to 0.00e+00 on 1,174 trades.</li>
+<li><strong>Base-set drift caught by assertion.</strong> The adaptation script initially
+rebuilt the Asia base with the research-side UTC correlation filter (n=657, PF 1.371); a
+hard assert against the deployed numbers stopped it, and the script now loads the exact
+deployed trade set (n=652, PF 1.320) from <code>trades_deployable.pkl</code>.</li>
+<li><strong>One crash, no silent error.</strong> The first Block-B run died on a pandas
+index-alignment bug in the reporting helper (boolean mask with a fresh index); it produced
+a traceback, not wrong numbers, and was fixed and re-run.</li>
+<li><strong>Causality.</strong> Sweep levels carry creation and first-crossing times, so
+&ldquo;unswept at t&rdquo; is a lookup, not a scan; daily bias is lag-1 on FX sessions
+labelled by end date; relative volume compares a completed range window to prior days;
+every path walk excludes the right endpoint of open-stamped bars.</li>
+<li><strong>Multiplicity.</strong> &asymp; 330 tests were run this round and all are
+reported. No significance is claimed anywhere, so no max-statistic correction is invoked;
+the two positive leads are named as candidates for forward testing precisely because
+in-sample subgroup evidence at this test count cannot establish them.</li>
+<li><strong>The 1-minute caveat stands.</strong> Data is 5-minute; the user&rsquo;s
+1-minute confirmation variant remains bracketed, not measured.</li>
+</ul>
+<footer>
+<p>Round 8 of the XAUUSD session-strategy research. Engines:
+<code>ny_fade.py</code>, <code>meanrev.py</code>, <code>structure.py</code>,
+<code>judas.py</code>; runners <code>run_ny_fade.py</code>, <code>run_meanrev.py</code>,
+<code>run_judas.py</code>, <code>run_judas2.py</code>, <code>run_adapt.py</code>.
+Research notes: <code>backtest/reference/strategy_research.json</code> (56 sources).
+Cost model $0.30/oz round trip throughout; sensitivities at $0.00 / $0.15 / $0.60.</p>
+</footer>
+</section>
+</div>

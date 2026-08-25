@@ -231,3 +231,46 @@ selector had already seen it. The first was immaterial, the second flattered.
 treatment of the protective stop is explicit rather than implied.
 
 Write-up: `results/report6.html`.
+
+## Round eight — three strategies from the wild, and a fade
+
+```bash
+python3 run_ny_fade.py   # 123 cells: fading the first NY break, symmetry-proven engine
+python3 run_meanrev.py   # the "2.6 sigma" pullback on its full gradient, 5m/15m/60m
+python3 run_judas.py     # daily-structure Judas sweep: 45 cells + funnel + variations
+python3 run_judas2.py    # canonical-ICT addendum: killzones, PDH/PDL bias, deep sweeps
+python3 run_adapt.py     # practitioner adaptations onto the Asia ORB + gates on the fade
+python3 build_report7.py
+```
+
+Round seven's parting question — if NY breaks hold but leave nothing, is the money in
+fading them? — answered: **no**. The fade engine is proven to be the exact mirror of the
+follow engine (1,174 trades, P&L negated to 0.00e+00), and the fade loses $0.13/oz
+*before* costs. The correlation filter's ordering inverts exactly as its mechanism
+predicts (fades are worst on the low-correlation days the Asia strategy trades), and the
+seductive corr>0.5 corner collapses under honest pre-2024 ranking (OS median 0.655).
+
+Three research sweeps (56 sources: Zarattini/Aziz and replications, Crabel, the Bollinger
+canon, Belkhayate, the OU-falsification study, ICT and Turtle Soup) fed mechanical specs
+for the user's three named strategies:
+
+* **2.6-sigma pullback**: at zero cost, PF 1.006 — the reversion is real and worth exactly
+  one spread. Negative net everywhere liquid; only n<=250 tails at 3.5 sigma clear 1.0.
+  No practitioner gate (ADX regime, band-walk veto, news scrub, VWAP anchoring) finds a
+  paying subset. The "trend gate is the strategy" claim fails on gold.
+* **Judas sweep**: loses at zero cost (PF 0.735 gross) — adverse selection, not friction,
+  replicating round two's sweep-entry verdict on an independent construction. 45-cell
+  median PF 0.613; canonical killzones/PDH-PDL/deep-sweep refinements all move the right
+  direction and all stay under water; honest OOS median 0.201 with two cells at 0.000.
+  Our take-everything win rate (27.1%) matches the one independent mechanical ICT test
+  in the literature (29.6%).
+* **Asia-ORB adaptations** (50 tests on the exact deployed 652-trade set): Zarattini's
+  tight-ATR-stops claim *reverses* on gold — a smooth gradient from 0.05xATR (PF 1.155)
+  to no stop (PF 1.450), every step agreeing across halves. Two forward-test leads
+  survive with both-halves sign agreement: top-quintile relative volume in the opening
+  range (PF 1.843, t +2.54) and Crabel inside-day conditioning (PF 1.616, n=94). NR7,
+  the prior-day-range veto and the first-bar-direction entry do not transfer. Nothing
+  re-sizes the deployed configuration.
+
+Research notes with all sources: `reference/strategy_research.json`.
+Write-up: `results/report7.html`.

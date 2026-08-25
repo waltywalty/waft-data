@@ -1,0 +1,643 @@
+{
+ "research": [
+  {
+   "strategy": "Opening Range Breakout (ORB)",
+   "what_it_is": "Define a range from the first N minutes of a session (5/15/30/60 min are the common choices), then trade in the direction the market resolves that range, with a stop tied to the range or to ATR and a time-based exit at end of day. Two distinct lineages exist: Toby Crabel's 1990 futures work (buy/sell stops a \"Stretch\" away from the open, conditioned on range-contraction patterns like NR7/inside days) and the 2023-24 Zarattini-Aziz papers (a directional first-5-minute-bar rule on QQQ and on high-relative-volume \"Stocks in Play\", tight ATR stops, 1%-risk sizing under a 4x leverage cap, exit at end of day). As actually traded by practitioners it is a momentum-continuation bet that the open's imbalance persists, and nearly all of the documented edge comes from a minority of large trend days \u2014 win rates are ~25-55% depending on variant, with EoD holds or ~10R targets doing the earning.",
+   "sources": [
+    {
+     "title": "Can Day Trading Really Be Profitable? (Zarattini & Aziz, 2023, SSRN 4416622)",
+     "url": "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4416622",
+     "kind": "academic paper (SSRN working paper, not peer-reviewed)",
+     "notes": "QQQ 5-min ORB, Jan 2016-Feb 2023. Direction of first 5-min bar, enter at 9:35 open, stop at first-bar low/high, 10R target, EoD liquidation; variant analysis found tight stops of 5% of 14-day ATR with EoD hold optimal. $25k -> $192,806 net of commissions (675%), annualized alpha 33% (p=0.0025); TQQQ version 1,484% vs QQQ buy-hold 169%. Assumes zero slippage. Authors run day-trading education businesses (Concretum/Bear Bull Traders)."
+    },
+    {
+     "title": "A Profitable Day Trading Strategy For The U.S. Equity Market (Zarattini, Barbon & Aziz, 2024, SSRN 4729284)",
+     "url": "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4729284",
+     "kind": "academic paper (SSRN/Swiss Finance Institute working paper)",
+     "notes": "5-min ORB across 7,000+ US stocks 2016-2023, restricted to 'Stocks in Play' by opening relative volume; top-20 portfolio returned 1,637% net (41.6% IRR), Sharpe 2.81, alpha ~36%. Stop = 10% of 14-day ATR, EoD exit, 1% risk per trade, 4x leverage cap."
+    },
+    {
+     "title": "QQQ Opening Range Bias \u2014 Replication & Execution Stress Test (giovannibrusco)",
+     "url": "https://github.com/giovannibrusco/zarattini-2023-orb-qqq",
+     "kind": "independent replication (GitHub, code + tests; cloned and read in full)",
+     "notes": "Reproduces SSRN 4416622 within noise (1,775 trades vs paper's 1,795, Sharpe 1.06 vs 1.12). Gross edge $0.070/share; net PnL crosses zero at ~2.2c/share slippage \u2014 the edge lives inside QQQ's ~1c spread. 10R target hit on only ~2-3% of trades; ~75% exit on stop, ~22% flat at close. A 09:25 NQ-futures confirmation bar lifts edge to $0.125/share (t=2.05) and beats an own-price placebo, but 76% of filtered PnL is 2022 alone; filter loses money in 2017, 2020, early 2023."
+    },
+    {
+     "title": "Day Trading with an Opening Range Breakout Strategy \u2014 CXO Advisory",
+     "url": "https://www.cxoadvisory.com/technical-trading/day-trading-with-an-opening-range-breakout-strategy/",
+     "kind": "practitioner review of the academic paper",
+     "notes": "Confirms exact QQQ rules (stop at first-bar low/high, stop-gain at 10x entry-to-stop distance, EoD liquidation). Caveats: low win rate with occasional large winners, heavy dependence on leverage, simplified execution, no slippage modeled."
+    },
+    {
+     "title": "Opening Range Breakout for Stocks in Play \u2014 QuantConnect",
+     "url": "https://www.quantconnect.com/research/18444/opening-range-breakout-for-stocks-in-play/",
+     "kind": "practitioner replication (open code)",
+     "notes": "Recreation of SSRN 4729284: universe = 1,000 most liquid US equities, price > $5, 14-day ATR > $0.50, ~1M shares/day; entry 9:35 in first-bar direction, stop 10% of 14-day ATR, EoD close, 1% risk, 4x max leverage."
+    },
+    {
+     "title": "Day Trading with Short Term Price Patterns and Opening Range Breakout \u2014 Toby Crabel (1990)",
+     "url": "https://www.amazon.com/Trading-Short-Patterns-Opening-Breakout/dp/0934380171",
+     "kind": "book (classic practitioner/CTA research)",
+     "notes": "Origin of Stretch-based ORB, NR4/NR7, inside days, 2-bar NR, ORBP. Found ORB works best after contraction days and that earlier session entries (first ~10 min) have the best odds of continuation to the close."
+    },
+    {
+     "title": "Stretch definition \u2014 MyPivots trading dictionary",
+     "url": "https://www.mypivots.com/dictionary/definition/206/stretch",
+     "kind": "reference / practitioner dictionary",
+     "notes": "Crabel's Stretch = 10-day average of min(High-Open, Open-Low), i.e. the distance from open to the nearer extreme. Buy stop at Open+Stretch, sell stop at Open-Stretch; first side hit is the position, other side becomes the protective stop."
+    },
+    {
+     "title": "Opening Range Breakout \u2014 Oxfordstrat (Crabel-style test)",
+     "url": "https://oxfordstrat.com/trading-strategies/opening-range-breakout/",
+     "kind": "quant practitioner backtest",
+     "notes": "Systematic test of the classic Stretch-based ORB on futures with defined exits; part of the evidence that raw 1990-era Crabel patterns have decayed on modern data."
+    },
+    {
+     "title": "Opening Range Breakout Strategy (ORB): Backtest \u2014 QuantifiedStrategies",
+     "url": "https://www.quantifiedstrategies.com/opening-range-breakout-strategy/",
+     "kind": "quant practitioner backtest (negative result)",
+     "notes": "Backtested ORB on S&P and then gold (GC), silver (SI) and crude (CL) 'with the same negative result'; average gain ~0.04% per trade; conclusion: most ORB strategies don't work any more, and ORB works best in volatile trending regimes on equity indices/liquid stocks. Directly corroborates your NY-open gold null."
+    },
+    {
+     "title": "Stocks In Play Strategy \u2014 QuantifiedStrategies",
+     "url": "https://www.quantifiedstrategies.com/stocks-in-play-trading-strategy-day-trading/",
+     "kind": "quant practitioner write-up of SSRN 4729284",
+     "notes": "Documents relative-volume definition (first-5-min volume >= 100% above the 14-day average of the same window), price > $5, 14-day avg volume >= 1M shares, top-20 selection; warns slippage/commissions are a big factor."
+    },
+    {
+     "title": "London Breakout Strategy: Rules and Backtest Performance \u2014 QuantifiedStrategies",
+     "url": "https://www.quantifiedstrategies.com/london-breakout-strategy/",
+     "kind": "quant practitioner backtest (mostly negative)",
+     "notes": "Asian-session box (03:00-08:00 London time), trade the break during 08:00-11:00. EURUSD backtests often lose money; one published variant: 49% win rate, RR 1:1.4, ~7.5% over 10 months. Warns that London-breakout systems claiming 5-10%/month are overfit."
+    },
+    {
+     "title": "Gold ORB Strategy (15-min Range, 5-min Entry) \u2014 TradingView script by krypson",
+     "url": "https://www.tradingview.com/script/oYW9gdag-Gold-ORB-Strategy-15-min-Range-5-min-Entry/",
+     "kind": "community script (unaudited)",
+     "notes": "The common retail gold-ORB spec: range = 9:30-9:45 ET NY open, entry on 5-min close beyond it, stop = 50% of the range, target = 2x range (1:2 RR). Note your own 117-cell grid already shows this NY-open family fails on gold."
+    },
+    {
+     "title": "Initial Balance Breakout Gold Day Trading Strategy \u2014 Trade That Swing",
+     "url": "https://tradethatswing.com/one-trade-a-day-gold-strategy-411-in-last-year-fully-automatable/",
+     "kind": "practitioner blog / vendor (unaudited claims)",
+     "notes": "NY-session initial-balance breakout on gold claiming +400-445% in a year with strict mechanical rules; sells the exact parameters. Treat as marketing-adjacent: unaudited, short sample, and contradicted by QuantifiedStrategies' GC null and your own grid."
+    },
+    {
+     "title": "Gold Trading Strategy: New York Open Range Breakout Scalping \u2014 Forex Factory thread",
+     "url": "https://www.forexfactory.com/thread/1385208-gold-trading-strategy-new-york-open-range",
+     "kind": "forum",
+     "notes": "Community discussion of NY-open range scalping on XAUUSD; anecdotal, no audited track record \u2014 included as evidence of what retail actually trades, not that it works."
+    },
+    {
+     "title": "I Backtested 1,178,668 Opening Range Breakout Trades \u2014 YouTube",
+     "url": "https://www.youtube.com/watch?v=MOG-DbgmzzI",
+     "kind": "video transcript / large-sample practitioner backtest",
+     "notes": "Across >1M trades: 5-min ORB highest win rate (53.78%), 15-min ORB best expectancy (~$0.044/trade), 30-min ORB 49.38% win rate \u2014 win rate and expectancy do not rank the same way."
+    },
+    {
+     "title": "Opening Range Breakout \u2014 Build Alpha",
+     "url": "https://www.buildalpha.com/opening-range-breakout/",
+     "kind": "broker/vendor education with backtest tooling",
+     "notes": "Filter menu practitioners actually test: OR/ATR ratio, 200-day MA trend gate, day-of-week, volatility thresholds; notes ORB behaves differently per market (ES/NQ vs gold/oil/FX) and must be re-tested per instrument."
+    },
+    {
+     "title": "Opening Range Breakout Strategy: The Complete 2026 Day Trading Guide \u2014 ChartingLens",
+     "url": "https://chartinglens.com/blog/opening-range-breakout-strategy",
+     "kind": "practitioner blog",
+     "notes": "Source of the regime stat quoted in search results: ORB win rate ~58% with VIX 16-24 vs ~48% with VIX < 13; advocates RVOL and gap-catalyst filters."
+    },
+    {
+     "title": "ORB failure modes: False Breakouts / when ORB fails \u2014 ORB Setups & Trends+Breakouts",
+     "url": "https://trendsandbreakouts.com/opening-range-breakout",
+     "kind": "practitioner blog",
+     "notes": "Failure taxonomy: opening range entirely inside prior day's range (break fights two resistance layers), choppy low-volume opens with 4+ direction changes resolve sideways into stop-runs, flat opens without a gap drift; RVOL > 1.5 and 2%+ catalyst gaps as fixes."
+    }
+   ],
+   "concrete_rules": [
+    "Zarattini-Aziz QQQ 5-min ORB (SSRN 4416622, confirmed by CXO and the GitHub replication): observe the 9:30-9:35 ET bar; if close > open go LONG at the 9:35 open, if close < open go SHORT at the 9:35 open, if doji no trade. Stop = low (high) of the first 5-min bar. Profit target = 10x the entry-to-stop distance (10R). If neither hits, liquidate at the close. Size = min(1% of equity / $R, 4x equity / price). Commissions modeled, slippage assumed zero.",
+    "Zarattini-Aziz 'optimal' variant from the same paper's grid: replace the range stop with a tight stop at 5% of the 14-day ATR, drop the profit target, and hold to EoD \u2014 this ATR-stop + EoD-hold combination produced the best results and is what the leveraged (TQQQ) numbers are built on.",
+    "Stocks in Play ORB (SSRN 4729284 / QuantConnect replication): universe = US stocks with price > $5, 14-day avg volume >= ~1M shares, 14-day ATR > $0.50. At 9:35 rank by relative volume (first-5-min volume vs the 14-day average of that same 5-min window); take the top 20. Enter each at 9:35 in the direction of its first 5-min bar; stop = 10% of the 14-day ATR from entry; exit EoD if not stopped; risk 1% of capital per position, total leverage capped at 4x.",
+    "Crabel Stretch ORB (book + MyPivots definition): Stretch = 10-day average of min(High-Open, Open-Low). At the open place a buy stop at Open + Stretch and a sell stop at Open - Stretch; the first side filled is the trade, the opposite stop becomes the protective stop; exit at the close (pure day trade).",
+    "Crabel conditioning rules: only take ORB after a contraction day \u2014 NR7 (narrowest daily range of the last 7), NR4, an inside day, or IDnr4 (inside day that is also NR4). Entries triggering earlier in the session (ideally within the first 10 minutes) have the highest probability of continuation to the close.",
+    "London breakout (QuantifiedStrategies spec): box = high/low of 03:00-08:00 London time (the Asian session); enter on a break of the box between 08:00 and 11:00 London; stop at the opposite side of the box or a fixed fraction of it; exit same day. Published EURUSD results are mostly negative; the one positive variant ran 49% win rate at 1:1.4 RR.",
+    "Retail gold-ORB spec (TradingView krypson script): range = 9:30-9:45 ET; enter on a 5-min close outside the range; stop = 50% of the range width; target = 2x the range (1:2 RR); one trade per day. This is the NY-open family your 117-cell grid already killed on gold \u2014 the community spec, not a validated edge."
+   ],
+   "parameters": [
+    {
+     "name": "Opening-range length",
+     "typical_values": "5, 15, 30, 60 minutes",
+     "notes": "Large-sample practitioner backtest (1.18M trades): 5-min has the highest win rate (53.8%), 15-min the best per-trade expectancy, 30-min 49.4%. Zarattini uses 5-min; Crabel effectively uses time-zero (stops off the open itself); your working gold variant uses 60-min at the Asia open \u2014 per your house rules judge this axis by gradient, not the best cell."
+    },
+    {
+     "name": "Stop placement",
+     "typical_values": "Far side of the opening range (QQQ paper baseline); 5% of ATR(14) (QQQ optimal variant); 10% of ATR(14) (Stocks in Play); 50% of range (retail gold spec); opposite entry stop (Crabel)",
+     "notes": "The papers' finding is that tighter is better because losers are cut at ~-1R while EoD holds let winners run \u2014 but the replication shows ~75% of trades hit the stop, so tight stops multiply the cost/slippage burden; on XAUUSD a 5%-ATR stop can be comparable to the spread."
+    },
+    {
+     "name": "Profit target",
+     "typical_values": "None (hold to EoD) \u2014 the papers' best; 10R stop-gain variant; 2x range (retail)",
+     "notes": "Replication: the 10R target fires on only ~2-3% of trades \u2014 'nearly decorative'; the strategy is really momentum-continuation with a 1R stop and an EoD exit. Consistent with your NY-gold finding that fixed targets after the fill leave nothing."
+    },
+    {
+     "name": "Exit time",
+     "typical_values": "End of regular session (both papers, Crabel); 11:00 London cutoff for London breakout",
+     "notes": "Everything documented is flat by session close; no overnight holds anywhere in the ORB literature."
+    },
+    {
+     "name": "Position sizing / leverage",
+     "typical_values": "1% of equity risked per trade; total leverage capped at 4x (FINRA day-trading cap); TQQQ as 3x proxy",
+     "notes": "The headline 675% / 1,484% / 1,637% figures require this leverage; unlevered the QQQ edge is a few cents per share."
+    },
+    {
+     "name": "Relative volume threshold",
+     "typical_values": "Paper: first-5-min volume >= ~100% above its 14-day same-window average, then top 20 by ranking; practitioners: RVOL > 1.5-3x",
+     "notes": "The single filter the Stocks-in-Play paper credits for making equity ORB survive transaction costs."
+    },
+    {
+     "name": "Crabel Stretch lookback",
+     "typical_values": "10 days, of min(High-Open, Open-Low)",
+     "notes": "Entry offset from the open; also doubles as a noise estimate \u2014 conceptually the ancestor of Zarattini's later SPY 'noise band' work."
+    },
+    {
+     "name": "Universe/instrument floors (equity version)",
+     "typical_values": "Price > $5; 14-day avg volume >= 1M shares; ATR(14) > $0.50",
+     "notes": "From SSRN 4729284 / QuantConnect replication; irrelevant to XAUUSD directly but shows the papers pre-select for volatility and liquidity before the strategy ever runs."
+    },
+    {
+     "name": "Session window",
+     "typical_values": "US equities 09:30 ET open; London breakout box 03:00-08:00 London, trade 08:00-11:00; retail gold specs use the 09:30 ET NY open",
+     "notes": "ORB presumes a genuine information-arrival open. Gold trades nearly 24h, so which 'open' matters is an empirical question \u2014 your data says Asia open yes, NY open no; the published gold GC tests at the NY open are also negative (QuantifiedStrategies)."
+    }
+   ],
+   "filters_that_matter": [
+    "Relative volume / activity at the open \u2014 the one filter with academic-grade evidence: restricting to top-20 relative-volume 'Stocks in Play' is what turns the all-stock ORB into a cost-surviving strategy (SSRN 4729284); practitioners echo it as RVOL > 1.5-3x plus a catalyst (ORB Setups, TradeZella gap-and-go).",
+    "Volatility regime \u2014 the replication shows ORB PnL concentrates almost entirely in high-vol years (2020, 2022; 2022 alone = 76% of filtered PnL), and ChartingLens quotes ~58% win rate with VIX 16-24 vs ~48% below 13; Build Alpha lists ATR thresholds and OR/ATR ratio as first-line filters. ORB is best modeled as a vol-regime effect, not a structural one.",
+    "Range contraction before the session \u2014 Crabel's core conditioning: ORB after NR7 / NR4 / inside days markedly outperforms unconditional ORB; narrow opening range relative to ATR is the modern OR/ATR restatement.",
+    "Cross-asset confirmation \u2014 requiring the 09:25 NQ futures bar to agree with QQQ's first bar raised the per-trade edge from $0.02 to $0.125/share (t=2.05) and beat an own-price placebo, i.e. cross-asset agreement carries real information (GitHub replication). Your gold/AUDUSD correlation gate is the same species of filter.",
+    "Gap direction and size \u2014 practitioners take continuation ORBs only when a 2%+ gap with a catalyst and high pre-market volume points the same way as the break; flat opens with no gap produce drifting ranges (ORB Setups, trendsandbreakouts).",
+    "Early trigger time \u2014 Crabel: the earlier the breakout stop is hit (ideally first ~10 min), the more likely the trade is profitable at the close; late-session breaks are fade material.",
+    "Prior-day range position \u2014 skip ORB when the opening range forms entirely inside the prior day's range and the break does not also clear the prior day's high/low (trendsandbreakouts failure taxonomy).",
+    "Choppiness screen \u2014 4+ direction changes inside the opening window on low volume predicts a fake breakout into a stop run (trendsandbreakouts).",
+    "Higher-timeframe trend / day-of-week \u2014 200-day MA gates, VWAP alignment and day-of-week effects appear on every practitioner filter menu (Build Alpha, Rogue ORB PRO script) but with no published out-of-sample evidence \u2014 treat as hypotheses to be gradient-tested, not established filters."
+   ],
+   "claimed_performance": "Headline claims: QQQ 5-min ORB $25k -> $192,806 net of commissions (675%) over Jan 2016-Feb 2023 with 33% annualized alpha (p=0.0025), and 1,484% using TQQQ vs 169% for QQQ buy-and-hold (SSRN 4416622); top-20 Stocks-in-Play ORB +1,637% net, 41.6% IRR, Sharpe 2.81, alpha ~36% over 2016-2023 (SSRN 4729284). Admitted caveats in the papers: zero slippage assumed, low win rate with rare large winners, results require the full 4x leverage. All figures are unaudited backtests by authors who run day-trading education businesses (Concretum / Bear Bull Traders). Independent replication (giovannibrusco GitHub) reproduces the QQQ backtest almost exactly (Sharpe 1.06 vs 1.12) but finds the gross edge is $0.07/share and net PnL crosses zero at ~2.2 cents/share of slippage \u2014 inside QQQ's bid-ask spread \u2014 and that 2022 alone supplies 38-76% of the PnL, with the strategy roughly matching buy-and-hold (Sharpe 0.77 vs 0.72, overlapping bootstrap CIs) under realistic costs. Independent multi-market tests are worse: QuantifiedStrategies got negative results applying ORB to gold, silver and crude futures and ~0.04% average per trade on equities; London-breakout FX backtests are mostly losing. Net practitioner consensus: the raw pattern is real but small, lives inside transaction costs on liquid instruments, and only clears costs when filtered hard (relative volume / vol regime / cross-asset confirmation) and levered.",
+   "known_failure_modes": [
+    "Edge smaller than costs: the replicated QQQ ORB edge is $0.07/share gross and dies at ~2.2c/share slippage; ~75% of trades exit on the stop, so tight-stop variants pay the spread on three of four trades (GitHub replication). Any XAUUSD variant with a 5-10%-ATR stop must survive a spread sensitivity sweep first.",
+    "Single-regime concentration: 76% of the filtered strategy's PnL came from 2022; the strategy lost money in 2017, 2020 and early 2023. ORB profits are a high-volatility-regime phenomenon that flat-vol years silently bleed away (GitHub replication; ChartingLens VIX stats).",
+    "Does not transfer to gold at the NY open: QuantifiedStrategies found the same ORB rules negative on GC, SI and CL, matching your own 117-cell null \u2014 gold's NY 'open' is not a true information-arrival open the way the equity 9:30 auction is.",
+    "Low win rate + leverage dependence: the paper variants win ~25% of trades and need 4x leverage (or TQQQ) to produce the headline numbers; sequences of 1R losses produce 30-45% drawdowns even in the successful backtests (CXO Advisory; replication max DD 22-44%).",
+    "False breakouts on low-participation opens: no gap, low relative volume, or 4+ direction changes inside the opening window predict a break that reverses into a stop run (trendsandbreakouts, ORB Setups).",
+    "Opening range inside the prior day's range: the break has no structural significance and fights the prior day's high/low (trendsandbreakouts).",
+    "Post-publication and secular decay: Crabel's 1990 patterns test poorly on modern data (Oxfordstrat), practitioner consensus is 'ORB doesn't work very well anymore' unfiltered (QuantifiedStrategies), and the replication sees sharp 2023 drawdown suggesting decay was underway before the papers were even published.",
+    "Selection/multiple-testing risk in the literature itself: the published 'best' configs (5-min range, 5% ATR stop, EoD hold, top-20 RVOL) were chosen on the same 2016-2023 window they are evaluated on; no true out-of-sample gate exists in either paper (replication's stated limitation). The London-breakout literature has the same disease \u2014 systems claiming 5-10%/month are flagged as overfit by the people who backtest them.",
+    "Vendor numbers on gold specifically (e.g. +445%/year initial-balance systems) are unaudited, short-sample, and contradicted by every independent GC test \u2014 treat as marketing."
+   ],
+   "adaptation_ideas_for_xauusd": [
+    "Transplant the Zarattini exit structure onto your working Asia-open ORB: keep the 01:30 UTC 60-min range entry, but replace fixed targets with 'stop only + time exit' (their best config). Test an exit-time grid \u2014 2h, 4h, London open 08:00 UTC, NY open, EoD \u2014 and judge by gradient smoothness. Your NY-gold finding ('breaks hold but leave nothing after the fill') is exactly what the replication found on QQQ: the 10R target is decorative and the money is in the hold, so where the Asia move stops accruing is the key unknown.",
+    "Test the directional-first-bar variant at the Asia open: instead of waiting for the 60-min range break, enter at the close of the first 5- or 15-min bar after 01:30 UTC in that bar's direction, stop at the bar's extreme, time exit as above. Fewer parameters than an ORB grid, earlier entry (Crabel: earlier trigger = better), and it directly tests whether your Asia edge is 'breakout' or just 'open-drift continuation'.",
+    "Sweep the stop as a fraction of ATR(14): 5%, 10%, 25%, 50%, 100%, plus 'range far side' as the reference cell. The papers claim tight-ATR stops dominate; the replication warns ~75% stop-out rates make tight stops cost-fragile. On XAUUSD run this jointly with a spread/slippage sweep (0.10-0.35 USD/oz and 2x on stop fills, mirroring the replication's 2x stop-slippage convention) \u2014 expect the optimal stop to widen as modeled costs rise, and reject any cell that only wins at zero slippage.",
+    "Build the gold analog of relative volume: consolidated volume doesn't exist for spot gold, so use (a) tick volume in the first 30/60 min vs the 14-day average of that same window, and/or (b) opening-range width / ATR(14). Trade only when activity is elevated (Stocks-in-Play logic) or, competing hypothesis, when the range is narrow vs ATR (Crabel contraction). Test both directions as quintile gradients \u2014 they make opposite predictions, so one should die cleanly in the IS/OOS sign check.",
+    "Add Crabel conditioning as a binary filter: only take the Asia ORB after a prior-day NR7 or inside day computed on daily XAUUSD bars (define the 'day' consistently with your session convention). Cheap to test, one parameter, and it is the single best-documented classic filter. Verify same-sign effect in both halves per house rules.",
+    "Test a cross-asset direction-confirmation filter, the analog of the replication's NQ 09:25 bar (the only filter there that beat a placebo, t=2.05): require the last pre-Asia-open 5-min bar of a correlated instrument (AUDUSD, USDJPY inverse, or silver) to agree with the gold first-bar/breakout direction. Include the own-price placebo control (gold's own 01:25 UTC bar) exactly as the replication did, so you can tell cross-asset information from generic two-bar momentum. This complements your existing 20-day correlation-regime gate: that one says 'is gold trading as its own asset', this one says 'does the correlated flow agree today'.",
+    "Gate by volatility regime with a gradient, not a threshold: ATR(14) percentile quintiles (or GVZ where available). All the evidence says ORB PnL should concentrate monotonically in the upper-vol quintiles; if your Asia-ORB PF 1.32 instead comes from mid-vol cells, that is an important divergence from the equity literature worth reporting either way. Also compute the '2022 question' for your own result: what fraction of total PnL comes from the single best year, and does the strategy beat holding-nothing outside it?",
+    "Trigger-time filter on the 60-min ORB: record how many minutes into the window the break fires and test 'take only breaks triggering within N minutes of the range completing' for N = 15, 30, 60, 120. Crabel's earliest-is-best claim is mechanical and testable; a smooth decay of edge with trigger lateness would be a real effect, a spike at one N is overfit.",
+    "Prior-day-range interaction filter: skip Asia ORB signals where the 01:30-02:30 UTC range lies entirely inside the prior day's range and the breakout level does not also clear the prior day's high/low. Binary filter, one test, both-halves sign check.",
+    "Day-of-week split as a reported diagnostic, not a filter: tabulate the Asia ORB by weekday (Monday's Asia open absorbs the weekend gap and is structurally different). Only promote it to a filter if the effect holds with the same sign in both halves \u2014 and count all five weekday tests in your max-statistic randomisation budget.",
+    "Guard against the literature's own multiple-testing sin: you already burned a 117-cell grid on the NY open. When porting any of the above, pre-register the handful of cells implied by the equity papers (5-min bar direction, 5-10% ATR stop, session-end exit) rather than re-gridding, keep the 20-30% holdout untouched until the gate, and quote Bonferroni alongside the randomisation test including the NY-open grid in the count."
+   ]
+  },
+  {
+   "strategy": "2.6 standard deviation pullback and mean reversion",
+   "what_it_is": "A counter-trend fade of a price excursion roughly 2.6 standard deviations from a reference mean, entering as price pulls back toward the mean and targeting the mean itself. There is no single canonical \"2.6 SD\" strategy in the searchable record; the number maps onto three real families: (1) Mostafa Belkhayate's Centre of Gravity system \u2014 a gold-famous mean-reversion method whose bands sit at golden-ratio multiples of SD (1.618, 2.618, 4.236) around a repainting polynomial regression, so the \"2.6\" band is the classic entry zone; (2) generic 99%-confidence bands, since z = 2.576 \u2248 2.6 (Bollinger/linear-regression channels set to ~2.5-2.6 SD, and VWAP band ladders whose 2.51 multiplier is the 98.8% quantile); (3) ICT-style \"standard deviation\" projections of a session range (multiples of the range, not statistical SDs), where the documented reversal zone is 2-2.5 with 4 as extension. In all variants the trade is: extreme deviation \u2192 confirmation of rejection \u2192 revert-to-mean target, with an explicit trend/regime filter because band tags in trends are continuation, not reversal.",
+   "sources": [
+    {
+     "title": "Trading strategy: Centre of Gravity - Belkhayate",
+     "url": "https://www.whselfinvest.com/en/trading_strategies_02_belkhayate.php",
+     "kind": "broker education",
+     "notes": "Mechanical description of the closest named '2.6 SD' system: COG computed on the 4-hour chart via polynomial regression, three bands each side at Fibonacci-derived SD amplitudes; short when price deviates into the upper (red) extreme band, long into the lower (green) band; exit when fast stochastic crosses slow; claims 90% probability of price returning to the COG line. Domain was egress-blocked for full fetch; content extracted via search excerpts."
+    },
+    {
+     "title": "The technical indicator Belkhayate Gravity Center (Scribd)",
+     "url": "https://www.scribd.com/document/869432530/The-technical-indicator-Belkhayate-Gravity-Center",
+     "kind": "practitioner blog",
+     "notes": "Confirms construction: polynomial nonparametric regression center line, 3 SD bands up and 3 down, band amplitudes always multiples of the golden number 1.618 (i.e., 1.618 / 2.618 / 4.236 SD \u2014 the 2.618 band is the '2.6' band). Explicitly notes the indicator repaints because of the regression fit."
+    },
+    {
+     "title": "Gravity Center indicator - ProRealTime (AutomaticTrading)",
+     "url": "https://www.automatictrading.it/product/gravity-center-prorealtime/",
+     "kind": "practitioner blog",
+     "notes": "Vendor port of Belkhayate COG; independently states the indicator is repainting due to its polynomial-regression calculation \u2014 critical caveat for any backtest of the 2.618-SD band entry."
+    },
+    {
+     "title": "Belkhayate System and Gravity Center Indicator (ForexProfitWay)",
+     "url": "https://forexprofitway.com/download-mostafa-belkhayate-trading-system-for-mt4/",
+     "kind": "practitioner blog",
+     "notes": "Marketing-adjacent but documents the claim set: 'over 80% winning ratio', system = gravity center + Belkhayate Timing oscillator (sell when timing between 8/4 levels and stochastic >70; buy between -4/-8 and stochastic <30). Claims are unaudited."
+    },
+    {
+     "title": "Bollinger Band Rules (John Bollinger, official)",
+     "url": "https://www.bollingerbands.com/bollinger-band-rules",
+     "kind": "practitioner blog",
+     "notes": "The inventor's canon, load-bearing for trigger design: 'tags of the bands are just that, tags, not signals'; 'closes outside the Bollinger Bands are initially continuation signals, not reversal signals'; price can 'walk the band' in trends. This is the consensus argument for close-back-inside triggers rather than touch triggers."
+    },
+    {
+     "title": "VWAP Reversion (CrossTrade)",
+     "url": "https://crosstrade.io/learn/trading-strategies/vwap-reversion",
+     "kind": "broker education",
+     "notes": "Most mechanical VWAP-variant writeup found: fade a tag of the 2nd SD band (~2-2.5 SD) after a reversal candle, target VWAP, stop just beyond the band; ADX filter described as 'not optional'; works on range days with no news; profile is many small wins / occasional bigger losses; trend day is the named killer."
+    },
+    {
+     "title": "VWAP Stdev Bands (TradingView community script)",
+     "url": "https://www.tradingview.com/script/HmKFxRUL-VWAP-Stdev-Bands",
+     "kind": "practitioner blog",
+     "notes": "Representative of the VWAP-band ladder family in which multipliers are normal-distribution quantiles rather than integers; the widely copied ladder (approx. 1.28 / 2.01 / 2.51 / 3.09) puts 2.51 (~98.8% quantile) as the documented neighbor of '2.6'; 2.576 is the exact 99% two-tailed z."
+    },
+    {
+     "title": "Range Projections [TFO] (TradingView indicator)",
+     "url": "https://www.tradingview.com/script/5mCuGUSR-Range-Projections-TFO/",
+     "kind": "practitioner blog",
+     "notes": "ICT-family 'standard deviations' = multiples of a chosen session range projected from its boundaries, default levels 1 / 2 / 2.5 / 4; author's stats: price reached 1 'SD' ~80% of the time but 2 'SDs' only ~30% \u2014 i.e., the 2-2.5 zone is where extension probability collapses, hence used as reversal/target zone."
+    },
+    {
+     "title": "CBDR & Standard Deviations: ICT Range Projection (LiquidityScan)",
+     "url": "https://liquidityscan.io/blog/cbdr-standard-deviations-ict-range-projection",
+     "kind": "practitioner blog",
+     "notes": "Defines the ICT Central Bank Dealers Range (14:00-20:00 New York) and the practice of projecting its height in 'standard deviations' (range multiples) to frame next-day high/low; clarifies these are not statistical SDs \u2014 relevant if the user's '2.6' came from an ICT-descended video."
+    },
+    {
+     "title": "Standard Deviation Projections Trading Guide (TTrades)",
+     "url": "https://ttrades.com/standard-deviation-projections/",
+     "kind": "practitioner blog",
+     "notes": "States the key projection levels as 1, 0, -1, -2, -2.5, -4 with 'the most important levels to focus on are the -2 to -2.5 and the -4 standard deviations' \u2014 the practitioner consensus reversal zone that a '2.6' figure most likely rounds from in the session-range family."
+    },
+    {
+     "title": "Popularity versus Profitability: Evidence from Bollinger Bands (Fang, Jacobsen, Qin, SSRN)",
+     "url": "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2484322",
+     "kind": "academic paper",
+     "notes": "Reviews and extends Lento, Gradojevic & Wright (2007) and Lento & Gradojevic (2011): standard Bollinger Band rules 'do not beat the market anywhere' across US/Canadian equities and FX 1995-2004; profitability improves only for the CONTRARIAN (mean-reversion) version or combined signals, and even that is market-dependent (positive TSX/NASDAQ, negative Dow)."
+    },
+    {
+     "title": "Intraday price reversals in the US stock index futures market: A 15-year study (Grant, Wolf, Yu)",
+     "url": "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=689282",
+     "kind": "academic paper",
+     "notes": "Large opening-session moves in S&P 500 futures are followed by significant reversals in the first 30-60 minutes; effect stronger after large positive moves; the core academic support for fading extreme early-session deviations in futures (index, not gold)."
+    },
+    {
+     "title": "Is there an intraday reversal effect in commodity futures and options? Evidence from the Chinese market",
+     "url": "https://www.sciencedirect.com/science/article/abs/pii/S0927538X24002865",
+     "kind": "academic paper",
+     "notes": "Documents a significant intraday reversal effect in Chinese commodity futures and options \u2014 evidence that intraday overreaction-reversal extends to commodities, not just equity indices."
+    },
+    {
+     "title": "Structural Limits of OHLCV-Based Intraday Signals in MNQ Futures: A Systematic Falsification Study (arXiv 2605.04004)",
+     "url": "https://arxiv.org/abs/2605.04004",
+     "kind": "academic paper",
+     "notes": "Directly relevant negative result: 14 signal families on 5-minute data (2021-2025) with walk-forward validation; Ornstein-Uhlenbeck z-score mean reversion tested on Micro Gold (MGC) as the 'more mean-reverting' comparison \u2014 ALL MGC OU configurations failed after a 2-point friction cost, most with strongly negative t-stats; across families max gross edge (0.07-1.50 pts/trade) sat below friction. Costs dominate at 5-min resolution."
+    },
+    {
+     "title": "A Regime-Conditioned Statistical Mean Reversion Framework for Intraday FX Markets (Bhatti, SSRN)",
+     "url": "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6087107",
+     "kind": "academic paper",
+     "notes": "Working paper (MQL5 prototype included): volatility-normalized z-score entries, multi-timeframe momentum filter for regime classification, volatility-adjusted sizing; key claim is that short-horizon FX mean reversion (liquidity/dealer-inventory driven) 'deteriorates significantly during persistent trending regimes' \u2014 the academic version of the ADX gate."
+    },
+    {
+     "title": "Mean Reversion VS Trend Following (QuantifiedStrategies)",
+     "url": "https://www.quantifiedstrategies.com/mean-reversion-vs-trend-following/",
+     "kind": "practitioner blog",
+     "notes": "Backtest-driven house view widely echoed in the quant-retail community: short-term mean reversion works excellently on stocks/equity ETFs but poorly on commodities, where trend following works better \u2014 a prior against naive band-fading on gold."
+    },
+    {
+     "title": "Stop-Loss Strategy - Pros and Cons (QuantifiedStrategies)",
+     "url": "https://www.quantifiedstrategies.com/stop-loss-strategy/",
+     "kind": "practitioner blog",
+     "notes": "Backtests (e.g., XLP mean-reversion with vs without 2% stop) show hard stops degrade mean-reversion performance because they exit right before the reversion; prefers sell-into-strength and time exits; consistent with Connors. Tension with intraday leveraged trading, where a disaster stop is still required."
+    },
+    {
+     "title": "Mean Reversion Trading: Strategy Guide with Entry Rules (Tradewink)",
+     "url": "https://www.tradewink.com/learn/mean-reversion-trading-strategy",
+     "kind": "practitioner blog",
+     "notes": "States the commonly quoted retail rule set: enter at \u00b12 SD band with RSI confirmation, exit at middle band, stop 1-2 ATR beyond the extreme wick/band; cites (as summarized in search results, unaudited) a 2025 study finding z-scores beyond \u00b12.5 reverted toward the mean 81% of the time within 5 trading days on daily data."
+    },
+    {
+     "title": "Stylized facts of intraday precious metals (PMC)",
+     "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5407636/",
+     "kind": "academic paper",
+     "notes": "15+ years of 5-minute gold data: strong intraday periodicity in returns, volatility, volume and spreads, and bilateral return-volatility causality \u2014 the reason any SD-band lookback on 5-min XAUUSD must be session-aware (a fixed 20-bar SD mixes Asia quiet and London/NY expansion regimes)."
+    },
+    {
+     "title": "Bollinger Band deviation strategy Part I (Forex Factory)",
+     "url": "https://www.forexfactory.com/thread/104078-bollinger-band-deviation-strategy-part-i",
+     "kind": "forum",
+     "notes": "Representative community thread on trading non-default BB deviations in FX; the forum record contains 2.0/2.5/3.0 variants but no canonical '2.6' thread \u2014 supporting the conclusion that 2.6 is a rounding of 2.618 (Fibonacci/Belkhayate) or 2.576 (99% z), not a distinct documented school."
+    }
+   ],
+   "concrete_rules": [
+    "Belkhayate Centre of Gravity variant (the named system closest to '2.6 SD', famous on gold): compute a polynomial-regression centre of gravity on the H4 chart; draw 3 bands each side with amplitudes at golden-ratio SD multiples (1.618, 2.618, 4.236). SHORT when price deviates into the upper extreme (red) band, LONG into the lower extreme (green) band \u2014 i.e., entries occur in the 2.618-SD ('2.6') zone. Confirm with the Belkhayate Timing oscillator (timing between the 8/4 levels with stochastic >70 to sell; between -4/-8 with stochastic <30 to buy). Target: return to the COG line (claimed 90% probability). Exit alternative: fast stochastic crossing slow. No published hard stop; vendors imply beyond the 4.236 band. CRITICAL: the COG line repaints, so the historical chart overstates the edge (WH SelfInvest; Scribd COG doc; ForexProfitWay).",
+    "Bollinger-band 2.5-2.6 SD fade (generic 99%-band variant): BB(20, 2.5-2.6) on the trading timeframe; do NOT enter on a touch \u2014 Bollinger's own rules say tags are not signals and closes outside the band are initially continuation signals. Trigger: bar closes back INSIDE the band after an excursion beyond it (re-entry close), ideally with momentum divergence or RSI confirmation (RSI<30 for longs / >70 for shorts). Target: middle band (the mean). Stop: 1-2 ATR beyond the extreme wick or beyond the band (bollingerbands.com; Tradewink; TrendSpider).",
+    "VWAP SD-band fade (intraday variant): anchor VWAP at the session open with SD bands; the tradeable zone is the 2nd band (common ladders put it at ~2.0-2.51 SD, i.e., the 95.5-98.8% quantiles \u2014 2.51/2.576 is the '2.6' neighborhood). Rules per CrossTrade: price tags the 2nd band on light volume with no news catalyst; wait for a reversal candle at the band; enter toward VWAP; target VWAP (scale at the 1st band); stop just beyond the 2nd band; take the trade only when ADX is low and VWAP is roughly flat (CrossTrade VWAP Reversion; TradingView VWAP Stdev Bands).",
+    "Z-score variant: z = (close - SMA(n)) / SD(n) (n typically 20 intraday, 200 daily); enter counter-trend when |z| >= 2.5-2.6, exit when z returns to ~0; condition execution on a higher-timeframe momentum/regime filter because mean reversion deteriorates sharply in trending regimes; volatility-adjust position size (Bhatti SSRN 6087107; Tradewink).",
+    "ICT session-range 'standard deviation' variant (if the source video was ICT-descended, this is probably what '2.6' rounds from): take a defined range \u2014 CBDR 14:00-20:00 NY, or the Asia range \u2014 and project its HEIGHT in multiples ('deviations') from the range boundaries; the documented reversal zone is 2 to 2.5 deviations (extension level 4); price historically reaches 1 deviation ~80% of the time but 2 deviations only ~30%, so 2-2.5 is used as a take-profit / fade zone, not a breakout target. Note these are range multiples, NOT statistical SDs (LiquidityScan CBDR; TTrades; Range Projections [TFO]).",
+    "Exit-style consensus for all variants: primary target is the mean (VWAP / middle band / COG line), never the opposite band \u2014 daily-bar backtests exit at the middle band or 'sell into strength' (first up-close / close above yesterday's high); hard stops degrade daily mean-reversion expectancy in backtests, so daily traders substitute time stops, while intraday leveraged variants keep a hard stop 1-2 ATR beyond the band plus a session-end flat rule (QuantifiedStrategies stop-loss study; CrossTrade)."
+   ],
+   "parameters": [
+    {
+     "name": "SD multiplier (band width)",
+     "typical_values": "2.0 default; 2.5 'extreme'; 2.51 (98.8% quantile in VWAP ladders); 2.576 (exact 99% two-tailed z); 2.618 (Belkhayate/Fibonacci); 3.0+ rare-touch; 4.236 Belkhayate outer band",
+     "notes": "'2.6' is not a documented standalone school \u2014 it is the rounding of 2.576 (99% confidence) or 2.618 (golden ratio). House-rule implication: scan 2.0-3.0 in ~0.2 steps and demand a smooth gradient, not a spike at 2.6."
+    },
+    {
+     "name": "Mean/basis and lookback",
+     "typical_values": "SMA/EMA 20 (intraday Bollinger default); session-anchored VWAP (intraday); polynomial regression on H4 (Belkhayate); SMA 200 for daily z-scores",
+     "notes": "Basis choice changes the trade more than the multiplier: VWAP bands widen with realized intraday vol; a fixed 20-bar SD on 5-min XAUUSD mixes Asia-quiet and London/NY-expansion regimes (intraday periodicity is strong in gold)."
+    },
+    {
+     "name": "Entry trigger type",
+     "typical_values": "touch/tag; close outside band; close back inside band (re-entry); reversal candle at band",
+     "notes": "Consensus (from Bollinger himself): tag and close-outside are continuation information; the mean-reversion trigger is the close back inside, optionally with divergence or a reversal candle. Test touch vs close-inside explicitly \u2014 they backtest very differently."
+    },
+    {
+     "name": "Confirmation oscillator",
+     "typical_values": "RSI(2-14) <30/>70; fast/slow stochastic cross; Belkhayate Timing between +-4/+-8",
+     "notes": "All variants bolt on a momentum-exhaustion check; RSI(2) style confirmations come from the equity daily-bar literature and are unverified on intraday gold."
+    },
+    {
+     "name": "Target",
+     "typical_values": "the mean (VWAP / middle band / COG line); partial at first inner band",
+     "notes": "No serious variant targets the opposite band; expectancy comes from many small reversion legs."
+    },
+    {
+     "name": "Stop placement",
+     "typical_values": "1-2 ATR beyond the extreme wick/band; just beyond the next outer band (e.g., enter 2.6, stop past 3.0-4.2); none + time exit (daily equities only)",
+     "notes": "Backtests show hard stops hurt daily mean reversion (exit right before the snap-back), but intraday leverage on gold requires a disaster stop; treat stop distance as a sensitivity axis, not a free parameter."
+    },
+    {
+     "name": "Trend/regime gate",
+     "typical_values": "ADX(14) < ~20-25; 'flat VWAP' slope; higher-timeframe momentum state neutral",
+     "notes": "Described as 'not optional' by practitioners and as regime-conditioning in the academic FX framework; without it the strategy dies on band-walk days."
+    },
+    {
+     "name": "Time windows",
+     "typical_values": "range days, mid-session; avoid open drives and scheduled news; ICT CBDR anchored 14:00-20:00 NY; session-end flat",
+     "notes": "Index-futures evidence supports fading extreme moves in the first 30-60 min after the OPEN specifically (Grant/Wolf/Yu), while VWAP-band practitioners avoid the opening drive \u2014 the two families disagree here; test both windows."
+    }
+   ],
+   "filters_that_matter": [
+    "Trend gate above all: ADX(14) below ~20-25 (or flat VWAP/mean slope). Practitioner writeups call this 'not optional'; the academic FX framework formalizes the same as higher-timeframe momentum regime conditioning \u2014 mean reversion deteriorates significantly in persistent trending regimes (CrossTrade; Bhatti SSRN).",
+    "Band-walk veto: skip the fade after consecutive closes outside the band \u2014 closes outside are initially continuation signals and walking the band is strength (bollingerbands.com).",
+    "News avoidance: no entries around scheduled macro releases (FOMC/NFP/CPI) and no fading a band tag that has a news catalyst \u2014 a 2.6-SD move on news is information, not noise; gold is specifically driven by central-bank commentary, USD, yields, geopolitics (CrossTrade; world-gold-price/Tradewink guides).",
+    "Volume/relative-volume: fade band tags that occur on LIGHT volume; heavy volume at the band signals initiative flow and continuation (CrossTrade).",
+    "Reversal confirmation before entry: reversal candle at the band or momentum divergence, i.e., trade the pullback (close back inside) rather than the raw touch (Bollinger rules; Tradewink).",
+    "Asset/session prior: short-term mean reversion is robust in equities but historically weak in commodities including gold, where trend-following works better \u2014 so gate hard by session and regime rather than trading all hours (QuantifiedStrategies mean-reversion-vs-trend-following); FX/metals reversion concentrates around liquidity-driven dislocations and fixes and is weakest when major sessions are trending (Krohn; intraday-reversal literature).",
+    "Liquidity regime: intraday reversals are strongest when driven by liquidity oversupply/dealer inventory effects, i.e., quieter sessions; large-jump days flip predictability regime (What drives intraday reversal?, JEDC; Bhatti).",
+    "Cost gate: model spread+slippage first \u2014 at 5-minute resolution the falsification study found ALL gold micro-future (MGC) OU mean-reversion configurations negative after a modest 2-point friction, with gross edges generally below cost (arXiv 2605.04004)."
+   ],
+   "claimed_performance": "Claims are tiered and mostly unaudited. Belkhayate/vendor tier: 90% probability of price returning to the centre of gravity and 'over 80% winning ratio' for the full system (WH SelfInvest; ForexProfitWay) \u2014 marketing numbers, never audited, and visually inflated because the COG regression repaints (AutomaticTrading admits repainting). Retail-quant tier: daily-bar Bollinger mean-reversion backtests report ~44-78% win rates depending on market and variant (e.g., 66% win / ~14% CAGR for an equity BB pullback system over 25 years; 78% win for a MACD+BB combo at ~1.4%/trade; 44% win / PF 1.59 on crypto daily), all with the caveat that wins are small and losses lumpy; a commonly repeated 2025 stat says |z|>2.5 reverted 81% within 5 days on daily data (Tradewink summary \u2014 unaudited). Academic tier: significant intraday reversal after large opening moves in S&P 500 futures over 15 years (Grant/Wolf/Yu 2005) and a significant intraday reversal effect in Chinese commodity futures/options; but band rules per se do not beat buy-and-hold anywhere in equities/FX (Lento et al. via Fang/Jacobsen/Qin), only the contrarian variant is sometimes positive and it is market-dependent; and the one study closest to your setting \u2014 z-score/OU mean reversion on 5-minute micro gold futures with walk-forward validation and 2-point friction \u2014 failed in every configuration with mostly negative t-stats (arXiv 2605.04004). Net read: the reversion tendency after extreme intraday deviations is real and documented, but the naive 'fade 2.6 SD' expression of it has no audited positive record intraday on gold after costs; whatever edge exists lives in the filters (regime, session, news, cost control), not the band multiplier.",
+   "known_failure_modes": [
+    "Trend days / band walks: price tags the band and keeps going; in trends price walks up/down the band for many bars, and closes outside the band are continuation signals \u2014 the single biggest documented killer of band fades (bollingerbands.com; CrossTrade).",
+    "News-driven deviations: a 2.6-SD move on FOMC/NFP/geopolitical headlines is repricing, not overextension; gold is exceptionally exposed to this. Fading these produces the fat-left-tail losses that erase many small wins (CrossTrade; gold practitioner guides).",
+    "Negative skew by construction: 'many small wins, occasional bigger losses' \u2014 high win rate masks a payoff ratio below 1; a few unfiltered trend days can wipe months (CrossTrade).",
+    "Costs at 5-minute resolution: gross edges of intraday OHLCV signals sit below realistic friction; every MGC (micro gold) OU mean-reversion configuration went negative after a 2-point round trip (arXiv 2605.04004). Spread/slippage sensitivity is the first robustness test, matching this repo's experience of positive-gross/negative-net results.",
+    "Repainting reference lines: the Belkhayate COG (and any centered polynomial/linear regression channel) repaints \u2014 historical charts show entries at extremes that were not identifiable in real time; only causal, endpoint-anchored versions are backtestable (AutomaticTrading; Scribd COG doc).",
+    "Stop-placement paradox: tight stops exit right before the reversion (backtests show stops degrade mean-reversion expectancy), but no stop on leveraged intraday gold risks ruin on a trend day \u2014 the strategy is structurally squeezed between the two (QuantifiedStrategies stop-loss study).",
+    "Sample scarcity and multiple testing: at 2.6 SD, touches are rare, so per-cell trade counts get small fast; combined with scanning multipliers/lookbacks this invites the overfit-spike problem \u2014 judge the multiplier by gradient, and note the falsification study's requirement of N>=30 and t>=2.0 killed most 'promising' cells (arXiv 2605.04004).",
+    "Lagging volatility estimate: SD bands are computed from trailing volatility, so at the start of a volatility expansion the bands are too tight and generate their worst signals precisely when regimes shift (vol clustering; strong intraday periodicity in 5-min gold makes a fixed lookback mis-scaled across sessions \u2014 PMC stylized-facts study).",
+    "Wrong asset-class prior: short-term mean reversion is an equity phenomenon in most backtest libraries; commodities including gold historically favor trend-following \u2014 expect the base rate of success to be lower than the equity-derived tutorials imply (QuantifiedStrategies)."
+   ],
+   "adaptation_ideas_for_xauusd": [
+    "Session-anchored VWAP fade grid: anchor VWAP at each session open (Asia 01:30 UTC, London 08:00 UTC, NY 09:30 ET) with SD bands from 5-min bars; entry = first 5-min close back inside the k-SD band after an excursion, k scanned 2.0-3.0 in 0.2 steps (2.6 must sit on a smooth gradient, not a spike); target VWAP; stop 1x ATR(14, 5m) beyond the excursion extreme; flat at session end. Per-session cells kept separate \u2014 the literature predicts the fade lives in quiet regimes and dies in London/NY expansion.",
+    "Complementarity test with your ORB results: your NY-open ORB showed 'breaks hold but leave nothing after the fill' \u2014 that is evidence against continuation, which is the precondition for reversion. Test fading 2.5-2.6 SD deviations from the NY-anchored VWAP during 09:30-16:00 ET specifically; conversely do NOT fade the Asia open, where your PF-1.32 breakout edge implies continuation.",
+    "Reuse the gold/AUDUSD correlation regime as a two-sided switch: your ORB works when 20-day correlation <= 0.5; pre-register the hypothesis that mean reversion works in the complementary regime (correlation > 0.5, gold trading as a currency/range asset) and test the sign in both IS/OOS halves per house rules.",
+    "Touch vs close-outside vs close-back-inside: run all three triggers at the same k on identical data \u2014 Bollinger's canon predicts touch-fades lose (tags are continuation info) and close-back-inside wins; confirming or refuting that ordering on XAUUSD 5m is itself a publishable (in-repo) result.",
+    "Trend gate ablation: ADX(14) on 5-min and on 1-hour, thresholds 20/25/30, plus a 'flat VWAP' slope gate (|VWAP slope| below x ATR/hour). Practitioner claim is that the gate IS the strategy; measure how much of any edge survives with the gate removed to see whether the band adds anything beyond regime selection.",
+    "News scrub: drop entries within +-30 and +-60 min of FOMC/NFP/CPI (sensitivity on the window); given your repo's finding that gross-vs-net flips sign, also run the falsification-study protocol \u2014 walk-forward, N>=30 per cell, t>=2.0, explicit spread+slippage \u2014 and expect the MGC precedent (all OU configs negative after friction) as the null.",
+    "Non-repainting Belkhayate replica: replace the centered polynomial COG with a causal version (rolling polynomial or linear-regression channel evaluated at the last bar only, e.g., 120-200 bar lookback on 5m or 1h) with bands at 1.618/2.618/4.236 SD; enter at the 2.618 band with a stochastic-cross exit at the center line. Pre-register the expectation that the audited result is far worse than the repainted visual; a null here is worth reporting given how widely this system is sold for gold.",
+    "ICT-style range-multiple variant using your existing ORB infrastructure: project your Asia 60-min opening range in range-multiples; test (a) taking ORB profits at the 2.0-2.5x projection (documented extension-probability cliff: ~80% reach 1x, ~30% reach 2x \u2014 verify these numbers on your own data first), and (b) fading London/NY touches of the 2.5-2.6x projection back toward the range EQ. This tests whether 'deviations' of the Asia range beat statistical SD bands as the deviation unit on gold.",
+    "Volatility-scaled z-score instead of raw SD bands: z = deviation / SD estimated from the SAME time-of-day across the last 20 days (removes gold's strong intraday periodicity documented in the 5-min stylized-facts study) rather than a rolling 20-bar SD; entry |z| >= 2.6, exit z = 0, time stop 12-24 bars. Compare against the naive rolling-SD version \u2014 the periodicity-adjusted denominator is the most likely place a real improvement hides.",
+    "Skew accounting: report avg win vs avg loss and the P&L share of the worst 5 trades per cell, plus a costs sensitivity (0.5x/1x/2x spread) \u2014 the strategy family's known profile is high win rate with fat left tail, so PF and t-stat alone will overstate robustness."
+   ]
+  },
+  {
+   "strategy": "Judas swing / session-open liquidity sweep with higher-timeframe bias (ICT-style smart money concepts)",
+   "what_it_is": "The Judas swing is ICT's name for the false move early in a session: a push shortly after a session open that runs resting stops beyond an obvious level (Asian range high/low, London high/low, previous day high/low, equal highs/lows) before the day's real move develops the other way. Canonically it forms between the New York midnight open (00:00 NY) and ~05:00 NY, with the highest-probability window at the London open 02:00-05:00 ET (the 02:00-03:00 \"witching hour\"); a second variant plays at the NY open, 8:30-10:00 ET, sweeping London/overnight extremes. As traded, it is a stop-run fade: hold a daily-timeframe bias, wait for a counter-bias sweep of an unswept liquidity level, require a lower-timeframe market structure shift (body close, with displacement, ideally leaving an FVG), enter on the retrace, stop beyond the sweep wick, target the opposite side of the swept range and then the previous day's high/low. It is a repackaging of Connors/Raschke's 1995 \"Turtle Soup\" failed-breakout setup with a session-timing overlay.",
+   "sources": [
+    {
+     "title": "ICT Judas Swing \u2014 Session-Open Reversal Setup (Complete Guide)",
+     "url": "https://innercircletrader.net/tutorials/ict-judas-swing-complete-guide/",
+     "kind": "practitioner education (ICT-canonical)",
+     "notes": "Time window: forms between NY midnight open (00:00 NY) and ~05:00 NY; most print between London open and 05:00. Sweep against daily bias below/above the open, confirm failure when price returns back through the opening level; a move that closes past the open and does not return is a real breakout, not a Judas."
+    },
+    {
+     "title": "Judas Swing \u2014 Smart Money Concepts / ICT Concept (LuxAlgo Library)",
+     "url": "https://www.luxalgo.com/library/concept/judas-swing/",
+     "kind": "indicator-vendor concept library",
+     "notes": "Defines Judas as a liquidity sweep with a timing claim attached; false push shortly after session open running resting stops before the real move. Neutral, mechanical framing."
+    },
+    {
+     "title": "ICT Judas Swing Strategy: New York Midnight Trading Guide (TradingFinder)",
+     "url": "https://tradingfinder.com/education/forex/ict-judas-swing/",
+     "kind": "practitioner education + open-source indicator vendor",
+     "notes": "Anchors the setup on the NY midnight open and a 15-minute midnight range; manipulation window midnight-05:00 NY; 02:00-03:00 EST called the witching hour when London algos sweep Asian-range liquidity."
+    },
+    {
+     "title": "Judas Swing ICT 01 [TradingFinder] New York Midnight Opening M15 (TradingView indicator)",
+     "url": "https://www.tradingview.com/script/TYoIs4Q3-Judas-Swing-ICT-01-TradingFinder-New-York-Midnight-Opening-M15/",
+     "kind": "open-source indicator (mechanical implementation)",
+     "notes": "Fully mechanical detection: bullish setup = price touches the M15 midnight-range high, then the low, then breaks back above with confirmation; bearish is the mirror. Useful as a frozen, testable rule set."
+    },
+    {
+     "title": "ICT Judas Swing Model (FX Replay strategy page)",
+     "url": "https://fxreplay.com/strategies/judas-swing-model",
+     "kind": "practitioner backtesting-platform playbook",
+     "notes": "Most concrete gold-relevant rule set found: sweep of Asia range between 03:00-05:30 NY time, then a 5m market structure shift; entry with stop at the recent swing, TP at the opposite side of the Asia range; only sweeps occurring in the top/bottom half of the range valid; invalidations = too much deviation from the range or no trendline liquidity; claimed 1:2-1:4 RR, setup appears 3-4x/week on gold; no in-trade management."
+    },
+    {
+     "title": "ICT Judas Swing on Gold: Master the London Trap Strategy (FXNX)",
+     "url": "https://fxnx.com/en/blog/mastering-ict-judas-swing-gold-trading-london-trap",
+     "kind": "practitioner blog (gold-specific)",
+     "notes": "Highest-probability Judas 02:00-05:00 EST; on a bullish day the swing drives below the Asian range low; gold-specific 'deep sweep' behavior \u2014 XAUUSD often runs 10-20 pips past the obvious low; stop 5-10 pips behind the Judas wick, not at the Asian range level; enter on retrace to FVG/OB after the MSS."
+    },
+    {
+     "title": "ICT Killzones \u2014 session windows (ictkillzone.com)",
+     "url": "https://www.ictkillzone.com/ict-kill-zones",
+     "kind": "practitioner reference",
+     "notes": "Asian killzone 20:00-00:00 EST; London killzone 02:00-05:00 EST (best 02:00-04:00); NY killzone 8:30-11:00 EST (a 7:00-10:00 definition also circulates); Silver Bullet windows 03:00-04:00, 10:00-11:00, 14:00-15:00 NY. Notes that different ICT materials genuinely quote different minutes \u2014 killzones are bands, not switches."
+    },
+    {
+     "title": "ICT Market Structure Shift (MSS): Complete Guide (Backtrex)",
+     "url": "https://backtrex.com/en/blog/ict-market-structure-shift-mss-guide",
+     "kind": "practitioner education",
+     "notes": "Mechanical MSS: after sweeping liquidity, price closes with a significant candle body beyond the dominant structure; the validating candle must be a displacement candle; a wick through the level is NOT a shift (it is the raid); the displacement leg leaves the first-presented FVG where the retrace entry lives; stop beyond the sweep's terminal wick (governing-swing rule)."
+    },
+    {
+     "title": "ICT Daily Bias: Most Simple Mechanical Framework (TTrades) + Daily Bias ICT Logic indicator (TradingView)",
+     "url": "https://ttrades.com/ict-daily-bias-most-simple-mechanical-framework/",
+     "kind": "practitioner education + indicator",
+     "notes": "Mechanical daily-bias logic from PDH/PDL: close above PDH = bullish continuation; close below PDL = bearish continuation; sweep of PDL without close below = bullish reversal; sweep of PDH without close above = bearish reversal; trapped inside prior range = neutral. HTF (D/H4) sets structure, M5/M15 executes."
+    },
+    {
+     "title": "Asia Range Sweep & Reversion: 12-Year Study (NQ/ES/YM/RTY) (TradingStats)",
+     "url": "https://tradingstats.net/asia-range-cascade-12-year-backtest/",
+     "kind": "quantitative practitioner study (index futures, not gold)",
+     "notes": "3,000+ sessions per instrument over 12 years: Asia range broken in 93-95% of sessions before 08:30 ET; price reverts back inside in 96-97% of broken sessions; failed-break sessions reach 25% retrace 88% of the time; probabilities stable across 3/6/12-month sub-windows and cluster within ~2pp across NQ/ES/YM/RTY. These are descriptive base rates supporting the sweep-reversion mechanism, not a net-of-cost trading edge."
+    },
+    {
+     "title": "Is ICT Strategy Profitable? I Backtested It Using AI (OffBeatForex)",
+     "url": "https://offbeatforex.com/is-ict-strategy-profitable/",
+     "kind": "independent backtest write-up",
+     "notes": "One year, EURUSD, 15m anchor, London+NY killzones. Fully mechanical ICT bot: -$4,521 (-15.1R), 29.6% win rate, profit factor 0.81 \u2014 i.e., the frozen mechanical version LOST. Discretionary AI overlay on the same playbook: +27.6R, 40.4% WR, avg winner +2.93R vs -1R, achieved by refusing 92% of presented setups. Verdict: any edge lives in selectivity and payoff asymmetry, not in the raw pattern."
+    },
+    {
+     "title": "I Backtested 2,600 Trades Using Smart Money Concepts (QuantumAlgo, Medium)",
+     "url": "https://medium.com/@QuantumAlgo/i-backtested-2-600-trades-using-smart-money-concepts-heres-what-actually-works-bb3c671098c6",
+     "kind": "practitioner backtest blog",
+     "notes": "2,600 trades, 10 assets incl. gold, Jan 2024-Mar 2026. FVGs fill ~70% of the time (a fill rate, not an edge); no single concept works alone; community backtests report 50-65% win rates only when strict confluence (sweep + OB/FVG + killzone) is enforced. Methodology not audited."
+    },
+    {
+     "title": "ICT Silver Bullet: the killzone trading strategy explained (Backtrex)",
+     "url": "https://backtrex.com/en/blog/ict-silver-bullet-strategy-trading-guide",
+     "kind": "practitioner education with backtest claims",
+     "notes": "Claims 55-65% win rate on strict checklist execution with 1:3 average RR target; the two factors that degrade results fastest are (a) trading outside the one-hour window and (b) entering before the MSS confirms. Also flags repainting (entering on current bar) as a distorter of ICT backtests. Unaudited."
+    },
+    {
+     "title": "Turtle Soup success-rate page (theinnercircletraders.com) + Turtle Soup Pattern strategy (OxfordStrat)",
+     "url": "https://oxfordstrat.com/trading-strategies/turtle-soup-plus-1/",
+     "kind": "quant blog (OxfordStrat systematic tests) + SEO practitioner page quoting a backtest",
+     "notes": "Turtle Soup (Connors/Raschke 1995) is the published, pre-ICT version of the sweep-fade: buy on failure of a new 20-day low when the prior 20-day low is >=4 sessions old, stop below the new extreme. One quoted backtest (secondary, unaudited source): 2000-2020, 1,250 trades, 62.4% winners, avg +0.35%/trade, PF 1.86, max DD 11.5%; regime-dependent \u2014 works in rotational markets, poor in persistent trends. OxfordStrat hosts systematic Turtle Soup variants with published equity curves."
+    },
+    {
+     "title": "ICT Judas Swing: How Institutions Fake the Opening Move (GrandAlgo) + Asian Session Trading Strategy",
+     "url": "https://grandalgo.com/blog/asian-session-trading-strategy",
+     "kind": "practitioner blog",
+     "notes": "NY-open variant: Judas expected 8:30-10:00 ET, the 9:30 equity open often amplifies it; in the NY killzone price often sweeps London session highs/lows before reversing. London sweeps the Asian high or low 70%+ of the time (base rate). Well-filtered Asian-range-sweep backtests are claimed at 55-65% WR, 1:2-1:3 RR, PF > 1.5 (unaudited)."
+    },
+    {
+     "title": "Is ICT Trading Legit? (Phidias Prop Firm) + ICT Trading Problems (Zarix School)",
+     "url": "https://phidiaspropfirm.com/education/is-ict-legit",
+     "kind": "critical practitioner review",
+     "notes": "No independently audited long-term performance record exists for ICT/Huddleston; documented failures in public trading challenges; core criticism is degrees of freedom \u2014 which levels 'count' and which FVGs are 'valid' can fit any chart in hindsight; fix is freezing one written ruleset and testing it. No peer-reviewed study validates 'smart money' mechanics as taught."
+    },
+    {
+     "title": "Liquidity Sweeps Explained (FluxCharts) / Liquidity Sweep Reversals 15-Minute Strategy (DailyPriceAction) / Liquidity Sweep guide (Backtrex)",
+     "url": "https://www.fluxcharts.com/articles/liquidity-sweeps-explained-how-to-identify-and-trade-them",
+     "kind": "practitioner education",
+     "notes": "Sweep taxonomy: wick through + close back inside same candle = liquidity grab; multiple closes beyond the level = acceptance (breakout, not sweep \u2014 setup invalid). Sequence is level -> wick -> structure shift; never enter on the sweep candle itself \u2014 most failed sweep trades come from entering on the wick before confirmation."
+    },
+    {
+     "title": "ICT Kill Zones / NY Killzone gold articles (Complete Traders Edge, FXNX)",
+     "url": "https://completetradersedge.com/ict-trading-gold-xauusd-kill-zones/",
+     "kind": "practitioner blog (gold-specific)",
+     "notes": "NFP/CPI releases land at 8:30 ET inside the NY killzone \u2014 avoid 15 min before/after high-impact news; a red-folder event at London open overrides the technicals; best Asian ranges for the London trap are quiet and horizontal (20:00-00:00 EST core window)."
+    }
+   ],
+   "concrete_rules": [
+    "DAILY BIAS (variant A, most mechanical \u2014 TTrades/TradingView 'Daily Bias ICT Logic'): from yesterday's daily candle vs PDH/PDL \u2014 close above PDH = bullish continuation; close below PDL = bearish continuation; wick below PDL but close back above = bullish reversal; wick above PDH but close back inside = bearish reversal; closed inside prior range with no sweep = neutral, no trade. Variant B: daily swing structure \u2014 higher highs/higher lows = longs only, lower highs/lower lows = shorts only (the user's framing; less mechanical, needs a frozen swing definition e.g. 3-bar fractals).",
+    "LIQUIDITY MAP: on 4h/1h mark UNSWEPT levels only \u2014 Asia session high/low (ICT Asia killzone 20:00-00:00 ET), London session high/low, previous day high/low, equal highs/lows, NY midnight (00:00 ET) open. A level already traded through since formation is spent and is not a valid sweep target.",
+    "LONDON JUDAS (canonical): window = 00:00-05:00 NY time, highest probability 02:00-05:00 ET, 'witching hour' 02:00-03:00 ET. Setup: with bullish daily bias, price drives BELOW the Asian range low (and/or below the midnight open); with bearish bias, above the Asian range high. FX Replay's gold-specific version restricts the sweep window to 03:00-05:30 NY time.",
+    "SWEEP VALIDITY (majority variant): a wick through the level with a close back inside the range on the sweep timeframe. Multiple candle closes beyond the level = acceptance = setup invalid. TradingFinder's frozen M15 version: price touches the midnight-range high, then the low, then breaks back through with confirmation (mirror for shorts). Gold caveat: expect 'deep sweeps' 10-20 pips ($1-2) past the obvious level before the reversal (FXNX).",
+    "CONFIRMATION: on 5m, a market structure shift (MSS) \u2014 a candle BODY close beyond the most recent opposing 5m swing point, in the daily-bias direction, after the sweep. The MSS candle must be a displacement candle (large body, minimal wicks) and ideally leaves a fair value gap (3-candle imbalance). A wick-only break is not an MSS. FX Replay: 5m MSS is the sole confirmation; Judas-canonical alternative: price reclaiming the session/midnight open confirms the failure.",
+    "ENTRY: either (a) at the close of the MSS/displacement candle, or (b) limit at the retrace into the first-presented FVG (or order block) left by the displacement leg \u2014 typically 50-79% retrace of the displacement leg (OTE variant uses 62-79%).",
+    "STOP: beyond the terminal wick of the Judas sweep (the governing swing) \u2014 on gold 5-10 pips beyond the wick tip, NOT at the Asian range level itself. Alternative: beyond the low/high of the displacement leg.",
+    "TARGETS: T1 = opposite side of the swept range (Asia range for London trades; roughly 1:1 vs the sweep-wick stop) \u2014 common convention is 50% off and stop to breakeven at T1; T2 = previous day's high/low or the next unswept HTF pool (~1:3 on the runner). FX Replay's frozen version: single TP at the opposite side of the Asia range, no management. Overall claimed RR 1:2 to 1:4.",
+    "NY JUDAS VARIANT: NY killzone 7:00-10:00 ET (alt 8:30-11:00); Judas expected 8:30-10:00 ET, the 9:30 equity open often amplifies it; the sweep target is the London session high/low or overnight/PDH-PDL rather than the Asian range; same MSS-then-retrace entry, same stop/target logic.",
+    "LOCATION FILTER (FX Replay): only take the trade if the sweep occurs while price is in the correct half of the range \u2014 sweep of the low must happen from the bottom half (for longs), sweep of the high from the top half (for shorts).",
+    "TURTLE SOUP (the published pre-ICT analog, fully mechanical): today makes a new 20-day low while the previous 20-day low is at least 4 sessions old; enter long on a buy stop back above that prior low (only triggers if the breakout is already failing); initial stop below today's new extreme. Mirror for shorts at 20-day highs.",
+    "ONE TRADE PER LEVEL: only the FIRST sweep of a given level in the session counts; once swept, the level is consumed."
+   ],
+   "parameters": [
+    {
+     "name": "Session/killzone windows (NY time)",
+     "typical_values": "Asia killzone 20:00-00:00; London killzone 02:00-05:00 (best 02:00-04:00); NY killzone 7:00-10:00 or 8:30-11:00; Judas formation 00:00-05:00; FX Replay gold sweep window 03:00-05:30; Silver Bullet 03:00-04:00 / 10:00-11:00 / 14:00-15:00",
+     "notes": "Different ICT materials genuinely quote different minutes \u2014 treat as bands and parameter-sweep the edges. All defined in America/New_York local time, so they drift vs UTC across DST."
+    },
+    {
+     "name": "Sweep timeframe / confirmation timeframe",
+     "typical_values": "Sweep judged on 5m or 15m; MSS confirmation on 5m (FX Replay), M15 for TradingFinder's midnight-range version; bias on Daily (+ 4h/1h liquidity map)",
+     "notes": "User's 5m data matches the standard execution timeframe."
+    },
+    {
+     "name": "Sweep penetration depth",
+     "typical_values": "Any wick-through counts in most write-ups; gold-specific: expect 10-20 pips ($1-2 on gold) beyond the level (FXNX 'deep sweep')",
+     "notes": "No consensus quantification \u2014 this is a free parameter to grid (e.g., min/max penetration as % of price or ATR fraction). FX Replay invalidates on 'too much deviation from the range' (cap on penetration)."
+    },
+    {
+     "name": "Close-back-inside requirement",
+     "typical_values": "Close back inside on the sweep candle itself (strict 'grab'), or within a few candles; 2+ closes beyond the level = acceptance = invalid",
+     "notes": "Main variant split: wick-through-only vs allow-close-through-then-reclaim. Test bars-to-reclaim in {1, 2, 3, 6}."
+    },
+    {
+     "name": "MSS definition",
+     "typical_values": "5m body close beyond most recent opposing swing (3-bar fractal swing typical); must be displacement (body >= ~60-70% of bar range is a common codification); ideally leaves an FVG",
+     "notes": "The single most rule-sensitive component; wick-breaks explicitly do not count."
+    },
+    {
+     "name": "Entry retrace",
+     "typical_values": "MSS-close market entry, or limit at first-presented FVG; OTE variant 62-79% (0.705 midpoint) of the displacement leg",
+     "notes": "Deeper retraces improve RR but reduce fill rate \u2014 a fill-rate/expectancy tradeoff to measure, familiar from the user's NY ORB result."
+    },
+    {
+     "name": "Stop buffer beyond sweep wick",
+     "typical_values": "5-10 pips beyond the Judas wick tip on gold (FXNX); generic: a few ticks/pips beyond the terminal extreme",
+     "notes": "On XAUUSD 5m, consider ATR-scaled buffer (e.g., 0.25-0.5 x ATR14) instead of fixed pips."
+    },
+    {
+     "name": "Targets",
+     "typical_values": "T1 opposite side of swept range (~1:1, 50% off + BE); T2 previous day high/low (~1:3); single-TP variant: opposite side of Asia range only",
+     "notes": "RR claims 1:2-1:4 assume the tight sweep-wick stop."
+    },
+    {
+     "name": "Daily bias lookback",
+     "typical_values": "PDH/PDL close logic (1 day); or daily swing structure; Turtle Soup analog uses 20-day channel with prior extreme >= 4 sessions old",
+     "notes": "PDH/PDL 4-scenario logic is the most codifiable; the 20-day/4-day-old Turtle Soup condition is the only version with a published multi-decade backtest."
+    },
+    {
+     "name": "Setup frequency",
+     "typical_values": "3-4 setups/week on gold (FX Replay claim); base rates: London sweeps an Asia extreme 70%+ of days; index-futures Asia range broken 93-95% of sessions, reverts 96-97% of breaks",
+     "notes": "High break/revert base rates say the raw event is near-universal \u2014 the edge, if any, is in the conditional selection, not the event."
+    }
+   ],
+   "filters_that_matter": [
+    "Killzone timing gate \u2014 the most-cited performance factor: trading the identical pattern outside the stated window degrades results fastest (Backtrex silver bullet writeup lists it as failure factor #1).",
+    "Wait-for-MSS gate \u2014 entering on the sweep candle before a body-close structure shift is failure factor #2; the wick is 'the exact candle engineered to trap you' (Backtrex MSS guide, FluxCharts).",
+    "Counter-bias-only: the sweep must be AGAINST the daily bias (Judas), and the entry WITH it; same-direction sweeps are continuation events, a different model.",
+    "Unswept levels only, first sweep only \u2014 a level already run since formation is consumed.",
+    "Quiet, horizontal Asian range: a volatile/messy Asia session did not build a clean liquidity pool \u2014 skip (FXNX Asian Range strategy). Implies a max (and probably min) Asia-range-size filter, e.g., in ATR or % terms.",
+    "Deviation cap: sweep that travels too far beyond the range invalidates (FX Replay 'too much deviation'), i.e., a maximum penetration parameter \u2014 acceptance (2+ closes beyond) also invalidates.",
+    "Location-in-range filter: sweep of the low taken only when price was in the bottom half of the range (FX Replay), aligning with premium/discount logic.",
+    "Red-folder news filter: NFP/CPI land at 8:30 ET inside the NY killzone \u2014 avoid 15 min before/after high-impact releases; a red-folder event at London open overrides the technicals; FOMC 14:00 ET kills the PM window (Complete Traders Edge, FXNX, prop-firm guides).",
+    "Trendline/secondary liquidity present (FX Replay invalidation when absent) \u2014 i.e., the sweep should take out more than one class of resting orders.",
+    "HTF draw-on-liquidity alignment: target pool (opposite range side, PDH/PDL) must still be unswept and in the bias direction; premium/discount of the daily dealing range gates longs (discount) vs shorts (premium).",
+    "Displacement quality: MSS candle must be large-bodied with an FVG left behind; wick-heavy or overlapping confirmation bars are skips.",
+    "Independent-backtest lesson (OffBeatForex): the profitable configuration refused 92% of presented setups \u2014 selectivity IS the edge; a take-everything mechanical version of the same rules lost (PF 0.81)."
+   ],
+   "claimed_performance": "No audited performance record exists for ICT/Huddleston or for the Judas swing as taught \u2014 critical reviews note documented failures in his public trading challenges and no peer-reviewed validation (Phidias, Zarix). Practitioner claims cluster at 55-65% win rate with 1:2 to 1:3 RR and PF > 1.5 when strict confluence (killzone + sweep + MSS/displacement + FVG) is enforced (Backtrex silver bullet; GrandAlgo/FXNX Asian-range-sweep articles); FX Replay's gold Judas model claims 1:2-1:4 RR, 3-4 setups/week, with no published equity curve; social-media backtests (e.g., 62.5% WR over 10 days EURUSD) are tiny-sample and unaudited; 75%-WR claims found on Scribd/marketing PDFs should be ignored. The best independent mechanical test found (OffBeatForex, 1 year, EURUSD 15m, London+NY killzones): a frozen mechanical ICT ruleset LOST \u2014 29.6% WR, PF 0.81, -15.1R \u2014 while a discretionary overlay on the same playbook made +27.6R at 40.4% WR by refusing 92% of setups, i.e., the raw pattern has no mechanical edge in that test and the claimed edge is selectivity plus payoff asymmetry. Supporting base rates are real but not edges: London sweeps an Asian extreme on 70%+ of days (GrandAlgo); on index futures the Asia range is broken in 93-95% of sessions and price reverts inside in 96-97% of breaks, stable over 12 years and across NQ/ES/YM/RTY (TradingStats \u2014 descriptive, pre-cost); FVGs fill ~70% of the time across 10 assets incl. gold, 2024-2026 (QuantumAlgo, 2,600 trades, fill rate not P&L). The nearest published, frozen-rules ancestor \u2014 Connors/Raschke Turtle Soup (1995) \u2014 has a quoted 2000-2020 backtest of 1,250 trades, 62.4% winners, +0.35%/trade, PF 1.86, 11.5% max DD (secondary, unaudited source; OxfordStrat's systematic versions show more modest, regime-dependent results: good in rotational markets, poor in persistent trends). Net: the sweep-reversion mechanism is statistically real as an event; every honest mechanical P&L test of the ICT packaging is either negative or unverified.",
+   "known_failure_modes": [
+    "Trend/expansion days: the 'sweep' is acceptance \u2014 price keeps closing beyond the level and never reclaims; counter-bias fades get run over. Turtle-soup-family results are explicitly regime-dependent (poor in persistent trends), and gold 2020-2025 had long one-way stretches.",
+    "Entering on the sweep candle without waiting for the MSS body-close \u2014 cited as the majority of losing setups in silver-bullet/sweep writeups.",
+    "Trading the pattern outside the killzone window \u2014 the same geometry mid-session carries no timing edge and degrades results fastest (Backtrex).",
+    "Gold deep sweeps: XAUUSD routinely runs $1-2 (10-20 pips) past the obvious level; stops placed at the Asian range level (rather than beyond the Judas wick + buffer) are collected before the reversal (FXNX).",
+    "News overrides: 8:30 ET releases sit inside the NY killzone and red-folder events at London open invalidate the technicals; a news spike through the London high that keeps going is the classic blown 'sweep'.",
+    "Degrees-of-freedom / hindsight bias: which levels 'count', which FVGs are 'valid', and which swing defines the MSS are all discretionary in the source material \u2014 any chart fits in hindsight, and freezing one written ruleset is exactly when the edge disappears (OffBeatForex mechanical bot PF 0.81; Zarix/Phidias critiques).",
+    "Repainting confirmations: MSS/FVG logic evaluated on the current bar (close[0]) repaints; backtests that enter intra-bar on unclosed confirmations overstate results (Backtrex).",
+    "Low reward when the swept range is small: T1 = opposite side of the Asia range; on quiet Asia sessions that distance can be a handful of dollars on gold \u2014 spread/slippage on 5m entries eats it (mirrors the user's NY ORB finding: 'breaks hold but leave nothing after the fill').",
+    "Neutral/consolidation bias days: PDH/PDL logic returns 'no bias' and both sides get swept; forcing trades on those days is a documented leak.",
+    "Timezone/DST errors: all windows are defined in New York local time; fixed-UTC implementations are wrong for ~2x3 weeks a year and shift London-open alignment by an hour.",
+    "Ambiguous multi-sweep sessions: second and third runs of an already-swept level have no resting liquidity behind them; counting them as fresh setups inflates frequency and dilutes the stats.",
+    "Survivorship in the claimed win rates: 50-65% figures come from manual, discretionary backtests where invalid setups are excluded after the fact \u2014 the take-everything version of the same rules tested at 29.6% WR."
+   ],
+   "adaptation_ideas_for_xauusd": [
+    "Base rates before rules (mirror the TradingStats template on your own 5m data, 2020-2023 in-sample only): define Asia session = 01:30-07:00 UTC (your Asia open to London pre-open), London window = 07:00-10:30 UTC clock-anchored to America/New_York 02:00-05:30 to survive DST. Measure: P(London window wicks Asia H or L), P(5m close back inside | wick), P(reach opposite side of Asia range before NY open | close back inside + 5m MSS), each conditioned on daily bias state. If the conditional lift over the unconditional reversion rate is small, stop \u2014 the strategy is the conditioning, since the raw break-and-revert event runs at ~90%+ base rates on index futures and likely similar on gold.",
+    "Frozen mechanical spec to grid (one written ruleset, per your house rules): bias = PDH/PDL 4-scenario close logic (most codifiable variant); level = Asia range H/L (01:30-07:00 UTC); sweep = wick beyond level by >= d, with 5m close back inside within k bars; confirmation = first 5m candle whose BODY closes beyond the most recent opposing 3-bar-fractal 5m swing, with body >= b% of bar range (displacement proxy); entry = MSS close; stop = sweep extreme +/- max(buffer, 0.3xATR14_5m); T1 = opposite Asia range side (50% off, BE), T2 = PDH/PDL; time-stop flat at NY equity open. Grid d in {0, 0.02%, 0.05%, 0.10% of price}, k in {1, 3, 6}, b in {50, 60, 70} \u2014 judge by gradient across the cube, not the peak cell, and count all cells for the max-statistic randomisation test.",
+    "Gold-specific sweep depth: FXNX's 'deep sweep' claim (gold runs $1-2 past the level) is directly testable \u2014 check whether a MINIMUM penetration d > 0 improves expectancy with the same sign in both IS halves. If real, it also explains part of your NY ORB failure: breakouts that 'hold but leave nothing' are consistent with fills being the far side of sweep-depth noise.",
+    "Recycle your validated regime filter: gate the Judas setup on 20-day gold/AUDUSD correlation <= 0.5, the same filter that made the Asia ORB work (PF 1.32). Hypothesis: low gold/AUD correlation marks idiosyncratic (flow-driven) gold days, which should favor sweep-reversion too. This is one pre-registered test, not a search.",
+    "Invert your dead NY ORB: your 117-cell grid showed NY-open breakouts break-and-hold but leave nothing after the fill \u2014 the sweep-fade is the natural complement. Test: NY window 13:30-15:00 UTC (8:30/9:30-10:00 ET, NY-time-anchored), level = London session high/low (07:00-12:00 UTC) or overnight high/low, sweep against daily bias, 5m MSS back, target = London mid then opposite London extreme. You already know the breakout side is dead; the reversal side is a distinct, cheap hypothesis on data you have.",
+    "Level hierarchy ablation: run the same engine with level = {Asia H/L, London H/L, PDH/PDL, equal highs/lows within 0.05%} separately. ICT lore says PDH/PDL and equal highs are the deeper pools; verify whether target-level class matters or the effect is generic. Only 'unswept since formation' levels count; consume each level after first sweep.",
+    "Confirmation ablation (what does the MSS actually buy?): compare (a) enter at close-back-inside candle, (b) enter at MSS close, (c) enter at 50% retrace of displacement leg limit. Each later confirmation trades win rate against fill rate and entry price \u2014 quantify whether MSS survives costs or is just a worse fill, the exact failure mode of your NY ORB.",
+    "News handling: tag 8:30 ET red-folder days (CPI, NFP) and 14:00 FOMC days from a calendar; run the backtest with and without them, and report both \u2014 London-open entries held into 8:30 are the specific leak to measure. Expect the no-news filter to be one of the few that passes both-halves sign consistency.",
+    "Costs first-class: model spread 25-35 cents/oz plus slippage on stop-outs at sweep extremes (stops beyond wicks fill badly on gold); run the house-mandated cost sensitivity \u2014 T1 at the opposite side of a quiet Asia range can be < $4 on gold, which is where this dies if it dies.",
+    "Selectivity budget check: the only independent mechanical test (OffBeatForex) lost money taking everything and won by refusing 92% of setups. Your filters (bias state, correlation regime, range-size band, news, location-in-range) should collectively reject most sessions; if the surviving trade count over 2020-2023 IS drops below ~150, accept that the test is underpowered and say so rather than loosening filters post hoc.",
+    "Asia-range size band: skip when Asia range < 0.15% or > 0.6% of price (proxy for 'quiet horizontal accumulation' vs 'messy volatile Asia'); treat the band edges as a 2-parameter grid and demand a smooth gradient, both-halves sign agreement, before keeping it.",
+    "Timezone hygiene: anchor every window to America/New_York calendar time (killzones are defined there), convert per-bar to your UTC data; your 01:30 UTC Asia open is NOT the ICT Asia killzone (20:00-00:00 ET = 00:00/01:00-04:00/05:00 UTC), so state explicitly which Asia definition each test uses and never mix them within one result table."
+   ]
+  }
+ ]
+}

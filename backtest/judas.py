@@ -30,7 +30,11 @@ def _sessions(day: pd.Timestamp):
     a0 = day.tz_localize(UTC)
     return {"asia": (a0 + pd.Timedelta(hours=1, minutes=30), ldn(8)),
             "london": (ldn(8), ldn(16, 30)),
-            "ny": (nyc(9, 30), nyc(16))}
+            "ny": (nyc(9, 30), nyc(16)),
+            # the canonical ICT killzones, anchored to New York local time:
+            # London Judas window opens 02:00 ET, NY killzone opens 08:30 ET
+            "ldnkz": (nyc(2), ldn(16, 30)),
+            "nykz": (nyc(8, 30), nyc(16))}
 
 
 def run(bars5: pd.DataFrame, lv: pd.DataFrame, bias: pd.Series,

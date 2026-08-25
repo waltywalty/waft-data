@@ -86,3 +86,15 @@ Two things worth carrying forward:
 - [ ] At the gate: max-statistic randomisation, Bonferroni quoted alongside, IS/OS split,
       and a placebo that shuffles the labels while preserving their structure.
 - [ ] Then paper trade 4–8 weeks before any real money.
+
+## Strategy research notes (round 8)
+
+`strategy_research.json` holds the structured output of three web-research sweeps
+(2026-08-25, 56 sources) into how practitioners trade the opening-range breakout
+(Zarattini/Aziz, Crabel, replications), the "2.6 standard deviation" pullback family
+(Belkhayate, Bollinger canon, VWAP bands, the OU falsification study), and the ICT
+Judas swing (canonical spec, Turtle Soup, independent tests). Each entry carries the
+mechanical rules, typical parameters, filters practitioners claim matter, claimed
+performance with its caveats, known failure modes, and the adaptation ideas we tested
+in round 8 (`../results/report7.html`). Consult it before re-testing anything in these
+families — the failure modes list is the part that keeps being right.

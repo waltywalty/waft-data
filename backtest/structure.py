@@ -40,6 +40,16 @@ def daily_bias(daily: pd.DataFrame, mode: str = "sma20") -> pd.Series:
         raw = pd.Series(np.where(c > s, 1, np.where(c < s, -1, 0)), index=c.index)
     elif mode == "mom20":
         raw = pd.Series(np.sign(c - c.shift(20)), index=c.index).fillna(0)
+    elif mode == "pdhl":
+        # ICT's 4-scenario previous-day-high/low logic (the most codifiable
+        # variant): close through yesterday's extreme = continuation; a wick
+        # through it that closes back inside = reversal; both swept = no bias
+        ph, pl = daily.high.shift(1), daily.low.shift(1)
+        up_wick, dn_wick = daily.high > ph, daily.low < pl
+        raw = pd.Series(np.select(
+            [c > ph, c < pl,
+             dn_wick & ~up_wick & (c >= pl), up_wick & ~dn_wick & (c <= ph)],
+            [1, -1, 1, -1], default=0), index=c.index)
     elif mode == "hhll":
         # structure proper: the last 10 completed days put in both a higher high
         # and a higher low than the 10 before them (or lower for a downtrend)

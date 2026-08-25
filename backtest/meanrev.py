@@ -78,6 +78,14 @@ def run(bars5: pd.DataFrame, tf: int = 15, n: int = 20, k: float = 2.6,
             continue
         side = int(sides[i])
 
+        # how many consecutive closes sat beyond the band before this signal -
+        # the practitioners' band-walk veto needs it (1 = a single poke)
+        exc = 0
+        j = i - 1
+        while j > n and np.isfinite(zv[j]) and (zv[j] <= -k if side == 1 else zv[j] >= k):
+            exc += 1
+            j -= 1
+
         entry = float(cv[i])
         mu, sig = float(mv[i]), float(sdv[i])
         tgt = mu if target == "mean" else (entry + mu) / 2
@@ -109,7 +117,8 @@ def run(bars5: pd.DataFrame, tf: int = 15, n: int = 20, k: float = 2.6,
         busy_until = t_out + pd.Timedelta(minutes=5)
 
         rows.append(dict(t_signal=ts, t_fill=t_close, side=side, entry=entry,
-                         mean=mu, sigma=sig, z=float(zv[i]), stop=stop, target=tgt,
+                         mean=mu, sigma=sig, z=float(zv[i]), exc_len=exc,
+                         stop=stop, target=tgt,
                          exit=px, t_out=t_out, why=why,
                          pnl_oz=side * (px - entry) - cost,
                          hold_min=(t_out - t_close).total_seconds() / 60))
