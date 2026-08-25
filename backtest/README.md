@@ -361,3 +361,27 @@ overnight-profile cell is the grid's only both-halves survivor (PF 1.045, t +0.3
 watch-list entry #2.
 
 Write-up: `results/report10.html`. Playbook graveyard and watch list updated.
+
+## Round twelve — derived strategies and the MGC option
+
+```bash
+python3 run_derived.py   # 10 pre-registered cells derived from the validated drift
+```
+
+Instead of importing another retail strategy, round 12 derived constructions from the
+repo's own meta-findings (edges live where price discovery is slow; the Asia drift runs
+to the NY close; interference only hurts). Results, all pre-registered:
+
+* **London 08:00 add to a winner** (re-enter the Asia direction at the London open when
+  the original trade is in profit): standalone PF 1.592, t +2.98, halves 1.238/2.265,
+  n=323 — the strongest derived result to date; forward-test candidate #3 (needs an EA
+  logging extension).
+* **NY 09:30 re-entry**: the first NY-session construction in twelve rounds with a
+  positive full-sample t (in-profit + 2R: PF 1.333, t +1.80, halves 1.088/1.670);
+  weaker sibling of the London add, recorded not deployed.
+* **London-open ORB** (the symmetry test): dead (PF 0.82-0.91, both halves agree),
+  completing the price-discovery gradient Asia works / London dead / NY dead - the edge
+  is the illiquid Asia open specifically, not opening ranges in general.
+
+Playbook updated: MGC bracket expression added as an instrument option; forward-test
+candidates now number three.

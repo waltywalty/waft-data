@@ -142,7 +142,7 @@ a:focus-visible, :focus-visible { outline:2px solid var(--brass); outline-offset
 </style>
 <div class="wrap">
 <header>
-<p class="eyebrow">Living document &middot; last updated 2026-08-25 &middot; after round 11</p>
+<p class="eyebrow">Living document &middot; last updated 2026-08-25 &middot; after round 12</p>
 <h1>The Asia gold playbook</h1>
 <p class="standfirst">One strategy survived nine rounds of testing: the Asia-open
 range breakout on gold, gated by the gold/AUDUSD correlation regime. This page is the
@@ -226,8 +226,19 @@ in the tester). <code>backtest/mt5/AsiaOpenGold.mq5</code> v1.10 implements the 
 rule; verified by DST transliteration vs the IANA database (0/2,557 mismatches), a
 C++ type-check, and an independent Python replay reproducing all 652 trades. First
 MetaEditor compile may still need a trivial fix.</li>
-<li><strong>Instrument:</strong> spot/CFD. MGC micro futures need &ge; $25,000 or
-contract granularity turns the strategy into a calm-day-only distortion.</li>
+<li><strong>Instrument:</strong> spot/CFD by default. MGC micro futures need
+roughly &ge; $20-25,000 before the rule can be expressed at sane risk (integer
+contracts; see below), else granularity turns the strategy into a calm-day-only
+distortion.</li>
+<li><strong>MGC bracket expression (round-11 option):</strong> on a futures account
+that clears the size bar, the same entries can be run as a &plusmn;15-20-point MGC
+bracket (&asymp;$150-200 risk and target per contract, RR 1:1) with the 16:00-NY
+flat as the fallback &mdash; backtests in line with the deployed exits
+(PF 1.15-1.37 across the bracket family) because the bracket is wide enough to
+bind on under half of trades. It is an <em>expression</em> of the rule, not an
+upgrade: fixed points do not scale with gold&rsquo;s price or volatility the way
+the 2&times;-range stop does, so re-check the bracket width yearly against
+~0.5-0.8% of spot.</li>
 <li><strong>Now:</strong> demo 4&ndash;8 weeks (~40 trades). Reconcile every trade and
 every skipped day against the rule; a skip-share far from ~38% means the filter is
 miscomputed.</li>
@@ -251,7 +262,20 @@ sample is mined out. The EA logs two candidates per trade to
 <tr><td class="lbl">Prior session was an inside day</td>
 <td class="lbl">PF 1.616, n=94, halves agree</td><td class="num">~14% of trades</td>
 <td class="lbl">same</td></tr>
+<tr><td class="lbl">London 08:00 add to a winner (round 12)</td>
+<td class="lbl">standalone PF 1.592, t +2.98, halves 1.24 / 2.27 &mdash; pre-registered,
+derived from the drift structure itself</td><td class="num">~50% of trades</td>
+<td class="lbl">needs an EA logging extension (London price + in-profit flag),
+then the same 6-12-month bar</td></tr>
 </tbody></table></div>
+<p>Round 12 also settled the mechanism&rsquo;s geography: the identical construction
+moved to the London open is dead (PF 0.87-0.91, both halves), completing the gradient
+Asia (works) &rarr; London (dead) &rarr; NY (dead). The edge is specifically the
+illiquid Asia open on regime-filtered days &mdash; not &ldquo;opening ranges&rdquo; in
+general. A 09:30-NY re-entry in the Asia direction is the only NY-session construction
+in twelve rounds with a positive full-sample t (best cell +1.80, in-profit + 2R stop,
+halves 1.09 / 1.67) &mdash; a weaker sibling of the London add, listed here for the
+record, not for capital.</p>
 <p>If the gated subsets do not beat the unconditioned strategy on data no search has
 touched, the leads die &mdash; the fate of most subgroup findings, and the log will say
 so honestly.</p>
