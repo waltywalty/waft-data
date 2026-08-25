@@ -128,3 +128,33 @@ findings should.
 The diagnostics never gate an order (`InpLogDiagnostics` only controls logging), so
 the replay verification above still describes the trading logic. The shim type-check
 covers the new code (`FileOpen`/`FileWrite` stubs added to `mql5_shim.h`).
+
+## Forward-test v2 (EA v1.20)
+
+v1.20 replaces the per-entry log line with one line per trade written after the
+16:00-NY exit time, to `MQL5\Files\AsiaOpenGold_forward_v2.csv`:
+
+```
+date, dir, lots, entry, corr, rvol, rvol_pass, inside_day,
+ldn_px, ldn_in_profit, ny_px, ny_in_profit, close_px
+```
+
+`ldn_px`/`ny_px` are the bid at the first tick at/after 08:00 London and 09:30
+New York; the in-profit flags compare PRICE to the entry (the research
+definition), independent of whether the position was already stopped. `close_px`
+is the bid when the line is written (~the 16:00 exit price), which makes the log
+self-sufficient: the round-12 candidate legs (London add, NY re-entry) are exact
+from the CSV, and the rvol/inside gates use a no-stop proxy unless you pass the
+account-history export. If the terminal restarts mid-day the pending line is
+lost (visible as a missing date). Trading behavior is unchanged from v1.00 - the
+round-6 replay verification still describes it.
+
+**Scoring**: copy the CSV out of MQL5\Files and run
+
+```bash
+python3 analyze_forward.py AsiaOpenGold_forward_v2.csv [--deals deals.csv]
+```
+
+It prints per-candidate stats and refuses to issue a verdict below 60 trades.
+Promotion is decided ONCE at the 6-12-month mark - not monitored daily; gates
+must beat the base, the add-leg must be profitable standalone (backtest PF 1.59).

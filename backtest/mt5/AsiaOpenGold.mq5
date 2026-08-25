@@ -17,15 +17,20 @@
 //|  US daylight-saving rules, because 09:30 Hong Kong lands on a    |
 //|  DIFFERENT broker-server hour in summer than in winter.          |
 //|                                                                  |
-//|  Forward-test diagnostics (v1.10): each trade also logs, to      |
-//|  MQL5\Files\AsiaOpenGold_forward.csv, the two round-8 research   |
-//|  leads - opening-range relative tick volume and the prior        |
-//|  inside-day flag. PURELY DIAGNOSTIC: they never gate an order.   |
-//|  Join the CSV with account history by date to score the gated    |
-//|  variants on data no backtest has touched.                       |
+//|  Forward-test diagnostics (v1.20): each trade logs ONE line to   |
+//|  MQL5\Files\AsiaOpenGold_forward_v2.csv, written after the       |
+//|  16:00-NY exit time, carrying the three candidate signals:       |
+//|    - opening-range relative tick volume (gate 1.25) and the      |
+//|      prior inside-day flag (round 8);                            |
+//|    - the 08:00-London and 09:30-NY checkpoint prices with        |
+//|      price-vs-entry in-profit flags (round 12: the London        |
+//|      add-leg and the NY re-entry).                               |
+//|  PURELY DIAGNOSTIC: nothing here gates an order. If the terminal |
+//|  restarts mid-day the pending line is lost for that day (state   |
+//|  is in memory only); the gap is visible as a missing date.       |
 //+------------------------------------------------------------------+
 #property copyright "Asia-open gold breakout"
-#property version   "1.10"
+#property version   "1.20"
 
 #include <Trade\Trade.mqh>
 
@@ -50,8 +55,8 @@ input int             InpMagic          = 930115;     // Magic number
 input int             InpSlippage       = 20;         // Max deviation, points
 input int             InpExitHourNY     = 16;         // Exit hour, New York time
 input group           "Forward-test diagnostics (never affect trading)"
-input bool            InpLogDiagnostics = true;       // Log rvol + inside-day per trade
-input string          InpDiagFile       = "AsiaOpenGold_forward.csv"; // CSV in MQL5\Files
+input bool            InpLogDiagnostics = true;       // Log candidate signals per trade
+input string          InpDiagFile       = "AsiaOpenGold_forward_v2.csv"; // CSV in MQL5\Files
 input int             InpRvolLookback   = 14;         // Sessions in the rel-volume baseline
 input double          InpRvolGate       = 1.25;       // Research top-quintile boundary
 
@@ -68,6 +73,13 @@ bool     g_filterPassed = false;
 double   g_corrToday = 0.0;       // diagnostics captured once per day
 double   g_rvolToday = -1.0;      // -1 = could not be computed
 int      g_insideToday = -1;      // 1 / 0 / -1 = unknown
+// pending forward-test line, written after the exit time (v1.20)
+bool     g_fwdPending = false;
+datetime g_fwdDay = 0;
+int      g_fwdDir = 0;
+double   g_fwdLots = 0.0, g_fwdEntry = 0.0;
+double   g_fwdLdnPx = -1.0, g_fwdNyPx = -1.0;
+int      g_fwdLdnProfit = -1, g_fwdNyProfit = -1;
 
 //+------------------------------------------------------------------+
 //| Helpers: calendar                                                |
@@ -298,27 +310,68 @@ int PrevInsideDay()
    return (d[1].high < d[2].high && d[1].low > d[2].low) ? 1 : 0;
   }
 
-void LogForwardTest(datetime dayUtc, int dir, double lots)
+//--- called once at a successful entry: arm the pending line
+void StoreForwardEntry(datetime dayUtc, int dir, double lots, double entry)
   {
    if(!InpLogDiagnostics) return;
+   g_fwdPending = true;
+   g_fwdDay = dayUtc;
+   g_fwdDir = dir;
+   g_fwdLots = lots;
+   g_fwdEntry = entry;
+   g_fwdLdnPx = -1.0; g_fwdNyPx = -1.0;
+   g_fwdLdnProfit = -1; g_fwdNyProfit = -1;
+   PrintFormat("FORWARD-TEST armed: rvol=%.3f (gate %.2f -> %s)  inside_day=%s",
+               g_rvolToday, InpRvolGate,
+               (g_rvolToday >= InpRvolGate) ? "in" : "out",
+               g_insideToday == 1 ? "yes" : (g_insideToday == 0 ? "no" : "unknown"));
+  }
+
+//--- called every tick: capture the checkpoint prices when their times pass,
+//--- and write the line once the 16:00-NY exit time is behind us. The
+//--- in-profit flags compare PRICE to the entry (the research definition),
+//--- independent of whether the position was already stopped out.
+void ForwardCheckpoints(datetime nowUtc, datetime dayUtc)
+  {
+   if(!g_fwdPending || dayUtc != g_fwdDay) return;
+   double bid = SymbolInfoDouble(_Symbol, SYMBOL_BID);
+   datetime ldnUtc = dayUtc + (datetime)((8 - LondonOffset(nowUtc)) * 3600);
+   datetime nyUtc  = dayUtc + (datetime)((9 - NewYorkOffset(nowUtc)) * 3600 + 1800);
+   datetime endUtc = dayUtc + (datetime)((InpExitHourNY - NewYorkOffset(nowUtc)) * 3600);
+   if(g_fwdLdnPx < 0.0 && nowUtc >= ldnUtc && bid > 0.0)
+     {
+      g_fwdLdnPx = bid;
+      g_fwdLdnProfit = (g_fwdDir * (bid - g_fwdEntry) > 0.0) ? 1 : 0;
+     }
+   if(g_fwdNyPx < 0.0 && nowUtc >= nyUtc && bid > 0.0)
+     {
+      g_fwdNyPx = bid;
+      g_fwdNyProfit = (g_fwdDir * (bid - g_fwdEntry) > 0.0) ? 1 : 0;
+     }
+   if(nowUtc < endUtc) return;
+
    bool fresh = !FileIsExist(InpDiagFile);
    int h = FileOpen(InpDiagFile, FILE_READ | FILE_WRITE | FILE_CSV | FILE_ANSI, ',');
    if(h == INVALID_HANDLE)
      {
       PrintFormat("Forward-test log: cannot open %s (error %d)", InpDiagFile, GetLastError());
+      g_fwdPending = false;
       return;
      }
    FileSeek(h, 0, SEEK_END);
    if(fresh)
-      FileWrite(h, "date", "dir", "lots", "corr", "rvol", "rvol_pass", "inside_day");
-   FileWrite(h, TimeToString(dayUtc, TIME_DATE), dir, DoubleToString(lots, 2),
+      FileWrite(h, "date", "dir", "lots", "entry", "corr", "rvol", "rvol_pass",
+                "inside_day", "ldn_px", "ldn_in_profit", "ny_px", "ny_in_profit",
+                "close_px");
+   FileWrite(h, TimeToString(g_fwdDay, TIME_DATE), g_fwdDir,
+             DoubleToString(g_fwdLots, 2), DoubleToString(g_fwdEntry, 2),
              DoubleToString(g_corrToday, 3), DoubleToString(g_rvolToday, 3),
-             (g_rvolToday >= InpRvolGate) ? 1 : 0, g_insideToday);
+             (g_rvolToday >= InpRvolGate) ? 1 : 0, g_insideToday,
+             DoubleToString(g_fwdLdnPx, 2), g_fwdLdnProfit,
+             DoubleToString(g_fwdNyPx, 2), g_fwdNyProfit,
+             DoubleToString(bid, 2));
    FileClose(h);
-   PrintFormat("FORWARD-TEST rvol=%.3f (gate %.2f -> %s)  inside_day=%s",
-               g_rvolToday, InpRvolGate,
-               (g_rvolToday >= InpRvolGate) ? "in" : "out",
-               g_insideToday == 1 ? "yes" : (g_insideToday == 0 ? "no" : "unknown"));
+   g_fwdPending = false;
   }
 
 //+------------------------------------------------------------------+
@@ -402,6 +455,9 @@ void OnTick()
         }
       g_offsetCheckedDay = dayUtc;
      }
+
+   //--- forward-test checkpoints run every tick, independent of position state
+   ForwardCheckpoints(nowUtc, dayUtc);
 
    //--- time exit: 16:00 New York, DST-correct
    if(HasPosition())
@@ -509,7 +565,7 @@ void OnTick()
       g_lastTradedDay = dayUtc;
       PrintFormat("%s %.2f lots, range width %.2f, stop %.2f away",
                   dir > 0 ? "BUY" : "SELL", lots, width, stopDist);
-      LogForwardTest(dayUtc, dir, lots);
+      StoreForwardEntry(dayUtc, dir, lots, dir > 0 ? ask : bid);
      }
    else
       PrintFormat("Order failed: %d %s", trade.ResultRetcode(), trade.ResultRetcodeDescription());
