@@ -1,0 +1,129 @@
+//@version=6
+// Asia-open gold breakout, gated by the gold/AUDUSD correlation regime.
+// Pine port of backtest/mt5/AsiaOpenGold.mq5 (research: backtest/README.md).
+//
+// Rule: range = first 60 min from 09:30 Asia/Hong_Kong; enter on the first
+// 60-minute block to CLOSE beyond it; no entry at/after 08:00 Europe/London;
+// trade only when the 20-day correlation of gold/AUDUSD daily log returns
+// (closed daily bars only) is <= 0.50; stop 2x range; flat 16:00 America/New_York.
+//
+// Chart: XAUUSD (or MGC1!) on the 5-minute timeframe. Timeframes other than
+// 5m will change block boundaries - keep 5m.
+//
+// IMPORTANT: TradingView's native IBKR panel is MANUAL trading only - this
+// strategy cannot route orders to IBKR by itself. For automation, wire the
+// order-fill alert (webhook JSON below) to a bridge service. See README.md.
+strategy("Asia Open Gold [research port]", overlay = true,
+     process_orders_on_close = true, calc_on_every_tick = false,
+     initial_capital = 2000, default_qty_type = strategy.fixed, default_qty_value = 1,
+     commission_type = strategy.commission.cash_per_order, commission_value = 0.15)
+
+// ---- inputs ----------------------------------------------------------------
+audSym    = input.symbol("OANDA:AUDUSD", "AUDUSD symbol (match your data feed)")
+corrDays  = input.int(20,   "Correlation window, days", minval = 5)
+corrMax   = input.float(0.50, "Trade only when correlation <=", step = 0.05)
+useFilter = input.bool(true, "Apply the correlation filter")
+stopMult  = input.float(2.0, "Stop, multiples of range width", step = 0.5)
+riskPct   = input.float(1.0, "Risk per trade, % of equity", step = 0.25)
+sizeMode  = input.string("risk %", "Position sizing", options = ["risk %", "fixed qty"])
+fixedQty  = input.float(1.0, "Fixed qty (oz or contracts)", step = 0.1)
+ptValue   = input.float(1.0, "Point value per unit ($/pt; XAUUSD oz=1, MGC=10)")
+
+TZ_HK  = "Asia/Hong_Kong"
+TZ_LDN = "Europe/London"
+TZ_NY  = "America/New_York"
+
+// ---- correlation from CONFIRMED daily closes (yesterday and older only) ----
+// close[1] with lookahead_on is the standard non-repainting idiom: on every
+// intraday bar it returns the last COMPLETED daily close.
+gD = request.security(syminfo.tickerid, "D", close[1], lookahead = barmerge.lookahead_on)
+aD = request.security(audSym,           "D", close[1], lookahead = barmerge.lookahead_on)
+
+var gArr = array.new_float()
+var aArr = array.new_float()
+newDaily = ta.change(gD) != 0 or ta.change(aD) != 0
+if newDaily and not na(gD) and not na(aD)
+    array.push(gArr, gD)
+    array.push(aArr, aD)
+    if array.size(gArr) > corrDays + 1
+        array.shift(gArr)
+        array.shift(aArr)
+
+corrVal = float(na)
+if array.size(gArr) == corrDays + 1
+    mg = 0.0
+    ma = 0.0
+    for i = 1 to corrDays
+        mg += math.log(array.get(gArr, i) / array.get(gArr, i - 1))
+        ma += math.log(array.get(aArr, i) / array.get(aArr, i - 1))
+    mg /= corrDays
+    ma /= corrDays
+    sgg = 0.0
+    saa = 0.0
+    sga = 0.0
+    for i = 1 to corrDays
+        dg = math.log(array.get(gArr, i) / array.get(gArr, i - 1)) - mg
+        da = math.log(array.get(aArr, i) / array.get(aArr, i - 1)) - ma
+        sgg += dg * dg
+        saa += da * da
+        sga += dg * da
+    corrVal := sgg > 0 and saa > 0 ? sga / math.sqrt(sgg * saa) : na
+// data unusable -> SKIP the day, never trade unfiltered
+filterOk = not useFilter or (not na(corrVal) and corrVal <= corrMax)
+
+// ---- the opening range: 09:30-10:30 HKT ------------------------------------
+inRange   = not na(time(timeframe.period, "0930-1030", TZ_HK))
+rangeStart = inRange and not inRange[1]
+rangeEnd   = (not inRange) and inRange[1]
+
+var float rHigh = na
+var float rLow  = na
+var int   rEndT = na      // ms close-time of the range window
+var int   tradeDay = na   // HK date key of the day already traded / attempted
+if rangeStart
+    rHigh := high
+    rLow  := low
+if inRange
+    rHigh := math.max(rHigh, high)
+    rLow  := math.min(rLow, low)
+if rangeEnd
+    rEndT := time_close[1]
+
+// ---- entry: first 60m block (anchored on the range end) to close beyond ----
+hkKey    = dayofmonth(time, TZ_HK) + 100 * month(time, TZ_HK) + 10000 * year(time, TZ_HK)
+cutoffT  = timestamp(TZ_LDN, year(time, TZ_LDN), month(time, TZ_LDN), dayofmonth(time, TZ_LDN), 8, 0)
+blockEnd = not na(rEndT) and time_close > rEndT and (time_close - rEndT) % 3600000 == 0
+
+canTrade = barstate.isconfirmed and blockEnd and strategy.position_size == 0 and
+     tradeDay != hkKey and time_close <= cutoffT and not na(rHigh) and rHigh > rLow and filterOk
+
+rangeW = rHigh - rLow
+qty(riskDist) =>
+    sizeMode == "fixed qty" ? fixedQty :
+     math.max(0.0, strategy.equity * riskPct / 100.0 / math.max(riskDist * ptValue, syminfo.mintick))
+
+if canTrade and close > rHigh
+    tradeDay := hkKey
+    strategy.entry("L", strategy.long, qty = qty(stopMult * rangeW),
+         alert_message = '{"action":"buy","symbol":"{{ticker}}","price":{{close}},"stop":' + str.tostring(close - stopMult * rangeW, "#.##") + ',"strategy":"AsiaOpenGold"}')
+    strategy.exit("Lx", "L", stop = close - stopMult * rangeW,
+         alert_message = '{"action":"exit","symbol":"{{ticker}}","strategy":"AsiaOpenGold"}')
+if canTrade and close < rLow
+    tradeDay := hkKey
+    strategy.entry("S", strategy.short, qty = qty(stopMult * rangeW),
+         alert_message = '{"action":"sell","symbol":"{{ticker}}","price":{{close}},"stop":' + str.tostring(close + stopMult * rangeW, "#.##") + ',"strategy":"AsiaOpenGold"}')
+    strategy.exit("Sx", "S", stop = close + stopMult * rangeW,
+         alert_message = '{"action":"exit","symbol":"{{ticker}}","strategy":"AsiaOpenGold"}')
+
+// ---- time exit: 16:00 New York, DST handled by the timezone ---------------
+nyMins = hour(time_close, TZ_NY) * 60 + minute(time_close, TZ_NY)
+if strategy.position_size != 0 and nyMins >= 16 * 60
+    strategy.close_all(comment = "16:00 NY",
+         alert_message = '{"action":"flat","symbol":"{{ticker}}","strategy":"AsiaOpenGold"}')
+
+// ---- visuals ---------------------------------------------------------------
+plot(inRange or na(rHigh) ? na : rHigh, "Range high", color.new(color.teal, 0), 2, plot.style_linebr)
+plot(inRange or na(rLow)  ? na : rLow,  "Range low",  color.new(color.teal, 0), 2, plot.style_linebr)
+bgcolor(inRange ? color.new(color.teal, 88) : na)
+bgcolor(not filterOk and barstate.isconfirmed ? color.new(color.red, 94) : na)
+plot(corrVal, "corr(gold,AUD,20d)", display = display.data_window)
