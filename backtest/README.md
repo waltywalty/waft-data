@@ -313,3 +313,24 @@ condition ("find a strong NY strategy first") is not met; the portfolio stays go
 
 Write-ups: `results/report8.html` (round 9) and `results/playbook.html` (the living
 playbook).
+
+## Round ten — the TradingView scripts
+
+```bash
+python3 run_tv.py         # CISD reversal (Venom/Silver Bullet/TJR windows) + Supertrend+RSI
+python3 build_report9.py  # results/report9.html
+```
+
+Four user-supplied Pine scripts, extracted to mechanical rules and run on XAUUSD, SPX,
+NDX, RTY (72 cells). The Supertrend+RSI strategy is the worst signal this repo has
+measured: it loses BEFORE costs on every market and parameter set (t to -52 on 33k-trade
+samples), and its trend filter is inverted as written (Pine's ta.supertrend returns
+direction -1 for an uptrend; the script trades stDir == 1 as "up"). The ICT CISD
+reversal is dead net everywhere except one watch item: gold, 09:00-10:00 range, entry
+against the first break on a close back through the driving candle run, held to the
+close - PF 1.068 (t +0.52), zero-cost 1.20, strength in the shorts (PF 1.247, post-hoc)
+and in 2024-25. Fails the both-halves standard; parked on the watch list for a re-test
+when 2026 data accumulates. The TJR (NY-vs-London) window is the fourth independent
+session-sweep construction to fail here. Playbook graveyard and watch list updated.
+
+Write-up: `results/report9.html`.

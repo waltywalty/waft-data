@@ -1,0 +1,339 @@
+<title>Scripts on Trial</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root {
+  --ground:#FBFBFC; --surface:#FFFFFF; --sunk:#F3F4F7;
+  --ink:#16191F; --ink-2:#4A515E; --ink-3:#7C8496;
+  --rule:#DFE2E9; --rule-2:#EDEFF3;
+  --brass:#8A6420; --brass-soft:#F0E4CC;
+  --pos:#1B6E55; --pos-bg:#E4F1EB; --pos-bg-2:#C9E4D8;
+  --neg:#A83226; --neg-bg:#FAE7E4; --neg-bg-2:#F3CDC7;
+  --maxw:74ch;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ground:#0E1116; --surface:#161A21; --sunk:#1B2029;
+    --ink:#E8EAEF; --ink-2:#A7AEBC; --ink-3:#767E8E;
+    --rule:#272D38; --rule-2:#1F242D;
+    --brass:#D5A64A; --brass-soft:#3A2F18;
+    --pos:#5CBE99; --pos-bg:#14291F; --pos-bg-2:#1C4132;
+    --neg:#E58275; --neg-bg:#2C1714; --neg-bg-2:#4A211B;
+  }
+}
+:root[data-theme="dark"] {
+  --ground:#0E1116; --surface:#161A21; --sunk:#1B2029;
+  --ink:#E8EAEF; --ink-2:#A7AEBC; --ink-3:#767E8E;
+  --rule:#272D38; --rule-2:#1F242D;
+  --brass:#D5A64A; --brass-soft:#3A2F18;
+  --pos:#5CBE99; --pos-bg:#14291F; --pos-bg-2:#1C4132;
+  --neg:#E58275; --neg-bg:#2C1714; --neg-bg-2:#4A211B;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:"IBM Plex Sans",system-ui,sans-serif; font-size:16.5px; line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap { max-width:940px; margin:0 auto; padding:0 28px 96px; }
+header { padding:64px 0 34px; border-bottom:1px solid var(--rule); }
+.eyebrow {
+  font-family:"IBM Plex Mono",monospace; font-size:11.5px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--brass); margin:0 0 14px;
+}
+h1 {
+  font-family:Spectral,Georgia,serif; font-weight:600; font-size:clamp(34px,5.2vw,50px);
+  line-height:1.1; letter-spacing:-.015em; margin:0 0 16px; text-wrap:balance;
+}
+.standfirst { font-size:19px; color:var(--ink-2); max-width:62ch; margin:0; text-wrap:pretty; }
+.provenance {
+  display:flex; flex-wrap:wrap; gap:0 26px; margin-top:26px;
+  font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--ink-3);
+}
+.provenance b { color:var(--ink-2); font-weight:500; }
+section { padding-top:52px; }
+h2 {
+  font-family:Spectral,Georgia,serif; font-weight:600; font-size:26px; letter-spacing:-.01em;
+  margin:0 0 6px; text-wrap:balance;
+}
+h2 .n {
+  font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--brass);
+  letter-spacing:.1em; display:block; margin-bottom:8px; font-weight:500;
+}
+h3 { font-size:15px; font-weight:600; margin:32px 0 8px; letter-spacing:.005em; }
+p { max-width:var(--maxw); margin:14px 0; text-wrap:pretty; }
+.lede { color:var(--ink-2); }
+ul { max-width:var(--maxw); padding-left:20px; }
+li { margin:7px 0; }
+strong { font-weight:600; }
+code { font-family:"IBM Plex Mono",monospace; font-size:.9em; background:var(--sunk);
+        padding:1px 5px; border-radius:3px; }
+.verdict {
+  margin-top:36px; background:var(--surface); border:1px solid var(--rule);
+  border-left:3px solid var(--brass); border-radius:4px; padding:24px 26px;
+}
+.verdict p { margin:0 0 12px; }
+.verdict p:last-child { margin-bottom:0; }
+.verdict .head {
+  font-family:"IBM Plex Mono",monospace; font-size:11.5px; letter-spacing:.13em;
+  text-transform:uppercase; color:var(--brass); margin-bottom:12px;
+}
+.stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(148px,1fr)); gap:1px;
+          background:var(--rule); border:1px solid var(--rule); border-radius:4px;
+          overflow:hidden; margin:28px 0; }
+.stat { background:var(--surface); padding:16px 18px; }
+.stat .k { font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.1em;
+            text-transform:uppercase; color:var(--ink-3); }
+.stat .v { font-family:"IBM Plex Mono",monospace; font-size:24px; font-weight:500;
+            margin-top:5px; font-variant-numeric:tabular-nums; }
+.stat .v.dim { color:var(--ink-2); }
+.tbl-wrap { overflow-x:auto; margin:22px 0; border:1px solid var(--rule); border-radius:4px;
+             background:var(--surface); }
+table { border-collapse:collapse; width:100%; font-size:13.5px; }
+th {
+  font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--ink-3); font-weight:500; text-align:right;
+  padding:12px 14px; border-bottom:1px solid var(--rule); white-space:nowrap;
+}
+th:first-child, th.l { text-align:left; }
+td { padding:9px 14px; border-bottom:1px solid var(--rule-2); white-space:nowrap; }
+tbody tr:last-child td { border-bottom:none; }
+.num { text-align:right; font-family:"IBM Plex Mono",monospace;
+        font-variant-numeric:tabular-nums; }
+.lbl { color:var(--ink-2); }
+.muted { color:var(--ink-3); }
+.pos-1 { background:var(--pos-bg); color:var(--pos); }
+.pos-2 { background:var(--pos-bg-2); color:var(--pos); font-weight:500; }
+.neg-1 { background:var(--neg-bg); color:var(--neg); }
+.neg-2 { background:var(--neg-bg-2); color:var(--neg); font-weight:500; }
+.pos-t { color:var(--pos); } .neg-t { color:var(--neg); }
+figure { margin:26px 0; }
+figcaption { font-size:13px; color:var(--ink-3); margin-top:10px; max-width:66ch; }
+.chart { background:var(--surface); border:1px solid var(--rule); border-radius:4px;
+          padding:18px 10px 8px; overflow-x:auto; }
+svg { display:block; max-width:100%; height:auto; }
+.bar-open { fill:var(--ink-3); }
+.bar-entry { fill:var(--brass); }
+.bar-val { font-family:"IBM Plex Mono",monospace; font-size:11px; fill:var(--ink-2);
+            text-anchor:middle; font-variant-numeric:tabular-nums; }
+.bar-lbl { font-family:"IBM Plex Sans",sans-serif; font-size:12px; fill:var(--ink-2);
+            text-anchor:middle; }
+.baseline { stroke:var(--neg); stroke-width:1.2; stroke-dasharray:5 4; }
+.baseline-lbl { font-family:"IBM Plex Mono",monospace; font-size:10.5px; fill:var(--neg); }
+.curve { fill:none; stroke-width:1.7; }
+.c0 { stroke:var(--brass); stroke-width:2.2; }
+.c1 { stroke:var(--pos); }
+.c2 { stroke:var(--neg); }
+.c3 { stroke:var(--ink-3); }
+.c4 { stroke:var(--ink-3); stroke-dasharray:4 3; stroke-width:1.3; }
+.ax { font-family:"IBM Plex Mono",monospace; font-size:10.5px; fill:var(--ink-3); }
+.zero { stroke:var(--rule); stroke-width:1; }
+.legend { display:flex; flex-wrap:wrap; gap:16px; margin-top:12px; font-size:12.5px;
+           color:var(--ink-2); }
+.legend span { display:inline-flex; align-items:center; gap:7px; }
+.swatch { width:16px; height:3px; border-radius:2px; display:inline-block; }
+.note { background:var(--sunk); border-radius:4px; padding:18px 20px; margin:26px 0;
+         font-size:14.5px; color:var(--ink-2); }
+.note p { margin:0 0 10px; max-width:none; } .note p:last-child { margin:0; }
+footer { margin-top:64px; padding-top:22px; border-top:1px solid var(--rule);
+          font-size:13px; color:var(--ink-3); }
+a { color:var(--brass); text-underline-offset:2px; }
+a:focus-visible, :focus-visible { outline:2px solid var(--brass); outline-offset:2px; }
+@media (max-width:620px) { .wrap { padding:0 18px 64px; } header { padding-top:40px; } }
+</style>
+<div class="wrap">
+<header>
+<p class="eyebrow">XAUUSD research &middot; round 10</p>
+<h1>Four TradingView scripts, one honest battery</h1>
+<p class="standfirst">The user supplied four Pine scripts: a session-lines visualizer,
+the ICT &ldquo;Venom&rdquo; and &ldquo;Silver Bullet&rdquo; models, and a
+Supertrend+RSI strategy. Extracted to mechanical rules and run on gold and three
+indices &mdash; 72 cells &mdash; they produce the worst signal this repo has ever
+measured, one inverted trend filter, and exactly one watch item that does not clear
+the bar but has earned a place in the notebook.</p>
+<div class="provenance">
+<span>markets <b>XAU &middot; SPX &middot; NDX &middot; RTY</b></span>
+<span>cells <b>72</b></span>
+<span>cells with t &gt; 0 <b>3</b></span>
+<span>worst t <b>-52</b></span>
+</div>
+</header>
+
+<section>
+<h2><span class="n">01</span>What the scripts actually contain</h2>
+<ul>
+<li><strong>&ldquo;TJR-Style Sessions&rdquo;</strong> draws session highs and lows;
+it has no entry logic. Its testable content &mdash; the NY AM session trading against
+London-session levels &mdash; was run through the same machinery as the ICT models.</li>
+<li><strong>&ldquo;Venom&rdquo; and &ldquo;Silver Bullet&rdquo;</strong> share one
+mechanism beneath the order-block decoration: <em>CISD</em> &mdash; break of an opening
+range, then entry against the break when price closes back through the open of the
+candle run that produced it. Venom uses an 08:00-09:30 ET range traded to the close;
+Silver Bullet a 09:00-10:00 range traded 10:00-11:00 (a to-EoD variant was added).</li>
+<li><strong>&ldquo;Supertrend+RSI&rdquo;</strong> is fully mechanical &mdash; and
+contains a real defect: in Pine v5/v6, <code>ta.supertrend</code> returns direction
+<code>-1</code> for an <em>uptrend</em>, so the script&rsquo;s
+<code>upTrend = stDir == 1</code> makes its &ldquo;trend filter&rdquo; trade longs when
+the supertrend is bearish. Both readings were tested. The $240k-notional sizing and
+pyramiding in the script are dressing on the signal and were replaced by the house
+per-trade accounting.</li>
+</ul>
+</section>
+
+<section>
+<h2><span class="n">02</span>Supertrend + RSI: the worst signal ever measured here</h2>
+<p class="lede">Every market, every parameter set, both direction readings: it loses
+<em>before</em> costs. The t-statistics reach -52 on thirty-thousand-trade
+samples. The inverted &ldquo;as written&rdquo; version is even worse than the intended
+one &mdash; but neither is salvageable, and no parameter in the script&rsquo;s input
+panel changes that.</p>
+<div class="tbl-wrap"><table>
+<thead><tr><th class="l">Mkt</th><th class="l">Variant</th><th>n</th><th>win</th>
+<th>PF</th><th>t</th><th>PF@0</th><th>IS</th><th>OS</th></tr></thead>
+<tbody><tr><td class="lbl">XAU</td><td class="lbl">ST(10,2.0) RSI 55/45 as written (inverted)</td><td class="num">2,731</td><td class="num">31.3%</td><td class="num neg-1">0.541</td><td class="num">-12.94</td><td class="num muted">0.830</td><td class="num muted">0.479</td><td class="num muted">0.632</td></tr>
+<tr><td class="lbl">XAU</td><td class="lbl">ST(10,2.0) RSI 55/45 as intended</td><td class="num">6,941</td><td class="num">44.0%</td><td class="num neg-1">0.682</td><td class="num">-13.78</td><td class="num muted">0.845</td><td class="num muted">0.650</td><td class="num muted">0.731</td></tr>
+<tr><td class="lbl">XAU</td><td class="lbl">ST(10,3.0) RSI 55/45 as written (inverted)</td><td class="num">3,812</td><td class="num">29.0%</td><td class="num neg-1">0.609</td><td class="num">-12.66</td><td class="num muted">0.868</td><td class="num muted">0.542</td><td class="num muted">0.715</td></tr>
+<tr><td class="lbl">XAU</td><td class="lbl">ST(10,3.0) RSI 55/45 as intended</td><td class="num">4,777</td><td class="num">44.3%</td><td class="num neg-1">0.759</td><td class="num">-8.46</td><td class="num muted">0.885</td><td class="num muted">0.729</td><td class="num muted">0.802</td></tr>
+<tr><td class="lbl">XAU</td><td class="lbl">ST(10,2.0) RSI 60/40 as written (inverted)</td><td class="num">525</td><td class="num">27.6%</td><td class="num neg-1">0.462</td><td class="num">-6.41</td><td class="num muted">0.677</td><td class="num muted">0.500</td><td class="num muted">0.399</td></tr>
+<tr><td class="lbl">XAU</td><td class="lbl">ST(10,2.0) RSI 60/40 as intended</td><td class="num">6,288</td><td class="num">44.7%</td><td class="num neg-1">0.688</td><td class="num">-12.98</td><td class="num muted">0.840</td><td class="num muted">0.653</td><td class="num muted">0.739</td></tr>
+<tr><td class="lbl">SPX</td><td class="lbl">ST(10,2.0) RSI 55/45 as written (inverted)</td><td class="num">11,588</td><td class="num">24.3%</td><td class="num neg-1">0.440</td><td class="num">-35.83</td><td class="num muted">0.795</td><td class="num muted">0.348</td><td class="num muted">0.541</td></tr>
+<tr><td class="lbl">SPX</td><td class="lbl">ST(10,2.0) RSI 55/45 as intended</td><td class="num">32,932</td><td class="num">43.3%</td><td class="num neg-1">0.616</td><td class="num">-35.15</td><td class="num muted">0.844</td><td class="num muted">0.548</td><td class="num muted">0.676</td></tr>
+<tr><td class="lbl">SPX</td><td class="lbl">ST(10,3.0) RSI 55/45 as written (inverted)</td><td class="num">15,731</td><td class="num">24.9%</td><td class="num neg-1">0.526</td><td class="num">-31.78</td><td class="num muted">0.862</td><td class="num muted">0.429</td><td class="num muted">0.623</td></tr>
+<tr><td class="lbl">SPX</td><td class="lbl">ST(10,3.0) RSI 55/45 as intended</td><td class="num">24,302</td><td class="num">43.7%</td><td class="num neg-1">0.729</td><td class="num">-20.54</td><td class="num muted">0.917</td><td class="num muted">0.657</td><td class="num muted">0.795</td></tr>
+<tr><td class="lbl">SPX</td><td class="lbl">ST(10,2.0) RSI 60/40 as written (inverted)</td><td class="num">2,374</td><td class="num">22.4%</td><td class="num neg-1">0.415</td><td class="num">-16.47</td><td class="num muted">0.735</td><td class="num muted">0.342</td><td class="num muted">0.483</td></tr>
+<tr><td class="lbl">SPX</td><td class="lbl">ST(10,2.0) RSI 60/40 as intended</td><td class="num">30,691</td><td class="num">44.2%</td><td class="num neg-1">0.639</td><td class="num">-33.14</td><td class="num muted">0.867</td><td class="num muted">0.545</td><td class="num muted">0.727</td></tr>
+<tr><td class="lbl">NDX</td><td class="lbl">ST(10,2.0) RSI 55/45 as written (inverted)</td><td class="num">11,111</td><td class="num">21.4%</td><td class="num neg-1">0.458</td><td class="num">-51.61</td><td class="num muted">0.808</td><td class="num muted">0.275</td><td class="num muted">0.639</td></tr>
+<tr><td class="lbl">NDX</td><td class="lbl">ST(10,2.0) RSI 55/45 as intended</td><td class="num">31,666</td><td class="num">40.4%</td><td class="num neg-1">0.620</td><td class="num">-51.25</td><td class="num muted">0.844</td><td class="num muted">0.468</td><td class="num muted">0.728</td></tr>
+<tr><td class="lbl">NDX</td><td class="lbl">ST(10,3.0) RSI 55/45 as written (inverted)</td><td class="num">15,078</td><td class="num">22.7%</td><td class="num neg-1">0.538</td><td class="num">-47.38</td><td class="num muted">0.865</td><td class="num muted">0.350</td><td class="num muted">0.696</td></tr>
+<tr><td class="lbl">NDX</td><td class="lbl">ST(10,3.0) RSI 55/45 as intended</td><td class="num">23,419</td><td class="num">42.4%</td><td class="num neg-1">0.728</td><td class="num">-31.10</td><td class="num muted">0.913</td><td class="num muted">0.597</td><td class="num muted">0.820</td></tr>
+<tr><td class="lbl">NDX</td><td class="lbl">ST(10,2.0) RSI 60/40 as written (inverted)</td><td class="num">2,489</td><td class="num">19.7%</td><td class="num neg-1">0.400</td><td class="num">-23.90</td><td class="num muted">0.711</td><td class="num muted">0.254</td><td class="num muted">0.547</td></tr>
+<tr><td class="lbl">NDX</td><td class="lbl">ST(10,2.0) RSI 60/40 as intended</td><td class="num">29,564</td><td class="num">41.4%</td><td class="num neg-1">0.642</td><td class="num">-47.33</td><td class="num muted">0.864</td><td class="num muted">0.495</td><td class="num muted">0.744</td></tr>
+<tr><td class="lbl">RTY</td><td class="lbl">ST(10,2.0) RSI 55/45 as written (inverted)</td><td class="num">8,267</td><td class="num">24.3%</td><td class="num neg-1">0.391</td><td class="num">-32.34</td><td class="num muted">0.808</td><td class="num muted">0.338</td><td class="num muted">0.534</td></tr>
+<tr><td class="lbl">RTY</td><td class="lbl">ST(10,2.0) RSI 55/45 as intended</td><td class="num">23,644</td><td class="num">43.3%</td><td class="num neg-1">0.582</td><td class="num">-30.87</td><td class="num muted">0.863</td><td class="num muted">0.577</td><td class="num muted">0.594</td></tr>
+<tr><td class="lbl">RTY</td><td class="lbl">ST(10,3.0) RSI 55/45 as written (inverted)</td><td class="num">10,795</td><td class="num">26.4%</td><td class="num neg-1">0.520</td><td class="num">-23.81</td><td class="num muted">0.951</td><td class="num muted">0.487</td><td class="num muted">0.604</td></tr>
+<tr><td class="lbl">RTY</td><td class="lbl">ST(10,3.0) RSI 55/45 as intended</td><td class="num">17,702</td><td class="num">43.6%</td><td class="num neg-1">0.683</td><td class="num">-19.08</td><td class="num muted">0.911</td><td class="num muted">0.676</td><td class="num muted">0.699</td></tr>
+<tr><td class="lbl">RTY</td><td class="lbl">ST(10,2.0) RSI 60/40 as written (inverted)</td><td class="num">1,814</td><td class="num">22.8%</td><td class="num neg-1">0.365</td><td class="num">-15.45</td><td class="num muted">0.727</td><td class="num muted">0.307</td><td class="num muted">0.488</td></tr>
+<tr><td class="lbl">RTY</td><td class="lbl">ST(10,2.0) RSI 60/40 as intended</td><td class="num">22,127</td><td class="num">44.6%</td><td class="num neg-1">0.605</td><td class="num">-28.14</td><td class="num muted">0.885</td><td class="num muted">0.589</td><td class="num muted">0.642</td></tr></tbody></table></div>
+<p>Mechanism: RSI crossing 55 inside a supertrend regime is a momentum-chase entry at
+the most expensive point of a 5-minute swing, with a trailing stop tight enough to be
+tagged by normal noise. High trade frequency then multiplies a small negative gross
+edge by thousands. This family is buried with prejudice.</p>
+</section>
+
+<section>
+<h2><span class="n">03</span>The CISD reversal: dead net, with one watch item</h2>
+<div class="tbl-wrap"><table>
+<thead><tr><th class="l">Mkt</th><th class="l">Window / target</th><th>n</th><th>win</th>
+<th>PF</th><th>t</th><th>PF@0</th><th>IS</th><th>OS</th></tr></thead>
+<tbody><tr><td class="lbl">XAU</td><td class="lbl">Venom OR 08:00-09:30 / 2R</td><td class="num">662</td><td class="num">42.6%</td><td class="num neg-1">0.999</td><td class="num">-0.40</td><td class="num muted">1.109</td><td class="num muted">0.847</td><td class="num muted">1.225</td></tr>
+<tr><td class="lbl">XAU</td><td class="lbl">Venom OR 08:00-09:30 / or_opp</td><td class="num">570</td><td class="num">48.2%</td><td class="num neg-1">0.938</td><td class="num">-1.01</td><td class="num muted">1.060</td><td class="num muted">0.806</td><td class="num muted">1.164</td></tr>
+<tr><td class="lbl">XAU</td><td class="lbl">Venom OR 08:00-09:30 / eod</td><td class="num">660</td><td class="num">40.5%</td><td class="num pos-1">1.038</td><td class="num">+0.03</td><td class="num muted">1.148</td><td class="num muted">0.932</td><td class="num muted">1.196</td></tr>
+<tr><td class="lbl">XAU</td><td class="lbl">Silver Bullet 10-11 / 2R</td><td class="num">321</td><td class="num">43.0%</td><td class="num neg-1">0.934</td><td class="num">-0.55</td><td class="num muted">1.146</td><td class="num muted">0.866</td><td class="num muted">1.055</td></tr>
+<tr><td class="lbl">XAU</td><td class="lbl">Silver Bullet 10-11 / or_opp</td><td class="num">273</td><td class="num">46.9%</td><td class="num neg-1">0.907</td><td class="num">-0.67</td><td class="num muted">1.138</td><td class="num muted">0.901</td><td class="num muted">0.916</td></tr>
+<tr><td class="lbl">XAU</td><td class="lbl">Silver Bullet 10-11 / eod</td><td class="num">321</td><td class="num">42.7%</td><td class="num neg-1">0.932</td><td class="num">-0.56</td><td class="num muted">1.143</td><td class="num muted">0.841</td><td class="num muted">1.095</td></tr>
+<tr><td class="lbl">XAU</td><td class="lbl">Silver Bullet to EoD / 2R</td><td class="num">614</td><td class="num">44.5%</td><td class="num pos-1">1.051</td><td class="num">+0.33</td><td class="num muted">1.182</td><td class="num muted">0.925</td><td class="num muted">1.251</td></tr>
+<tr><td class="lbl">XAU</td><td class="lbl">Silver Bullet to EoD / or_opp</td><td class="num">508</td><td class="num">50.8%</td><td class="num neg-1">0.915</td><td class="num">-0.94</td><td class="num muted">1.059</td><td class="num muted">0.839</td><td class="num muted">1.038</td></tr>
+<tr><td class="lbl">XAU</td><td class="lbl">Silver Bullet to EoD / eod</td><td class="num">612</td><td class="num">42.2%</td><td class="num pos-1">1.068</td><td class="num">+0.52</td><td class="num muted">1.198</td><td class="num muted">1.000</td><td class="num muted">1.177</td></tr>
+<tr><td class="lbl">XAU</td><td class="lbl">TJR: NY AM vs London / 2R</td><td class="num">735</td><td class="num">40.1%</td><td class="num neg-1">0.874</td><td class="num">-1.54</td><td class="num muted">0.991</td><td class="num muted">0.804</td><td class="num muted">1.004</td></tr>
+<tr><td class="lbl">XAU</td><td class="lbl">TJR: NY AM vs London / or_opp</td><td class="num">705</td><td class="num">41.3%</td><td class="num neg-1">0.858</td><td class="num">-1.79</td><td class="num muted">0.975</td><td class="num muted">0.780</td><td class="num muted">0.996</td></tr>
+<tr><td class="lbl">XAU</td><td class="lbl">TJR: NY AM vs London / eod</td><td class="num">735</td><td class="num">39.0%</td><td class="num neg-1">0.870</td><td class="num">-1.53</td><td class="num muted">0.986</td><td class="num muted">0.799</td><td class="num muted">1.004</td></tr>
+<tr><td class="lbl">SPX</td><td class="lbl">Venom OR 08:00-09:30 / 2R</td><td class="num">3,649</td><td class="num">37.1%</td><td class="num neg-1">0.870</td><td class="num">-4.90</td><td class="num muted">0.999</td><td class="num muted">0.737</td><td class="num muted">0.988</td></tr>
+<tr><td class="lbl">SPX</td><td class="lbl">Venom OR 08:00-09:30 / or_opp</td><td class="num">2,308</td><td class="num">55.7%</td><td class="num neg-1">0.779</td><td class="num">-5.23</td><td class="num muted">0.986</td><td class="num muted">0.693</td><td class="num muted">0.856</td></tr>
+<tr><td class="lbl">SPX</td><td class="lbl">Venom OR 08:00-09:30 / eod</td><td class="num">3,642</td><td class="num">31.9%</td><td class="num neg-1">0.914</td><td class="num">-3.83</td><td class="num muted">1.040</td><td class="num muted">0.730</td><td class="num muted">1.081</td></tr>
+<tr><td class="lbl">SPX</td><td class="lbl">Silver Bullet 10-11 / 2R</td><td class="num">1,806</td><td class="num">36.8%</td><td class="num neg-1">0.747</td><td class="num">-5.16</td><td class="num muted">1.019</td><td class="num muted">0.593</td><td class="num muted">0.874</td></tr>
+<tr><td class="lbl">SPX</td><td class="lbl">Silver Bullet 10-11 / or_opp</td><td class="num">1,443</td><td class="num">41.8%</td><td class="num neg-1">0.700</td><td class="num">-5.70</td><td class="num muted">0.991</td><td class="num muted">0.537</td><td class="num muted">0.855</td></tr>
+<tr><td class="lbl">SPX</td><td class="lbl">Silver Bullet 10-11 / eod</td><td class="num">1,806</td><td class="num">36.0%</td><td class="num neg-1">0.710</td><td class="num">-5.37</td><td class="num muted">0.972</td><td class="num muted">0.589</td><td class="num muted">0.810</td></tr>
+<tr><td class="lbl">SPX</td><td class="lbl">Silver Bullet to EoD / 2R</td><td class="num">3,318</td><td class="num">39.5%</td><td class="num neg-1">0.990</td><td class="num">-1.42</td><td class="num muted">1.138</td><td class="num muted">0.863</td><td class="num muted">1.104</td></tr>
+<tr><td class="lbl">SPX</td><td class="lbl">Silver Bullet to EoD / or_opp</td><td class="num">2,368</td><td class="num">54.2%</td><td class="num neg-1">0.854</td><td class="num">-3.16</td><td class="num muted">1.058</td><td class="num muted">0.748</td><td class="num muted">0.966</td></tr>
+<tr><td class="lbl">SPX</td><td class="lbl">Silver Bullet to EoD / eod</td><td class="num">3,313</td><td class="num">35.6%</td><td class="num pos-1">1.012</td><td class="num">-0.55</td><td class="num muted">1.155</td><td class="num muted">0.882</td><td class="num muted">1.125</td></tr>
+<tr><td class="lbl">SPX</td><td class="lbl">TJR: NY AM vs London / 2R</td><td class="num">3,401</td><td class="num">38.3%</td><td class="num neg-1">0.735</td><td class="num">-5.89</td><td class="num muted">0.913</td><td class="num muted">0.747</td><td class="num muted">0.724</td></tr>
+<tr><td class="lbl">SPX</td><td class="lbl">TJR: NY AM vs London / or_opp</td><td class="num">3,109</td><td class="num">42.4%</td><td class="num neg-1">0.782</td><td class="num">-4.53</td><td class="num muted">0.979</td><td class="num muted">0.792</td><td class="num muted">0.772</td></tr>
+<tr><td class="lbl">SPX</td><td class="lbl">TJR: NY AM vs London / eod</td><td class="num">3,401</td><td class="num">36.3%</td><td class="num neg-1">0.736</td><td class="num">-6.31</td><td class="num muted">0.910</td><td class="num muted">0.731</td><td class="num muted">0.741</td></tr>
+<tr><td class="lbl">NDX</td><td class="lbl">Venom OR 08:00-09:30 / 2R</td><td class="num">3,626</td><td class="num">36.8%</td><td class="num neg-1">0.920</td><td class="num">-7.15</td><td class="num muted">1.048</td><td class="num muted">0.652</td><td class="num muted">1.111</td></tr>
+<tr><td class="lbl">NDX</td><td class="lbl">Venom OR 08:00-09:30 / or_opp</td><td class="num">1,969</td><td class="num">50.9%</td><td class="num neg-1">0.808</td><td class="num">-8.00</td><td class="num muted">1.020</td><td class="num muted">0.573</td><td class="num muted">0.996</td></tr>
+<tr><td class="lbl">NDX</td><td class="lbl">Venom OR 08:00-09:30 / eod</td><td class="num">3,613</td><td class="num">31.2%</td><td class="num neg-1">0.933</td><td class="num">-6.65</td><td class="num muted">1.055</td><td class="num muted">0.654</td><td class="num muted">1.133</td></tr>
+<tr><td class="lbl">NDX</td><td class="lbl">Silver Bullet 10-11 / 2R</td><td class="num">1,686</td><td class="num">35.6%</td><td class="num neg-1">0.840</td><td class="num">-5.89</td><td class="num muted">1.079</td><td class="num muted">0.599</td><td class="num muted">0.950</td></tr>
+<tr><td class="lbl">NDX</td><td class="lbl">Silver Bullet 10-11 / or_opp</td><td class="num">1,271</td><td class="num">38.9%</td><td class="num neg-1">0.801</td><td class="num">-6.34</td><td class="num muted">1.077</td><td class="num muted">0.564</td><td class="num muted">0.948</td></tr>
+<tr><td class="lbl">NDX</td><td class="lbl">Silver Bullet 10-11 / eod</td><td class="num">1,686</td><td class="num">34.7%</td><td class="num neg-1">0.831</td><td class="num">-6.03</td><td class="num muted">1.065</td><td class="num muted">0.597</td><td class="num muted">0.935</td></tr>
+<tr><td class="lbl">NDX</td><td class="lbl">Silver Bullet to EoD / 2R</td><td class="num">3,086</td><td class="num">40.3%</td><td class="num pos-1">1.041</td><td class="num">-2.64</td><td class="num muted">1.191</td><td class="num muted">0.905</td><td class="num muted">1.125</td></tr>
+<tr><td class="lbl">NDX</td><td class="lbl">Silver Bullet to EoD / or_opp</td><td class="num">2,189</td><td class="num">51.4%</td><td class="num neg-1">0.850</td><td class="num">-5.26</td><td class="num muted">1.049</td><td class="num muted">0.753</td><td class="num muted">0.932</td></tr>
+<tr><td class="lbl">NDX</td><td class="lbl">Silver Bullet to EoD / eod</td><td class="num">3,082</td><td class="num">36.6%</td><td class="num pos-1">1.053</td><td class="num">-2.23</td><td class="num muted">1.197</td><td class="num muted">0.905</td><td class="num muted">1.144</td></tr>
+<tr><td class="lbl">NDX</td><td class="lbl">TJR: NY AM vs London / 2R</td><td class="num">3,445</td><td class="num">38.2%</td><td class="num neg-1">0.773</td><td class="num">-8.45</td><td class="num muted">0.948</td><td class="num muted">0.735</td><td class="num muted">0.801</td></tr>
+<tr><td class="lbl">NDX</td><td class="lbl">TJR: NY AM vs London / or_opp</td><td class="num">2,990</td><td class="num">43.5%</td><td class="num neg-1">0.793</td><td class="num">-7.43</td><td class="num muted">0.986</td><td class="num muted">0.770</td><td class="num muted">0.809</td></tr>
+<tr><td class="lbl">NDX</td><td class="lbl">TJR: NY AM vs London / eod</td><td class="num">3,445</td><td class="num">35.8%</td><td class="num neg-1">0.793</td><td class="num">-7.75</td><td class="num muted">0.965</td><td class="num muted">0.751</td><td class="num muted">0.823</td></tr>
+<tr><td class="lbl">RTY</td><td class="lbl">Venom OR 08:00-09:30 / 2R</td><td class="num">2,762</td><td class="num">37.4%</td><td class="num neg-1">0.812</td><td class="num">-3.85</td><td class="num muted">0.958</td><td class="num muted">0.814</td><td class="num muted">0.806</td></tr>
+<tr><td class="lbl">RTY</td><td class="lbl">Venom OR 08:00-09:30 / or_opp</td><td class="num">1,397</td><td class="num">59.7%</td><td class="num neg-1">0.777</td><td class="num">-3.42</td><td class="num muted">1.049</td><td class="num muted">0.806</td><td class="num muted">0.696</td></tr>
+<tr><td class="lbl">RTY</td><td class="lbl">Venom OR 08:00-09:30 / eod</td><td class="num">2,755</td><td class="num">32.3%</td><td class="num neg-1">0.805</td><td class="num">-3.57</td><td class="num muted">0.942</td><td class="num muted">0.809</td><td class="num muted">0.796</td></tr>
+<tr><td class="lbl">RTY</td><td class="lbl">Silver Bullet 10-11 / 2R</td><td class="num">1,131</td><td class="num">39.3%</td><td class="num neg-1">0.693</td><td class="num">-5.06</td><td class="num muted">1.020</td><td class="num muted">0.669</td><td class="num muted">0.761</td></tr>
+<tr><td class="lbl">RTY</td><td class="lbl">Silver Bullet 10-11 / or_opp</td><td class="num">939</td><td class="num">43.7%</td><td class="num neg-1">0.723</td><td class="num">-4.27</td><td class="num muted">1.077</td><td class="num muted">0.697</td><td class="num muted">0.797</td></tr>
+<tr><td class="lbl">RTY</td><td class="lbl">Silver Bullet 10-11 / eod</td><td class="num">1,131</td><td class="num">39.2%</td><td class="num neg-1">0.697</td><td class="num">-5.00</td><td class="num muted">1.025</td><td class="num muted">0.663</td><td class="num muted">0.791</td></tr>
+<tr><td class="lbl">RTY</td><td class="lbl">Silver Bullet to EoD / 2R</td><td class="num">2,256</td><td class="num">41.8%</td><td class="num neg-1">0.952</td><td class="num">-0.48</td><td class="num muted">1.132</td><td class="num muted">0.928</td><td class="num muted">1.012</td></tr>
+<tr><td class="lbl">RTY</td><td class="lbl">Silver Bullet to EoD / or_opp</td><td class="num">1,686</td><td class="num">53.6%</td><td class="num neg-1">0.867</td><td class="num">-1.95</td><td class="num muted">1.093</td><td class="num muted">0.865</td><td class="num muted">0.874</td></tr>
+<tr><td class="lbl">RTY</td><td class="lbl">Silver Bullet to EoD / eod</td><td class="num">2,250</td><td class="num">39.2%</td><td class="num neg-1">0.931</td><td class="num">-0.66</td><td class="num muted">1.104</td><td class="num muted">0.913</td><td class="num muted">0.976</td></tr>
+<tr><td class="lbl">RTY</td><td class="lbl">TJR: NY AM vs London / 2R</td><td class="num">2,694</td><td class="num">40.5%</td><td class="num neg-1">0.894</td><td class="num">-2.40</td><td class="num muted">1.121</td><td class="num muted">0.883</td><td class="num muted">0.921</td></tr>
+<tr><td class="lbl">RTY</td><td class="lbl">TJR: NY AM vs London / or_opp</td><td class="num">2,160</td><td class="num">48.8%</td><td class="num neg-1">0.903</td><td class="num">-1.69</td><td class="num muted">1.168</td><td class="num muted">0.902</td><td class="num muted">0.906</td></tr>
+<tr><td class="lbl">RTY</td><td class="lbl">TJR: NY AM vs London / eod</td><td class="num">2,694</td><td class="num">38.2%</td><td class="num neg-1">0.892</td><td class="num">-2.25</td><td class="num muted">1.114</td><td class="num muted">0.880</td><td class="num muted">0.921</td></tr></tbody></table></div>
+<p>The TJR window (NY against London levels) is dead everywhere &mdash; the fourth
+independent construction of a session-sweep entry to fail in this repo. The strict
+10-11 Silver Bullet window is dead everywhere. The indices are dead everywhere net.</p>
+<p><strong>The watch item.</strong> Gold&rsquo;s Silver-Bullet-to-EoD cell is the one
+place the family breathes: PF 1.068 net (t +0.52, nothing), zero-cost 1.198, with
+2024-25 at 1.26/1.08 by year. Two decompositions temper and sharpen it: year-by-year
+is noisy around 1.0-1.1 (2021 1.12, 2022 0.88, 2023 1.09) so this is not a clean
+regime break; and the <em>shorts</em> carry it &mdash; PF 1.247 (n=275) fading upside
+breaks across a five-year gold bull, against 0.936 for longs. That last cut is
+post-hoc and counts as a hypothesis, not a finding.</p>
+<h3>Correlation overlay (gold) and the honest OOS panel</h3>
+<div class="tbl-wrap" style="max-width:520px"><table>
+<thead><tr><th class="l">Cell / regime</th><th>n</th><th>PF</th></tr></thead>
+<tbody><tr><td class="lbl">venom / 2R corr<=0.5</td><td class="num">396</td><td class="num pos-1">1.040</td></tr>
+<tr><td class="lbl">venom / 2R corr>0.5</td><td class="num">256</td><td class="num neg-1">0.918</td></tr>
+<tr><td class="lbl">silver / 2R corr<=0.5</td><td class="num">174</td><td class="num neg-1">0.922</td></tr>
+<tr><td class="lbl">silver / 2R corr>0.5</td><td class="num">142</td><td class="num neg-1">0.875</td></tr>
+<tr><td class="lbl">strsi / as intended corr<=0.5</td><td class="num">4186</td><td class="num neg-1">0.676</td></tr>
+<tr><td class="lbl">strsi / as intended corr>0.5</td><td class="num">2633</td><td class="num neg-1">0.671</td></tr></tbody></table></div>
+<div class="tbl-wrap"><table>
+<thead><tr><th class="l">Top 10 by IS t</th><th>IS PF</th><th>IS t</th><th>OS n</th><th>OS PF</th></tr></thead>
+<tbody><tr><td class="lbl">XAU Silver Bullet to EoD / eod</td><td class="num">1.000</td><td class="num muted">-0.02</td><td class="num">194</td><td class="num pos-1">1.177</td></tr>
+<tr><td class="lbl">XAU Venom OR 08:00-09:30 / eod</td><td class="num">0.932</td><td class="num muted">-0.54</td><td class="num">205</td><td class="num pos-1">1.196</td></tr>
+<tr><td class="lbl">XAU Silver Bullet 10-11 / or_opp</td><td class="num">0.901</td><td class="num muted">-0.58</td><td class="num">84</td><td class="num neg-1">0.916</td></tr>
+<tr><td class="lbl">XAU Silver Bullet to EoD / 2R</td><td class="num">0.925</td><td class="num muted">-0.59</td><td class="num">195</td><td class="num pos-1">1.251</td></tr>
+<tr><td class="lbl">RTY Silver Bullet to EoD / 2R</td><td class="num">0.928</td><td class="num muted">-0.63</td><td class="num">497</td><td class="num pos-1">1.012</td></tr>
+<tr><td class="lbl">RTY Silver Bullet to EoD / eod</td><td class="num">0.913</td><td class="num muted">-0.74</td><td class="num">495</td><td class="num neg-1">0.976</td></tr>
+<tr><td class="lbl">XAU Silver Bullet 10-11 / 2R</td><td class="num">0.866</td><td class="num muted">-0.77</td><td class="num">104</td><td class="num pos-1">1.055</td></tr>
+<tr><td class="lbl">XAU Silver Bullet 10-11 / eod</td><td class="num">0.841</td><td class="num muted">-0.90</td><td class="num">104</td><td class="num pos-1">1.095</td></tr>
+<tr><td class="lbl">XAU Silver Bullet to EoD / or_opp</td><td class="num">0.839</td><td class="num muted">-1.34</td><td class="num">159</td><td class="num pos-1">1.038</td></tr>
+<tr><td class="lbl">XAU Venom OR 08:00-09:30 / 2R</td><td class="num">0.847</td><td class="num muted">-1.40</td><td class="num">205</td><td class="num pos-1">1.225</td></tr></tbody></table></div>
+<p>For the first time the honest-OOS panel reads above water (top-10 median OS PF
+1.075 vs population 0.822)
+&mdash; but look at the IS column: every selected cell was at or below 1.0 in-sample.
+Selection found nothing; the recent era is simply kinder to this family, on gold
+especially. That is a regime observation, not an edge. By the house standard &mdash;
+both halves, same sign &mdash; the cell fails.</p>
+<div class="verdict"><div class="head">Verdict and disposition</div>
+<p><strong>Nothing from these scripts is deployable or combinable.</strong> The
+Supertrend+RSI family and the TJR/strict-Silver-Bullet windows join the graveyard.
+The gold CISD-to-EoD reversal &mdash; and specifically its short side &mdash; goes on
+the watch list: re-test when the 2026 gold data accumulates, and if the pattern is
+real it will still be there. It does not touch the deployed strategy, whose own
+forward log remains the gate for every change.</p></div>
+</section>
+
+<section>
+<h2><span class="n">04</span>Methods</h2>
+<ul>
+<li>Entries at bar closes only; stops and targets walked on 5-minute paths with the
+conservative stop-first rule; right-endpoint discipline throughout.</li>
+<li>CISD levels reconstructed from the scripts&rsquo; own logic: the open of the last
+opposite-body candle run (up to 5 bars) before the break; stop at the session extreme
+at trigger time; first break side only, per the scripts&rsquo; guards.</li>
+<li>Supertrend implemented with Wilder smoothing and verified to flip on close-through
+band, matching <code>ta.supertrend</code>; the stop trails the line exactly as the
+script&rsquo;s recomputed-per-bar exit does.</li>
+<li>Costs $0.30/oz and 0.6/2.0/0.4 index points round trip; every cell re-priced at
+zero cost. Era splits: gold 2024+, SPX 2020+, NDX 2021+, RTY 2017+. All 72 cells
+reported; no significance claimed anywhere.</li>
+</ul>
+<footer><p>Round 10. Engine and runner: <code>run_tv.py</code>; results in
+<code>results/tv_scripts.json</code>.</p></footer>
+</section>
+</div>

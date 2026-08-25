@@ -12,7 +12,7 @@ HTML = f"""<title>Asia Gold Playbook</title>
 {CSS}
 <div class="wrap">
 <header>
-<p class="eyebrow">Living document &middot; last updated 2026-08-25 &middot; after round 9</p>
+<p class="eyebrow">Living document &middot; last updated 2026-08-25 &middot; after round 10</p>
 <h1>The Asia gold playbook</h1>
 <p class="standfirst">One strategy survived nine rounds of testing: the Asia-open
 range breakout on gold, gated by the gold/AUDUSD correlation regime. This page is the
@@ -149,7 +149,19 @@ first-bar-direction entries (round 8).</li>
 <li>Exit &ldquo;improvements&rdquo; &mdash; targets, trails, breakeven moves, overnight
 holds (round 9).</li>
 <li>Streak-keyed sizing ladders &mdash; ordering luck; flat risk dominates (round 9).</li>
+<li>Supertrend+RSI in NY hours &mdash; loses before costs on every market and
+parameter set, t-statistics to &minus;52; the script&rsquo;s trend filter is also
+inverted by Pine&rsquo;s supertrend direction semantics (round 10).</li>
+<li>ICT CISD reversals in the TJR (NY-vs-London) and strict 10-11 Silver Bullet
+windows, on gold and all three indices (round 10) &mdash; the fourth and fifth
+independent session-sweep constructions to fail here.</li>
 </ul>
+<div class="note"><p><strong>Watch list (not tradeable, not forgotten):</strong> the
+gold CISD-to-EoD reversal (09:00-10:00 ET range, entry against the first break on a
+close back through the driving candle run, held to the close) &mdash; PF 1.068 net,
+t +0.52, zero-cost 1.20, with its strength in the short side (PF 1.247, post-hoc cut)
+and in 2024-25. Fails the both-halves standard today; re-test when 2026 gold data
+accumulates. It changes nothing about the deployed rule.</p></div>
 <div class="note"><p><strong>One sentence:</strong> trade the Asia open only when gold
 is not a dollar proxy, hold to the New York close with a wide stop at flat 1% risk, and
 let the forward log &mdash; not another backtest &mdash; earn every change.</p></div>
