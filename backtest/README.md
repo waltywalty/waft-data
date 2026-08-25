@@ -274,3 +274,42 @@ for the user's three named strategies:
 
 Research notes with all sources: `reference/strategy_research.json`.
 Write-up: `results/report7.html`.
+
+## Round nine — exits, streaks, sizing, and the index expedition
+
+```bash
+python3 run_exits.py           # exit families on frozen deployable entries + hold curve
+python3 run_exit_portfolio.py  # equity-curve comparison of the PF-improving exits
+python3 run_sizing.py          # streak statistics, dependence tests, sizing ladders
+./fetch_index_data.sh          # SPX/NDX/RTY intraday CFD data (not committed)
+python3 index_data.py          # feed verification + unified 5m UTC caches
+python3 run_nyidx.py           # 84 cells: four NY-open families x three indices
+python3 run_nyidx_filters.py   # pre-registered rescue filters on the Zarattini spec
+python3 build_report8.py && python3 build_playbook.py
+```
+
+**The exit question is closed.** The average trade is underwater for its first three
+hours, accrues monotonically into the 16:00-NY close, and the drift dies overnight
+(PF 1.05, halves disagree). Among ~20 challengers, none beats the clock's expectancy;
+the two that beat its profit factor (breakeven at +1 range, 2x-range trail) compound
+$2,000 to $3.9k/$3.7k vs the clock's $6.1k at identical 1% risk - they scratch trades
+that go on to win the NY session.
+
+**Streaks are coin-flip-ordinary.** Mean losing streak 2.34, longest 9 (next 8) vs
+~10.8 expected from iid chance. P(win|prev loss) 42.8% vs 36.4% after a win - the
+ladder's direction, but chi2 p=0.12. Loss-ladder sizing over 2,000 shuffled orderings:
+median outcomes comparable to flat 2% with far fatter drawdown tails (x2-cap-8%:
+median DD 69%, P(DD>50%) 96%). Sizing stays flat.
+
+**The NY open on SPX/NDX/RTY: real gross, dead net.** Twenty years of index CFD data
+(two feeds, timezone-verified by the 09:30-ET volatility step both seasons, feeds
+agreeing to +0.007%). 84 cells across the Zarattini first-bar spec, ORB follow/fade,
+Judas sweeps (open and pre-open), and open-hours mean reversion: zero cells with t > 0.
+The Zarattini anomaly replicates gross on all three indices (zero-cost PF 1.13-1.20,
+n≈4-5k each) and is fully consumed by a realistic spread - exactly the independent
+replication's caveat. Rescue filters fail: tick-volume rvol makes SPX/NDX worse;
+gap-alignment's least-bad cut runs against the folklore at t +0.48. The combination
+condition ("find a strong NY strategy first") is not met; the portfolio stays gold-only.
+
+Write-ups: `results/report8.html` (round 9) and `results/playbook.html` (the living
+playbook).

@@ -1,0 +1,374 @@
+<title>The Clock, the Streak, and the Indices</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root {
+  --ground:#FBFBFC; --surface:#FFFFFF; --sunk:#F3F4F7;
+  --ink:#16191F; --ink-2:#4A515E; --ink-3:#7C8496;
+  --rule:#DFE2E9; --rule-2:#EDEFF3;
+  --brass:#8A6420; --brass-soft:#F0E4CC;
+  --pos:#1B6E55; --pos-bg:#E4F1EB; --pos-bg-2:#C9E4D8;
+  --neg:#A83226; --neg-bg:#FAE7E4; --neg-bg-2:#F3CDC7;
+  --maxw:74ch;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ground:#0E1116; --surface:#161A21; --sunk:#1B2029;
+    --ink:#E8EAEF; --ink-2:#A7AEBC; --ink-3:#767E8E;
+    --rule:#272D38; --rule-2:#1F242D;
+    --brass:#D5A64A; --brass-soft:#3A2F18;
+    --pos:#5CBE99; --pos-bg:#14291F; --pos-bg-2:#1C4132;
+    --neg:#E58275; --neg-bg:#2C1714; --neg-bg-2:#4A211B;
+  }
+}
+:root[data-theme="dark"] {
+  --ground:#0E1116; --surface:#161A21; --sunk:#1B2029;
+  --ink:#E8EAEF; --ink-2:#A7AEBC; --ink-3:#767E8E;
+  --rule:#272D38; --rule-2:#1F242D;
+  --brass:#D5A64A; --brass-soft:#3A2F18;
+  --pos:#5CBE99; --pos-bg:#14291F; --pos-bg-2:#1C4132;
+  --neg:#E58275; --neg-bg:#2C1714; --neg-bg-2:#4A211B;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:"IBM Plex Sans",system-ui,sans-serif; font-size:16.5px; line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap { max-width:940px; margin:0 auto; padding:0 28px 96px; }
+header { padding:64px 0 34px; border-bottom:1px solid var(--rule); }
+.eyebrow {
+  font-family:"IBM Plex Mono",monospace; font-size:11.5px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--brass); margin:0 0 14px;
+}
+h1 {
+  font-family:Spectral,Georgia,serif; font-weight:600; font-size:clamp(34px,5.2vw,50px);
+  line-height:1.1; letter-spacing:-.015em; margin:0 0 16px; text-wrap:balance;
+}
+.standfirst { font-size:19px; color:var(--ink-2); max-width:62ch; margin:0; text-wrap:pretty; }
+.provenance {
+  display:flex; flex-wrap:wrap; gap:0 26px; margin-top:26px;
+  font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--ink-3);
+}
+.provenance b { color:var(--ink-2); font-weight:500; }
+section { padding-top:52px; }
+h2 {
+  font-family:Spectral,Georgia,serif; font-weight:600; font-size:26px; letter-spacing:-.01em;
+  margin:0 0 6px; text-wrap:balance;
+}
+h2 .n {
+  font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--brass);
+  letter-spacing:.1em; display:block; margin-bottom:8px; font-weight:500;
+}
+h3 { font-size:15px; font-weight:600; margin:32px 0 8px; letter-spacing:.005em; }
+p { max-width:var(--maxw); margin:14px 0; text-wrap:pretty; }
+.lede { color:var(--ink-2); }
+ul { max-width:var(--maxw); padding-left:20px; }
+li { margin:7px 0; }
+strong { font-weight:600; }
+code { font-family:"IBM Plex Mono",monospace; font-size:.9em; background:var(--sunk);
+        padding:1px 5px; border-radius:3px; }
+.verdict {
+  margin-top:36px; background:var(--surface); border:1px solid var(--rule);
+  border-left:3px solid var(--brass); border-radius:4px; padding:24px 26px;
+}
+.verdict p { margin:0 0 12px; }
+.verdict p:last-child { margin-bottom:0; }
+.verdict .head {
+  font-family:"IBM Plex Mono",monospace; font-size:11.5px; letter-spacing:.13em;
+  text-transform:uppercase; color:var(--brass); margin-bottom:12px;
+}
+.stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(148px,1fr)); gap:1px;
+          background:var(--rule); border:1px solid var(--rule); border-radius:4px;
+          overflow:hidden; margin:28px 0; }
+.stat { background:var(--surface); padding:16px 18px; }
+.stat .k { font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.1em;
+            text-transform:uppercase; color:var(--ink-3); }
+.stat .v { font-family:"IBM Plex Mono",monospace; font-size:24px; font-weight:500;
+            margin-top:5px; font-variant-numeric:tabular-nums; }
+.stat .v.dim { color:var(--ink-2); }
+.tbl-wrap { overflow-x:auto; margin:22px 0; border:1px solid var(--rule); border-radius:4px;
+             background:var(--surface); }
+table { border-collapse:collapse; width:100%; font-size:13.5px; }
+th {
+  font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--ink-3); font-weight:500; text-align:right;
+  padding:12px 14px; border-bottom:1px solid var(--rule); white-space:nowrap;
+}
+th:first-child, th.l { text-align:left; }
+td { padding:9px 14px; border-bottom:1px solid var(--rule-2); white-space:nowrap; }
+tbody tr:last-child td { border-bottom:none; }
+.num { text-align:right; font-family:"IBM Plex Mono",monospace;
+        font-variant-numeric:tabular-nums; }
+.lbl { color:var(--ink-2); }
+.muted { color:var(--ink-3); }
+.pos-1 { background:var(--pos-bg); color:var(--pos); }
+.pos-2 { background:var(--pos-bg-2); color:var(--pos); font-weight:500; }
+.neg-1 { background:var(--neg-bg); color:var(--neg); }
+.neg-2 { background:var(--neg-bg-2); color:var(--neg); font-weight:500; }
+.pos-t { color:var(--pos); } .neg-t { color:var(--neg); }
+figure { margin:26px 0; }
+figcaption { font-size:13px; color:var(--ink-3); margin-top:10px; max-width:66ch; }
+.chart { background:var(--surface); border:1px solid var(--rule); border-radius:4px;
+          padding:18px 10px 8px; overflow-x:auto; }
+svg { display:block; max-width:100%; height:auto; }
+.bar-open { fill:var(--ink-3); }
+.bar-entry { fill:var(--brass); }
+.bar-val { font-family:"IBM Plex Mono",monospace; font-size:11px; fill:var(--ink-2);
+            text-anchor:middle; font-variant-numeric:tabular-nums; }
+.bar-lbl { font-family:"IBM Plex Sans",sans-serif; font-size:12px; fill:var(--ink-2);
+            text-anchor:middle; }
+.baseline { stroke:var(--neg); stroke-width:1.2; stroke-dasharray:5 4; }
+.baseline-lbl { font-family:"IBM Plex Mono",monospace; font-size:10.5px; fill:var(--neg); }
+.curve { fill:none; stroke-width:1.7; }
+.c0 { stroke:var(--brass); stroke-width:2.2; }
+.c1 { stroke:var(--pos); }
+.c2 { stroke:var(--neg); }
+.c3 { stroke:var(--ink-3); }
+.c4 { stroke:var(--ink-3); stroke-dasharray:4 3; stroke-width:1.3; }
+.ax { font-family:"IBM Plex Mono",monospace; font-size:10.5px; fill:var(--ink-3); }
+.zero { stroke:var(--rule); stroke-width:1; }
+.legend { display:flex; flex-wrap:wrap; gap:16px; margin-top:12px; font-size:12.5px;
+           color:var(--ink-2); }
+.legend span { display:inline-flex; align-items:center; gap:7px; }
+.swatch { width:16px; height:3px; border-radius:2px; display:inline-block; }
+.note { background:var(--sunk); border-radius:4px; padding:18px 20px; margin:26px 0;
+         font-size:14.5px; color:var(--ink-2); }
+.note p { margin:0 0 10px; max-width:none; } .note p:last-child { margin:0; }
+footer { margin-top:64px; padding-top:22px; border-top:1px solid var(--rule);
+          font-size:13px; color:var(--ink-3); }
+a { color:var(--brass); text-underline-offset:2px; }
+a:focus-visible, :focus-visible { outline:2px solid var(--brass); outline-offset:2px; }
+@media (max-width:620px) { .wrap { padding:0 18px 64px; } header { padding-top:40px; } }
+</style>
+<div class="wrap">
+<header>
+<p class="eyebrow">XAUUSD research &middot; round 9</p>
+<h1>The clock survives, the ladder fails, the indices decline</h1>
+<p class="standfirst">Three questions settled and one expedition returned empty-handed:
+no exit beats holding to the New York close; losing streaks are coin-flip-ordinary and
+sizing up into them buys drawdown, not return; and twenty years of S&amp;P, Nasdaq and
+Russell intraday data confirm the literature's own caveat &mdash; the NY-open anomalies
+are real gross and dead net. The portfolio stays gold-only, by evidence rather than
+default.</p>
+<div class="provenance">
+<span>gold <b>652 deployed trades, 2020&ndash;2025</b></span>
+<span>indices <b>SPX &middot; NDX &middot; RTY, 2005&ndash;2025, 5-min</b></span>
+<span>index cells <b>84 + 15 filter cuts</b></span>
+</div>
+</header>
+
+<section>
+<h2><span class="n">01</span>The verdict up front</h2>
+<div class="stats">
+<div class="stat"><div class="k">best exit found</div><div class="v dim">16:00 NY</div></div>
+<div class="stat"><div class="k">longest loss streak</div><div class="v dim">9 &middot; iid expects ~11</div></div>
+<div class="stat"><div class="k">ladder P(DD&gt;50%)</div><div class="v neg-t">41&ndash;96%</div></div>
+<div class="stat"><div class="k">index cells with t &gt; 0</div><div class="v neg-t">0 / 84</div></div>
+</div>
+</section>
+
+<section>
+<h2><span class="n">02</span>Is there a better exit? No &mdash; and here is why</h2>
+<p class="lede">Entries frozen at the deployed spec; only the exit varied. First the
+diagnostic that needs no parameter search: the average trade's open P&amp;L, hour by
+hour after the fill.</p>
+<div class="tbl-wrap" style="max-width:440px"><table>
+<thead><tr><th class="l">Hours held</th><th>mean $/oz</th><th>median</th></tr></thead>
+<tbody><tr><td class="lbl">+1h</td><td class="num">-0.05</td><td class="num muted">-0.25</td></tr>
+<tr><td class="lbl">+2h</td><td class="num">-0.08</td><td class="num muted">-0.27</td></tr>
+<tr><td class="lbl">+3h</td><td class="num">-0.00</td><td class="num muted">-0.14</td></tr>
+<tr><td class="lbl">+4h</td><td class="num">+0.08</td><td class="num muted">-0.06</td></tr>
+<tr><td class="lbl">+5h</td><td class="num">+0.47</td><td class="num muted">+0.27</td></tr>
+<tr><td class="lbl">+6h</td><td class="num">+0.41</td><td class="num muted">+0.70</td></tr>
+<tr><td class="lbl">+7h</td><td class="num">+0.65</td><td class="num muted">+0.67</td></tr>
+<tr><td class="lbl">+8h</td><td class="num">+0.85</td><td class="num muted">+0.59</td></tr>
+<tr><td class="lbl">+9h</td><td class="num">+1.05</td><td class="num muted">+0.54</td></tr>
+<tr><td class="lbl">+10h</td><td class="num">+1.75</td><td class="num muted">+0.96</td></tr>
+<tr><td class="lbl">+11h</td><td class="num">+2.00</td><td class="num muted">+0.87</td></tr>
+<tr><td class="lbl">+12h</td><td class="num">+2.30</td><td class="num muted">+0.86</td></tr>
+<tr><td class="lbl">+13h</td><td class="num">+2.17</td><td class="num muted">+1.24</td></tr>
+<tr><td class="lbl">+14h</td><td class="num">+2.47</td><td class="num muted">+1.47</td></tr>
+<tr style="border-top:2px solid var(--rule)"><td class="lbl"><strong>16:00 NY close</strong></td>
+<td class="num pos-t"><strong>+2.51</strong></td><td class="num">+1.30</td></tr></tbody></table></div>
+<p>The trade is underwater for its first three hours, turns during London, and accrues
+monotonically into the New York close &mdash; then the drift dies: holding overnight
+returns PF 1.050 with the halves disagreeing. The 16:00-NY exit harvests the
+whole of a drift that lasts exactly one trading day.</p>
+<h3>Clock alternatives</h3>
+<div class="tbl-wrap"><table>
+<thead><tr><th class="l">Exit</th><th>n</th><th>PF</th><th>exp</th><th>t</th><th>20-23</th><th>24-25</th><th>sign</th></tr></thead>
+<tbody><tr><td class="lbl">12:00 London</td><td class="num">645</td><td class="num pos-1">1.221</td><td class="num">+0.66</td><td class="num">+1.95</td><td class="num muted">1.199</td><td class="num muted">1.247</td><td class="lbl"><span class="pos-t">agree</span></td></tr>
+<tr><td class="lbl">14:00 London</td><td class="num">645</td><td class="num pos-1">1.378</td><td class="num">+1.43</td><td class="num">+3.18</td><td class="num muted">1.371</td><td class="num muted">1.386</td><td class="lbl"><span class="pos-t">agree</span></td></tr>
+<tr><td class="lbl">16:30 London (London close)</td><td class="num">645</td><td class="num pos-1">1.347</td><td class="num">+1.59</td><td class="num">+2.80</td><td class="num muted">1.292</td><td class="num muted">1.416</td><td class="lbl"><span class="pos-t">agree</span></td></tr>
+<tr><td class="lbl">09:30 New York (NY open)</td><td class="num">645</td><td class="num pos-1">1.372</td><td class="num">+1.43</td><td class="num">+3.14</td><td class="num muted">1.398</td><td class="num muted">1.344</td><td class="lbl"><span class="pos-t">agree</span></td></tr>
+<tr><td class="lbl">11:00 New York</td><td class="num">645</td><td class="num pos-1">1.292</td><td class="num">+1.34</td><td class="num">+2.51</td><td class="num muted">1.282</td><td class="num muted">1.304</td><td class="lbl"><span class="pos-t">agree</span></td></tr>
+<tr><td class="lbl">13:00 New York</td><td class="num">645</td><td class="num pos-1">1.346</td><td class="num">+1.63</td><td class="num">+2.83</td><td class="num muted">1.271</td><td class="num muted">1.438</td><td class="lbl"><span class="pos-t">agree</span></td></tr>
+<tr><td class="lbl">16:00 New York (deployed)</td><td class="num">645</td><td class="num pos-1">1.381</td><td class="num">+1.87</td><td class="num">+2.97</td><td class="num muted">1.237</td><td class="num muted">1.560</td><td class="lbl"><span class="pos-t">agree</span></td></tr></tbody></table></div>
+<h3>Targets, trails, breakeven moves</h3>
+<div class="tbl-wrap"><table>
+<thead><tr><th class="l">Variant</th><th>n</th><th>PF</th><th>exp</th><th>t</th><th>20-23</th><th>24-25</th><th>sign</th></tr></thead>
+<tbody><tr><td class="lbl">target at 1 x range</td><td class="num">645</td><td class="num pos-1">1.275</td><td class="num">+0.74</td><td class="num">+2.30</td><td class="num muted">1.118</td><td class="num muted">1.455</td><td class="lbl"><span class="pos-t">agree</span></td></tr>
+<tr><td class="lbl">target at 2 x range</td><td class="num">645</td><td class="num pos-1">1.231</td><td class="num">+0.93</td><td class="num">+2.21</td><td class="num muted">1.173</td><td class="num muted">1.296</td><td class="lbl"><span class="pos-t">agree</span></td></tr>
+<tr><td class="lbl">target at 3 x range</td><td class="num">645</td><td class="num pos-1">1.271</td><td class="num">+1.22</td><td class="num">+2.57</td><td class="num muted">1.207</td><td class="num muted">1.345</td><td class="lbl"><span class="pos-t">agree</span></td></tr>
+<tr><td class="lbl">target at 4 x range</td><td class="num">645</td><td class="num pos-1">1.316</td><td class="num">+1.48</td><td class="num">+2.82</td><td class="num muted">1.221</td><td class="num muted">1.430</td><td class="lbl"><span class="pos-t">agree</span></td></tr>
+<tr><td class="lbl">target at 6 x range</td><td class="num">645</td><td class="num pos-1">1.385</td><td class="num">+1.86</td><td class="num">+3.21</td><td class="num muted">1.241</td><td class="num muted">1.563</td><td class="lbl"><span class="pos-t">agree</span></td></tr>
+<tr><td class="lbl">no target (deployed)</td><td class="num">645</td><td class="num pos-1">1.381</td><td class="num">+1.87</td><td class="num">+2.97</td><td class="num muted">1.237</td><td class="num muted">1.560</td><td class="lbl"><span class="pos-t">agree</span></td></tr><tr><td class="lbl">trail 1.0 x range from best price</td><td class="num">645</td><td class="num neg-1">0.997</td><td class="num">-0.01</td><td class="num">-0.20</td><td class="num muted">0.931</td><td class="num muted">1.065</td><td class="lbl"><span class="neg-t">disagree</span></td></tr>
+<tr><td class="lbl">trail 1.5 x range from best price</td><td class="num">645</td><td class="num pos-1">1.276</td><td class="num">+0.70</td><td class="num">+1.94</td><td class="num muted">1.116</td><td class="num muted">1.454</td><td class="lbl"><span class="pos-t">agree</span></td></tr>
+<tr><td class="lbl">trail 2.0 x range from best price</td><td class="num">645</td><td class="num pos-1">1.440</td><td class="num">+1.34</td><td class="num">+3.05</td><td class="num muted">1.262</td><td class="num muted">1.645</td><td class="lbl"><span class="pos-t">agree</span></td></tr>
+<tr><td class="lbl">trail 3.0 x range from best price</td><td class="num">645</td><td class="num pos-1">1.312</td><td class="num">+1.33</td><td class="num">+2.43</td><td class="num muted">1.165</td><td class="num muted">1.480</td><td class="lbl"><span class="pos-t">agree</span></td></tr>
+<tr><td class="lbl">trail 1.0 x range, armed after +1 range</td><td class="num">645</td><td class="num pos-1">1.390</td><td class="num">+1.05</td><td class="num">+2.78</td><td class="num muted">1.212</td><td class="num muted">1.595</td><td class="lbl"><span class="pos-t">agree</span></td></tr>
+<tr><td class="lbl">trail 2.0 x range, armed after +1 range</td><td class="num">645</td><td class="num pos-1">1.316</td><td class="num">+1.07</td><td class="num">+2.30</td><td class="num muted">1.176</td><td class="num muted">1.475</td><td class="lbl"><span class="pos-t">agree</span></td></tr><tr><td class="lbl">stop to entry after +0.5 range</td><td class="num">645</td><td class="num pos-1">1.444</td><td class="num">+0.82</td><td class="num">+2.00</td><td class="num muted">1.453</td><td class="num muted">1.436</td><td class="lbl"><span class="pos-t">agree</span></td></tr>
+<tr><td class="lbl">stop to entry after +1.0 range</td><td class="num">645</td><td class="num pos-1">1.498</td><td class="num">+1.41</td><td class="num">+2.73</td><td class="num muted">1.301</td><td class="num muted">1.730</td><td class="lbl"><span class="pos-t">agree</span></td></tr>
+<tr><td class="lbl">stop to entry after +1.5 range</td><td class="num">645</td><td class="num pos-1">1.404</td><td class="num">+1.44</td><td class="num">+2.62</td><td class="num muted">1.271</td><td class="num muted">1.548</td><td class="lbl"><span class="pos-t">agree</span></td></tr></tbody></table></div>
+<p>Two variants beat the deployed profit factor with both halves agreeing &mdash; the
+breakeven move at +1 range and the 2&times;-range trail. Profit factor is a ratio;
+compounding pays expectancy. At identical 1% risk:</p>
+<div class="tbl-wrap"><table>
+<thead><tr><th class="l">Exit</th><th>PF</th><th>exp $/oz</th><th>$2,000 &rarr;</th><th>CAGR</th><th>max DD</th></tr></thead>
+<tbody><tr><td class="lbl">deployed (2R stop, 16:00 NY)</td><td class="num">1.381</td><td class="num">+1.87</td><td class="num pos-2">$6,087</td><td class="num">+26.6%</td><td class="num">13.7%</td></tr>
+<tr><td class="lbl">breakeven at +1 range</td><td class="num">1.498</td><td class="num">+1.41</td><td class="num pos-1">$3,868</td><td class="num">+15.0%</td><td class="num">12.4%</td></tr>
+<tr><td class="lbl">trail 2 x range</td><td class="num">1.440</td><td class="num">+1.34</td><td class="num pos-1">$3,703</td><td class="num">+13.9%</td><td class="num">13.2%</td></tr></tbody></table></div>
+<div class="verdict"><div class="head">Verdict</div>
+<p>The deployed clock exit compounds to 1.6&times; the equity of either
+&ldquo;improvement&rdquo; while giving up about one point of drawdown. The breakeven stop
+gets tagged in the mid-day chop the hold curve shows is normal, scratching trades that
+on average go on to win the New York session. <strong>The exit question is closed:
+16:00 New York stays.</strong></p></div>
+</section>
+
+<section>
+<h2><span class="n">03</span>Streaks: the record is nine, and chance expected eleven</h2>
+<div class="stats">
+<div class="stat"><div class="k">mean loss streak</div><div class="v dim">2.34</div></div>
+<div class="stat"><div class="k">90th percentile</div><div class="v dim">5</div></div>
+<div class="stat"><div class="k">longest / next</div><div class="v dim">9 / 8</div></div>
+<div class="stat"><div class="k">iid expectation</div><div class="v dim">~11</div></div>
+</div>
+<p>Losing streaks average 2.34 trades (median 2);
+the worst ever was 9 in a row, once, with 8 right
+behind it &mdash; so 9 is not an outlier to discount; plan for it. But a fair coin at
+this win rate over 652 trades would typically produce a run of ~11:
+the strategy's worst streak is <em>milder</em> than chance. Winning streaks: mean
+1.57, longest 5.</p>
+<p>Do streaks predict anything? P(win after a loss) = 42.8%
+against 36.4% after a win &mdash; the direction a loss-ladder
+needs, but &chi;&sup2; p = 0.12 and runs-test z = +1.60:
+statistically indistinguishable from independence.</p>
+</section>
+
+<section>
+<h2><span class="n">04</span>Sizing ladders: paying more for the same distribution</h2>
+<p class="lede">Each scheme run on the real trade sequence, then on 2,000 shuffles of
+the same trades &mdash; order is luck, and the shuffles price it.</p>
+<div class="tbl-wrap"><table>
+<thead><tr><th class="l">Scheme</th><th>real final</th><th>real DD</th>
+<th>median final</th><th>median DD</th><th>p95 DD</th><th>P(DD&gt;50%)</th></tr></thead>
+<tbody><tr><td class="lbl">flat 1% (deployed)</td><td class="num">$4,865</td><td class="num">16.1%</td><td class="num">$4,865</td><td class="num">22.9%</td><td class="num">33.4%</td><td class="num pos-1">0.0%</td></tr>
+<tr><td class="lbl">flat 2%</td><td class="num">$9,697</td><td class="num">30.0%</td><td class="num">$9,697</td><td class="num">41.6%</td><td class="num">56.9%</td><td class="num neg-1">18.4%</td></tr>
+<tr><td class="lbl">&times;1.5 per loss, cap 4%</td><td class="num">$18,334</td><td class="num">28.5%</td><td class="num">$8,390</td><td class="num">47.6%</td><td class="num">66.4%</td><td class="num neg-2">41.2%</td></tr>
+<tr><td class="lbl">&times;2 per loss, cap 8%</td><td class="num">$44,227</td><td class="num">45.8%</td><td class="num">$10,232</td><td class="num">68.9%</td><td class="num">86.6%</td><td class="num neg-2">96.0%</td></tr>
+<tr><td class="lbl">+0.5%/loss, cap 3%</td><td class="num">$12,731</td><td class="num">25.8%</td><td class="num">$7,576</td><td class="num">40.3%</td><td class="num">57.5%</td><td class="num neg-1">16.9%</td></tr>
+<tr><td class="lbl">&times;1.5 per win, cap 4%</td><td class="num">$4,205</td><td class="num">29.2%</td><td class="num">$6,134</td><td class="num">31.7%</td><td class="num">44.3%</td><td class="num pos-1">1.2%</td></tr>
+<tr><td class="lbl">halve after a loss</td><td class="num">$3,165</td><td class="num">12.1%</td><td class="num">$3,776</td><td class="num">17.0%</td><td class="num">25.3%</td><td class="num pos-1">0.0%</td></tr></tbody></table></div>
+<div class="verdict"><div class="head">Verdict</div>
+<p>The ladders&rsquo; spectacular real-path results are ordering luck riding on a p=0.12
+effect. Across shuffles, &times;1.5-capped-4% delivers a median outcome below flat 2%
+while carrying a 41% chance of losing half the account; &times;2-capped-8% makes that
+96%. <strong>Whatever return level is wanted, a flat fraction buys it with a thinner
+drawdown tail than any streak-keyed ladder. Sizing stays flat.</strong> The mild
+after-loss edge, if it ever reaches significance in live logs, would justify revisiting
+&mdash; the forward log now captures what it needs.</p></div>
+</section>
+
+<section>
+<h2><span class="n">05</span>The index expedition: real gross, dead net</h2>
+<p class="lede">Twenty years of S&amp;P 500, Nasdaq-100 and Russell 2000 intraday CFD
+data (two independent feeds, timezone-verified by the 09:30-ET volatility step in both
+seasons, feeds agreeing to +0.007% where they overlap). Four strategy families at the
+NY open and pre-open, 84 cells. Best t-statistic anywhere: -0.81. Cells with
+positive t: 0 of 84.</p>
+<div class="tbl-wrap"><table>
+<thead><tr><th class="l">Family</th><th>SPX PF</th><th>t*</th><th>PF@0</th>
+<th>NDX PF</th><th>t*</th><th>PF@0</th><th>RTY PF</th><th>t*</th><th>PF@0</th></tr></thead>
+<tbody><tr><td class="lbl">Zarattini first-bar</td><td class="num neg-1">0.918</td><td class="num muted">-1.64</td><td class="num muted">1.121</td><td class="num neg-1">0.963</td><td class="num muted">-2.91</td><td class="num muted">1.162</td><td class="num neg-1">0.934</td><td class="num muted">-0.81</td><td class="num muted">1.173</td></tr>
+<tr><td class="lbl">ORB follow</td><td class="num neg-1">0.884</td><td class="num muted">-1.29</td><td class="num muted">1.023</td><td class="num neg-1">0.928</td><td class="num muted">-3.31</td><td class="num muted">1.069</td><td class="num neg-1">0.883</td><td class="num muted">-1.39</td><td class="num muted">1.020</td></tr>
+<tr><td class="lbl">ORB fade</td><td class="num neg-1">0.895</td><td class="num muted">-2.60</td><td class="num muted">1.044</td><td class="num neg-1">0.954</td><td class="num muted">-4.10</td><td class="num muted">1.095</td><td class="num neg-1">0.858</td><td class="num muted">-1.97</td><td class="num muted">0.992</td></tr>
+<tr><td class="lbl">Judas sweep</td><td class="num neg-1">0.814</td><td class="num muted">-1.60</td><td class="num muted">1.027</td><td class="num neg-1">0.789</td><td class="num muted">-3.93</td><td class="num muted">1.004</td><td class="num neg-1">0.815</td><td class="num muted">-1.66</td><td class="num muted">1.037</td></tr>
+<tr><td class="lbl">Open mean reversion</td><td class="num neg-1">0.718</td><td class="num muted">-10.86</td><td class="num muted">0.965</td><td class="num neg-1">0.727</td><td class="num muted">-16.33</td><td class="num muted">0.960</td><td class="num neg-1">0.658</td><td class="num muted">-10.93</td><td class="num muted">0.932</td></tr>
+</tbody></table></div>
+<p>The Zarattini first-bar row is the story: the published QQQ anomaly <em>replicates
+gross</em> on all three indices (zero-cost PF 1.13&ndash;1.20 over 4,000&ndash;5,000
+trades each) and is consumed entirely by a realistic spread &mdash; precisely the
+independent replication&rsquo;s warning that the $0.07/share edge dies at 2.2&cent; of
+slippage. Our engines reproduce the honest version of the literature, not the headline.</p>
+<h3>The pre-registered rescue filters</h3>
+<div class="tbl-wrap"><table>
+<thead><tr><th class="l">Index</th><th class="l">Cut</th><th>n</th><th>PF</th><th>t</th><th>PF@0</th></tr></thead>
+<tbody><tr><td class="lbl">SPX</td><td class="lbl">all</td><td class="num">4950</td><td class="num neg-1">0.928</td><td class="num">-1.86</td><td class="num muted">1.129</td></tr>
+<tr><td class="lbl">SPX</td><td class="lbl">rvol top quintile (>= 1.29)</td><td class="num">990</td><td class="num neg-1">0.874</td><td class="num">-1.39</td><td class="num muted">0.986</td></tr>
+<tr><td class="lbl">SPX</td><td class="lbl">rvol bottom 4 quintiles</td><td class="num">3960</td><td class="num neg-1">0.954</td><td class="num">-1.31</td><td class="num muted">1.203</td></tr>
+<tr><td class="lbl">SPX</td><td class="lbl">gap aligned with bar</td><td class="num">2813</td><td class="num neg-1">0.893</td><td class="num">-1.76</td><td class="num muted">1.081</td></tr>
+<tr><td class="lbl">SPX</td><td class="lbl">gap against bar</td><td class="num">2137</td><td class="num neg-1">0.978</td><td class="num">-0.83</td><td class="num muted">1.198</td></tr>
+<tr><td class="lbl">NDX</td><td class="lbl">all</td><td class="num">4933</td><td class="num neg-1">0.957</td><td class="num">-4.00</td><td class="num muted">1.146</td></tr>
+<tr><td class="lbl">NDX</td><td class="lbl">rvol top quintile (>= 1.29)</td><td class="num">987</td><td class="num neg-1">0.868</td><td class="num">-2.58</td><td class="num muted">0.976</td></tr>
+<tr><td class="lbl">NDX</td><td class="lbl">rvol bottom 4 quintiles</td><td class="num">3946</td><td class="num neg-1">0.997</td><td class="num">-3.14</td><td class="num muted">1.227</td></tr>
+<tr><td class="lbl">NDX</td><td class="lbl">gap aligned with bar</td><td class="num">2842</td><td class="num neg-1">0.899</td><td class="num">-4.55</td><td class="num muted">1.068</td></tr>
+<tr><td class="lbl">NDX</td><td class="lbl">gap against bar</td><td class="num">2091</td><td class="num pos-1">1.047</td><td class="num">-0.93</td><td class="num muted">1.269</td></tr>
+<tr><td class="lbl">RTY</td><td class="lbl">all</td><td class="num">3756</td><td class="num neg-1">0.974</td><td class="num">-0.87</td><td class="num muted">1.194</td></tr>
+<tr><td class="lbl">RTY</td><td class="lbl">rvol top quintile (>= 1.27)</td><td class="num">752</td><td class="num pos-1">1.009</td><td class="num">-0.14</td><td class="num muted">1.186</td></tr>
+<tr><td class="lbl">RTY</td><td class="lbl">rvol bottom 4 quintiles</td><td class="num">3004</td><td class="num neg-1">0.962</td><td class="num">-0.93</td><td class="num muted">1.196</td></tr>
+<tr><td class="lbl">RTY</td><td class="lbl">gap aligned with bar</td><td class="num">2315</td><td class="num neg-1">0.926</td><td class="num">-1.55</td><td class="num muted">1.131</td></tr>
+<tr><td class="lbl">RTY</td><td class="lbl">gap against bar</td><td class="num">1441</td><td class="num pos-1">1.055</td><td class="num">+0.48</td><td class="num muted">1.302</td></tr>
+</tbody></table></div>
+<p>Relative volume &mdash; the one filter with academic-grade evidence &mdash; makes
+SPX and NDX <em>worse</em> here (tick-count CFD volume is not exchange volume; the
+caveat was stated before the test and it bit). Gap-alignment&rsquo;s least-bad cut runs
+<em>against</em> the folklore direction at t +0.48: noise.</p>
+<h3>Honest out-of-sample (rank on the Oanda era, read the recent era)</h3>
+<div class="tbl-wrap"><table>
+<thead><tr><th class="l">Cell</th><th>IS n</th><th>IS PF</th><th>IS t</th><th>OS n</th><th>OS PF</th></tr></thead>
+<tbody><tr><td class="lbl">RTY first-bar, stop bar, EoD</td><td class="num">2934</td><td class="num">1.018</td><td class="num muted">-0.26</td><td class="num">836</td><td class="num neg-1">0.878</td></tr>
+<tr><td class="lbl">RTY first-bar, stop bar, 10R target</td><td class="num">2934</td><td class="num">1.006</td><td class="num muted">-0.32</td><td class="num">836</td><td class="num neg-1">0.885</td></tr>
+<tr><td class="lbl">RTY ORB 60m follow / eod</td><td class="num">2276</td><td class="num">0.923</td><td class="num muted">-1.03</td><td class="num">667</td><td class="num neg-1">0.888</td></tr>
+<tr><td class="lbl">RTY ORB 15m follow / eod</td><td class="num">2887</td><td class="num">0.935</td><td class="num muted">-1.29</td><td class="num">801</td><td class="num neg-1">0.918</td></tr>
+<tr><td class="lbl">SPX judas open / eod</td><td class="num">1367</td><td class="num">0.887</td><td class="num muted">-1.30</td><td class="num">423</td><td class="num neg-1">0.922</td></tr>
+<tr><td class="lbl">RTY ORB 60m follow / prev_day</td><td class="num">1054</td><td class="num">0.867</td><td class="num muted">-1.38</td><td class="num">329</td><td class="num neg-1">0.939</td></tr></tbody></table></div>
+<div class="verdict"><div class="head">The combination question</div>
+<p>The stated condition was: find a strong NY-open strategy first, then combine it with
+the Asia gold strategy. The condition is not met &mdash; the best of 84 cells and 15
+filter cuts is statistically zero &mdash; and combining a validated edge with a
+zero-expectancy component only dilutes it. <strong>The portfolio remains the Asia gold
+strategy alone.</strong> Honest top-10 IS-ranked cells read median OS PF
+0.886 against a population of
+0.945: nothing selectable either.</p></div>
+</section>
+
+<section>
+<h2><span class="n">06</span>Methods and defects</h2>
+<ul>
+<li><strong>Data provenance.</strong> Oanda 1-minute (2005-2020) and an MT5 broker
+export (2020-2025), located on GitHub, harmonized to 5-minute UTC. Both timezone claims
+verified by the sharpest fingerprint available: the 09:30-ET open is a &ge;2&times;
+one-bar volatility step, in winter and summer separately, in every feed. The Russell has
+a 2020-2025 intraday hole (no free source found); its results cover 2005-2020.</li>
+<li><strong>Costs.</strong> 0.6 / 2.0 / 0.4 index points round trip (SPX/NDX/RTY);
+every cell also re-priced at zero cost to separate &ldquo;no anomaly&rdquo; from
+&ldquo;anomaly smaller than the spread&rdquo; &mdash; they are different findings and
+round 9 produced both.</li>
+<li><strong>One crash, no silent error.</strong> A conditional-precedence bug in the
+stop/target scanner raised a TypeError on first run (a None guard protecting only one
+branch); fixed and re-run. Nothing produced wrong numbers silently.</li>
+<li><strong>Exit-study consistency.</strong> The re-walked deployed variant differs
+slightly from the recorded deployable set (path-slice conventions, n=645 vs 652); all
+exit comparisons use the same walker, so the comparison is internally exact.</li>
+<li><strong>Multiplicity.</strong> ~60 exit/sizing tests and 99 index tests, all
+reported. No significance claimed anywhere; no correction needed for null results.</li>
+</ul>
+<footer>
+<p>Round 9. Engines: <code>run_exits.py</code>, <code>run_exit_portfolio.py</code>,
+<code>run_sizing.py</code>, <code>index_data.py</code>, <code>run_nyidx.py</code>,
+<code>run_nyidx_filters.py</code>. Index data cached locally from
+FutureSharks/financial-data (Oanda) and ts4blader/market_data (MT5); not committed.</p>
+</footer>
+</section>
+</div>
