@@ -82,8 +82,9 @@ def hit_scan(F, j0, j1, side, stop, target):
     """First stop/target touch in bars [j0, j1); conservative stop-first."""
     if j1 <= j0:
         return None, "time", None
-    hs = (F.l[j0:j1] <= stop) if side == 1 else (F.h[j0:j1] >= stop) if stop is not None else np.zeros(j1 - j0, bool)
-    ht = (F.h[j0:j1] >= target) if side == 1 else (F.l[j0:j1] <= target) if target is not None else np.zeros(j1 - j0, bool)
+    none_ = np.zeros(j1 - j0, bool)
+    hs = none_ if stop is None else ((F.l[j0:j1] <= stop) if side == 1 else (F.h[j0:j1] >= stop))
+    ht = none_ if target is None else ((F.h[j0:j1] >= target) if side == 1 else (F.l[j0:j1] <= target))
     any_ = hs | ht
     if not any_.any():
         return None, "time", None
