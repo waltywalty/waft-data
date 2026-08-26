@@ -1,0 +1,475 @@
+<title>Pine Paste Board</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root {
+  --ground:#FBFBFC; --surface:#FFFFFF; --sunk:#F3F4F7;
+  --ink:#16191F; --ink-2:#4A515E; --ink-3:#7C8496;
+  --rule:#DFE2E9; --rule-2:#EDEFF3;
+  --brass:#8A6420; --brass-soft:#F0E4CC;
+  --pos:#1B6E55; --pos-bg:#E4F1EB; --pos-bg-2:#C9E4D8;
+  --neg:#A83226; --neg-bg:#FAE7E4; --neg-bg-2:#F3CDC7;
+  --maxw:74ch;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ground:#0E1116; --surface:#161A21; --sunk:#1B2029;
+    --ink:#E8EAEF; --ink-2:#A7AEBC; --ink-3:#767E8E;
+    --rule:#272D38; --rule-2:#1F242D;
+    --brass:#D5A64A; --brass-soft:#3A2F18;
+    --pos:#5CBE99; --pos-bg:#14291F; --pos-bg-2:#1C4132;
+    --neg:#E58275; --neg-bg:#2C1714; --neg-bg-2:#4A211B;
+  }
+}
+:root[data-theme="dark"] {
+  --ground:#0E1116; --surface:#161A21; --sunk:#1B2029;
+  --ink:#E8EAEF; --ink-2:#A7AEBC; --ink-3:#767E8E;
+  --rule:#272D38; --rule-2:#1F242D;
+  --brass:#D5A64A; --brass-soft:#3A2F18;
+  --pos:#5CBE99; --pos-bg:#14291F; --pos-bg-2:#1C4132;
+  --neg:#E58275; --neg-bg:#2C1714; --neg-bg-2:#4A211B;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:"IBM Plex Sans",system-ui,sans-serif; font-size:16.5px; line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap { max-width:940px; margin:0 auto; padding:0 28px 96px; }
+header { padding:64px 0 34px; border-bottom:1px solid var(--rule); }
+.eyebrow {
+  font-family:"IBM Plex Mono",monospace; font-size:11.5px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--brass); margin:0 0 14px;
+}
+h1 {
+  font-family:Spectral,Georgia,serif; font-weight:600; font-size:clamp(34px,5.2vw,50px);
+  line-height:1.1; letter-spacing:-.015em; margin:0 0 16px; text-wrap:balance;
+}
+.standfirst { font-size:19px; color:var(--ink-2); max-width:62ch; margin:0; text-wrap:pretty; }
+.provenance {
+  display:flex; flex-wrap:wrap; gap:0 26px; margin-top:26px;
+  font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--ink-3);
+}
+.provenance b { color:var(--ink-2); font-weight:500; }
+section { padding-top:52px; }
+h2 {
+  font-family:Spectral,Georgia,serif; font-weight:600; font-size:26px; letter-spacing:-.01em;
+  margin:0 0 6px; text-wrap:balance;
+}
+h2 .n {
+  font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--brass);
+  letter-spacing:.1em; display:block; margin-bottom:8px; font-weight:500;
+}
+h3 { font-size:15px; font-weight:600; margin:32px 0 8px; letter-spacing:.005em; }
+p { max-width:var(--maxw); margin:14px 0; text-wrap:pretty; }
+.lede { color:var(--ink-2); }
+ul { max-width:var(--maxw); padding-left:20px; }
+li { margin:7px 0; }
+strong { font-weight:600; }
+code { font-family:"IBM Plex Mono",monospace; font-size:.9em; background:var(--sunk);
+        padding:1px 5px; border-radius:3px; }
+.verdict {
+  margin-top:36px; background:var(--surface); border:1px solid var(--rule);
+  border-left:3px solid var(--brass); border-radius:4px; padding:24px 26px;
+}
+.verdict p { margin:0 0 12px; }
+.verdict p:last-child { margin-bottom:0; }
+.verdict .head {
+  font-family:"IBM Plex Mono",monospace; font-size:11.5px; letter-spacing:.13em;
+  text-transform:uppercase; color:var(--brass); margin-bottom:12px;
+}
+.stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(148px,1fr)); gap:1px;
+          background:var(--rule); border:1px solid var(--rule); border-radius:4px;
+          overflow:hidden; margin:28px 0; }
+.stat { background:var(--surface); padding:16px 18px; }
+.stat .k { font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.1em;
+            text-transform:uppercase; color:var(--ink-3); }
+.stat .v { font-family:"IBM Plex Mono",monospace; font-size:24px; font-weight:500;
+            margin-top:5px; font-variant-numeric:tabular-nums; }
+.stat .v.dim { color:var(--ink-2); }
+.tbl-wrap { overflow-x:auto; margin:22px 0; border:1px solid var(--rule); border-radius:4px;
+             background:var(--surface); }
+table { border-collapse:collapse; width:100%; font-size:13.5px; }
+th {
+  font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--ink-3); font-weight:500; text-align:right;
+  padding:12px 14px; border-bottom:1px solid var(--rule); white-space:nowrap;
+}
+th:first-child, th.l { text-align:left; }
+td { padding:9px 14px; border-bottom:1px solid var(--rule-2); white-space:nowrap; }
+tbody tr:last-child td { border-bottom:none; }
+.num { text-align:right; font-family:"IBM Plex Mono",monospace;
+        font-variant-numeric:tabular-nums; }
+.lbl { color:var(--ink-2); }
+.muted { color:var(--ink-3); }
+.pos-1 { background:var(--pos-bg); color:var(--pos); }
+.pos-2 { background:var(--pos-bg-2); color:var(--pos); font-weight:500; }
+.neg-1 { background:var(--neg-bg); color:var(--neg); }
+.neg-2 { background:var(--neg-bg-2); color:var(--neg); font-weight:500; }
+.pos-t { color:var(--pos); } .neg-t { color:var(--neg); }
+figure { margin:26px 0; }
+figcaption { font-size:13px; color:var(--ink-3); margin-top:10px; max-width:66ch; }
+.chart { background:var(--surface); border:1px solid var(--rule); border-radius:4px;
+          padding:18px 10px 8px; overflow-x:auto; }
+svg { display:block; max-width:100%; height:auto; }
+.bar-open { fill:var(--ink-3); }
+.bar-entry { fill:var(--brass); }
+.bar-val { font-family:"IBM Plex Mono",monospace; font-size:11px; fill:var(--ink-2);
+            text-anchor:middle; font-variant-numeric:tabular-nums; }
+.bar-lbl { font-family:"IBM Plex Sans",sans-serif; font-size:12px; fill:var(--ink-2);
+            text-anchor:middle; }
+.baseline { stroke:var(--neg); stroke-width:1.2; stroke-dasharray:5 4; }
+.baseline-lbl { font-family:"IBM Plex Mono",monospace; font-size:10.5px; fill:var(--neg); }
+.curve { fill:none; stroke-width:1.7; }
+.c0 { stroke:var(--brass); stroke-width:2.2; }
+.c1 { stroke:var(--pos); }
+.c2 { stroke:var(--neg); }
+.c3 { stroke:var(--ink-3); }
+.c4 { stroke:var(--ink-3); stroke-dasharray:4 3; stroke-width:1.3; }
+.ax { font-family:"IBM Plex Mono",monospace; font-size:10.5px; fill:var(--ink-3); }
+.zero { stroke:var(--rule); stroke-width:1; }
+.legend { display:flex; flex-wrap:wrap; gap:16px; margin-top:12px; font-size:12.5px;
+           color:var(--ink-2); }
+.legend span { display:inline-flex; align-items:center; gap:7px; }
+.swatch { width:16px; height:3px; border-radius:2px; display:inline-block; }
+.note { background:var(--sunk); border-radius:4px; padding:18px 20px; margin:26px 0;
+         font-size:14.5px; color:var(--ink-2); }
+.note p { margin:0 0 10px; max-width:none; } .note p:last-child { margin:0; }
+footer { margin-top:64px; padding-top:22px; border-top:1px solid var(--rule);
+          font-size:13px; color:var(--ink-3); }
+a { color:var(--brass); text-underline-offset:2px; }
+a:focus-visible, :focus-visible { outline:2px solid var(--brass); outline-offset:2px; }
+@media (max-width:620px) { .wrap { padding:0 18px 64px; } header { padding-top:40px; } }
+</style>
+<style>
+.script { margin-top: 40px; }
+.script-head { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+.script-head h2 { margin:0; }
+.blurb { margin:6px 0 0; color:var(--ink-2); max-width:52ch; }
+.copy {
+  font-family:"IBM Plex Sans",system-ui,sans-serif; font-size:15px; font-weight:600;
+  color:#fff; background:var(--brass); border:none; border-radius:6px;
+  padding:14px 22px; min-height:48px; cursor:pointer; flex-shrink:0;
+}
+.copy:active { opacity:.85; }
+.copy.done { background:var(--pos); }
+.codewrap { margin-top:16px; border:1px solid var(--rule); border-radius:4px;
+  background:var(--sunk); max-height:420px; overflow:auto;
+  -webkit-overflow-scrolling:touch; }
+.codewrap pre { margin:0; padding:16px 18px; font-family:"IBM Plex Mono",monospace;
+  font-size:12.5px; line-height:1.5; color:var(--ink); white-space:pre; }
+.steps { counter-reset:s; display:grid; gap:14px; margin:26px 0 0; padding:0; list-style:none; max-width:66ch; }
+.steps li { counter-increment:s; display:flex; gap:14px; align-items:baseline; }
+.steps li::before { content:counter(s); font-family:"IBM Plex Mono",monospace; font-size:12px;
+  color:var(--brass); border:1px solid var(--brass); border-radius:50%;
+  width:22px; height:22px; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; }
+</style>
+<div class="wrap">
+<header>
+<p class="eyebrow">Asia gold strategy &middot; TradingView port</p>
+<h1>Pine Paste Board</h1>
+<p class="standfirst">Both scripts, ready to copy on any device. Tap a Copy button, then
+paste into TradingView&rsquo;s Pine Editor. On an iPad, use Safari at tradingview.com
+&mdash; the native app has no Pine Editor.</p>
+</header>
+
+<section>
+<h2>On the iPad, step by step</h2>
+<ol class="steps">
+<li>Open <strong>Safari</strong> &rarr; tradingview.com &rarr; sign in. If the site shows the
+mobile layout with no editor, tap <strong>aA</strong> in the address bar &rarr;
+<strong>Request Desktop Website</strong>.</li>
+<li>Open a chart: <strong>XAUUSD, 5-minute</strong>. The 5-minute part matters &mdash;
+the strategy is built from 5m bars.</li>
+<li>Tap <strong>Copy code</strong> below for the indicator, then on the chart open the
+<strong>Pine Editor</strong> (bottom panel) &rarr; menu &rarr; <strong>Create new
+indicator</strong> &rarr; select the template text &rarr; long-press &rarr;
+<strong>Paste</strong> over it &rarr; <strong>Save</strong> &rarr; <strong>Add to
+chart</strong>.</li>
+<li>Repeat with the strategy script (choose <strong>Create new strategy</strong>).</li>
+<li>In each script&rsquo;s settings, check the AUDUSD symbol matches your gold
+feed&rsquo;s broker. If the editor shows a red error on save, copy the exact message
+back to the chat.</li>
+</ol>
+</section>
+
+
+<section class="script">
+  <div class="script-head">
+    <div>
+      <h2>Signal indicator</h2>
+      <p class="blurb">Draws the range and filter state, fires LONG / SHORT / EXIT alerts. For manual trading through the IBKR panel.</p>
+    </div>
+    <button class="copy" data-target="ind">Copy code</button>
+  </div>
+  <div class="codewrap"><pre id="ind"><code>//@version=6
+// Asia-open gold breakout - SIGNAL INDICATOR for manual execution through
+// TradingView&#x27;s native IBKR panel (which is manual-only; see README.md).
+// Same detection logic as AsiaOpenGold_strategy.pine, no orders: it draws the
+// range and filter state, fires alerts at entries and at the 16:00-NY exit,
+// and shows a status card with everything needed to place the bracket by hand.
+indicator(&quot;Asia Open Gold [signals]&quot;, overlay = true, max_lines_count = 100)
+
+audSym   = input.symbol(&quot;OANDA:AUDUSD&quot;, &quot;AUDUSD symbol (match your data feed)&quot;)
+corrDays = input.int(20, &quot;Correlation window, days&quot;, minval = 5)
+corrMax  = input.float(0.50, &quot;Trade only when correlation &lt;=&quot;, step = 0.05)
+stopMult = input.float(2.0, &quot;Stop, multiples of range width&quot;, step = 0.5)
+
+TZ_HK  = &quot;Asia/Hong_Kong&quot;
+TZ_LDN = &quot;Europe/London&quot;
+TZ_NY  = &quot;America/New_York&quot;
+
+// ---- correlation from CONFIRMED daily closes -------------------------------
+gD = request.security(syminfo.tickerid, &quot;D&quot;, close[1], lookahead = barmerge.lookahead_on)
+aD = request.security(audSym,           &quot;D&quot;, close[1], lookahead = barmerge.lookahead_on)
+var gArr = array.new_float()
+var aArr = array.new_float()
+if (ta.change(gD) != 0 or ta.change(aD) != 0) and not na(gD) and not na(aD)
+    array.push(gArr, gD)
+    array.push(aArr, aD)
+    if array.size(gArr) &gt; corrDays + 1
+        array.shift(gArr)
+        array.shift(aArr)
+corrVal = float(na)
+if array.size(gArr) == corrDays + 1
+    mg = 0.0
+    ma = 0.0
+    for i = 1 to corrDays
+        mg += math.log(array.get(gArr, i) / array.get(gArr, i - 1))
+        ma += math.log(array.get(aArr, i) / array.get(aArr, i - 1))
+    mg /= corrDays
+    ma /= corrDays
+    sgg = 0.0
+    saa = 0.0
+    sga = 0.0
+    for i = 1 to corrDays
+        dg = math.log(array.get(gArr, i) / array.get(gArr, i - 1)) - mg
+        da = math.log(array.get(aArr, i) / array.get(aArr, i - 1)) - ma
+        sgg += dg * dg
+        saa += da * da
+        sga += dg * da
+    corrVal := sgg &gt; 0 and saa &gt; 0 ? sga / math.sqrt(sgg * saa) : na
+filterOk = not na(corrVal) and corrVal &lt;= corrMax
+
+// ---- range and entry detection (identical to the strategy) ----------------
+inRange    = not na(time(timeframe.period, &quot;0930-1030&quot;, TZ_HK))
+rangeStart = inRange and not inRange[1]
+var float rHigh = na
+var float rLow  = na
+var int   rEndT = na
+var int   tradeDay = na
+if rangeStart
+    rHigh := high
+    rLow  := low
+if inRange
+    rHigh := math.max(rHigh, high)
+    rLow  := math.min(rLow, low)
+if (not inRange) and inRange[1]
+    rEndT := time_close[1]
+
+hkKey    = dayofmonth(time, TZ_HK) + 100 * month(time, TZ_HK) + 10000 * year(time, TZ_HK)
+cutoffT  = timestamp(TZ_LDN, year(time, TZ_LDN), month(time, TZ_LDN), dayofmonth(time, TZ_LDN), 8, 0)
+blockEnd = not na(rEndT) and time_close &gt; rEndT and (time_close - rEndT) % 3600000 == 0
+armed    = barstate.isconfirmed and blockEnd and tradeDay != hkKey and
+     time_close &lt;= cutoffT and not na(rHigh) and rHigh &gt; rLow and filterOk
+
+longSig  = armed and close &gt; rHigh
+shortSig = armed and close &lt; rLow
+if longSig or shortSig
+    tradeDay := hkKey
+
+nyMins   = hour(time_close, TZ_NY) * 60 + minute(time_close, TZ_NY)
+exitBell = barstate.isconfirmed and nyMins == 16 * 60
+
+// ---- alerts (fire on bar close; attach webhooks or push notifications) -----
+alertcondition(longSig,  &quot;AsiaOpenGold LONG&quot;,  &quot;Asia gold LONG at {{close}} - stop = entry - 2x range, flat 16:00 NY&quot;)
+alertcondition(shortSig, &quot;AsiaOpenGold SHORT&quot;, &quot;Asia gold SHORT at {{close}} - stop = entry + 2x range, flat 16:00 NY&quot;)
+alertcondition(exitBell, &quot;AsiaOpenGold EXIT&quot;,  &quot;16:00 New York - flatten any open Asia gold position&quot;)
+
+// ---- visuals ---------------------------------------------------------------
+plot(inRange or na(rHigh) ? na : rHigh, &quot;Range high&quot;, color.new(color.teal, 0), 2, plot.style_linebr)
+plot(inRange or na(rLow)  ? na : rLow,  &quot;Range low&quot;,  color.new(color.teal, 0), 2, plot.style_linebr)
+bgcolor(inRange ? color.new(color.teal, 88) : na)
+bgcolor(not filterOk and barstate.isconfirmed ? color.new(color.red, 94) : na)
+plotshape(longSig,  &quot;Long&quot;,  shape.triangleup,   location.belowbar, color.new(color.green, 0), size = size.small)
+plotshape(shortSig, &quot;Short&quot;, shape.triangledown, location.abovebar, color.new(color.red, 0),   size = size.small)
+
+var table card = table.new(position.top_right, 2, 4, border_width = 1)
+if barstate.islast
+    table.cell(card, 0, 0, &quot;corr(gold,AUD)&quot;, text_size = size.small)
+    table.cell(card, 1, 0, na(corrVal) ? &quot;n/a - SKIP DAY&quot; : str.tostring(corrVal, &quot;#.###&quot;),
+         text_size = size.small, bgcolor = filterOk ? color.new(color.green, 80) : color.new(color.red, 80))
+    table.cell(card, 0, 1, &quot;regime&quot;, text_size = size.small)
+    table.cell(card, 1, 1, filterOk ? &quot;TRADE&quot; : &quot;STAND ASIDE&quot;, text_size = size.small)
+    table.cell(card, 0, 2, &quot;range&quot;, text_size = size.small)
+    table.cell(card, 1, 2, na(rHigh) ? &quot;-&quot; : str.tostring(rHigh, &quot;#.##&quot;) + &quot; / &quot; + str.tostring(rLow, &quot;#.##&quot;), text_size = size.small)
+    table.cell(card, 0, 3, &quot;stop dist&quot;, text_size = size.small)
+    table.cell(card, 1, 3, na(rHigh) ? &quot;-&quot; : str.tostring(stopMult * (rHigh - rLow), &quot;#.##&quot;), text_size = size.small)
+</code></pre></div>
+</section>
+
+<section class="script">
+  <div class="script-head">
+    <div>
+      <h2>Backtest strategy</h2>
+      <p class="blurb">The full rule for the Strategy Tester, with webhook-ready order alerts for a bridge later.</p>
+    </div>
+    <button class="copy" data-target="strat">Copy code</button>
+  </div>
+  <div class="codewrap"><pre id="strat"><code>//@version=6
+// Asia-open gold breakout, gated by the gold/AUDUSD correlation regime.
+// Pine port of backtest/mt5/AsiaOpenGold.mq5 (research: backtest/README.md).
+//
+// Rule: range = first 60 min from 09:30 Asia/Hong_Kong; enter on the first
+// 60-minute block to CLOSE beyond it; no entry at/after 08:00 Europe/London;
+// trade only when the 20-day correlation of gold/AUDUSD daily log returns
+// (closed daily bars only) is &lt;= 0.50; stop 2x range; flat 16:00 America/New_York.
+//
+// Chart: XAUUSD (or MGC1!) on the 5-minute timeframe. Timeframes other than
+// 5m will change block boundaries - keep 5m.
+//
+// IMPORTANT: TradingView&#x27;s native IBKR panel is MANUAL trading only - this
+// strategy cannot route orders to IBKR by itself. For automation, wire the
+// order-fill alert (webhook JSON below) to a bridge service. See README.md.
+strategy(&quot;Asia Open Gold [research port]&quot;, overlay = true,
+     process_orders_on_close = true, calc_on_every_tick = false,
+     initial_capital = 2000, default_qty_type = strategy.fixed, default_qty_value = 1,
+     commission_type = strategy.commission.cash_per_order, commission_value = 0.15)
+
+// ---- inputs ----------------------------------------------------------------
+audSym    = input.symbol(&quot;OANDA:AUDUSD&quot;, &quot;AUDUSD symbol (match your data feed)&quot;)
+corrDays  = input.int(20,   &quot;Correlation window, days&quot;, minval = 5)
+corrMax   = input.float(0.50, &quot;Trade only when correlation &lt;=&quot;, step = 0.05)
+useFilter = input.bool(true, &quot;Apply the correlation filter&quot;)
+stopMult  = input.float(2.0, &quot;Stop, multiples of range width&quot;, step = 0.5)
+riskPct   = input.float(1.0, &quot;Risk per trade, % of equity&quot;, step = 0.25)
+sizeMode  = input.string(&quot;risk %&quot;, &quot;Position sizing&quot;, options = [&quot;risk %&quot;, &quot;fixed qty&quot;])
+fixedQty  = input.float(1.0, &quot;Fixed qty (oz or contracts)&quot;, step = 0.1)
+ptValue   = input.float(1.0, &quot;Point value per unit ($/pt; XAUUSD oz=1, MGC=10)&quot;)
+
+TZ_HK  = &quot;Asia/Hong_Kong&quot;
+TZ_LDN = &quot;Europe/London&quot;
+TZ_NY  = &quot;America/New_York&quot;
+
+// ---- correlation from CONFIRMED daily closes (yesterday and older only) ----
+// close[1] with lookahead_on is the standard non-repainting idiom: on every
+// intraday bar it returns the last COMPLETED daily close.
+gD = request.security(syminfo.tickerid, &quot;D&quot;, close[1], lookahead = barmerge.lookahead_on)
+aD = request.security(audSym,           &quot;D&quot;, close[1], lookahead = barmerge.lookahead_on)
+
+var gArr = array.new_float()
+var aArr = array.new_float()
+newDaily = ta.change(gD) != 0 or ta.change(aD) != 0
+if newDaily and not na(gD) and not na(aD)
+    array.push(gArr, gD)
+    array.push(aArr, aD)
+    if array.size(gArr) &gt; corrDays + 1
+        array.shift(gArr)
+        array.shift(aArr)
+
+corrVal = float(na)
+if array.size(gArr) == corrDays + 1
+    mg = 0.0
+    ma = 0.0
+    for i = 1 to corrDays
+        mg += math.log(array.get(gArr, i) / array.get(gArr, i - 1))
+        ma += math.log(array.get(aArr, i) / array.get(aArr, i - 1))
+    mg /= corrDays
+    ma /= corrDays
+    sgg = 0.0
+    saa = 0.0
+    sga = 0.0
+    for i = 1 to corrDays
+        dg = math.log(array.get(gArr, i) / array.get(gArr, i - 1)) - mg
+        da = math.log(array.get(aArr, i) / array.get(aArr, i - 1)) - ma
+        sgg += dg * dg
+        saa += da * da
+        sga += dg * da
+    corrVal := sgg &gt; 0 and saa &gt; 0 ? sga / math.sqrt(sgg * saa) : na
+// data unusable -&gt; SKIP the day, never trade unfiltered
+filterOk = not useFilter or (not na(corrVal) and corrVal &lt;= corrMax)
+
+// ---- the opening range: 09:30-10:30 HKT ------------------------------------
+inRange   = not na(time(timeframe.period, &quot;0930-1030&quot;, TZ_HK))
+rangeStart = inRange and not inRange[1]
+rangeEnd   = (not inRange) and inRange[1]
+
+var float rHigh = na
+var float rLow  = na
+var int   rEndT = na      // ms close-time of the range window
+var int   tradeDay = na   // HK date key of the day already traded / attempted
+if rangeStart
+    rHigh := high
+    rLow  := low
+if inRange
+    rHigh := math.max(rHigh, high)
+    rLow  := math.min(rLow, low)
+if rangeEnd
+    rEndT := time_close[1]
+
+// ---- entry: first 60m block (anchored on the range end) to close beyond ----
+hkKey    = dayofmonth(time, TZ_HK) + 100 * month(time, TZ_HK) + 10000 * year(time, TZ_HK)
+cutoffT  = timestamp(TZ_LDN, year(time, TZ_LDN), month(time, TZ_LDN), dayofmonth(time, TZ_LDN), 8, 0)
+blockEnd = not na(rEndT) and time_close &gt; rEndT and (time_close - rEndT) % 3600000 == 0
+
+canTrade = barstate.isconfirmed and blockEnd and strategy.position_size == 0 and
+     tradeDay != hkKey and time_close &lt;= cutoffT and not na(rHigh) and rHigh &gt; rLow and filterOk
+
+rangeW = rHigh - rLow
+qty(riskDist) =&gt;
+    sizeMode == &quot;fixed qty&quot; ? fixedQty :
+     math.max(0.0, strategy.equity * riskPct / 100.0 / math.max(riskDist * ptValue, syminfo.mintick))
+
+if canTrade and close &gt; rHigh
+    tradeDay := hkKey
+    strategy.entry(&quot;L&quot;, strategy.long, qty = qty(stopMult * rangeW),
+         alert_message = &#x27;{&quot;action&quot;:&quot;buy&quot;,&quot;symbol&quot;:&quot;{{ticker}}&quot;,&quot;price&quot;:{{close}},&quot;stop&quot;:&#x27; + str.tostring(close - stopMult * rangeW, &quot;#.##&quot;) + &#x27;,&quot;strategy&quot;:&quot;AsiaOpenGold&quot;}&#x27;)
+    strategy.exit(&quot;Lx&quot;, &quot;L&quot;, stop = close - stopMult * rangeW,
+         alert_message = &#x27;{&quot;action&quot;:&quot;exit&quot;,&quot;symbol&quot;:&quot;{{ticker}}&quot;,&quot;strategy&quot;:&quot;AsiaOpenGold&quot;}&#x27;)
+if canTrade and close &lt; rLow
+    tradeDay := hkKey
+    strategy.entry(&quot;S&quot;, strategy.short, qty = qty(stopMult * rangeW),
+         alert_message = &#x27;{&quot;action&quot;:&quot;sell&quot;,&quot;symbol&quot;:&quot;{{ticker}}&quot;,&quot;price&quot;:{{close}},&quot;stop&quot;:&#x27; + str.tostring(close + stopMult * rangeW, &quot;#.##&quot;) + &#x27;,&quot;strategy&quot;:&quot;AsiaOpenGold&quot;}&#x27;)
+    strategy.exit(&quot;Sx&quot;, &quot;S&quot;, stop = close + stopMult * rangeW,
+         alert_message = &#x27;{&quot;action&quot;:&quot;exit&quot;,&quot;symbol&quot;:&quot;{{ticker}}&quot;,&quot;strategy&quot;:&quot;AsiaOpenGold&quot;}&#x27;)
+
+// ---- time exit: 16:00 New York, DST handled by the timezone ---------------
+nyMins = hour(time_close, TZ_NY) * 60 + minute(time_close, TZ_NY)
+if strategy.position_size != 0 and nyMins &gt;= 16 * 60
+    strategy.close_all(comment = &quot;16:00 NY&quot;,
+         alert_message = &#x27;{&quot;action&quot;:&quot;flat&quot;,&quot;symbol&quot;:&quot;{{ticker}}&quot;,&quot;strategy&quot;:&quot;AsiaOpenGold&quot;}&#x27;)
+
+// ---- visuals ---------------------------------------------------------------
+plot(inRange or na(rHigh) ? na : rHigh, &quot;Range high&quot;, color.new(color.teal, 0), 2, plot.style_linebr)
+plot(inRange or na(rLow)  ? na : rLow,  &quot;Range low&quot;,  color.new(color.teal, 0), 2, plot.style_linebr)
+bgcolor(inRange ? color.new(color.teal, 88) : na)
+bgcolor(not filterOk and barstate.isconfirmed ? color.new(color.red, 94) : na)
+plot(corrVal, &quot;corr(gold,AUD,20d)&quot;, display = display.data_window)
+</code></pre></div>
+</section>
+
+<footer><p>Generated from <code>backtest/tradingview/</code> &mdash; the repository copy is
+the source of truth. If the scripts change, this page is republished with them.</p></footer>
+</div>
+<script>
+document.querySelectorAll('.copy').forEach(function (b) {
+  b.addEventListener('click', function () {
+    var text = document.getElementById(b.dataset.target).innerText;
+    function done() {
+      b.classList.add('done'); b.textContent = 'Copied';
+      setTimeout(function () { b.classList.remove('done'); b.textContent = 'Copy code'; }, 2500);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done, fallback);
+    } else { fallback(); }
+    function fallback() {
+      var ta = document.createElement('textarea');
+      ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      try { document.execCommand('copy'); done(); } catch (e) {
+        b.textContent = 'Select the code and copy manually';
+      }
+      document.body.removeChild(ta);
+    }
+  });
+});
+</script>
