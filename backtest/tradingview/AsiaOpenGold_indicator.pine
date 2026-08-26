@@ -5,6 +5,7 @@
 // range and filter state, fires alerts at entries and at the 16:00-NY exit,
 // and shows a status card with everything needed to place the bracket by hand.
 indicator("Asia Open Gold [signals]", overlay = true, max_lines_count = 100)
+// v1.2: correlation-trend card row + REGIME ON/OFF/APPROACHING alerts
 
 audSym   = input.symbol("OANDA:AUDUSD", "AUDUSD symbol (match your data feed)")
 corrDays = input.int(20, "Correlation window, days", minval = 5)
@@ -50,6 +51,22 @@ if array.size(gArr) == corrDays + 1
     corrVal := sgg > 0 and saa > 0 ? sga / math.sqrt(sgg * saa) : na
 filterOk = not na(corrVal) and corrVal <= corrMax
 
+// ---- regime-change detection (daily granularity) ---------------------------
+var float corrPrev = na
+var corrHist = array.new_float()
+newDailyCorr = ta.change(gD) != 0 and not na(corrVal)
+if newDailyCorr
+    array.push(corrHist, corrVal)
+    if array.size(corrHist) > 6
+        array.shift(corrHist)
+corr5ago  = array.size(corrHist) == 6 ? array.get(corrHist, 0) : na
+regimeOn  = newDailyCorr and not na(corrPrev) and corrPrev > corrMax and corrVal <= corrMax
+regimeOff = newDailyCorr and not na(corrPrev) and corrPrev <= corrMax and corrVal > corrMax
+approach  = newDailyCorr and not na(corrPrev) and corrPrev > corrMax + 0.05 and
+     corrVal <= corrMax + 0.05 and corrVal > corrMax
+if newDailyCorr
+    corrPrev := corrVal
+
 // ---- range and entry detection (identical to the strategy) ----------------
 inRange    = not na(time(timeframe.period, "0930-1030", TZ_HK))
 rangeStart = inRange and not inRange[1]
@@ -88,6 +105,9 @@ exitBell = barstate.isconfirmed and nyMins == 16 * 60
 alertcondition(longSig,  "AsiaOpenGold LONG",  "Asia gold LONG at {{close}} - stop = entry - 2x range, flat 16:00 NY")
 alertcondition(shortSig, "AsiaOpenGold SHORT", "Asia gold SHORT at {{close}} - stop = entry + 2x range, flat 16:00 NY")
 alertcondition(exitBell, "AsiaOpenGold EXIT",  "16:00 New York - flatten any open Asia gold position")
+alertcondition(regimeOn,  "AsiaOpenGold REGIME ON",  "Gold/AUD correlation crossed BELOW the threshold - the strategy is live again; expect signals")
+alertcondition(regimeOff, "AsiaOpenGold REGIME OFF", "Correlation crossed above the threshold - stand aside until further notice")
+alertcondition(approach,  "AsiaOpenGold APPROACHING", "Correlation within 0.05 of the threshold and falling - regime may turn on soon")
 
 // ---- visuals ---------------------------------------------------------------
 plot(inRange or na(rHigh) ? na : rHigh, "Range high", color.new(color.teal, 0), 2, plot.style_linebr)
@@ -105,7 +125,7 @@ tsz = cardTxt == "small" ? size.small : cardTxt == "normal" ? size.normal : size
 C_LBL = color.rgb(42, 49, 64)          // slate, readable on light and dark charts
 C_OK  = color.rgb(27, 110, 85)
 C_NO  = color.rgb(168, 50, 38)
-var table card = table.new(pos, 2, 6, border_width = 1, border_color = color.rgb(120, 128, 145))
+var table card = table.new(pos, 2, 7, border_width = 1, border_color = color.rgb(120, 128, 145))
 if barstate.islast
     daysAgo = na(lastSigT) ? na : (time - lastSigT) / 86400000.0
     table.cell(card, 0, 0, "corr (gold, AUD)", text_size = tsz, text_color = color.white, bgcolor = C_LBL)
@@ -125,3 +145,9 @@ if barstate.islast
     table.cell(card, 0, 5, "last signal", text_size = tsz, text_color = color.white, bgcolor = C_LBL)
     table.cell(card, 1, 5, na(daysAgo) ? "none loaded" : str.tostring(daysAgo, "#.#") + " days ago",
          text_size = tsz, text_color = color.white, bgcolor = C_LBL)
+    trendTxt = na(corr5ago) or na(corrVal) ? "-" :
+         str.tostring(corr5ago, "#.##") + (corrVal < corr5ago - 0.02 ? " -> falling" :
+         corrVal > corr5ago + 0.02 ? " -> rising" : " -> flat")
+    trendBg  = na(corr5ago) or na(corrVal) ? C_LBL : corrVal < corr5ago - 0.02 ? C_OK : C_LBL
+    table.cell(card, 0, 6, "corr 5d trend", text_size = tsz, text_color = color.white, bgcolor = C_LBL)
+    table.cell(card, 1, 6, trendTxt, text_size = tsz, text_color = color.white, bgcolor = trendBg)

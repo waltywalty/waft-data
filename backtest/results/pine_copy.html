@@ -162,7 +162,7 @@ a:focus-visible, :focus-visible { outline:2px solid var(--brass); outline-offset
 </style>
 <div class="wrap">
 <header>
-<p class="eyebrow">Asia gold strategy &middot; TradingView port &middot; indicator v1.1 + HSI fade</p>
+<p class="eyebrow">Asia gold strategy &middot; TradingView port &middot; indicator v1.2 + HSI fade</p>
 <h1>Pine Paste Board</h1>
 <p class="standfirst">Both scripts, ready to copy on any device. Tap Copy, then paste
 into TradingView&rsquo;s Pine Editor over the existing script and Save. On an iPad use
@@ -187,8 +187,8 @@ Settings) and two new card rows: <strong>signals on chart</strong> and
 <section class="script">
   <div class="script-head">
     <div>
-      <h2>Signal indicator (v1.1)</h2>
-      <p class="blurb">Range, filter state, LONG/SHORT/EXIT alerts, big status card with a signal counter. For manual trading through the IBKR panel.</p>
+      <h2>Signal indicator (v1.2)</h2>
+      <p class="blurb">Now with three regime alerts (REGIME ON / OFF / APPROACHING) so the end of a drought reaches your phone, plus a corr-trend row on the card. Re-paste over v1.1 and re-create alerts to add the new ones.</p>
     </div>
     <button class="copy" data-target="ind">Copy code</button>
   </div>
@@ -199,6 +199,7 @@ Settings) and two new card rows: <strong>signals on chart</strong> and
 // range and filter state, fires alerts at entries and at the 16:00-NY exit,
 // and shows a status card with everything needed to place the bracket by hand.
 indicator(&quot;Asia Open Gold [signals]&quot;, overlay = true, max_lines_count = 100)
+// v1.2: correlation-trend card row + REGIME ON/OFF/APPROACHING alerts
 
 audSym   = input.symbol(&quot;OANDA:AUDUSD&quot;, &quot;AUDUSD symbol (match your data feed)&quot;)
 corrDays = input.int(20, &quot;Correlation window, days&quot;, minval = 5)
@@ -244,6 +245,22 @@ if array.size(gArr) == corrDays + 1
     corrVal := sgg &gt; 0 and saa &gt; 0 ? sga / math.sqrt(sgg * saa) : na
 filterOk = not na(corrVal) and corrVal &lt;= corrMax
 
+// ---- regime-change detection (daily granularity) ---------------------------
+var float corrPrev = na
+var corrHist = array.new_float()
+newDailyCorr = ta.change(gD) != 0 and not na(corrVal)
+if newDailyCorr
+    array.push(corrHist, corrVal)
+    if array.size(corrHist) &gt; 6
+        array.shift(corrHist)
+corr5ago  = array.size(corrHist) == 6 ? array.get(corrHist, 0) : na
+regimeOn  = newDailyCorr and not na(corrPrev) and corrPrev &gt; corrMax and corrVal &lt;= corrMax
+regimeOff = newDailyCorr and not na(corrPrev) and corrPrev &lt;= corrMax and corrVal &gt; corrMax
+approach  = newDailyCorr and not na(corrPrev) and corrPrev &gt; corrMax + 0.05 and
+     corrVal &lt;= corrMax + 0.05 and corrVal &gt; corrMax
+if newDailyCorr
+    corrPrev := corrVal
+
 // ---- range and entry detection (identical to the strategy) ----------------
 inRange    = not na(time(timeframe.period, &quot;0930-1030&quot;, TZ_HK))
 rangeStart = inRange and not inRange[1]
@@ -282,6 +299,9 @@ exitBell = barstate.isconfirmed and nyMins == 16 * 60
 alertcondition(longSig,  &quot;AsiaOpenGold LONG&quot;,  &quot;Asia gold LONG at {{close}} - stop = entry - 2x range, flat 16:00 NY&quot;)
 alertcondition(shortSig, &quot;AsiaOpenGold SHORT&quot;, &quot;Asia gold SHORT at {{close}} - stop = entry + 2x range, flat 16:00 NY&quot;)
 alertcondition(exitBell, &quot;AsiaOpenGold EXIT&quot;,  &quot;16:00 New York - flatten any open Asia gold position&quot;)
+alertcondition(regimeOn,  &quot;AsiaOpenGold REGIME ON&quot;,  &quot;Gold/AUD correlation crossed BELOW the threshold - the strategy is live again; expect signals&quot;)
+alertcondition(regimeOff, &quot;AsiaOpenGold REGIME OFF&quot;, &quot;Correlation crossed above the threshold - stand aside until further notice&quot;)
+alertcondition(approach,  &quot;AsiaOpenGold APPROACHING&quot;, &quot;Correlation within 0.05 of the threshold and falling - regime may turn on soon&quot;)
 
 // ---- visuals ---------------------------------------------------------------
 plot(inRange or na(rHigh) ? na : rHigh, &quot;Range high&quot;, color.new(color.teal, 0), 2, plot.style_linebr)
@@ -299,7 +319,7 @@ tsz = cardTxt == &quot;small&quot; ? size.small : cardTxt == &quot;normal&quot; 
 C_LBL = color.rgb(42, 49, 64)          // slate, readable on light and dark charts
 C_OK  = color.rgb(27, 110, 85)
 C_NO  = color.rgb(168, 50, 38)
-var table card = table.new(pos, 2, 6, border_width = 1, border_color = color.rgb(120, 128, 145))
+var table card = table.new(pos, 2, 7, border_width = 1, border_color = color.rgb(120, 128, 145))
 if barstate.islast
     daysAgo = na(lastSigT) ? na : (time - lastSigT) / 86400000.0
     table.cell(card, 0, 0, &quot;corr (gold, AUD)&quot;, text_size = tsz, text_color = color.white, bgcolor = C_LBL)
@@ -319,6 +339,12 @@ if barstate.islast
     table.cell(card, 0, 5, &quot;last signal&quot;, text_size = tsz, text_color = color.white, bgcolor = C_LBL)
     table.cell(card, 1, 5, na(daysAgo) ? &quot;none loaded&quot; : str.tostring(daysAgo, &quot;#.#&quot;) + &quot; days ago&quot;,
          text_size = tsz, text_color = color.white, bgcolor = C_LBL)
+    trendTxt = na(corr5ago) or na(corrVal) ? &quot;-&quot; :
+         str.tostring(corr5ago, &quot;#.##&quot;) + (corrVal &lt; corr5ago - 0.02 ? &quot; -&gt; falling&quot; :
+         corrVal &gt; corr5ago + 0.02 ? &quot; -&gt; rising&quot; : &quot; -&gt; flat&quot;)
+    trendBg  = na(corr5ago) or na(corrVal) ? C_LBL : corrVal &lt; corr5ago - 0.02 ? C_OK : C_LBL
+    table.cell(card, 0, 6, &quot;corr 5d trend&quot;, text_size = tsz, text_color = color.white, bgcolor = C_LBL)
+    table.cell(card, 1, 6, trendTxt, text_size = tsz, text_color = color.white, bgcolor = trendBg)
 </code></pre></div>
 </section>
 

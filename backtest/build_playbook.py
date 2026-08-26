@@ -12,7 +12,7 @@ HTML = f"""<title>Asia Gold Playbook</title>
 {CSS}
 <div class="wrap">
 <header>
-<p class="eyebrow">Living document &middot; last updated 2026-08-26 &middot; after round 18</p>
+<p class="eyebrow">Living document &middot; last updated 2026-08-26 &middot; after round 22</p>
 <h1>The Asia gold playbook</h1>
 <p class="standfirst">One strategy survived nine rounds of testing: the Asia-open
 range breakout on gold, gated by the gold/AUDUSD correlation regime. This page is the
@@ -167,6 +167,17 @@ record, not for capital.</p>
 <p>If the gated subsets do not beat the unconditioned strategy on data no search has
 touched, the leads die &mdash; the fate of most subgroup findings, and the log will say
 so honestly.</p>
+<p><strong>Sequential decision boundaries (round 22):</strong> the forward decision is
+no longer a fixed date. Each stream's paper trades update a pre-registered Wald SPRT
+(&alpha;=&beta;=0.10; promote at LLR +2.20, kill at &minus;2.20; parameters frozen in
+<code>backtest/sprt.py</code>). Decisions trigger the moment evidence crosses a
+boundary &mdash; for the base rule that is comparable to the old 6&ndash;12-month
+window (the edge is small; that is why), but the satellite candidates with larger
+claimed effects decide in ~40&ndash;70 trades, and unusually strong or weak runs
+resolve early in either direction. Round-22 execution study: manual entry latency is
+statistically free (mean $0.00/oz at the next bar open, &minus;$0.03 five minutes
+late) &mdash; the drift accrues over hours, so no automation bridge is needed for
+fidelity.</p>
 </section>
 
 <section>

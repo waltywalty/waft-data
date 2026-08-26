@@ -264,3 +264,19 @@ The mirror (follow the residual) is post-hoc and its halves disagree
 through the third distinct lens (breakout r13, fade r13/r8, tether r21).
 User hypothesis was mechanism-correct in FORM (right kind of idea, built-in
 falsification arm) - the market just does not do it. Score unchanged: 1.5/5.
+
+## Round 22 (development-while-waiting): decision engineering, not signal mining
+
+1. **SPRT sequential boundaries** (sprt.py, frozen: alpha=beta=0.10, promote
+   LLR >= +2.20, kill <= -2.20). Honest finding: the base rule's small effect
+   needs ~160 trades median either way - the fixed window was never the
+   bottleneck, the effect size is. Value: auto-early decisions on unusually
+   strong/weak runs, and ~40-70-trade decisions on the bigger-effect satellite
+   candidates. The monthly routine now scores each stream's W/L sequence.
+2. **Entry-latency study** (latency.json): manual execution is statistically
+   free - mean $0.00/oz at next-bar-open fills, -$0.03 at 5 minutes late,
+   vs +$2.28 edge. The drift accrues over hours. No webhook bridge needed
+   for execution fidelity; the iPad workflow gives nothing away.
+3. **Indicator v1.2**: REGIME ON / OFF / APPROACHING alerts (daily corr
+   crossings of 0.50/0.55) + corr-trend card row. Droughts now end with a
+   push notification instead of daily chart-checking.
