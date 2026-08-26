@@ -377,3 +377,77 @@ RS-rating/earnings legs (cross-sectional, no XAUUSD analogue); PTJ 200d MA
 gate and Minervini VCP contraction gate are DEFERRED to a possible later
 round, not smuggled into this one — this round runs replications, not new
 filter families.
+
+## Round 24 results (all pre-registered above; run 2026-08-26)
+
+**Data deviation, documented:** the Alpha Vantage daily gold series FAILED its
+registered cross-check (synthetic weekend rows; +/-40-100bp day noise; daily
+return corr vs our 5m feed 0.53 at every candidate day boundary) and was
+REJECTED. Replaced with a spliced series from our own cross-verified feeds
+(ejtrader M15 2012-05..2016-04 + H1 collector 2016-04..2026-08; overlaps agree
+to ~1bp median, return corr 0.9995+). Test window therefore 2012-06..2026-08;
+the registered 2019-01-01 halves split was kept unchanged.
+
+**Spec B - Williams COT Index on gold: NEGATIVE.** (run_r24_cot.py ->
+results/r24_cot.json; 715 tradable weeks)
+- LW-1 published form (26w commercials, 80/20, long/short): full t +0.57,
+  halves +0.86 / -0.03 - sign does not hold. Long-only: halves -0.13 / +1.98
+  - sign flips the other way (and long-only in a rising-gold half is the
+  drift null's favorite costume).
+- LW-2 (WillCo net/OI): full +0.22, halves +0.65 / -0.42. Same failure.
+- Large-spec fade: near mirror image of LW-1 as predicted (legacy-data
+  redundancy): +1.04 / -0.06. Nothing independent.
+- Gradient over 24 cells: ragged, sign-flipping (+1.57 to -1.61), best cells
+  at short lookbacks, NEGATIVE at the 156w structural lookback. No smooth
+  slope anywhere.
+- Max-stat over all 30 counted cells: observed max |t| 1.65, p = 0.76.
+  Bonferroni bar |t|~3.1: nothing close.
+- Base rates: the 26w commercials index spends 27.8% of weeks >= 80 and
+  27.6% <= 20 - the structural-short caveat registered up front was real but
+  not the binding problem; the signal simply carries no expectancy here.
+- Cost sensitivity: t +0.64 gross -> +0.37 at 4x costs; costs are not the
+  story either. Verdict: Williams' best-specified free-data idea does not
+  replicate on 2012-2026 gold. Buried with full honors.
+
+**Spec A - Turtle risk layer: DEPLOYED MODEL WINS EVERY CELL.**
+(run_r24_turtle.py -> results/r24_turtle.json; $2,000 at 1% risk)
+- Baseline (1% / actual stop distance): final $4,865, CAGR +20.7%, maxDD
+  16.1%, MAR 1.29.
+- N-sizing (1%/N): N (med $24.4) is ~3x our stop distance (med $8.2), so it
+  just trades smaller: CAGR +7.6%, maxDD 7.2%, MAR 1.06. Our per-trade
+  stop-distance sizing IS volatility normalization, at finer grain.
+- 2N stop: so wide only 2% of trades stop; per-oz expectancy RISES (PF 1.412,
+  t +3.14 - replicating the known no-stop result) but risk-sizing off a $49
+  stop collapses position size: final $2,570, MAR 0.93.
+- Pyramiding (+1/2N adds, stops to 2N below last add): per-unit expectancy
+  degrades MONOTONELY with max-units - t +2.50 / -2.22 / -4.51 / -5.23 for
+  1/2/3/4 units. A clean gradient, pointing down: adds buy worse prices in an
+  intraday drift too small (+$2.28/oz) for $12 add-spacing. Account finals
+  rise only because total size rises; maxDD goes 16% -> 51%. Rejected.
+- Drawdown throttle (-20%/-10% DD): final $4,149, MAR 1.18 - consistent with
+  the round-9 ladder result: throttles lag the recovery. Neutral-negative.
+  Verdict: the Turtle layer is built for multi-day trend positions; on an
+  intraday drift, every piece either shrinks the edge or adds tail risk.
+
+**Marcus gap-through-stop audit (descriptive): the tail is benign.** 339 stop
+exits: realized loss median 1.08x intended, p99 1.21x, WORST 1.25x - i.e. the
+worst single-trade loss at 1% intended risk was 1.25% of equity. Largest 5m
+bar gap inside sampled trade windows: 5 minutes (no data holes). The
+limit-lock nightmare does not apply to intraday spot gold at our size; the
+existing $0.30 stop-slippage model already covers the observed median.
+
+**Spec C - Unger process adoptions: ADOPTED.** (1) Average-trade floor:
+candidate systems must show avg net trade >= 2x round-trip cost before any
+other statistic is computed. The deployed rule passes: $+1.60/oz vs $1.20
+bar (2x the $0.30+$0.30 model). Adopted into house rules. (2) Incubation
+ledger: satisfied by the SPRT boundaries + journal envelope comparison
+already in place. (3) Market-character pre-test before choosing archetype
+for any new market/session: adopted (the round-16A/18A cross-market failures
+were exactly this lesson, learned the expensive way).
+
+**Round 24 net effect on the strategy: zero changes to the deployed rule.**
+The commission's real yield: the deployed risk model survived a direct
+challenge from the most famous risk framework in trading folklore, the
+best-specified free-data signal from the trader list is now a documented
+negative, one process gate is adopted, and the gap-tail is measured and
+benign. Score vs the old 5-upgrades goal: unchanged at 1.5.
