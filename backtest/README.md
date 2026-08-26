@@ -428,3 +428,29 @@ Two live-chart observations, pre-registered and tested over all five years
 Write-up: `results/report14.html`. Playbook graveyard updated. A practical note from
 the same screenshot: run the signals indicator on OANDA:XAUUSD, not on MGC1! — the
 continuous-contract roll gaps distort the daily-return correlation the filter reads.
+
+## Round 15 — the researched battery (five literatures, 38 cells, one insight)
+
+Five research agents surveyed academic and practitioner futures strategies
+(notes in `reference/round15_primary_sources.md`; battery pre-registered in
+`reference/round15_prereg.md` before any test ran; `run_r15.py`):
+
+* **Intraday momentum** (Gao 2018 / Baltussen 2021 last-half-hour): sign-flipped
+  on 20 years of our index CFDs — negative everywhere, worst on low-vol days;
+  consistent with Rosa (2022) finding the SPY rule dead OOS.
+* **Turn-of-month** (McConnell–Xu and Etula windows): held days earn exactly the
+  all-days mean, 2005–2025. The anomaly is absent from the modern sample.
+* **TSMOM overlay** on the deployed gold trades: agree/against flips across
+  lookbacks with no gradient — noise.
+* **Gap fills** on SPX/NDX: base rates replicate the literature (small gaps fill
+  82–87%, mostly by noon; large 34–40%) and the pre-registered fade loses in
+  every bucket. Third proof here that a true base rate is not an edge.
+* **Pre-FOMC drift**: dropped a priori (documented dead 2015–2019, ~8 events/yr).
+* **The keeper (session-split diagnostic):** only ~17% of the deployed gold
+  edge accrues during Asian hours; ~70% accrues London open → NY morning. The
+  rule is not the gold overnight drift — Asia sets the direction, London/NY pay
+  it. Added to the playbook's mechanism paragraph; also re-explains why the
+  London 08:00 add-leg candidate is the strongest derived result.
+
+Write-up: `results/report15.html`. HSI/MHI battery pre-registered separately
+(`reference/round15_hsi_prereg.md`), pending data.
