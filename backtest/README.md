@@ -491,3 +491,25 @@ is gold-specific; two refereed anomalies (Nikkei open vs prior-day SPX, Gotobi
 USDJPY) replicate descriptively and sit inside the spread. New data: VIX/VIX3M
 (CBOE mirrors), USDJPY 10y intraday, AUS200, JP225 1m 2005-2020.
 Write-up: `results/report16.html`.
+
+## Rounds 17-18 — the hunt continues: one real upgrade, one mechanism killed
+
+Round 17: SGE AM-auction drift on gold real but sub-cost (+0.76bps/day, t +2.56,
+monitor); trend-day conditioner on the NY re-entry fails; Turtle Soup JP225
+retracted by its pre-2016 extension (see round 16).
+
+Round 18 (`reference/goal_ledger.md`):
+* **18A**: the HSI pre-open fade mechanism does NOT transfer to the Nikkei's
+  identical 08:45/09:00 futures-cash structure — both arms lose. The HSI watch
+  item now stands on its own market's numbers only.
+* **18B — UPGRADE #1: the dual-denominator split.** Same signals, half size on
+  XAUUSD and XAUAUD: equal per-trade quality (paired t −0.21), P&L correlation
+  only +0.40 and era-stable, 50/50 Sharpe nearly era-invariant (2.2) while
+  single expressions swing 1.1–2.5. Survives 3× costs. Variance engineering of
+  the validated signal; playbook execution option added; paper-first.
+* **18C**: stacking the London add-leg + NY re-entry adds return mechanically
+  (1.56×) but the Sharpe gain flips sign across eras (corr 0.73/0.50 too high
+  to diversify) — legs remain forward-test candidates.
+* **18D**: AUDUSD itself under the gold gate: dead (home-session, meta-law).
+
+Goal score: 1.5/5. New data: AUDUSD M15 2024-2026 (collector).

@@ -129,3 +129,36 @@ max-stat pass was regime luck (BOJ-era V-reversals). Watch item #4 retracted;
 score back to 0.5/5. This is the fastest kill in the repo and the reason
 out-of-sample extension runs BEFORE a watch item ages: three hours from
 discovery to retraction beats three years of false hope.
+
+## Round 18 pre-registration: mechanism transfer and intertwining
+
+18A. **JP225 pre-open fade** (mechanism transfer of the HSI watch item): JPX
+   futures day session opens 08:45 JST, cash 09:00 (since 2011). Same frozen
+   construction as HSI: push = 23:45-00:00 UTC return; on |push| >= 0.3 x ATR14,
+   fade at the 00:00 UTC cash open, stop 0.5 x pre-open range beyond its
+   extreme, hold to the 07:00 UTC session end (16:00 JST). Verify the 08:45
+   session step from the data first (volatility fingerprint). Sample 2011-2020
+   (1m) + 2024-2026 (5m). 1 primary cell + descriptive; halves at sample mid.
+   If this holds at n>=150, the MECHANISM (futures-only pre-open reversal at
+   Asian cash opens) clears the full bar as a strategy family.
+18B. **XAUAUD synthetic** (gold with the USD leg removed): construct XAUUSD/
+   AUDUSD 5m 2020-2025; run the deployed rule construction on it with corr
+   gate on/off. 4 cells. Mechanism question: is the corr filter just removing
+   the USD factor, in which case XAUAUD needs no filter?
+18C. **Intertwining quantification**: daily P&L stream correlations and
+   combined equity (1% risk each) for deployed rule + London add-leg + NY
+   re-entry. Not a new edge - a portfolio statement about validated components,
+   labeled pending forward confirmation.
+18D. **AUDUSD Asia breakout under the gold corr gate** (mirror instrument),
+   2 cells.
+
+## Round 18 results
+
+| Battery | Verdict |
+|---|---|
+| 18A JP225 pre-open (mechanism transfer) | FAILS BOTH ARMS: frozen HSI fade PF 0.42/t -3.56; continuation arm also negative. The futures-before-cash reversal does NOT generalize -> the HSI watch item keeps its own frozen re-test bar but loses its mechanism halo (annotated). |
+| 18B XAUAUD dual-denominator | **UPGRADE #1 (+1.0): split the deployed signal 50/50 across XAUUSD and XAUAUD.** Same construction, same days: equal per-trade quality (paired t -0.21), P&L correlation only +0.40 and stable across eras (0.43/0.39); the 50/50 Sharpe is nearly era-invariant (2.21/2.17) while single expressions swing (1.47->2.46, 2.28->1.10). XAUAUD survives 3x costs (PF 1.33). Variance engineering of a validated signal, not new alpha; pre-registered; minimal multiplicity. Execute: same signals from the XAUUSD chart; second leg on OANDA:XAUAUD (or XAUUSD + AUDUSD pair). Paper-first like everything else. Caveats: close-based construction; AUD feed gap 2022-03..2024-04. |
+| 18C base + add-leg + re-entry portfolio | Return scales 1.56x mechanically but the Sharpe improvement flips sign across eras (0.76->0.70 / 1.88->2.24); leg correlations 0.73/0.50 too high to diversify. Legs remain forward-test candidates; no credit. |
+| 18D AUDUSD Asia breakout under the gold gate | Dead (era2 +0.17); AUD's Asia session is its home session - meta-law holds. |
+
+**Score: 1.5 / 5** (HSI fade 0.5 + dual-denominator split 1.0).

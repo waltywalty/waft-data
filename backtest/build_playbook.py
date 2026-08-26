@@ -12,7 +12,7 @@ HTML = f"""<title>Asia Gold Playbook</title>
 {CSS}
 <div class="wrap">
 <header>
-<p class="eyebrow">Living document &middot; last updated 2026-08-26 &middot; after round 16</p>
+<p class="eyebrow">Living document &middot; last updated 2026-08-26 &middot; after round 18</p>
 <h1>The Asia gold playbook</h1>
 <p class="standfirst">One strategy survived nine rounds of testing: the Asia-open
 range breakout on gold, gated by the gold/AUDUSD correlation regime. This page is the
@@ -120,6 +120,14 @@ bind on under half of trades. It is an <em>expression</em> of the rule, not an
 upgrade: fixed points do not scale with gold&rsquo;s price or volatility the way
 the 2&times;-range stop does, so re-check the bracket width yearly against
 ~0.5-0.8% of spot.</li>
+<li><strong>Dual-denominator split (round 18):</strong> the same signals, half
+size each on XAUUSD and XAUAUD (gold priced in AUD &mdash; directly quoted on
+Oanda, or expressed as XAUUSD + AUDUSD legs). Equal per-trade quality, P&amp;L
+correlation only +0.40 and era-stable, so the 50/50 Sharpe is nearly
+era-invariant (2.2) while either single expression swings. Variance
+engineering of the validated signal, not new alpha; survives 3&times; costs.
+Signals stay on the XAUUSD chart (the status card&rsquo;s correlation is wrong
+on an XAUAUD chart); paper-first like everything else.</li>
 <li><strong>Now:</strong> demo 4&ndash;8 weeks (~40 trades). Reconcile every trade and
 every skipped day against the rule; a skip-share far from ~38% means the filter is
 miscomputed.</li>
@@ -249,7 +257,10 @@ bar moves &ge;0.3&times; ATR14, fade it at the 09:30 cash open, stop 0.5&times; 
 pre-open range, hold to 16:00 HKT &mdash; PF 2.02, t +1.60, both halves positive,
 max-stat p 0.030, cost-robust to 15 points; but n=43. Watch bar pre-committed:
 re-test at 80+ trades on the live feed; promote at PF &ge;1.4 with both halves
-positive; no parameter may move.</p></div>
+positive; no parameter may move. Round-18 caveat: the same construction FAILS on
+the Nikkei&rsquo;s identical 08:45/09:00 futures-cash structure (both arms), so
+the mechanism is HK-specific at best &mdash; the item stands on its own market&rsquo;s
+numbers only.</p></div>
 <div class="note"><p><strong>One sentence:</strong> trade the Asia open only when gold
 is not a dollar proxy, hold to the New York close with a wide stop at flat 1% risk, and
 let the forward log &mdash; not another backtest &mdash; earn every change.</p></div>

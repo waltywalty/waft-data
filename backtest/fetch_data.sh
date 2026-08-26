@@ -53,3 +53,4 @@ curl -fL --retry 3 -sSO "https://raw.githubusercontent.com/user1-2-3-4/oanda-dat
 #   for y in $(seq 2005 2020); do for m in $(seq 1 12); do
 #     curl -sf ".../FutureSharks/financial-data/master/pyfinancialdata/data/currencies/oanda/JP225_USD/$y/oanda-JP225_USD-$y-$m.csv" >> JP225_1m_futuresharks.csv
 #   done; done
+curl -fL --retry 3 -o AUDUSD_M15_collector.csv "https://raw.githubusercontent.com/user1-2-3-4/oanda-data-collector/main/data/forex/AUDUSD_M15.csv"
