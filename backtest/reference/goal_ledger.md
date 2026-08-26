@@ -188,3 +188,38 @@ forward data (3 queued candidates + 2 watch/monitor items), the monthly
 routine's one-mechanism battery, and new observations. The goal advances on
 those tracks; manufacturing further backtest findings would violate the
 repo's research standards and is explicitly declined.
+
+## Round 20 pre-registration: silver under the gold gate
+
+Silver as INSTRUMENT (round 13 only used it as a gate). XAGUSD H1 2016-2026
+(collector). Construction shifted to H1 granularity, declared: range =
+01:00-02:00 UTC, first H1 close beyond (entries until 07:00 UTC), stop 2x
+range, flat 16:00 NY. Gate = the deployed gold/AUD corr <= 0.5 (external to
+silver, causal). Cost $0.04/oz round trip (silver's relative spread ~10bps -
+far heavier than gold's). Cells: silver gated / silver ungated / GOLD same-H1
+construction gated (benchmark controlling the construction shift). 3 cells,
+halves at 2021-06. Credit only if silver-gated is positive both halves AND
+the gold-H1 benchmark confirms the construction still carries the known edge.
+
+## Round 20 result: silver under the gold gate - dead
+
+Silver gated: PF 0.778, t -3.57, both halves negative (n=1372). Gold benchmark
+under the identical H1 construction: PF 1.114, t +1.50, both halves positive -
+the construction carries the known edge, silver does not. The edge is
+gold-specific even against its sibling metal (industrial-hybrid demand
+structure + 10bps relative spread). Bonus: the gold-H1 benchmark's 2016-2021
+half (+0.73) is independent-era support for the deployed rule from before our
+5m sample begins - noted, not oversold (coarser construction, modest t).
+
+## SESSION CLOSE - goal state and the honest block
+
+Score: 1.5/5 after rounds 16-20: ~85 pre-registered cells, 8 new datasets,
+5 literatures, 6 markets, 2 same-day retractions. Every high-prior avenue in
+the queue has been run. The condition (5 upgrades / 3 intertwinable
+strategies at the house bar) CANNOT be satisfied by further backtesting today
+without manufacturing findings - explicitly declined per this repo's own
+research standards. The goal advances on: (1) forward-data promotion of the 3
+queued candidates (worth up to +3.0 alone, clock already running), (2) watch/
+monitor item accrual (HSI, SGE), (3) the monthly routine's one-mechanism
+battery, (4) new user observations. Next human decision point: the monthly
+review, or sooner if the user revises the goal bar.
