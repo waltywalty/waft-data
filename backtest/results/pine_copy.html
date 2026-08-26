@@ -162,7 +162,7 @@ a:focus-visible, :focus-visible { outline:2px solid var(--brass); outline-offset
 </style>
 <div class="wrap">
 <header>
-<p class="eyebrow">Asia gold strategy &middot; TradingView port &middot; indicator v1.1</p>
+<p class="eyebrow">Asia gold strategy &middot; TradingView port &middot; indicator v1.1 + HSI fade</p>
 <h1>Pine Paste Board</h1>
 <p class="standfirst">Both scripts, ready to copy on any device. Tap Copy, then paste
 into TradingView&rsquo;s Pine Editor over the existing script and Save. On an iPad use
@@ -459,6 +459,106 @@ plot(inRange or na(rLow)  ? na : rLow,  &quot;Range low&quot;,  color.new(color.
 bgcolor(inRange ? color.new(color.teal, 88) : na)
 bgcolor(not filterOk and barstate.isconfirmed ? color.new(color.red, 94) : na)
 plot(corrVal, &quot;corr(gold,AUD,20d)&quot;, display = display.data_window)
+</code></pre></div>
+</section>
+
+<section class="script">
+  <div class="script-head">
+    <div>
+      <h2>HSI pre-open fade (paper only)</h2>
+      <p class="blurb">Watch-list item: fades a >=0.3-ATR push in the 09:15-09:30 HKT futures-only window. Load on an OANDA HK33HKD 15-minute chart; alerts FADE LONG / FADE SHORT / EXIT. Parameters frozen until 80 trades.</p>
+    </div>
+    <button class="copy" data-target="hsi">Copy code</button>
+  </div>
+  <div class="codewrap"><pre id="hsi"><code>//@version=6
+// HSI PRE-OPEN FADE - watch-list item #3, PAPER ONLY (n=43 in the backtest;
+// re-test bar is 80+ trades; parameters are FROZEN - do not tune).
+// Rule: the 09:15-09:30 HKT bar (futures open before the cash open) moves
+// &gt;= 0.3 x ATR14 -&gt; fade it at the 09:30 cash open; stop 0.5 x that bar&#x27;s
+// range beyond its extreme; flat 16:00 HKT.
+// Chart: OANDA HK33HKD (or an equivalent HSI CFD with the 09:15 session
+// step), 15-minute timeframe - the pre-open window is exactly one bar there.
+indicator(&quot;HSI Pre-Open Fade [paper]&quot;, overlay = true)
+
+trigATR = input.float(0.3, &quot;Trigger, |push| as fraction of ATR14 (FROZEN)&quot;, step = 0.05)
+stopK   = input.float(0.5, &quot;Stop, fraction of pre-open range (FROZEN)&quot;, step = 0.25)
+cardPos = input.string(&quot;top right&quot;, &quot;Card position&quot;,
+     options = [&quot;top right&quot;, &quot;top left&quot;, &quot;bottom right&quot;, &quot;bottom left&quot;])
+
+TZ_HK = &quot;Asia/Hong_Kong&quot;
+
+// prior DAY range, confirmed bars only (non-repainting), 14-day average.
+// Note: daily CFD bars include after-hours - a slightly wider ATR than the
+// backtest&#x27;s day-session ATR, i.e. marginally FEWER triggers (conservative).
+dayRng = request.security(syminfo.tickerid, &quot;D&quot;, (high - low)[1],
+     lookahead = barmerge.lookahead_on)
+var rArr = array.new_float()
+if ta.change(dayRng) != 0 and not na(dayRng)
+    array.push(rArr, dayRng)
+    if array.size(rArr) &gt; 14
+        array.shift(rArr)
+atr14 = array.size(rArr) == 14 ? array.avg(rArr) : na
+
+inPre = not na(time(timeframe.period, &quot;0915-0930&quot;, TZ_HK))
+var float push  = na
+var float preHi = na
+var float preLo = na
+var float stopL = na
+var int   dir   = 0          // +1 fade-long (push was down), -1 fade-short
+var int   sigDay = na
+var int   sigCount = 0
+dayKey = dayofmonth(time, TZ_HK) + 100 * month(time, TZ_HK) + 10000 * year(time, TZ_HK)
+
+if inPre and barstate.isconfirmed
+    push  := close - open
+    preHi := high
+    preLo := low
+    if not na(atr14) and math.abs(push) &gt;= trigATR * atr14 and sigDay != dayKey
+        sigDay := dayKey
+        sigCount += 1
+        dir  := push &gt; 0 ? -1 : 1
+        stopL := push &gt; 0 ? preHi + stopK * (preHi - preLo) : preLo - stopK * (preHi - preLo)
+    else
+        dir := 0
+
+fadeLong  = dir == 1  and sigDay == dayKey and inPre[0] and barstate.isconfirmed
+fadeShort = dir == -1 and sigDay == dayKey and inPre[0] and barstate.isconfirmed
+hkMins   = hour(time_close, TZ_HK) * 60 + minute(time_close, TZ_HK)
+exitBell = barstate.isconfirmed and hkMins == 16 * 60
+
+alertcondition(fadeLong,  &quot;HSI Fade LONG&quot;,  &quot;HSI pre-open pushed DOWN &gt;=0.3 ATR - paper LONG at the 09:30 open, stop below, flat 16:00 HKT&quot;)
+alertcondition(fadeShort, &quot;HSI Fade SHORT&quot;, &quot;HSI pre-open pushed UP &gt;=0.3 ATR - paper SHORT at the 09:30 open, stop above, flat 16:00 HKT&quot;)
+alertcondition(exitBell,  &quot;HSI Fade EXIT&quot;,  &quot;16:00 HKT - flatten any open HSI paper fade&quot;)
+
+bgcolor(inPre ? color.new(color.orange, 85) : na)
+plot(dir != 0 and sigDay == dayKey and hkMins &lt;= 16 * 60 ? stopL : na,
+     &quot;Stop&quot;, color.new(color.red, 0), 2, plot.style_linebr)
+plotshape(fadeLong,  &quot;Fade long&quot;,  shape.triangleup,   location.belowbar,
+     color.new(color.green, 0), size = size.normal, text = &quot;FADE L&quot;,
+     textcolor = color.new(color.green, 0))
+plotshape(fadeShort, &quot;Fade short&quot;, shape.triangledown, location.abovebar,
+     color.new(color.red, 0), size = size.normal, text = &quot;FADE S&quot;,
+     textcolor = color.new(color.red, 0))
+
+pos = cardPos == &quot;top right&quot; ? position.top_right : cardPos == &quot;top left&quot; ? position.top_left :
+     cardPos == &quot;bottom right&quot; ? position.bottom_right : position.bottom_left
+C_LBL = color.rgb(42, 49, 64)
+C_OK  = color.rgb(27, 110, 85)
+C_NO  = color.rgb(120, 128, 145)
+var table card = table.new(pos, 2, 5, border_width = 1, border_color = color.rgb(120, 128, 145))
+if barstate.islast
+    armedToday = sigDay == dayKey
+    table.cell(card, 0, 0, &quot;ATR14 (daily)&quot;, text_size = size.large, text_color = color.white, bgcolor = C_LBL)
+    table.cell(card, 1, 0, na(atr14) ? &quot;loading&quot; : str.tostring(atr14, &quot;#&quot;), text_size = size.large, text_color = color.white, bgcolor = C_LBL)
+    table.cell(card, 0, 1, &quot;trigger needs&quot;, text_size = size.large, text_color = color.white, bgcolor = C_LBL)
+    table.cell(card, 1, 1, na(atr14) ? &quot;-&quot; : str.tostring(trigATR * atr14, &quot;#&quot;) + &quot; pts&quot;, text_size = size.large, text_color = color.white, bgcolor = C_LBL)
+    table.cell(card, 0, 2, &quot;last pre-open push&quot;, text_size = size.large, text_color = color.white, bgcolor = C_LBL)
+    table.cell(card, 1, 2, na(push) ? &quot;none yet&quot; : str.tostring(push, &quot;#&quot;), text_size = size.large, text_color = color.white, bgcolor = C_LBL)
+    table.cell(card, 0, 3, &quot;today&quot;, text_size = size.large, text_color = color.white, bgcolor = C_LBL)
+    table.cell(card, 1, 3, armedToday ? (dir == 1 ? &quot;FADE LONG&quot; : &quot;FADE SHORT&quot;) : &quot;no trigger&quot;,
+         text_size = size.large, text_color = color.white, bgcolor = armedToday ? C_OK : C_NO)
+    table.cell(card, 0, 4, &quot;signals on chart&quot;, text_size = size.large, text_color = color.white, bgcolor = C_LBL)
+    table.cell(card, 1, 4, str.tostring(sigCount), text_size = size.large, text_color = color.white, bgcolor = C_LBL)
 </code></pre></div>
 </section>
 

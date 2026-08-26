@@ -1,0 +1,89 @@
+//@version=6
+// HSI PRE-OPEN FADE - watch-list item #3, PAPER ONLY (n=43 in the backtest;
+// re-test bar is 80+ trades; parameters are FROZEN - do not tune).
+// Rule: the 09:15-09:30 HKT bar (futures open before the cash open) moves
+// >= 0.3 x ATR14 -> fade it at the 09:30 cash open; stop 0.5 x that bar's
+// range beyond its extreme; flat 16:00 HKT.
+// Chart: OANDA HK33HKD (or an equivalent HSI CFD with the 09:15 session
+// step), 15-minute timeframe - the pre-open window is exactly one bar there.
+indicator("HSI Pre-Open Fade [paper]", overlay = true)
+
+trigATR = input.float(0.3, "Trigger, |push| as fraction of ATR14 (FROZEN)", step = 0.05)
+stopK   = input.float(0.5, "Stop, fraction of pre-open range (FROZEN)", step = 0.25)
+cardPos = input.string("top right", "Card position",
+     options = ["top right", "top left", "bottom right", "bottom left"])
+
+TZ_HK = "Asia/Hong_Kong"
+
+// prior DAY range, confirmed bars only (non-repainting), 14-day average.
+// Note: daily CFD bars include after-hours - a slightly wider ATR than the
+// backtest's day-session ATR, i.e. marginally FEWER triggers (conservative).
+dayRng = request.security(syminfo.tickerid, "D", (high - low)[1],
+     lookahead = barmerge.lookahead_on)
+var rArr = array.new_float()
+if ta.change(dayRng) != 0 and not na(dayRng)
+    array.push(rArr, dayRng)
+    if array.size(rArr) > 14
+        array.shift(rArr)
+atr14 = array.size(rArr) == 14 ? array.avg(rArr) : na
+
+inPre = not na(time(timeframe.period, "0915-0930", TZ_HK))
+var float push  = na
+var float preHi = na
+var float preLo = na
+var float stopL = na
+var int   dir   = 0          // +1 fade-long (push was down), -1 fade-short
+var int   sigDay = na
+var int   sigCount = 0
+dayKey = dayofmonth(time, TZ_HK) + 100 * month(time, TZ_HK) + 10000 * year(time, TZ_HK)
+
+if inPre and barstate.isconfirmed
+    push  := close - open
+    preHi := high
+    preLo := low
+    if not na(atr14) and math.abs(push) >= trigATR * atr14 and sigDay != dayKey
+        sigDay := dayKey
+        sigCount += 1
+        dir  := push > 0 ? -1 : 1
+        stopL := push > 0 ? preHi + stopK * (preHi - preLo) : preLo - stopK * (preHi - preLo)
+    else
+        dir := 0
+
+fadeLong  = dir == 1  and sigDay == dayKey and inPre[0] and barstate.isconfirmed
+fadeShort = dir == -1 and sigDay == dayKey and inPre[0] and barstate.isconfirmed
+hkMins   = hour(time_close, TZ_HK) * 60 + minute(time_close, TZ_HK)
+exitBell = barstate.isconfirmed and hkMins == 16 * 60
+
+alertcondition(fadeLong,  "HSI Fade LONG",  "HSI pre-open pushed DOWN >=0.3 ATR - paper LONG at the 09:30 open, stop below, flat 16:00 HKT")
+alertcondition(fadeShort, "HSI Fade SHORT", "HSI pre-open pushed UP >=0.3 ATR - paper SHORT at the 09:30 open, stop above, flat 16:00 HKT")
+alertcondition(exitBell,  "HSI Fade EXIT",  "16:00 HKT - flatten any open HSI paper fade")
+
+bgcolor(inPre ? color.new(color.orange, 85) : na)
+plot(dir != 0 and sigDay == dayKey and hkMins <= 16 * 60 ? stopL : na,
+     "Stop", color.new(color.red, 0), 2, plot.style_linebr)
+plotshape(fadeLong,  "Fade long",  shape.triangleup,   location.belowbar,
+     color.new(color.green, 0), size = size.normal, text = "FADE L",
+     textcolor = color.new(color.green, 0))
+plotshape(fadeShort, "Fade short", shape.triangledown, location.abovebar,
+     color.new(color.red, 0), size = size.normal, text = "FADE S",
+     textcolor = color.new(color.red, 0))
+
+pos = cardPos == "top right" ? position.top_right : cardPos == "top left" ? position.top_left :
+     cardPos == "bottom right" ? position.bottom_right : position.bottom_left
+C_LBL = color.rgb(42, 49, 64)
+C_OK  = color.rgb(27, 110, 85)
+C_NO  = color.rgb(120, 128, 145)
+var table card = table.new(pos, 2, 5, border_width = 1, border_color = color.rgb(120, 128, 145))
+if barstate.islast
+    armedToday = sigDay == dayKey
+    table.cell(card, 0, 0, "ATR14 (daily)", text_size = size.large, text_color = color.white, bgcolor = C_LBL)
+    table.cell(card, 1, 0, na(atr14) ? "loading" : str.tostring(atr14, "#"), text_size = size.large, text_color = color.white, bgcolor = C_LBL)
+    table.cell(card, 0, 1, "trigger needs", text_size = size.large, text_color = color.white, bgcolor = C_LBL)
+    table.cell(card, 1, 1, na(atr14) ? "-" : str.tostring(trigATR * atr14, "#") + " pts", text_size = size.large, text_color = color.white, bgcolor = C_LBL)
+    table.cell(card, 0, 2, "last pre-open push", text_size = size.large, text_color = color.white, bgcolor = C_LBL)
+    table.cell(card, 1, 2, na(push) ? "none yet" : str.tostring(push, "#"), text_size = size.large, text_color = color.white, bgcolor = C_LBL)
+    table.cell(card, 0, 3, "today", text_size = size.large, text_color = color.white, bgcolor = C_LBL)
+    table.cell(card, 1, 3, armedToday ? (dir == 1 ? "FADE LONG" : "FADE SHORT") : "no trigger",
+         text_size = size.large, text_color = color.white, bgcolor = armedToday ? C_OK : C_NO)
+    table.cell(card, 0, 4, "signals on chart", text_size = size.large, text_color = color.white, bgcolor = C_LBL)
+    table.cell(card, 1, 4, str.tostring(sigCount), text_size = size.large, text_color = color.white, bgcolor = C_LBL)

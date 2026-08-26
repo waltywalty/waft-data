@@ -35,7 +35,7 @@ h1 { font-family:Spectral,Georgia,serif; font-weight:600; font-size:30px; margin
 .stat { background:var(--surface); padding:12px 14px; }
 .stat .k { font-family:"IBM Plex Mono",monospace; font-size:10px; letter-spacing:.08em;
   text-transform:uppercase; color:var(--ink-3); }
-.stat .v { font-family:"IBM Plex Mono",monospace; font-size:20px; margin-top:3px;
+.stat .v { font-family:"IBM Plex Mono",monospace; font-size:15px; margin-top:3px;
   font-variant-numeric:tabular-nums; }
 form { background:var(--surface); border:1px solid var(--rule); border-radius:6px;
   padding:16px; display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr));
@@ -49,6 +49,8 @@ input:focus { outline:2px solid var(--brass); }
 .seg button { cursor:pointer; font-weight:600; }
 .seg button.on-L { background:var(--pos-bg); color:var(--pos); border-color:var(--pos); }
 .seg button.on-S { background:var(--neg-bg); color:var(--neg); border-color:var(--neg); }
+.seg button.on-I { background:var(--sunk); color:var(--brass); border-color:var(--brass); font-weight:600; }
+.seg .ins { font-size:13px; padding:12px 6px; }
 .add { grid-column:1 / -1; font-family:"IBM Plex Sans",sans-serif; font-size:16px; font-weight:600;
   color:#fff; background:var(--brass); border:none; border-radius:6px; padding:14px; min-height:50px; cursor:pointer; }
 .notice { min-height:22px; font-size:13px; color:var(--ink-3); margin:6px 2px 18px; }
@@ -68,11 +70,13 @@ footer { margin-top:26px; font-size:12.5px; color:var(--ink-3); max-width:64ch; 
 </style></head><body>
 <div class="wrap">
 <h1>Asia Gold Trade Journal</h1>
-<p class="sub">One row per trade: the paper forward test of the deployed rule. Adding or
-removing a row saves the page itself &mdash; this page is the record.</p>
+<p class="sub">One row per paper trade across the three streams: the gold rule (XAU),
+its XAUAUD half-leg, and the HSI pre-open fade (MHI). Adding or removing a row saves
+the page itself &mdash; this page is the record.</p>
 <div class="stats" id="stats"></div>
 <form id="f" autocomplete="off">
   <label>Date<input type="date" id="f-date"></label>
+  <label>Stream<span class="seg"><button type="button" class="ins" id="insXAU">XAU</button><button type="button" class="ins" id="insAUD">XAUAUD</button><button type="button" class="ins" id="insMHI">MHI</button></span></label>
   <label>Side<span class="seg"><button type="button" id="btnL">LONG</button><button type="button" id="btnS">SHORT</button></span></label>
   <label>Entry<input type="text" inputmode="decimal" id="f-entry" placeholder="4661.8"></label>
   <label>Stop<input type="text" inputmode="decimal" id="f-stop" placeholder="4616.3"></label>
@@ -81,20 +85,24 @@ removing a row saves the page itself &mdash; this page is the record.</p>
 </form>
 <div class="notice" id="notice"></div>
 <div class="tblwrap"><table>
-<thead><tr><th>Date</th><th>Side</th><th>Entry</th><th>Stop</th><th>Exit</th><th>P&amp;L $/oz</th><th></th></tr></thead>
+<thead><tr><th>Date</th><th>Stream</th><th>Side</th><th>Entry</th><th>Stop</th><th>Exit</th><th>P&amp;L</th><th></th></tr></thead>
 <tbody id="rows"></tbody>
 </table></div>
-<footer>Rule reminder: corr &le; 0.5, first 60m close beyond the 09:30&ndash;10:30 HKT
-range, stop 2&times; range, flat 16:00 New York, flat 1% risk. Log every trade the
-alerts fire, including losers &mdash; the monthly review scores this page against the
-playbook.</footer>
+<footer>Rules: <strong>XAU</strong> &mdash; corr &le; 0.5, first 60m close beyond the
+09:30&ndash;10:30 HKT range, stop 2&times; range, flat 16:00 NY (P&amp;L in $/oz).
+<strong>XAUAUD</strong> &mdash; same signals, half size, same stop %, on OANDA:XAUAUD
+(P&amp;L in A$/oz). <strong>MHI</strong> &mdash; 09:15&ndash;09:30 HKT push &ge; 0.3&times;ATR14
+faded at the cash open, stop 0.5&times; the pre-open range, flat 16:00 HKT (P&amp;L in
+index points; paper only, frozen until 80 trades). Log every trade including losers
+&mdash; the monthly review scores each stream separately.</footer>
 </div>
 <script id="state" type="application/json">@@STATE@@</script>
 <script id="tpl" type="text/plain">@@TPL@@</script>
 <script>
 var state = JSON.parse(document.getElementById('state').textContent);
 var tplRaw = document.getElementById('tpl').textContent.replace(/<\\\\\\//g, '</');
-var art = null, side = 'L';
+var art = null, side = 'L', instr = 'XAU';
+state.trades.forEach(function (r) { if (!r.instr) r.instr = 'XAU'; });
 if (window.claude && window.claude.use) {
   window.claude.use('artifact').then(function (a) { art = a; setNotice(a ? '' :
     'Read-only view: saving unavailable here. Rows added now will not persist.'); });
@@ -105,26 +113,27 @@ function pnl(r) { return (r.side === 'L' ? 1 : -1) * (r.exit - r.entry); }
 function render() {
   var tb = document.getElementById('rows');
   if (!state.trades.length) {
-    tb.innerHTML = '<tr><td colspan="7" class="empty">No trades yet. The drought counts too - it is the filter working.</td></tr>';
+    tb.innerHTML = '<tr><td colspan="8" class="empty">No trades yet. The drought counts too - it is the filter working.</td></tr>';
   } else {
     tb.innerHTML = state.trades.map(function (r, i) {
       var p = pnl(r);
-      return '<tr><td>' + esc(r.date) + '</td><td>' + (r.side === 'L' ? 'LONG' : 'SHORT') +
+      return '<tr><td>' + esc(r.date) + '</td><td>' + esc(r.instr || 'XAU') + '</td><td>' + (r.side === 'L' ? 'LONG' : 'SHORT') +
         '</td><td>' + r.entry.toFixed(2) + '</td><td>' + r.stop.toFixed(2) +
         '</td><td>' + r.exit.toFixed(2) + '</td><td class="' + (p >= 0 ? 'pnl-pos' : 'pnl-neg') +
         '">' + (p >= 0 ? '+' : '') + p.toFixed(2) + '</td>' +
         '<td><button class="del" data-i="' + i + '" aria-label="delete row">&#10005;</button></td></tr>';
     }).join('');
   }
-  var ps = state.trades.map(pnl);
-  var wins = ps.filter(function (x) { return x > 0; });
-  var losses = ps.filter(function (x) { return x <= 0; });
-  var gw = wins.reduce(function (a, b) { return a + b; }, 0);
-  var gl = -losses.reduce(function (a, b) { return a + b; }, 0);
-  var st = [['trades', ps.length],
-            ['win rate', ps.length ? Math.round(100 * wins.length / ps.length) + '%' : '-'],
-            ['total $/oz', ps.length ? (gw - gl >= 0 ? '+' : '') + (gw - gl).toFixed(1) : '-'],
-            ['profit factor', gl > 0 ? (gw / gl).toFixed(2) : (gw > 0 ? '&infin;' : '-')]];
+  var st = [['all trades', state.trades.length]];
+  ['XAU', 'XAUAUD', 'MHI'].forEach(function (ins) {
+    var ps = state.trades.filter(function (r) { return (r.instr || 'XAU') === ins; }).map(pnl);
+    if (!ps.length) { st.push([ins, '-']); return; }
+    var wins = ps.filter(function (x) { return x > 0; });
+    var gw = wins.reduce(function (a, b) { return a + b; }, 0);
+    var gl = -ps.filter(function (x) { return x <= 0; }).reduce(function (a, b) { return a + b; }, 0);
+    var pf = gl > 0 ? (gw / gl).toFixed(2) : (gw > 0 ? '&infin;' : '-');
+    st.push([ins, ps.length + ' &middot; ' + Math.round(100 * wins.length / ps.length) + '% &middot; PF ' + pf]);
+  });
   document.getElementById('stats').innerHTML = st.map(function (s) {
     return '<div class="stat"><div class="k">' + s[0] + '</div><div class="v">' + s[1] + '</div></div>';
   }).join('');
@@ -142,6 +151,15 @@ function save(msg) {
       'Another view saved first - reloading to the latest version.' :
       'Save failed (' + (e && e.code ? e.code : 'error') + '). Row is on screen but not stored.'); });
 }
+function pickIns(i) {
+  instr = i;
+  [['insXAU','XAU'],['insAUD','XAUAUD'],['insMHI','MHI']].forEach(function (p) {
+    document.getElementById(p[0]).className = 'ins' + (p[1] === i ? ' on-I' : '');
+  });
+}
+document.getElementById('insXAU').addEventListener('click', function () { pickIns('XAU'); });
+document.getElementById('insAUD').addEventListener('click', function () { pickIns('XAUAUD'); });
+document.getElementById('insMHI').addEventListener('click', function () { pickIns('MHI'); });
 function pick(s) {
   side = s;
   document.getElementById('btnL').className = s === 'L' ? 'on-L' : '';
@@ -158,7 +176,7 @@ document.getElementById('f').addEventListener('submit', function (ev) {
   if (!d || !isFinite(e) || !isFinite(st) || !isFinite(x)) {
     setNotice('Fill in date, entry, stop and exit (numbers) first.'); return;
   }
-  state.trades.push({ date: d, side: side, entry: e, stop: st, exit: x });
+  state.trades.push({ date: d, instr: instr, side: side, entry: e, stop: st, exit: x });
   state.trades.sort(function (a, b) { return a.date < b.date ? -1 : 1; });
   ['f-entry', 'f-stop', 'f-exit'].forEach(function (id) { document.getElementById(id).value = ''; });
   save('Trade added.');
@@ -171,11 +189,12 @@ document.getElementById('rows').addEventListener('click', function (ev) {
 });
 document.getElementById('f-date').value = new Date().toISOString().slice(0, 10);
 pick('L');
+pickIns('XAU');
 render();
 </script>
 </body></html>"""
 
-init = {"version": 1, "trades": []}
+init = {"version": 2, "trades": []}
 doc = TEMPLATE.replace("@@STATE@@", json.dumps(init))
 doc = doc.replace("@@TPL@@", TEMPLATE.replace("</", "<\\/"))
 open("results/trade_journal.html", "w").write(doc)

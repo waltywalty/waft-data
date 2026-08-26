@@ -7,6 +7,7 @@ CSS = open("report_style.css").read()
 assert "{{" not in CSS
 ind = open("tradingview/AsiaOpenGold_indicator.pine").read()
 strat = open("tradingview/AsiaOpenGold_strategy.pine").read()
+hsi = open("tradingview/HSIPreOpenFade_indicator.pine").read()
 
 
 def card(cid, name, blurb, code):
@@ -48,7 +49,7 @@ HTML_DOC = f"""<title>Pine Paste Board</title>
 </style>
 <div class="wrap">
 <header>
-<p class="eyebrow">Asia gold strategy &middot; TradingView port &middot; indicator v1.1</p>
+<p class="eyebrow">Asia gold strategy &middot; TradingView port &middot; indicator v1.1 + HSI fade</p>
 <h1>Pine Paste Board</h1>
 <p class="standfirst">Both scripts, ready to copy on any device. Tap Copy, then paste
 into TradingView&rsquo;s Pine Editor over the existing script and Save. On an iPad use
@@ -71,6 +72,7 @@ Settings) and two new card rows: <strong>signals on chart</strong> and
 
 {card("ind", "Signal indicator (v1.1)", "Range, filter state, LONG/SHORT/EXIT alerts, big status card with a signal counter. For manual trading through the IBKR panel.", ind)}
 {card("strat", "Backtest strategy", "The full rule for the Strategy Tester, with webhook-ready order alerts for a bridge later.", strat)}
+{card("hsi", "HSI pre-open fade (paper only)", "Watch-list item: fades a >=0.3-ATR push in the 09:15-09:30 HKT futures-only window. Load on an OANDA HK33HKD 15-minute chart; alerts FADE LONG / FADE SHORT / EXIT. Parameters frozen until 80 trades.", hsi)}
 
 <footer><p>Generated from <code>backtest/tradingview/</code> by
 <code>build_pine_copy.py</code> &mdash; the repository copy is the source of truth.</p></footer>
