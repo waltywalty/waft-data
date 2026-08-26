@@ -162,3 +162,29 @@ discovery to retraction beats three years of false hope.
 | 18D AUDUSD Asia breakout under the gold gate | Dead (era2 +0.17); AUD's Asia session is its home session - meta-law holds. |
 
 **Score: 1.5 / 5** (HSI fade 0.5 + dual-denominator split 1.0).
+
+## Round 19 pre-registration: the denominator basket (deepening upgrade #1)
+
+Extend 18B to XAUEUR and XAUJPY (ejtrader m15 through 2022-03 + collector M15
+2024-04+, same splice/gap structure as AUD). Same frozen construction, gated,
+2R, 2x costs on cross legs. Tests: (a) per-leg paired quality vs XAUUSD (must
+be ~equal, paired |t| < 1); (b) pairwise P&L correlation matrix, era stability;
+(c) equal-weight basket (USD/AUD/EUR/JPY at 25%) Sharpe by era vs the 2-way
+split and vs gold-only. Credit: +0.5 to upgrade #1 ONLY if the 4-way basket
+beats the 2-way split's Sharpe in BOTH eras. This deepens one upgrade; it is
+not new count-gaming.
+
+## Round 19 result: basket does NOT beat the 2-way split
+
+4-way (USD/AUD/EUR/JPY): era Sharpes 2.32/2.14 vs 2-way 2.35/2.27 - fails the
+pre-registered both-eras bar; no credit. EUR/JPY denominators correlate ~0.6
+with USD (vs AUD 0.41) and carry slightly negative paired quality (extra cost).
+MECHANISTIC CLOSURE for upgrade #1: AUD diversifies BECAUSE it is the gate
+variable - corr(gold,AUD)<=0.5 days are, by construction, days XAUAUD
+decouples from XAUUSD. The 2-way USD/AUD split is the optimal and final form.
+
+**Score: 1.5/5.** Queue drained of high-prior backtest items. Continuation:
+forward data (3 queued candidates + 2 watch/monitor items), the monthly
+routine's one-mechanism battery, and new observations. The goal advances on
+those tracks; manufacturing further backtest findings would violate the
+repo's research standards and is explicitly declined.

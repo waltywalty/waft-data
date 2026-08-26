@@ -513,3 +513,12 @@ Round 18 (`reference/goal_ledger.md`):
 * **18D**: AUDUSD itself under the gold gate: dead (home-session, meta-law).
 
 Goal score: 1.5/5. New data: AUDUSD M15 2024-2026 (collector).
+
+## Round 19 — the denominator basket (negative, and closing the mechanism)
+
+Extending the split to EUR/JPY denominators fails the pre-registered bar (4-way
+Sharpe below the 2-way in both eras; EUR/JPY correlate ~0.6 with USD vs AUD's
+0.41). Why AUD is special: it is the gate variable — corr(gold,AUD)≤0.5 days
+are by construction the days XAUAUD decouples from XAUUSD. The USD/AUD 50/50
+split is the optimal, final form of upgrade #1. Goal score 1.5/5; remaining
+paths are forward-data promotion and new mechanisms, per the goal ledger.
