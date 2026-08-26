@@ -232,3 +232,35 @@ gate, (2) watch/monitor item accrual (HSI fade, SGE drift), (3) the monthly
 routine's single mechanism-first battery, (4) new user observations. Bulk
 cell-grinding is explicitly OFF. Score carries at 1.5/5; the monthly review
 reports the delta each cycle.
+
+## Round 21 pre-registration: the tether trade (user-originated mechanism)
+
+User hypothesis: use the correlation OPPOSITELY - trade something on the
+corr > 0.5 (stand-aside) days. Known dead: breakouts on those days (round 13,
+PF 1.02) and their fades (mirror minus costs). The mechanism-correct form:
+on high-corr days gold is tethered to the dollar factor, so deviations of
+gold's Asia move from beta x AUD's Asia move should REVERT while the regime
+binds - and should NOT revert on low-corr days (built-in falsification arm).
+
+Spec (fixed before running): Asia window 01:30-07:00 UTC on 15m closes.
+residual = gold log-move - beta20 x AUD log-move (beta from daily returns,
+lag-1); z = residual / 20d rolling std of prior residuals (causal). Trigger
+|z| >= {1.0, 1.5}; enter gold at 07:00 UTC opposite the residual sign; exits
+{12:00 UTC, 16:00 NY}. Arms: corr > 0.5 (the claim) and corr <= 0.5 (the
+control, predicted DEAD - if it works there too, it is generic gold MR, which
+this repo has already buried, and the claim fails). 2x2x2 = 8 cells + halves
+at 2023-01-01 (AUD feed gap). Cost $0.30/oz. Credit only if: high-corr arm
+positive both halves at some smooth-gradient threshold AND control arm flat/
+negative AND battery max-stat p < 0.10.
+
+## Round 21 result: the tether trade - dead, with a consistency bonus
+
+Fading the gold-vs-factor residual loses in all 8 cells (PF 0.56-0.81), both
+regimes, both halves. The residual CONTINUES rather than reverts - and
+continues hardest on LOW-corr days, i.e. the deployed breakout edge seen in
+residual coordinates (independent confirmation of the main rule's mechanism).
+The mirror (follow the residual) is post-hoc and its halves disagree
+(+1.55/+0.02 implied) - not pursued. The high-corr days remain untradeable
+through the third distinct lens (breakout r13, fade r13/r8, tether r21).
+User hypothesis was mechanism-correct in FORM (right kind of idea, built-in
+falsification arm) - the market just does not do it. Score unchanged: 1.5/5.
