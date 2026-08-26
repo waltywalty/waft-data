@@ -407,3 +407,24 @@ for more trades or more edge. Three pre-registered questions, 416 cells, all cou
 
 Write-up: `results/report13.html`. Playbook graveyard updated; the deployed rule and
 its drought expectations stand unchanged.
+
+## Round 14 — two eyeballed chart patterns (the pattern was real, the edge was not)
+
+Two live-chart observations, pre-registered and tested over all five years
+(`run_taps.py`, 13 economic cells):
+
+* **Ping-pong** (tap one Asia-range line → tap the other): real as a statistic —
+  64% overall, 67% on calm days and 68% on stand-aside days, both splits moving the
+  way the eye predicted. But fading the first tap toward the other line loses in
+  every configuration (best cell PF 1.10, t +0.54, best-of-8); the 32–36% of days
+  that never come back are the big directional days, so losses are fat and wins are
+  capped at one range width. The base rate owns the pattern: the range is ~a third
+  of a day's travel, so ordinary wandering re-crosses it.
+* **Magnet** (range line confluent with a prior day/NY-session high/low attracts
+  price): the premise is measurably false — confluent lines get re-crossed 5.43
+  times on average, non-confluent lines 5.43. Identical. The revert-to-line fade
+  loses on both (PF 0.75 / 0.64) and is worse, not better, on stand-aside days.
+
+Write-up: `results/report14.html`. Playbook graveyard updated. A practical note from
+the same screenshot: run the signals indicator on OANDA:XAUUSD, not on MGC1! — the
+continuous-contract roll gaps distort the daily-return correlation the filter reads.

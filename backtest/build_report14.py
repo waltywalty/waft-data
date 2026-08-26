@@ -1,0 +1,174 @@
+"""Round 14 report: the two eyeball patterns (ping-pong and magnet lines)."""
+import json
+
+r = json.load(open("results/taps.json"))
+d1, e1 = r["h1_desc"], r["h1_econ"]
+d2, e2 = r["h2_desc"], r["h2_econ"]
+
+def cell(m):
+    return (f"<td>{m['n']}</td><td>{float(m['pf']):.3f}</td><td>{float(m['t']):+.2f}</td>"
+            f"<td>{float(m['is_']['t']):+.2f}</td><td>{float(m['os_']['t']):+.2f}</td>")
+
+H1_ROWS = "\n".join(
+    f"<tr><td class='lbl'>{lbl}</td>{cell(e1[k])}</tr>" for lbl, k in (
+        ("All first taps, stop 0.5&times;", "all_s0.5"),
+        ("All first taps, stop 1.0&times;", "all_s1.0"),
+        ("Calm days (|3d ret| &le; median), stop 0.5&times;", "calm3_s0.5"),
+        ("Calm days, stop 1.0&times;", "calm3_s1.0"),
+        ("Stand-aside days (corr &gt; 0.5), stop 0.5&times;", "corr_hi_s0.5"),
+        ("Stand-aside days, stop 1.0&times;", "corr_hi_s1.0"),
+        ("Calm &and; stand-aside, stop 0.5&times;", "calm3_corr_hi_s0.5"),
+        ("Calm &and; stand-aside, stop 1.0&times;", "calm3_corr_hi_s1.0")))
+
+H2_ROWS = "\n".join(
+    f"<tr><td class='lbl'>{lbl}</td>{cell(e2[k])}</tr>" for lbl, k in (
+        ("Confluent lines, trigger 0.5&times; width", "conf_k0.5"),
+        ("Confluent lines, trigger 0.75&times; width", "conf_k0.75"),
+        ("Non-confluent lines, 0.5&times; (control)", "non_k0.5")))
+
+grad = " &middot; ".join(f"{100*x:.0f}" for x in d1["grad_ret3"])
+
+HTML = f"""<title>Ping-Pong and Magnet Lines</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:wght@600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root {{ --ground:#FBFBFC; --surface:#FFFFFF; --sunk:#F3F4F7; --ink:#16191F;
+  --ink-2:#4A515E; --ink-3:#7C8496; --rule:#DFE2E9; --brass:#8A6420;
+  --pos:#1B6E55; --neg:#A83226; }}
+@media (prefers-color-scheme: dark) {{ :root:not([data-theme="light"]) {{
+  --ground:#0E1116; --surface:#161A21; --sunk:#1B2029; --ink:#E8EAEF;
+  --ink-2:#A7AEBC; --ink-3:#767E8E; --rule:#272D38; --brass:#D5A64A;
+  --pos:#5CBE99; --neg:#E58275; }} }}
+:root[data-theme="dark"] {{ --ground:#0E1116; --surface:#161A21; --sunk:#1B2029;
+  --ink:#E8EAEF; --ink-2:#A7AEBC; --ink-3:#767E8E; --rule:#272D38;
+  --brass:#D5A64A; --pos:#5CBE99; --neg:#E58275; }}
+* {{ box-sizing:border-box; }}
+body {{ margin:0; background:var(--ground); color:var(--ink);
+  font-family:"IBM Plex Sans",system-ui,sans-serif; font-size:16px; line-height:1.6; }}
+.wrap {{ max-width:880px; margin:0 auto; padding:34px 20px 90px; }}
+h1 {{ font-family:Spectral,Georgia,serif; font-weight:600; font-size:32px; margin:0 0 4px;
+  text-wrap:balance; }}
+h2 {{ font-family:Spectral,Georgia,serif; font-weight:600; font-size:22px; margin:40px 0 10px; }}
+h2 .n {{ color:var(--brass); font-family:"IBM Plex Mono",monospace; font-size:14px;
+  margin-right:10px; letter-spacing:.06em; }}
+p {{ max-width:70ch; color:var(--ink-2); }}
+p strong {{ color:var(--ink); }}
+.kicker {{ font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--brass); margin-bottom:8px; }}
+.verdict {{ background:var(--surface); border:1px solid var(--rule); border-left:3px solid var(--brass);
+  border-radius:6px; padding:16px 20px; margin:20px 0; }}
+.verdict p {{ margin:6px 0; }}
+.stats {{ display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:1px;
+  background:var(--rule); border:1px solid var(--rule); border-radius:6px; overflow:hidden;
+  margin:18px 0; }}
+.stat {{ background:var(--surface); padding:13px 15px; }}
+.stat .k {{ font-family:"IBM Plex Mono",monospace; font-size:10px; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--ink-3); }}
+.stat .v {{ font-family:"IBM Plex Mono",monospace; font-size:21px; margin-top:4px;
+  font-variant-numeric:tabular-nums; }}
+.tblwrap {{ overflow-x:auto; border:1px solid var(--rule); border-radius:6px;
+  background:var(--surface); margin:14px 0; }}
+table {{ border-collapse:collapse; width:100%; font-size:13.5px; }}
+th {{ font-family:"IBM Plex Mono",monospace; font-size:10px; letter-spacing:.07em;
+  text-transform:uppercase; color:var(--ink-3); text-align:right; padding:10px 12px;
+  border-bottom:1px solid var(--rule); white-space:nowrap; }}
+th:first-child, td:first-child {{ text-align:left; }}
+td {{ padding:8px 12px; border-bottom:1px solid var(--rule); text-align:right;
+  font-family:"IBM Plex Mono",monospace; font-variant-numeric:tabular-nums; white-space:nowrap; }}
+td.lbl {{ font-family:"IBM Plex Sans",sans-serif; color:var(--ink-2); white-space:normal; }}
+tr:last-child td {{ border-bottom:none; }}
+.note {{ font-size:13px; color:var(--ink-3); max-width:72ch; }}
+footer {{ margin-top:44px; padding-top:16px; border-top:1px solid var(--rule);
+  font-size:13px; color:var(--ink-3); max-width:72ch; }}
+</style>
+<div class="wrap">
+<div class="kicker">Asia-open gold &middot; research round 14 &middot; August 2026</div>
+<h1>The chart was half telling the truth</h1>
+<p>Two patterns spotted by eye on the live chart, tested against all five years:
+<strong>H1 (ping-pong)</strong> &mdash; on non-trending days, a tap of one Asia-range
+line tends to be followed by a tap of the other; <strong>H2 (magnet)</strong> &mdash;
+when a range line coincides with a prior day&rsquo;s or prior NY session&rsquo;s
+high/low, price mean-reverts around it. Definitions were pre-registered before the
+run; {r['ledger']} economic cells in the ledger, halves split at 2024-01-01, $0.30
+costs plus stop slippage.</p>
+
+<div class="verdict">
+<p><strong>Verdict: the ping-pong pattern is real as a statistic and worthless as a
+trade; the magnet premise is measurably false.</strong> The other line does get tapped
+64% of the time &mdash; more on calm days (67%) and stand-aside days (68%), exactly as
+the eye claimed &mdash; but a random walk confined to a trading day already does this,
+and fading the first tap loses money in every configuration worth taking seriously.
+Confluent lines get re-crossed <em>exactly</em> as often as non-confluent ones
+(5.43 vs 5.43 crossings per line): the magnetism is in the eye, not the market.</p>
+</div>
+
+<h2><span class="n">01</span>H1 &mdash; the ping-pong is real&hellip;</h2>
+<div class="stats">
+<div class="stat"><div class="k">P(other tapped) all</div><div class="v">64%</div></div>
+<div class="stat"><div class="k">calm 3-day trend</div><div class="v">67%</div></div>
+<div class="stat"><div class="k">trending 3-day</div><div class="v">62%</div></div>
+<div class="stat"><div class="k">stand-aside days</div><div class="v">68%</div></div>
+<div class="stat"><div class="k">median gap</div><div class="v">3.5 h</div></div>
+</div>
+<p>Out of {d1['all'][1]} days with a first tap, the opposite line was hit before the
+16:00-NY close 64% of the time. The splits lean the way the eye said: calmer and
+stand-aside days ping-pong more. But the gradient over trend deciles is jagged
+({grad} % from calmest to most trending) &mdash; a drift of a few points, not a regime.
+The honest base rate matters here: the Asia range is roughly a third of an average
+day&rsquo;s travel, so a day&rsquo;s ordinary wandering re-crosses it most of the time
+with no mean-reverting force required.</p>
+
+<h2><span class="n">02</span>&hellip;and the fade of it loses</h2>
+<p>Enter at the bar after the first tap, fade toward the other line, target the other
+line, stop 0.5&times; or 1.0&times; the range width beyond the tapped line, flat
+16:00 NY.</p>
+<div class="tblwrap"><table>
+<thead><tr><th>Configuration</th><th>n</th><th>PF</th><th>t</th>
+<th>t 2020&ndash;23</th><th>t 2024&ndash;25</th></tr></thead>
+<tbody>{H1_ROWS}</tbody></table></div>
+<p>Why does a 64&ndash;68% tap rate not pay? Because the tap statistic says nothing
+about the <em>path</em>: price often runs well beyond the tapped line first (the
+breakout our deployed rule trades!), and the 32&ndash;36% of days that never come back
+are exactly the big directional days, so the losses are fat and the wins are capped at
+one range width. The best cell &mdash; calm &and; stand-aside, PF 1.102, t +0.54, both
+halves barely positive &mdash; is the best of an 8-cell search and sits below both
+existing watch-list items on a fraction of their evidence. Recorded, not watched.</p>
+
+<h2><span class="n">03</span>H2 &mdash; the magnet fails its own premise</h2>
+<div class="stats">
+<div class="stat"><div class="k">crossings, confluent</div><div class="v">5.43</div></div>
+<div class="stat"><div class="k">crossings, other lines</div><div class="v">5.43</div></div>
+<div class="stat"><div class="k">confluent lines</div><div class="v">{d2['n_conf_lines']}</div></div>
+<div class="stat"><div class="k">control lines</div><div class="v">{d2['n_non_lines']}</div></div>
+</div>
+<p>A range line within 0.10% of yesterday&rsquo;s high/low or the prior NY
+session&rsquo;s high/low gets re-crossed <strong>5.43</strong> times on average before
+the NY close. A line with no confluence: <strong>5.43</strong>. Identical to the
+second decimal. The hovering you see at confluent lines is selection &mdash; the eye
+checks for confluence precisely on the days price is hovering there.</p>
+<div class="tblwrap"><table>
+<thead><tr><th>Magnet fade</th><th>n</th><th>PF</th><th>t</th>
+<th>t 2020&ndash;23</th><th>t 2024&ndash;25</th></tr></thead>
+<tbody>{H2_ROWS}</tbody></table></div>
+<p>The revert-to-line trade loses on confluent lines (PF 0.75) and loses harder on the
+control (PF 0.64) &mdash; fading distance from the Asia lines is simply the mirror of
+the strategy we deploy, and the mirror of an edge is a cost. On stand-aside days it is
+<em>worse</em> (PF 0.60), not better.</p>
+
+<h2><span class="n">04</span>What survives</h2>
+<p>The observation skill was genuine &mdash; both splits the eye proposed (calm days,
+stand-aside days) moved the tap statistic the predicted way. What the eye cannot see
+is the base rate and the path-dependence, which is where the money died. The deployed
+rule is untouched; the drought remains a filter, not a failure. If a pattern like this
+is worth another look it will be as a <em>descriptive</em> anomaly first (a statistic
+that beats its base rate), never as a straight fade.</p>
+
+<footer>Method: taps and fades on 5m bars, lines from the 09:30&ndash;10:30 HKT range,
+window to 16:00 NY; trend proxy = |prior 3-day return| vs median (causal); confluence
+= line within 0.10% of prior HKT-day or prior NY-session high/low; ambiguous
+target-and-stop bars scored as stops. {r['ledger']} economic cells.
+Code: <code>run_taps.py</code>; data: <code>results/taps.json</code>.</footer>
+</div>
+"""
+
+open("results/report14.html", "w").write(HTML)
+print(f"written results/report14.html ({len(HTML):,} bytes)")

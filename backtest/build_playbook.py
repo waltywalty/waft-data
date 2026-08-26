@@ -12,7 +12,7 @@ HTML = f"""<title>Asia Gold Playbook</title>
 {CSS}
 <div class="wrap">
 <header>
-<p class="eyebrow">Living document &middot; last updated 2026-08-26 &middot; after round 13</p>
+<p class="eyebrow">Living document &middot; last updated 2026-08-26 &middot; after round 14</p>
 <h1>The Asia gold playbook</h1>
 <p class="standfirst">One strategy survived nine rounds of testing: the Asia-open
 range breakout on gold, gated by the gold/AUDUSD correlation regime. This page is the
@@ -202,6 +202,13 @@ re-selects 88&ndash;92% of the AUD gate&rsquo;s days, every rescue of AUD-skippe
 flips sign between halves, and the best stacked gate is matched by random regime series
 (max-stat p 0.21 / 0.30). One macro state, one gate; no frequency exists beyond it
 (round 13).</li>
+<li>Eyeballed chart patterns, round 14: the Asia-range &ldquo;ping-pong&rdquo; (tap one
+line, tap the other) is a real 64% statistic &mdash; 67&ndash;68% on calm and
+stand-aside days, as the eye claimed &mdash; but fading the first tap loses in every
+configuration; the path runs too far before reverting. The &ldquo;magnet&rdquo; premise
+(range line confluent with a prior high/low attracts price) is measurably false:
+confluent and non-confluent lines get re-crossed identically (5.43 vs 5.43 per line).
+The pattern was real; the base rate owned it.</li>
 </ul>
 <div class="note"><p><strong>Watch list (not tradeable, not forgotten):</strong>
 (1) the gold CISD-to-EoD reversal (09:00-10:00 ET range, entry against the first break
