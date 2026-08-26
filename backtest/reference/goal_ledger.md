@@ -81,3 +81,29 @@ Next avenues queued: London add-leg spec refinement (pre-goal candidate, could b
 promoted by forward data not backtest), trend-day labeling as conditioner for the
 NY re-entry, gotobi-style fix-flow scan on gold (London fix already dead pre-2015;
 Shanghai benchmark fix unexplored), HSI watch-item accrual.
+
+## Round 17a pre-registration: Shanghai fix-flow scan on gold
+
+SGE benchmark auctions at 10:15 and 14:15 Beijing (02:15 / 06:15 UTC; no DST).
+Descriptive-first: mean 5m XAUUSD returns per slot 01:00-07:00 UTC over the full
+sample, halves split 2024-01-01. Named windows (pre-declared, 2 cells): drift
+INTO each auction (30 min before) and reversal AFTER (30 min). Economics only
+if a named window shows |mean| > $0.30 cost with both halves same-signed.
+
+Result: into-AM-fix drift +0.76 bps/day, t +2.56, halves +0.43/+3.25 (both
+positive, era-skewed to 2024+). Sub-cost (~$0.25/oz vs $0.30) -> no economics
+per pre-reg. MONITOR: re-score yearly; if the China-era drift doubles it clears
+cost. Other three windows and control: nothing.
+
+## Goal status after rounds 16-17a
+
+Score 1.0/5 (HSI pre-open fade + Turtle Soup JP225, both watch-grade, both
+frozen). The honest bottleneck is now FORWARD DATA, not search breadth: the
+strongest upgrade candidates (rvol gate, inside-day gate, London add-leg, NY
+re-entry, both watch items) are all waiting on live trades, and the round-16
+experience shows additional backtest cells are yielding myths-exposed and
+sub-cost anomalies, not deployable edges. Continued avenues, in order:
+(1) watch-item accrual (HSI live feed, JP225 feed), (2) forward-test log
+scoring at the 6-12-month gate, (3) new mechanism-first hypotheses as they
+arise (user observations have outperformed literature imports 2:1), (4) the
+queued trend-day conditioner test for the NY re-entry.
