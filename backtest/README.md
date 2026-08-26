@@ -385,3 +385,25 @@ to the NY close; interference only hurts). Results, all pre-registered:
 
 Playbook updated: MGC bracket expression added as an instrument option; forward-test
 candidates now number three.
+
+## Round 13 — alternative correlation partners (negative, and clarifying)
+
+The commission: gate the same breakout on other macro partners — silver, a synthetic
+dollar index, EUR, JPY, GBP, CHF, CAD, CNY, WTI, the S&P 500, 10-year yields — hoping
+for more trades or more edge. Three pre-registered questions, 416 cells, all counted
+(`run_corrpartners.py`, sources appended to `fetch_data.sh`):
+
+* **Q1 (beat AUD?)** No. Every FX partner's best cell re-selects 88–92% of the AUD
+  gate's days — the same macro state through a different window. Silver's best t
+  (+2.82) sits on a jagged decile gradient; the grid-wide max-stat permutation gives
+  p = 0.21.
+* **Q2 (rescue AUD-skipped days?)** No. The 410 skipped trades are collectively dead
+  (PF 1.020, t −0.33), and every partner's best rescue cell flips sign between halves —
+  positive only in the 2024–25 bull. No frequency gain exists in this direction.
+* **Q3 (stack a second gate?)** No. AUD∧CNY and AUD∧silver improve both halves, but a
+  random circularly-shifted series ANDed onto the AUD gate matches them 30% of the
+  time (p = 0.30) — selection, not signal — and stacking cuts frequency, the opposite
+  of the goal.
+
+Write-up: `results/report13.html`. Playbook graveyard updated; the deployed rule and
+its drought expectations stand unchanged.

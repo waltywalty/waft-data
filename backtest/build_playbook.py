@@ -12,7 +12,7 @@ HTML = f"""<title>Asia Gold Playbook</title>
 {CSS}
 <div class="wrap">
 <header>
-<p class="eyebrow">Living document &middot; last updated 2026-08-25 &middot; after round 12</p>
+<p class="eyebrow">Living document &middot; last updated 2026-08-26 &middot; after round 13</p>
 <h1>The Asia gold playbook</h1>
 <p class="standfirst">One strategy survived nine rounds of testing: the Asia-open
 range breakout on gold, gated by the gold/AUDUSD correlation regime. This page is the
@@ -196,6 +196,12 @@ than the raw break, still inside the spread; prior-hour-level exits worst of all
 structurally terrible on MNQ where 15 points is 0.35% against a 2-point spread. On the
 Asia gold entry a &plusmn;20pt MGC bracket works (PF 1.37) because it barely binds:
 it re-derives the wide-stop result, adds nothing (round 11).</li>
+<li>Alternative correlation partners &mdash; silver, a synthetic dollar index, EUR, JPY,
+GBP, CHF, CAD, CNY, WTI, the S&amp;P 500 and 10-year yields, 416 cells: every FX gate
+re-selects 88&ndash;92% of the AUD gate&rsquo;s days, every rescue of AUD-skipped days
+flips sign between halves, and the best stacked gate is matched by random regime series
+(max-stat p 0.21 / 0.30). One macro state, one gate; no frequency exists beyond it
+(round 13).</li>
 </ul>
 <div class="note"><p><strong>Watch list (not tradeable, not forgotten):</strong>
 (1) the gold CISD-to-EoD reversal (09:00-10:00 ET range, entry against the first break
