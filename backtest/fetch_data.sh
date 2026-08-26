@@ -57,3 +57,7 @@ curl -fL --retry 3 -o AUDUSD_M15_collector.csv "https://raw.githubusercontent.co
 curl -fL --retry 3 -o EURUSD_m15_ejtrader.csv "https://raw.githubusercontent.com/ejtraderLabs/historical-data/master/EURUSD/EURUSDm15.csv"
 curl -fL --retry 3 -o USDJPY_m15_ejtrader.csv "https://raw.githubusercontent.com/ejtraderLabs/historical-data/master/USDJPY/USDJPYm15.csv"
 curl -fL --retry 3 -o EURUSD_M15_collector.csv "https://raw.githubusercontent.com/user1-2-3-4/oanda-data-collector/main/data/forex/EURUSD_M15.csv"
+# CFTC COT gold history (legacy futures-only, weekly 2006-2026; verified vs a
+# second feed on 2020+2024 windows; use raw positional columns, ignore the
+# repo author's derived indicator columns)
+curl -fL --retry 3 -o COT_gold_github.csv "https://raw.githubusercontent.com/krss1985-prog/seasonality-cot/main/cot_gold.csv"

@@ -296,3 +296,13 @@ Verdict: our backtesting is not broken - it reproduces every descriptive claim
 parameters enter. Their own docs corroborate: TradingView defaults to zero
 costs, their guide warns costs "can turn a profitable backtest into a losing
 one", and their own dashboard reports 66.93% of ES days break BOTH sides.
+
+## Round 24 staging: the trader-list commission (13 names, 4 deep dives running)
+
+COT gold data acquired and cross-feed-verified (2006-2026 weekly). The Williams
+COT battery will be pre-registered ONLY once the research returns his published
+spec (lookback, trader category, thresholds) - running his exact published rule
+as a replication, not searching our own grid. Other candidate batteries await
+the dives: Turtle N-sizing as a risk transplant (vs our round-9 sizing study),
+Minervini trend-template as regime gate (vs the drift null), PTJ 200d-MA gate
+(vs round-16 D's vol-gate lesson). Everything faces the house bar.
