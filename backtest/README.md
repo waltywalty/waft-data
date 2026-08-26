@@ -454,3 +454,27 @@ Five research agents surveyed academic and practitioner futures strategies
 
 Write-up: `results/report15.html`. HSI/MHI battery pre-registered separately
 (`reference/round15_hsi_prereg.md`), pending data.
+
+## Round 15b — the Hang Seng battery (the eye's first survivor)
+
+User observation: MHI pushes hard between the 09:15 derivatives open and the
+09:30 cash open, then reverses. Pre-registered before any HSI data existed
+(`reference/round15_hsi_prereg.md`), tested on a spliced 4.5-year 15m HSI CFD
+series (two brokers, 3.1 bps median splice diff; session structure verified
+from the data). 38 cells (`run_hsi.py`):
+
+* **H-A (pre-open fade): survives.** The reversal is real (push vs next-hour
+  Spearman −0.059, quintile gradient sign-consistent; open-auction effect only,
+  not day-direction). On big pushes (≥0.3 ATR in the 09:15 bar, ~10/yr): PF
+  2.02, t +1.60, both halves positive in every cell, max-stat p = 0.030,
+  cost-robust to 15 points. n=43 → **watch list item #3**, not capital.
+  Re-test bar pre-committed: 80+ trades on the live-updating feed, promote at
+  PF ≥ 1.4 with both halves positive, no parameter changes allowed.
+* **H-B (home-session range): dead as predicted.** Breakout arm PF 0.87,
+  fade arm worse — the price-discovery law holds on a fourth market.
+* **H-C (Nikkei/A50/HSCEI/CSI300 correlation gates): rescue nothing** — the
+  round-13 lesson transfers unchanged.
+
+Write-up: `results/report_hsi.html`. This is the sixth Judas construction
+tested here and the first with a pulse — the difference is the mechanism:
+fifteen minutes of futures trading with no cash market underneath.

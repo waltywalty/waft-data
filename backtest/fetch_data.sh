@@ -32,3 +32,14 @@ done
 # Silver, WTI and the 10y yield came from Alpha Vantage daily endpoints
 # (GOLD_SILVER_HISTORY / WTI / TREASURY_YIELD -> SILVER_daily_av.csv,
 # WTI_daily_av.csv, UST10Y_daily_av.csv); re-pull them there if absent.
+
+# Round 15b: Hang Seng + Asian partners
+# HSI CFD (Oanda collector, live-updated hourly; UTC timestamps; day opens 01:15 UTC = 09:15 HKT)
+for f in HK33_H1 HK33_M15 HK33_M5 JP225_H1; do
+  curl -fL --retry 3 -sSO "https://raw.githubusercontent.com/user1-2-3-4/oanda-data-collector/main/data/indices/$f.csv"
+done
+# HK50 15m 2022-02..2024-04 + China partners (Yuan archive; chunked files -> concat):
+#   git clone --depth 1 --filter=blob:none --sparse https://github.com/No-Trade-No-Life/Yuan-Public-Data.git
+#   git -C Yuan-Public-Data sparse-checkout set OHLC/HK50 OHLC/CHCUSD OHLC/HSCHKD OHLC/CFFEX_IF
+#   then concat each OHLC/<SYM>/<TF>/*.csv (drop_duplicates on time, sort) into
+#   <SYM>_<TF>_yuan.csv - see run_hsi.py header for the exact frames used.
