@@ -223,3 +223,12 @@ queued candidates (worth up to +3.0 alone, clock already running), (2) watch/
 monitor item accrual (HSI, SGE), (3) the monthly routine's one-mechanism
 battery, (4) new user observations. Next human decision point: the monthly
 review, or sooner if the user revises the goal bar.
+
+## USER DECISION 2026-08-26: slow tracks confirmed
+
+The user chose to keep the goal standing and advance it via the slow tracks:
+(1) forward-data promotion of the three queued candidates at the 6-12 month
+gate, (2) watch/monitor item accrual (HSI fade, SGE drift), (3) the monthly
+routine's single mechanism-first battery, (4) new user observations. Bulk
+cell-grinding is explicitly OFF. Score carries at 1.5/5; the monthly review
+reports the delta each cycle.
