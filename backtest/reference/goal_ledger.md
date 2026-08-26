@@ -107,3 +107,16 @@ sub-cost anomalies, not deployable edges. Continued avenues, in order:
 scoring at the 6-12-month gate, (3) new mechanism-first hypotheses as they
 arise (user observations have outperformed literature imports 2:1), (4) the
 queued trend-day conditioner test for the NY re-entry.
+
+## Round 17b pre-registration: trend-day conditioner on the NY re-entry
+
+Base = round-12 NY 09:30 re-entry, in_profit + 2R (PF 1.333, t +1.80, halves
+1.09/1.67). Conditioner (Crabel/trend-day literature, causal at entry): the
+09:30-NY price's position within the day-so-far range (from 01:30 UTC) must
+align with the Asia direction: longs pos >= {0.7, 0.8}, shorts <= {0.3, 0.2}.
+2 cells; improvement bar = both halves improve AND per-trade t rises without
+n collapsing below ~150.
+
+Result 17b: FAILS. align>=0.7 n=219 PF 1.324 t +1.52 (base 1.333/+1.80, IS
+degrades +1.09->+0.48); align>=0.8 kills it (PF 1.02). The re-entry needs no
+conditioning beyond in-profit; trend-day position adds nothing. Queue empty.
