@@ -120,3 +120,12 @@ n collapsing below ~150.
 Result 17b: FAILS. align>=0.7 n=219 PF 1.324 t +1.52 (base 1.333/+1.80, IS
 degrades +1.09->+0.48); align>=0.8 kills it (PF 1.02). The re-entry needs no
 conditioning beyond in-profit; trend-day position adds nothing. Queue empty.
+
+## Round 17c: Turtle Soup JP225 pre-2016 validation - RETRACTED
+
+The frozen rule on independent 2005-2016 daily bars (same session window, same
+costs): n=19, PF 0.579, t -0.80. Sign flips across eras -> the 2016-2026
+max-stat pass was regime luck (BOJ-era V-reversals). Watch item #4 retracted;
+score back to 0.5/5. This is the fastest kill in the repo and the reason
+out-of-sample extension runs BEFORE a watch item ages: three hours from
+discovery to retraction beats three years of false hope.

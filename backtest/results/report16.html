@@ -52,11 +52,13 @@ demonstrably successful traders publish. Every battery pre-registered in
 (official CBOE mirrors), USDJPY intraday (10y), AUS200, JP225 1-minute 2005-2020.</p>
 
 <div class="verdict">
-<p><strong>Survivor: Turtle Soup long on the Nikkei</strong> (Raschke's failed-breakdown
-fade: 20-day-low undercut reclaimed same day &rarr; long, exit +5 days) &mdash; 76% win,
-PF 4.01, t +3.38 on n=33, both halves positive, battery max-stat p&nbsp;=&nbsp;0.027.
-Watch-list grade, same tier as the HSI pre-open fade. <strong>Goal score: 1.0 of 5</strong>
-(two half-credit watch items). Everything else died or measured real-but-untradeable.</p>
+<p><strong>The round's one apparent survivor was retracted the same day.</strong>
+Turtle Soup long on the Nikkei (76% win, PF 4.01, t +3.38, max-stat p 0.027 on
+2016&ndash;2026, n=33) failed its out-of-sample extension: the frozen rule LOSES on
+independent 2005&ndash;2016 data (PF 0.58, t &minus;0.80). Era-specific, not
+structural &mdash; three hours from discovery to retraction. <strong>Goal score:
+0.5 of 5</strong> (the HSI pre-open fade). Everything else died or measured
+real-but-untradeable.</p>
 </div>
 
 <h2><span class="n">01</span>The scoreboard</h2>
@@ -87,9 +89,10 @@ terciles positive, halves mixed &mdash; a description of the edge, not an upgrad
 similar spread. Real, and worth exactly nothing net.</td>
 <td class="r">real, untradeable</td></tr>
 <tr><td><strong>G</strong> Turtle Soup daily, 5 markets &times; 2 sides</td>
-<td>Nine of ten cells dead (SPX both sides strongly negative). JP225 long survives
-the battery max-stat (p 0.027), halves +1.57/+3.71.</td>
-<td class="r pos">1 watch item</td></tr>
+<td>Nine of ten cells dead. JP225 long passed the battery max-stat (p 0.027) on
+2016&ndash;2026 &mdash; then lost on the 2005&ndash;2016 extension (PF 0.58,
+t &minus;0.80). Retracted.</td>
+<td class="r neg">retracted</td></tr>
 <tr><td><strong>H</strong> Gotobi USDJPY (Tokyo-fix flow, arXiv-confirmed)</td>
 <td>The relative effect is visible (&minus;0.4 bps gotobi vs &minus;2.1 bps ordinary
 mornings, n 484/1791) but the absolute trade loses and decayed post-2021 &mdash;
@@ -119,11 +122,11 @@ retail-heavy order books leaving stops where they are visible.</li>
 </ul>
 
 <h2><span class="n">03</span>The watch list after this round</h2>
-<p>(1) Gold CISD-to-EoD; (2) gated VP reversion; (3) HSI pre-open fade (re-test at
-80+ trades); <strong>(4) NEW &mdash; Turtle Soup long JP225</strong>: 20-day-low
-undercut reclaimed same day &rarr; long at close, exit +5 sessions; re-test when the
-live 1h feed doubles the sample (~2028) or at any +20-trade block; promote at PF
-&ge; 1.5 with both halves positive; parameters frozen now.</p>
+<p>Unchanged: (1) gold CISD-to-EoD; (2) gated VP reversion; (3) HSI pre-open fade
+(re-test at 80+ trades). The would-be fourth item was retracted by its own
+pre-2016 validation before it aged a day &mdash; the fastest kill in the repo, and
+the argument for running out-of-sample extensions the moment new data allows,
+not years later.</p>
 
 <footer>Pre-registrations and score: <code>reference/goal_ledger.md</code>. Code:
 <code>run_r16a.py</code>, <code>run_r16e.py</code>, inline batteries in the session

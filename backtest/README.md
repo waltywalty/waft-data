@@ -482,9 +482,9 @@ fifteen minutes of futures trading with no cash market underneath.
 ## Round 16 — the upgrade hunt (11 batteries, 1 survivor, 3 myths exposed)
 
 Goal-driven round (`reference/goal_ledger.md`): ~58 cells across two sweeps.
-Survivor: **Turtle Soup long on JP225** (20d-low undercut reclaimed same day →
-long, exit +5d): 76% win, PF 4.01, t +3.38, halves +1.57/+3.71, max-stat p 0.027,
-n=33 → watch item #4, frozen. Exposed: Connors/IBS daily mean reversion is mostly
+Apparent survivor **Turtle Soup long on JP225** (PF 4.01, t +3.38, max-stat
+p 0.027 on 2016-2026, n=33) was retracted the same day: the frozen rule loses on
+independent 2005-2016 data (PF 0.58, t −0.80) — era-specific, not structural. Exposed: Connors/IBS daily mean reversion is mostly
 equity drift in bursts (random long-burst null t +2.9); the Asia-session ORB
 transplanted to US indices dies BOTH directions (t to −12) — the slow-session edge
 is gold-specific; two refereed anomalies (Nikkei open vs prior-day SPX, Gotobi
