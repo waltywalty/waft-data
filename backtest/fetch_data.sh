@@ -61,3 +61,8 @@ curl -fL --retry 3 -o EURUSD_M15_collector.csv "https://raw.githubusercontent.co
 # second feed on 2020+2024 windows; use raw positional columns, ignore the
 # repo author's derived indicator columns)
 curl -fL --retry 3 -o COT_gold_github.csv "https://raw.githubusercontent.com/krss1985-prog/seasonality-cot/main/cot_gold.csv"
+
+# Round 24: long daily gold spot for the Williams COT battery
+# (Alpha Vantage GOLD_SILVER_HISTORY, symbol GOLD, interval daily ->
+#  data/GOLD_daily_av.csv, columns date,price, 2011-06..present; cross-check
+#  the overlap against XAUUSD_5m daily closes before trusting it.)

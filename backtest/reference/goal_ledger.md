@@ -306,3 +306,74 @@ as a replication, not searching our own grid. Other candidate batteries await
 the dives: Turtle N-sizing as a risk transplant (vs our round-9 sizing study),
 Minervini trend-template as regime gate (vs the drift null), PTJ 200d-MA gate
 (vs round-16 D's vol-gate lesson). Everything faces the house bar.
+
+## Round 24 pre-registration: the trader-list batteries (registered before any test ran)
+
+All four research dives are back. Extraction verdict across 13 names: the only
+genuinely new, well-specified, free-data RULE is the Williams COT Index; the
+Turtle material contributes a risk/sizing overlay, not entries; Unger
+contributes process; the macro legends contribute a defensive audit and two
+already-covered ideas. Registered here, before running, per house rules.
+
+**Spec B — Williams COT Index on gold (replication-first, weekly).**
+Data: `data/COT_gold_github.csv` (legacy futures-only 088691, cross-feed
+verified; raw positional columns only, author's derived columns ignored) x
+`data/GOLD_daily_av.csv` (AV daily spot 2011-06..2026-08, to be cross-checked
+vs our 5m feed on the overlap before use). Window: 2011-06..2026-08; halves
+split at 2019-01-01. Alignment: report is Tuesday positioning published
+Friday; signal becomes usable the following Monday open — the index for week
+T applies to Monday(T+6d) .. Monday open, no lookahead.
+- LW-1 (published form): net_c = comm_long - comm_short; COTidx = 100 x
+  (net_c - min_26w)/(max_26w - min_26w), 26-week window incl. current week.
+  Long while >= 80, short while <= 20, flat otherwise; also long-only variant.
+  (2 tests)
+- LW-2 (WillCo): net_c / open_interest before normalizing; same thresholds,
+  same two variants. (2 tests)
+- Gradient (counted, judged by slope not peak): lookback {13,26,52,156} x
+  thresholds {70/30, 80/20, 90/10} = 12 cells per construction, both
+  constructions = 24 cells.
+- Category check (counted): same index on large speculators as a FADE
+  (Williams: commercials right / specs wrong at extremes). (2 tests)
+- Multiplicity: max-stat circular-shift permutation over all counted cells;
+  Bonferroni quoted alongside. Success bar: same sign in both halves AND
+  survives the max-stat test. Interaction with the Asia breakout runs ONLY if
+  LW-1 or LW-2 passes that bar (1 further test).
+- Costs: weekly rebalance, $0.60/oz round trip modeled; sensitivity run.
+- Base-rate note registered up front: gold commercials are structurally net
+  short (miners hedge); time-in-state will be reported so a "long >= 80" rule
+  is judged against its actual exposure, not calendar time.
+
+**Spec A — Turtle risk layer on the deployed 652-trade set (sizing-only).**
+N = 20-day Wilder ATR on daily gold. Same entries/exits as deployed; overlays:
+(1) N-sizing (1% equity / N) vs deployed risk-sizing (1% / stop distance);
+(2) 2N stop replacing the 2x-range stop (re-simulated on 5m paths);
+(3) pyramiding: add 1 unit per +1/2 N favorable, stops to 2N below last add,
+gradient over max-units {1,2,3,4} judged by slope; (4) drawdown throttle
+(-20% size per -10% equity DD) on/off. Scored on risk-adjusted numbers (MAR,
+max DD, final equity at 1% risk, $2,000 start) against the round-9 flat-risk
+baseline. 7 counted cells. Registered expectation: sizing changes risk shape,
+not expectancy sign.
+
+**Marcus gap-through-stop tail audit (descriptive, not a test).** On the
+deployed set's stop exits: realized exit vs intended stop level, worst
+realized loss vs the intended 1%, distribution of gap-through amounts, and
+weekend/data-gap exposure. Motivated by Marcus's limit-down soybean lesson:
+"size so the gap scenario is survivable."
+
+**Spec C — Unger process adoptions (no data test).** (1) Hard average-trade
+floor: reject any candidate whose average net trade < 2x modeled round-trip
+cost before other statistics are computed — adopted into house rules. (2)
+Incubation ledger: journal streams already compare live vs backtest; formalize
+auto-retire on leaving the backtest envelope (SPRT kill bound already does
+this — noted as satisfied). (3) Market-character pre-test before choosing
+breakout vs fade archetype for any new market/session — adopted.
+
+**Spec D — explicit non-tests (logged, not run).** Medallion-style daily
+signals (power analysis: a 50.75%-hit-rate edge is invisible at our ~250
+trades/yr — documented out of scope); Turtle 20/55-day entries on gold
+(near-duplicates of breakout families already killed); Williams Oops gap
+patterns (23-hour gold session has no exploitable opens); Minervini
+RS-rating/earnings legs (cross-sectional, no XAUUSD analogue); PTJ 200d MA
+gate and Minervini VCP contraction gate are DEFERRED to a possible later
+round, not smuggled into this one — this round runs replications, not new
+filter families.
