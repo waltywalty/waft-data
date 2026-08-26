@@ -145,16 +145,13 @@ a:focus-visible, :focus-visible { outline:2px solid var(--brass); outline-offset
 .script-head { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; flex-wrap:wrap; }
 .script-head h2 { margin:0; }
 .blurb { margin:6px 0 0; color:var(--ink-2); max-width:52ch; }
-.copy {
-  font-family:"IBM Plex Sans",system-ui,sans-serif; font-size:15px; font-weight:600;
+.copy { font-family:"IBM Plex Sans",system-ui,sans-serif; font-size:15px; font-weight:600;
   color:#fff; background:var(--brass); border:none; border-radius:6px;
-  padding:14px 22px; min-height:48px; cursor:pointer; flex-shrink:0;
-}
+  padding:14px 22px; min-height:48px; cursor:pointer; flex-shrink:0; }
 .copy:active { opacity:.85; }
 .copy.done { background:var(--pos); }
 .codewrap { margin-top:16px; border:1px solid var(--rule); border-radius:4px;
-  background:var(--sunk); max-height:420px; overflow:auto;
-  -webkit-overflow-scrolling:touch; }
+  background:var(--sunk); max-height:420px; overflow:auto; -webkit-overflow-scrolling:touch; }
 .codewrap pre { margin:0; padding:16px 18px; font-family:"IBM Plex Mono",monospace;
   font-size:12.5px; line-height:1.5; color:var(--ink); white-space:pre; }
 .steps { counter-reset:s; display:grid; gap:14px; margin:26px 0 0; padding:0; list-style:none; max-width:66ch; }
@@ -165,30 +162,24 @@ a:focus-visible, :focus-visible { outline:2px solid var(--brass); outline-offset
 </style>
 <div class="wrap">
 <header>
-<p class="eyebrow">Asia gold strategy &middot; TradingView port</p>
+<p class="eyebrow">Asia gold strategy &middot; TradingView port &middot; indicator v1.1</p>
 <h1>Pine Paste Board</h1>
-<p class="standfirst">Both scripts, ready to copy on any device. Tap a Copy button, then
-paste into TradingView&rsquo;s Pine Editor. On an iPad, use Safari at tradingview.com
-&mdash; the native app has no Pine Editor.</p>
+<p class="standfirst">Both scripts, ready to copy on any device. Tap Copy, then paste
+into TradingView&rsquo;s Pine Editor over the existing script and Save. On an iPad use
+Safari at tradingview.com (Request Desktop Website if the editor is missing) &mdash;
+the native app has no Pine Editor.</p>
 </header>
 
 <section>
-<h2>On the iPad, step by step</h2>
+<h2>Updating a script you already added</h2>
 <ol class="steps">
-<li>Open <strong>Safari</strong> &rarr; tradingview.com &rarr; sign in. If the site shows the
-mobile layout with no editor, tap <strong>aA</strong> in the address bar &rarr;
-<strong>Request Desktop Website</strong>.</li>
-<li>Open a chart: <strong>XAUUSD, 5-minute</strong>. The 5-minute part matters &mdash;
-the strategy is built from 5m bars.</li>
-<li>Tap <strong>Copy code</strong> below for the indicator, then on the chart open the
-<strong>Pine Editor</strong> (bottom panel) &rarr; menu &rarr; <strong>Create new
-indicator</strong> &rarr; select the template text &rarr; long-press &rarr;
-<strong>Paste</strong> over it &rarr; <strong>Save</strong> &rarr; <strong>Add to
-chart</strong>.</li>
-<li>Repeat with the strategy script (choose <strong>Create new strategy</strong>).</li>
-<li>In each script&rsquo;s settings, check the AUDUSD symbol matches your gold
-feed&rsquo;s broker. If the editor shows a red error on save, copy the exact message
-back to the chat.</li>
+<li>Open the <strong>Pine Editor</strong> and load your saved copy (editor menu &rarr; Open).</li>
+<li>Select all the old code, paste the new version over it, <strong>Save</strong> &mdash;
+the chart updates in place; no need to remove and re-add.</li>
+<li>The v1.1 indicator adds a bigger status card (position and text size are now in
+Settings) and two new card rows: <strong>signals on chart</strong> and
+<strong>last signal</strong>, so you can tell &ldquo;no signals loaded&rdquo; apart from
+&ldquo;not spotting them&rdquo;.</li>
 </ol>
 </section>
 
@@ -196,8 +187,8 @@ back to the chat.</li>
 <section class="script">
   <div class="script-head">
     <div>
-      <h2>Signal indicator</h2>
-      <p class="blurb">Draws the range and filter state, fires LONG / SHORT / EXIT alerts. For manual trading through the IBKR panel.</p>
+      <h2>Signal indicator (v1.1)</h2>
+      <p class="blurb">Range, filter state, LONG/SHORT/EXIT alerts, big status card with a signal counter. For manual trading through the IBKR panel.</p>
     </div>
     <button class="copy" data-target="ind">Copy code</button>
   </div>
@@ -213,6 +204,9 @@ audSym   = input.symbol(&quot;OANDA:AUDUSD&quot;, &quot;AUDUSD symbol (match you
 corrDays = input.int(20, &quot;Correlation window, days&quot;, minval = 5)
 corrMax  = input.float(0.50, &quot;Trade only when correlation &lt;=&quot;, step = 0.05)
 stopMult = input.float(2.0, &quot;Stop, multiples of range width&quot;, step = 0.5)
+cardPos  = input.string(&quot;top right&quot;, &quot;Status card position&quot;,
+     options = [&quot;top right&quot;, &quot;top left&quot;, &quot;bottom right&quot;, &quot;bottom left&quot;])
+cardTxt  = input.string(&quot;large&quot;, &quot;Status card text size&quot;, options = [&quot;small&quot;, &quot;normal&quot;, &quot;large&quot;])
 
 TZ_HK  = &quot;Asia/Hong_Kong&quot;
 TZ_LDN = &quot;Europe/London&quot;
@@ -274,8 +268,12 @@ armed    = barstate.isconfirmed and blockEnd and tradeDay != hkKey and
 
 longSig  = armed and close &gt; rHigh
 shortSig = armed and close &lt; rLow
+var int   sigCount = 0
+var int   lastSigT = na
 if longSig or shortSig
     tradeDay := hkKey
+    sigCount += 1
+    lastSigT := time
 
 nyMins   = hour(time_close, TZ_NY) * 60 + minute(time_close, TZ_NY)
 exitBell = barstate.isconfirmed and nyMins == 16 * 60
@@ -290,20 +288,37 @@ plot(inRange or na(rHigh) ? na : rHigh, &quot;Range high&quot;, color.new(color.
 plot(inRange or na(rLow)  ? na : rLow,  &quot;Range low&quot;,  color.new(color.teal, 0), 2, plot.style_linebr)
 bgcolor(inRange ? color.new(color.teal, 88) : na)
 bgcolor(not filterOk and barstate.isconfirmed ? color.new(color.red, 94) : na)
-plotshape(longSig,  &quot;Long&quot;,  shape.triangleup,   location.belowbar, color.new(color.green, 0), size = size.small)
-plotshape(shortSig, &quot;Short&quot;, shape.triangledown, location.abovebar, color.new(color.red, 0),   size = size.small)
+plotshape(longSig,  &quot;Long&quot;,  shape.triangleup,   location.belowbar, color.new(color.green, 0),
+     size = size.normal, text = &quot;LONG&quot;,  textcolor = color.new(color.green, 0))
+plotshape(shortSig, &quot;Short&quot;, shape.triangledown, location.abovebar, color.new(color.red, 0),
+     size = size.normal, text = &quot;SHORT&quot;, textcolor = color.new(color.red, 0))
 
-var table card = table.new(position.top_right, 2, 4, border_width = 1)
+pos = cardPos == &quot;top right&quot; ? position.top_right : cardPos == &quot;top left&quot; ? position.top_left :
+     cardPos == &quot;bottom right&quot; ? position.bottom_right : position.bottom_left
+tsz = cardTxt == &quot;small&quot; ? size.small : cardTxt == &quot;normal&quot; ? size.normal : size.large
+C_LBL = color.rgb(42, 49, 64)          // slate, readable on light and dark charts
+C_OK  = color.rgb(27, 110, 85)
+C_NO  = color.rgb(168, 50, 38)
+var table card = table.new(pos, 2, 6, border_width = 1, border_color = color.rgb(120, 128, 145))
 if barstate.islast
-    table.cell(card, 0, 0, &quot;corr(gold,AUD)&quot;, text_size = size.small)
-    table.cell(card, 1, 0, na(corrVal) ? &quot;n/a - SKIP DAY&quot; : str.tostring(corrVal, &quot;#.###&quot;),
-         text_size = size.small, bgcolor = filterOk ? color.new(color.green, 80) : color.new(color.red, 80))
-    table.cell(card, 0, 1, &quot;regime&quot;, text_size = size.small)
-    table.cell(card, 1, 1, filterOk ? &quot;TRADE&quot; : &quot;STAND ASIDE&quot;, text_size = size.small)
-    table.cell(card, 0, 2, &quot;range&quot;, text_size = size.small)
-    table.cell(card, 1, 2, na(rHigh) ? &quot;-&quot; : str.tostring(rHigh, &quot;#.##&quot;) + &quot; / &quot; + str.tostring(rLow, &quot;#.##&quot;), text_size = size.small)
-    table.cell(card, 0, 3, &quot;stop dist&quot;, text_size = size.small)
-    table.cell(card, 1, 3, na(rHigh) ? &quot;-&quot; : str.tostring(stopMult * (rHigh - rLow), &quot;#.##&quot;), text_size = size.small)
+    daysAgo = na(lastSigT) ? na : (time - lastSigT) / 86400000.0
+    table.cell(card, 0, 0, &quot;corr (gold, AUD)&quot;, text_size = tsz, text_color = color.white, bgcolor = C_LBL)
+    table.cell(card, 1, 0, na(corrVal) ? &quot;n/a - SKIP DAY&quot; : str.tostring(corrVal, &quot;#.##&quot;),
+         text_size = tsz, text_color = color.white, bgcolor = filterOk ? C_OK : C_NO)
+    table.cell(card, 0, 1, &quot;regime&quot;, text_size = tsz, text_color = color.white, bgcolor = C_LBL)
+    table.cell(card, 1, 1, filterOk ? &quot;TRADE&quot; : &quot;STAND ASIDE&quot;,
+         text_size = tsz, text_color = color.white, bgcolor = filterOk ? C_OK : C_NO)
+    table.cell(card, 0, 2, &quot;range&quot;, text_size = tsz, text_color = color.white, bgcolor = C_LBL)
+    table.cell(card, 1, 2, na(rHigh) ? &quot;-&quot; : str.tostring(rHigh, &quot;#.##&quot;) + &quot; / &quot; + str.tostring(rLow, &quot;#.##&quot;),
+         text_size = tsz, text_color = color.white, bgcolor = C_LBL)
+    table.cell(card, 0, 3, &quot;stop distance&quot;, text_size = tsz, text_color = color.white, bgcolor = C_LBL)
+    table.cell(card, 1, 3, na(rHigh) ? &quot;-&quot; : str.tostring(stopMult * (rHigh - rLow), &quot;#.##&quot;),
+         text_size = tsz, text_color = color.white, bgcolor = C_LBL)
+    table.cell(card, 0, 4, &quot;signals on chart&quot;, text_size = tsz, text_color = color.white, bgcolor = C_LBL)
+    table.cell(card, 1, 4, str.tostring(sigCount), text_size = tsz, text_color = color.white, bgcolor = C_LBL)
+    table.cell(card, 0, 5, &quot;last signal&quot;, text_size = tsz, text_color = color.white, bgcolor = C_LBL)
+    table.cell(card, 1, 5, na(daysAgo) ? &quot;none loaded&quot; : str.tostring(daysAgo, &quot;#.#&quot;) + &quot; days ago&quot;,
+         text_size = tsz, text_color = color.white, bgcolor = C_LBL)
 </code></pre></div>
 </section>
 
@@ -447,8 +462,8 @@ plot(corrVal, &quot;corr(gold,AUD,20d)&quot;, display = display.data_window)
 </code></pre></div>
 </section>
 
-<footer><p>Generated from <code>backtest/tradingview/</code> &mdash; the repository copy is
-the source of truth. If the scripts change, this page is republished with them.</p></footer>
+<footer><p>Generated from <code>backtest/tradingview/</code> by
+<code>build_pine_copy.py</code> &mdash; the repository copy is the source of truth.</p></footer>
 </div>
 <script>
 document.querySelectorAll('.copy').forEach(function (b) {
