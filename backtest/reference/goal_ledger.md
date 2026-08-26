@@ -47,3 +47,37 @@ as in mkts.py; battery max-stat at round end.
 
 Score unchanged: 0.5 / 5 upgrades (HSI watch item). Practitioner deep-dive agent
 pending; its candidates form the next battery.
+
+## Round 16 second sweep pre-registration (from the practitioner deep dive)
+
+E. **IBS on Asia indices** (published-US family, virgin OOS territory): IBS<0.2
+   & close>200dMA -> long at close, exit IBS>0.8 or 10d. HSI, JP225, AUS200
+   daily bars from 1h (day session). 3 cells + shifted-signal max-stat (the
+   drift null that killed battery B applies here too).
+F. **Nikkei conditional open-fade** (refereed 2026 paper): prior-day SPX return
+   terciles condition JP225 first-30-min return; trade = fade at Tokyo open on
+   extreme prior-SPX days, hold 30m. JP225 1m 2005-2020. 2 cells + descriptive.
+G. **Turtle Soup daily** (Raschke; oxfordstrat 42-market replication exists):
+   20d-extreme undercut + same-day reclaim of the prior extreme -> fade at
+   close, exit +5d. Both sides x {gold, SPX, NDX, HSI, JP225}. 10 cells.
+H. **Gotobi USDJPY** (arXiv 2301.13204, structural fix-flow mechanism): long
+   USDJPY 06:00->~10:00 JST on gotobi days (5/10/15/20/25/30, business days;
+   sensitivity: weekend-shifted-to-Friday). Control = same window other days.
+   USDJPY H1 2016-2026. 4 cells.
+
+## Round 16 second sweep results
+
+| Battery | Verdict |
+|---|---|
+| E IBS on HSI/JP225/AUS200 | dead (JP225 +1.85 inside drift null p 0.133) |
+| F Nikkei open vs prior SPX | replicates (rho -0.097, p<1e-4) - inside the spread, untradeable |
+| G Turtle Soup daily x5 mkts | **JP225 long survives: PF 4.01, t +3.38, halves +1.57/+3.71, max-stat p 0.027, n=33 -> WATCH ITEM #4 (+0.5)** |
+| H Gotobi USDJPY | relative effect real (-0.4 vs -2.1 bps), absolute trade loses, decayed post-2021 |
+| I Unger prev-session breakout JP225 | dead raw (t -2.58); profits live in mined filters |
+| J 80-20 next-day fade | flat |
+
+**Score: 1.0 / 5** (HSI pre-open fade 0.5 + Turtle Soup JP225 0.5).
+Next avenues queued: London add-leg spec refinement (pre-goal candidate, could be
+promoted by forward data not backtest), trend-day labeling as conditioner for the
+NY re-entry, gotobi-style fix-flow scan on gold (London fix already dead pre-2015;
+Shanghai benchmark fix unexplored), HSI watch-item accrual.

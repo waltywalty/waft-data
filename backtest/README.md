@@ -478,3 +478,16 @@ from the data). 38 cells (`run_hsi.py`):
 Write-up: `results/report_hsi.html`. This is the sixth Judas construction
 tested here and the first with a pulse — the difference is the mechanism:
 fifteen minutes of futures trading with no cash market underneath.
+
+## Round 16 — the upgrade hunt (11 batteries, 1 survivor, 3 myths exposed)
+
+Goal-driven round (`reference/goal_ledger.md`): ~58 cells across two sweeps.
+Survivor: **Turtle Soup long on JP225** (20d-low undercut reclaimed same day →
+long, exit +5d): 76% win, PF 4.01, t +3.38, halves +1.57/+3.71, max-stat p 0.027,
+n=33 → watch item #4, frozen. Exposed: Connors/IBS daily mean reversion is mostly
+equity drift in bursts (random long-burst null t +2.9); the Asia-session ORB
+transplanted to US indices dies BOTH directions (t to −12) — the slow-session edge
+is gold-specific; two refereed anomalies (Nikkei open vs prior-day SPX, Gotobi
+USDJPY) replicate descriptively and sit inside the spread. New data: VIX/VIX3M
+(CBOE mirrors), USDJPY 10y intraday, AUS200, JP225 1m 2005-2020.
+Write-up: `results/report16.html`.

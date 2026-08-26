@@ -1,0 +1,133 @@
+<title>The Upgrade Hunt</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:wght@600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root { --ground:#FBFBFC; --surface:#FFFFFF; --sunk:#F3F4F7; --ink:#16191F;
+  --ink-2:#4A515E; --ink-3:#7C8496; --rule:#DFE2E9; --brass:#8A6420;
+  --pos:#1B6E55; --neg:#A83226; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --ground:#0E1116; --surface:#161A21; --sunk:#1B2029; --ink:#E8EAEF;
+  --ink-2:#A7AEBC; --ink-3:#767E8E; --rule:#272D38; --brass:#D5A64A;
+  --pos:#5CBE99; --neg:#E58275; } }
+:root[data-theme="dark"] { --ground:#0E1116; --surface:#161A21; --sunk:#1B2029;
+  --ink:#E8EAEF; --ink-2:#A7AEBC; --ink-3:#767E8E; --rule:#272D38;
+  --brass:#D5A64A; --pos:#5CBE99; --neg:#E58275; }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--ground); color:var(--ink);
+  font-family:"IBM Plex Sans",system-ui,sans-serif; font-size:16px; line-height:1.6; }
+.wrap { max-width:880px; margin:0 auto; padding:34px 20px 90px; }
+h1 { font-family:Spectral,Georgia,serif; font-weight:600; font-size:32px; margin:0 0 4px; text-wrap:balance; }
+h2 { font-family:Spectral,Georgia,serif; font-weight:600; font-size:21px; margin:38px 0 10px; }
+h2 .n { color:var(--brass); font-family:"IBM Plex Mono",monospace; font-size:13px;
+  margin-right:10px; letter-spacing:.06em; }
+p, li { max-width:72ch; color:var(--ink-2); }
+p strong, li strong { color:var(--ink); }
+.kicker { font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--brass); margin-bottom:8px; }
+.verdict { background:var(--surface); border:1px solid var(--rule); border-left:3px solid var(--brass);
+  border-radius:6px; padding:16px 20px; margin:20px 0; }
+.verdict p { margin:6px 0; }
+.tblwrap { overflow-x:auto; border:1px solid var(--rule); border-radius:6px;
+  background:var(--surface); margin:14px 0; }
+table { border-collapse:collapse; width:100%; font-size:13.5px; }
+th { font-family:"IBM Plex Mono",monospace; font-size:10px; letter-spacing:.07em;
+  text-transform:uppercase; color:var(--ink-3); text-align:left; padding:10px 12px;
+  border-bottom:1px solid var(--rule); }
+td { padding:9px 12px; border-bottom:1px solid var(--rule); vertical-align:top; }
+td.r { text-align:right; font-family:"IBM Plex Mono",monospace; white-space:nowrap;
+  font-variant-numeric:tabular-nums; }
+tr:last-child td { border-bottom:none; }
+.pos { color:var(--pos); } .neg { color:var(--neg); }
+footer { margin-top:44px; padding-top:16px; border-top:1px solid var(--rule);
+  font-size:13px; color:var(--ink-3); max-width:72ch; }
+ul { padding-left:20px; }
+</style>
+<div class="wrap">
+<div class="kicker">goal round &middot; research round 16 &middot; August 2026</div>
+<h1>Eleven batteries, one survivor, three exposed myths</h1>
+<p>The standing goal: five upgrades or three intertwinable strategies, at the house
+evidence bar. Round 16 ran two sweeps &mdash; four batteries derived from our own
+meta-law and the regime literature, then seven from a deep dive into what
+demonstrably successful traders publish. Every battery pre-registered in
+<code>reference/goal_ledger.md</code>; ~58 cells; new data acquired: VIX and VIX3M
+(official CBOE mirrors), USDJPY intraday (10y), AUS200, JP225 1-minute 2005-2020.</p>
+
+<div class="verdict">
+<p><strong>Survivor: Turtle Soup long on the Nikkei</strong> (Raschke's failed-breakdown
+fade: 20-day-low undercut reclaimed same day &rarr; long, exit +5 days) &mdash; 76% win,
+PF 4.01, t +3.38 on n=33, both halves positive, battery max-stat p&nbsp;=&nbsp;0.027.
+Watch-list grade, same tier as the HSI pre-open fade. <strong>Goal score: 1.0 of 5</strong>
+(two half-credit watch items). Everything else died or measured real-but-untradeable.</p>
+</div>
+
+<h2><span class="n">01</span>The scoreboard</h2>
+<div class="tblwrap"><table>
+<thead><tr><th>Battery</th><th>Result</th><th class="r">Verdict</th></tr></thead>
+<tbody>
+<tr><td><strong>A</strong> Meta-law transplant: Asia-session ORB on SPX/NDX (20y)</td>
+<td>Breakout t &minus;6.7 to &minus;12.2; derived fade t &minus;4.4 to &minus;9.7; both
+halves; 2020+ &asymp; 0. The slow-session breakout edge is gold-specific &mdash; index
+away-sessions tax both directions.</td><td class="r neg">dead, law refined</td></tr>
+<tr><td><strong>B</strong> Connors RSI2/IBS daily mean reversion, US indices</td>
+<td>Raw numbers strong (SPX IBS PF 1.62, t +3.54, halves +3.1/+2.1) &mdash; but
+randomly-timed long bursts on the same data reach t +2.86: the family is mostly
+equity drift in bursts. Timing adds only best-of-9 luck (p 0.125).</td>
+<td class="r neg">myth exposed</td></tr>
+<tr><td><strong>C</strong> Gold/silver ratio reversion</td><td>Short-gold leg PF 0.29
+(run over by the bull), long flat, n&asymp;16.</td><td class="r neg">dead</td></tr>
+<tr><td><strong>D</strong> VIX / term-structure gates on the deployed gold rule</td>
+<td>Monotone, mechanism-coherent gradient (PF 1.45 calm &rarr; 1.13 stressed) but all
+terciles positive, halves mixed &mdash; a description of the edge, not an upgrade.</td>
+<td class="r">descriptive</td></tr>
+<tr><td><strong>E</strong> IBS transported to HSI / JP225 / AUS200</td>
+<td>HSI and AUS200 dead; JP225 t +1.85 inside its drift null (p 0.133).</td>
+<td class="r neg">dead</td></tr>
+<tr><td><strong>F</strong> Nikkei open conditioned on prior-day SPX (refereed 2026)</td>
+<td>The effect REPLICATES (&rho; &minus;0.097, p&lt;0.0001, monotone quintiles +2.7
+&rarr; &minus;2.2 bps, n=2,056) and the trade loses: a few bps per half-hour vs a
+similar spread. Real, and worth exactly nothing net.</td>
+<td class="r">real, untradeable</td></tr>
+<tr><td><strong>G</strong> Turtle Soup daily, 5 markets &times; 2 sides</td>
+<td>Nine of ten cells dead (SPX both sides strongly negative). JP225 long survives
+the battery max-stat (p 0.027), halves +1.57/+3.71.</td>
+<td class="r pos">1 watch item</td></tr>
+<tr><td><strong>H</strong> Gotobi USDJPY (Tokyo-fix flow, arXiv-confirmed)</td>
+<td>The relative effect is visible (&minus;0.4 bps gotobi vs &minus;2.1 bps ordinary
+mornings, n 484/1791) but the absolute trade loses and decayed post-2021 &mdash;
+the paper's own crowding warning, confirmed.</td><td class="r">real, untradeable</td></tr>
+<tr><td><strong>I</strong> Unger previous-session breakout, JP225</td>
+<td>Raw rule: t &minus;2.58 on n=2,047. His published profits live in the mined
+filters, not the rule.</td><td class="r neg">dead</td></tr>
+<tr><td><strong>J</strong> 80-20 next-day fade, SPX/NDX</td>
+<td>Flat (t &minus;0.3), halves disagree.</td><td class="r neg">dead</td></tr>
+</tbody></table></div>
+
+<h2><span class="n">02</span>What this round actually taught</h2>
+<ul>
+<li><strong>The drift null is mandatory for long-only daily systems.</strong> Battery
+B's t +3.54 would headline most retail backtests; against randomly-timed long bursts
+it is unremarkable. Any future long-only daily candidate faces this null first.</li>
+<li><strong>Refereed anomalies replicate; tradeable ones are rarer.</strong> Two
+academically confirmed effects (Nikkei open conditioning, Gotobi) reproduced on
+independent data at the predicted sign &mdash; and both sit inside the spread. The
+literature is honest about existence and silent about nets.</li>
+<li><strong>The meta-law sharpened:</strong> slow price discovery makes gold
+breakouts work, and makes index away-sessions chop. Session speed is not one dial;
+what the session is slow FOR matters.</li>
+<li><strong>Stop-run fades keep scoring on Asian indices</strong> (HSI pre-open
+fade, now Nikkei Turtle Soup) and keep failing on US ones &mdash; consistent with
+retail-heavy order books leaving stops where they are visible.</li>
+</ul>
+
+<h2><span class="n">03</span>The watch list after this round</h2>
+<p>(1) Gold CISD-to-EoD; (2) gated VP reversion; (3) HSI pre-open fade (re-test at
+80+ trades); <strong>(4) NEW &mdash; Turtle Soup long JP225</strong>: 20-day-low
+undercut reclaimed same day &rarr; long at close, exit +5 sessions; re-test when the
+live 1h feed doubles the sample (~2028) or at any +20-trade block; promote at PF
+&ge; 1.5 with both halves positive; parameters frozen now.</p>
+
+<footer>Pre-registrations and score: <code>reference/goal_ledger.md</code>. Code:
+<code>run_r16a.py</code>, <code>run_r16e.py</code>, inline batteries in the session
+log; numbers in <code>results/r16*.json</code>. Costs per market as in
+<code>mkts.py</code> plus USDJPY 1.5 pips, JP225 15 pts, AUS200 4 pts. New data
+scripted in <code>fetch_data.sh</code>.</footer>
+</div>

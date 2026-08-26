@@ -12,7 +12,7 @@ HTML = f"""<title>Asia Gold Playbook</title>
 {CSS}
 <div class="wrap">
 <header>
-<p class="eyebrow">Living document &middot; last updated 2026-08-26 &middot; after round 15b</p>
+<p class="eyebrow">Living document &middot; last updated 2026-08-26 &middot; after round 16</p>
 <h1>The Asia gold playbook</h1>
 <p class="standfirst">One strategy survived nine rounds of testing: the Asia-open
 range breakout on gold, gated by the gold/AUDUSD correlation regime. This page is the
@@ -222,6 +222,13 @@ zero survivors.</li>
 HSI&rsquo;s own 09:30&ndash;10:30 window: breakout arm dead (PF 0.87) as the
 price-discovery law predicted, fade arm worse; Nikkei/A50/HSCEI/CSI300 correlation
 gates rescue nothing. The pre-open fade survived to the watch list instead.</li>
+<li>The round-16 hunt, ~58 cells: Asia-session ORB transplanted to US indices dies
+both directions (t to &minus;12; away-session chop taxes breakout AND fade); Connors
+RSI2/IBS daily mean reversion is mostly equity drift in bursts (random long-burst
+null t +2.9, p 0.125); gold/silver ratio reversion, IBS-on-Asia, Unger raw
+session-breakout, 80-20 fades all dead; two refereed anomalies (Nikkei open vs
+prior-day SPX, Gotobi USDJPY fix flow) replicate descriptively and sit inside the
+spread. The one survivor went to the watch list.</li>
 </ul>
 <div class="note"><p><strong>Watch list (not tradeable, not forgotten):</strong>
 (1) the gold CISD-to-EoD reversal (09:00-10:00 ET range, entry against the first break
@@ -238,7 +245,11 @@ bar moves &ge;0.3&times; ATR14, fade it at the 09:30 cash open, stop 0.5&times; 
 pre-open range, hold to 16:00 HKT &mdash; PF 2.02, t +1.60, both halves positive,
 max-stat p 0.030, cost-robust to 15 points; but n=43. Watch bar pre-committed:
 re-test at 80+ trades on the live feed; promote at PF &ge;1.4 with both halves
-positive; no parameter may move.</p></div>
+positive; no parameter may move.
+(4) Turtle Soup long on JP225 (round 16): a 20-day-low undercut reclaimed the same
+day &rarr; long at close, exit +5 sessions &mdash; 76% win, PF 4.01, t +3.38, both
+halves positive, battery max-stat p 0.027; but n=33. Re-test when the live feed
+doubles the sample; promote at PF &ge;1.5 with both halves positive; frozen.</p></div>
 <div class="note"><p><strong>One sentence:</strong> trade the Asia open only when gold
 is not a dollar proxy, hold to the New York close with a wide stop at flat 1% risk, and
 let the forward log &mdash; not another backtest &mdash; earn every change.</p></div>

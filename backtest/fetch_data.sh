@@ -43,3 +43,13 @@ done
 #   git -C Yuan-Public-Data sparse-checkout set OHLC/HK50 OHLC/CHCUSD OHLC/HSCHKD OHLC/CFFEX_IF
 #   then concat each OHLC/<SYM>/<TF>/*.csv (drop_duplicates on time, sort) into
 #   <SYM>_<TF>_yuan.csv - see run_hsi.py header for the exact frames used.
+
+# Round 16: VIX/VIX3M (CBOE mirrors), USDJPY, AUS200, JP225 1m history
+curl -fL --retry 3 -o VIX_daily_github.csv "https://raw.githubusercontent.com/datasets/finance-vix/main/data/vix-daily.csv"
+curl -fL --retry 3 -o VIX3M_daily_github.csv "https://raw.githubusercontent.com/ahsub/ko-aggregator/main/data/raw_data/VIX3M_History.csv"
+for f in USDJPY_M15 USDJPY_H1; do curl -fL --retry 3 -sSO "https://raw.githubusercontent.com/user1-2-3-4/oanda-data-collector/main/data/forex/$f.csv"; done
+curl -fL --retry 3 -sSO "https://raw.githubusercontent.com/user1-2-3-4/oanda-data-collector/main/data/indices/AUS200_H1.csv"
+# JP225 1m 2005-2020 (FutureSharks, ~150 MB, monthly files concatenated):
+#   for y in $(seq 2005 2020); do for m in $(seq 1 12); do
+#     curl -sf ".../FutureSharks/financial-data/master/pyfinancialdata/data/currencies/oanda/JP225_USD/$y/oanda-JP225_USD-$y-$m.csv" >> JP225_1m_futuresharks.csv
+#   done; done
