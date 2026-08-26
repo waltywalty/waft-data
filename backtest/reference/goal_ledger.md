@@ -280,3 +280,19 @@ falsification arm) - the market just does not do it. Score unchanged: 1.5/5.
 3. **Indicator v1.2**: REGIME ON / OFF / APPROACHING alerts (daily corr
    crossings of 0.50/0.55) + corr-trend card row. Droughts now end with a
    push notification instead of daily chart-checking.
+
+## Round 23: the edgeful reconciliation (user-supplied claim, fully resolved)
+
+Their exact spec (09:30-09:35 ET range, by-close entry, opposite-edge stop,
+50%-range target) on 20 years of ES proxy: win rate 74% GROSS (they claim
+72.17% - our pipeline reproduces their number to within 2 points), expectancy
+-0.06 pts gross / -0.66 net. Their "no Tuesdays" optimization makes the full
+sample WORSE (-0.16 gross) - a filter fitted to the reported window. Rolling
+6-month windows at 1 contract: best +$13.7k (their "108% on $10k" is real and
+sits at the 0.8th percentile of gross windows), worst -$14.0k, median +$72;
+NET of one tick, zero windows reach their number and the median is -$3,663.
+Verdict: our backtesting is not broken - it reproduces every descriptive claim
+(theirs included) and diverges only where costs, full samples, and unfitted
+parameters enter. Their own docs corroborate: TradingView defaults to zero
+costs, their guide warns costs "can turn a profitable backtest into a losing
+one", and their own dashboard reports 66.93% of ES days break BOTH sides.
