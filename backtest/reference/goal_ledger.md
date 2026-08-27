@@ -931,3 +931,32 @@ funding follow the promotion sequence only: SPRT boundary promotes a sleeve
 -> fund at 1x -> live results confirm the backtest envelope -> then leverage.
 Weights re-examined only when a sleeve is promoted, killed, or added - never
 re-optimized on a rolling window (round 28e showed yearly re-optima whipsaw).
+
+## Round 29 pre-registration: the pinescriptforge RTY audit (user commission)
+
+The site's 12 "audited" RTY swing strategies (claims recovered verbatim from
+the live pages, claim window Jan 2023 - Mar 2026, $4.50 RT + 1-tick slippage
+claimed): PF 1.57-2.66, win 44-59%, returns +196% to +1,323% on $10k at max
+drawdowns of 2.0-6.3%. Pre-audit arithmetic notes, registered before any
+backtest: (a) +1,323%/3.2y at 2.0% maxDD implies MAR ~64 - not internally
+coherent; (b) "Sharpe 2.50" appears verbatim on 8 of 12 pages (template
+constant); (c) the same strategy (Rainbow MA) is listed twice with different
+numbers; (d) their own "Detailed Statistics" panels render all zeros.
+
+Audit design: replicate each strategy at its stated parameters; UNSTATED
+parameters take TradingView defaults, all documented in the runner: Aroon 14,
+Vortex 14, ADX 14, ATR 14, MACD 12/26/9, RSI 14, ZLEMA 21, HMA 16, Marubozu
+wick tolerance 10% of range, volume average 20 bars, S/R = confirmed swing
+pivots (k=2). Operating timeframe convention: 1H (the one timeframe every
+strategy lists); Elder Triple Screen keeps its own weekly/daily/1H structure.
+Execution: signals on closed bars, fill next bar open (their stated one-bar
+delay), one position per strategy, both sides, cost 0.4 pt RT (house round-9
+model, comparable to their claimed friction; zero-cost also reported).
+Windows: PRIMARY 2005-2020 (15.4y of verified 5m-derived 1H bars - the
+long-sample test of whether any edge exists); SECONDARY 2025-03..2026-04
+(TopstepX 1H - overlaps the final year of their claim window for the direct
+check). Halves at 2013-01 on the primary window. Verdict categories per
+strategy: replicates / inflated / dead. 12 strategies x 2 windows = 24
+cells + zero-cost sensitivity; Bonferroni quoted. Registered prior: the
+recipe-battery base rate (r28: 1 candidate in 8) and the template red flags
+predict near-zero replication.
