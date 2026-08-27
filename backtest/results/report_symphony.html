@@ -166,7 +166,35 @@ than shown.</li>
 (CFD/futures) where the strategy sleeves consume little cash; CFD swap on D7's
 multi-day holds is not modeled.</li>
 </ul>
-<footer>Round 28d &middot; <code>run_r28d_symphony.py</code> &rarr;
+<h2><span class="n">04</span>The weight-space map (round 28e): there is no sharper optimum</h2>
+<p>The full simplex at 1% steps &mdash; all 5,151 possible splits &mdash; under
+several objectives, plus stability tests. The finding is a <strong>plateau, not
+a peak</strong>: 893 splits (17% of all of them) sit within 5% of the best
+Sharpe, spanning gold 10&ndash;33%, D7 26&ndash;74%, MHI 0&ndash;59%. Naive
+equal weight (33/33/33) scores Sharpe 1.28 vs the peak's 1.40 &mdash; 91% of
+the optimum with zero optimization.</p>
+<div class="tblwrap"><table>
+<thead><tr><th>Objective / split</th><th>Weights (gold/D7/MHI)</th><th>CAGR</th><th>Max DD</th><th>Sharpe</th></tr></thead>
+<tbody>
+<tr><td class="lbl">Max Sharpe (uncapped)</td><td class="r">18 / 44 / 38</td><td class="r">+8.0%</td><td class="r">4.9%</td><td class="r">1.40</td></tr>
+<tr><td class="lbl">Max Sharpe (MHI &le; 25)</td><td class="r">21 / 54 / 25</td><td class="r">+9.0%</td><td class="r">5.8%</td><td class="r">1.38</td></tr>
+<tr><td class="lbl"><strong>Max MAR (MHI &le; 25)</strong></td><td class="r">34 / 41 / 25</td><td class="r">+10.6%</td><td class="r">5.1%</td><td class="r">1.36</td></tr>
+<tr><td class="lbl">Equal weight</td><td class="r">33 / 33 / 33</td><td class="r">+10.5%</td><td class="r">5.1%</td><td class="r">1.28</td></tr>
+<tr><td class="lbl">Risk parity (inverse vol)</td><td class="r">12 / 31 / 57</td><td class="r">&mdash;</td><td class="r">&mdash;</td><td class="r">1.33</td></tr>
+</tbody></table></div>
+<p><strong>Why not to chase the decimal:</strong> re-optimizing each calendar
+year gives wildly different answers &mdash; 15/75/10 (2021), 75/0/25 (2022),
+10/65/25 (2023), 45/55/0 (2024), 45/30/25 (2025). Any single year's
+&ldquo;optimum&rdquo; would have been wrong the next year. A 400-resample block
+bootstrap puts the optimal weights anywhere in gold 15&ndash;40 / D7 40&ndash;70 /
+MHI 0&ndash;25. The honest conclusion: <strong>any roughly balanced split inside
+the plateau is statistically the same portfolio</strong> &mdash; the return
+comes from the diversification, not the dial. If a single split must be named,
+the max-MAR corner (roughly gold 35 / D7 40 / MHI 25) is the sensible one: at
+2&times; it maps to ~21%/yr at a ~10% drawdown, marginally better than the
+max-Sharpe mix on every line.</p>
+
+<footer>Rounds 28d&ndash;28e &middot; <code>run_r28d_symphony.py</code> &rarr;
 <code>results/r28d_symphony.json</code> &middot; sleeves: deployed gold trade set
 (1% risk), Double Seven SPX daily (frozen 7/200), HSI fade regenerated at frozen
 0.3/0.5 params &middot; daily-rebalanced weighted returns, net of each stream's

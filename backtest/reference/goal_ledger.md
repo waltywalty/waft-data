@@ -894,3 +894,21 @@ Singles on the window: 100% gold 20.7%/16.1% (matches the account sim);
 window friendly to every sleeve, MHI paper-only, gold sleeve modeled
 single-leg (the deployed split is slightly better), CFD swap unmodeled.
 Posture unchanged: paper-first, SPRT boundaries decide promotions.
+
+## Round 28e: the weight-space map - a plateau, not a peak
+
+Full simplex at 1% steps (5,151 splits), several objectives, stability tests
+(run_r28e_splits.py -> results/r28e_splits.json; symphony page updated).
+- 893 of 5,151 splits sit within 5% of the peak Sharpe (gold 10-33 / D7 26-74
+  / MHI 0-59). Equal weight 33/33/33 scores Sharpe 1.28 vs peak 1.40.
+- Objectives disagree on the "optimum": max-Sharpe 18/44/38, max-MAR
+  34/36/30; capped variants 21/54/25 and 34/41/25.
+- Per-year re-optimization is unstable (15/75/10 -> 75/0/25 -> 10/65/25 ->
+  45/55/0 -> 45/30/25): any single year's optimum is wrong the next year.
+- 400-resample block bootstrap: optimal weights range gold 15-40 / D7 40-70 /
+  MHI 0-25 (at cap).
+Conclusion: within the plateau every balanced split is statistically the same
+portfolio; the named reference split is the max-MAR corner ~35/40/25
+(2x-levered: ~21%/yr at ~10% DD in-sample). This is the gradient-over-peak
+house rule applied to portfolio weights. Posture unchanged: paper-first;
+leverage applies only to a promoted live book, never to a paper backtest.
