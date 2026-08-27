@@ -1,4 +1,4 @@
-//@version=5
+//@version=6
 // FP2 - RELATIVE VOLUME ENGINE (Project Footprint, module 2 of 7) ---------------
 // The one place execution algos DO betray themselves. Institutional parents are
 // sliced by VWAP/POV algos that benchmark against the historical volume curve
@@ -55,7 +55,7 @@ hline(exTh, "extreme", color.red, hline.style_dotted)
 var label warned = na
 if barstate.islastconfirmedhistory and syminfo.type != "futures" and na(warned)
     warned := label.new(bar_index, 0, "RVOL on a non-futures symbol:\nvolume may be synthetic (CFD) -\nuse ES1!/NQ1!/RTY1!/GC1!",
-         style = label.style_label_up, color = color.new(color.red, 20), textcolor = color.white, force_overlay = false)
+         style = label.style_label_up, color = color.new(color.red, 20), textcolor = color.white)
 
 alertcondition(not na(rvol) and rvol >= exTh, "RVOL extreme", "FP2: extreme participation anomaly (RVOL >= threshold)")
 alertcondition(not na(rvol) and rvol >= hiTh and rvol[1] < hiTh, "RVOL elevated", "FP2: volume running above time-of-day baseline")

@@ -1,4 +1,4 @@
-//@version=5
+//@version=6
 // FP7 - SMC VISUALS: ORDER BLOCKS & FVGs (module 7 of 7) ------------------------
 // ============================ VISUALIZATION ONLY ==============================
 // Grade D on the Project Footprint map, and drawn anyway - so you can watch
@@ -30,15 +30,19 @@ dispDn = disp and close < open
 // ---- FVGs: 3-bar imbalance, with an honest fill-rate tally --------------------
 var fvgBoxes = array.new_box()
 var fvgBull  = array.new_bool()
-var int fvgN = 0, var int fvgFilled = 0, var float fvgBars = 0.0
+var int fvgN = 0
+var int fvgFilled = 0
+var float fvgBars = 0.0
 bullFVG = showFVG and low > high[2]
 bearFVG = showFVG and high < low[2]
 if bullFVG
     array.push(fvgBoxes, box.new(bar_index - 2, low, bar_index, high[2], border_color = color.new(color.teal, 60), bgcolor = color.new(color.teal, 88)))
-    array.push(fvgBull, true), fvgN += 1
+    array.push(fvgBull, true)
+    fvgN += 1
 if bearFVG
     array.push(fvgBoxes, box.new(bar_index - 2, low[2], bar_index, high, border_color = color.new(color.maroon, 60), bgcolor = color.new(color.maroon, 88)))
-    array.push(fvgBull, false), fvgN += 1
+    array.push(fvgBull, false)
+    fvgN += 1
 if array.size(fvgBoxes) > 0
     for i = array.size(fvgBoxes) - 1 to 0
         bx = array.get(fvgBoxes, i)
@@ -50,7 +54,8 @@ if array.size(fvgBoxes) > 0
             fvgBars += bar_index - box.get_left(bx)
         if filled or aged
             box.delete(bx)
-            array.remove(fvgBoxes, i), array.remove(fvgBull, i)
+            array.remove(fvgBoxes, i)
+            array.remove(fvgBull, i)
         else
             box.set_right(bx, bar_index)
 
@@ -69,7 +74,8 @@ if array.size(obBoxes) > 0
         mitig = array.get(obBull, i) ? close < box.get_bottom(bx) : close > box.get_top(bx)
         if mitig or bar_index - box.get_left(bx) > maxAge
             box.delete(bx)
-            array.remove(obBoxes, i), array.remove(obBull, i)
+            array.remove(obBoxes, i)
+            array.remove(obBull, i)
         else
             box.set_right(bx, bar_index)
 

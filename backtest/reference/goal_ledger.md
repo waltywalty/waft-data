@@ -1325,3 +1325,66 @@ C+ -> resolved negative. The Phase 3 confluence set is therefore drawn
 only from: session context (FP1), RVOL (FP2), HTF bias (FP3), absorption
 (FP4), displacement regime (FP5) - and each gate still needs its own
 pre-registered pass before weights are assigned.
+
+## Round 33 Phase 4b pre-registration: RVOL / absorption / displacement gates
+
+Purpose: the three untested Phase 2 gates (FP2, FP4, FP5) get event-study
+validation BEFORE the user loads them and before any Phase 3 weight.
+Data note, registered before running: our index feeds carry broker TICK
+volume, not CME exchange volume (documented proxy; correlates well for
+index futures but is a caveat every volume cell inherits), and pre-2010
+granularity is too coarse (2005 SPX median 7 ticks/5m bar) - volume cells
+(FP2/FP4) therefore run 2010+, price-only cells (FP5) run the full sample.
+Also registered: the v6 compile-fix pass (comma-joined statements removed;
+v5 -> v6) changed no logic.
+Frozen design. FP2 (5m RTH, minute-of-day baseline = trailing 20-session
+mean per bucket, no self-contamination): events RVOL >= 2.5 and >= 1.5;
+measures (a) signed continuation - sign(close-open) x forward 6-bar
+return - vs RVOL < 1.25 control, Welch t on the difference; (b) absolute
+forward 30m range vs control (volatility prediction). FP5 (15m RTH bars,
+ATR14, k = 1.5, body >= 0.6): (a) signed next-4-bar continuation vs
+all-bars control; (b) first-hour displacement -> rest-of-day return in its
+direction. FP4 (15m RTH, rolling-100 percentiles: vol >= 80 & range <= 40
+at a 20-bar extreme with confirming close location): forward 4-bar and
+EOD return in the absorption direction vs at-extreme-WITHOUT-condition
+control. Instruments SPX/NDX/RTY. 30 cells total, all counted; halves
+sign check per cell. Promotion bar: |t_diff| >= 3 AND halves same-sign
+AND same-sign effect in >= 2 of 3 instruments -> earns a net trade test;
+anything less is context-only or dead. Registered prior: FP2 volatility
+prediction real (mechanical); directional cells uncertain; FP4/FP5
+directional effects likely small or absent.
+
+## Round 33 Phase 4b results: one mechanical pass, two context-only, zero tradeable
+
+(run_r33b_gates.py, results/r33b_gates.json; plus the pre-registered net
+follow-up, inline) Against the registered promotion bar (|t| >= 3, halves
+same-sign, same-sign in >= 2 of 3 instruments):
+FP2 RVOL - the volatility cells pass overwhelmingly (event forward range
+~1.7-2x control, t +48 to +111, all instruments, halves agree): extreme
+participation predicts MOVEMENT, exactly as registered (mechanical). The
+directional cells are null-to-slightly-negative (-0.3 to -0.5 bps vs
+control; only NDX>=1.5 reaches |t| 3.29, and as a mild ANTI-continuation).
+Verdict: FP2 is a validated volatility/regime instrument with no
+directional content - a sizing/avoid filter, never an entry.
+FP5 displacement - continuation is REAL gross on NDX (+2.4 bps/h vs ~0
+control, t +4.33, halves agree; SPX same sign t +2.43; RTY nothing). The
+pre-registered net test kills it: entry at displacement close, exit 4
+bars, house costs -> SPX -0.33 pts/trade (t -2.56), NDX -0.62 (t -1.24) -
+the effect is smaller than one round trip. Regime context only.
+FP4 absorption - the frozen triple condition fires 16-84 times per
+instrument in 15 years (~2-8/yr): structurally unpowered, t scattered,
+halves disagree. Context only; no loosening of the condition will be
+searched (that would be tuning toward significance).
+Arc status after 4a+4b: the Footprint suite is a set of validated
+MEASUREMENT instruments (FP1 chassis, FP2 vol-regime, FP3 bias) plus
+context layers (FP4/FP5/FP6) and visuals (FP7). No new tradeable edge was
+found - consistent with the whole repo's history that entries are rare
+and context is cheap. Phase 3 (a strategy() build) is DEFERRED: with zero
+validated directional gates beyond FP3's bias (whose standalone trade
+died on costs in r30), a multi-confluence entry system would be
+manufacturing precision without an edge - the r27 noise-combo lesson.
+Registered decision: Phase 3 waits until some future gate passes a
+pre-registered directional test net of costs. Also this round: all seven
+modules upgraded v5 -> v6 and a compile-fix pass (comma-joined statements
+were invalid Pine; FP7 also had comma-joined var declarations) - logic
+unchanged.

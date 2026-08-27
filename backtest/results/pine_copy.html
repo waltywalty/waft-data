@@ -674,7 +674,7 @@ only by design.</p>
     </div>
     <button class="copy" data-target="fp1">Copy code</button>
   </div>
-  <div class="codewrap"><pre id="fp1"><code>//@version=5
+  <div class="codewrap"><pre id="fp1"><code>//@version=6
 // FP1 - SESSION MAP (Project Footprint, module 1 of 7) --------------------------
 // The chassis. Every other footprint is meaningless without session context:
 // the intraday volume/volatility U-shape is the most replicated fact in market
@@ -711,7 +711,8 @@ bgcolor(showGlobex and not inRTH ? color.new(color.blue, 96) : na)
 // not a tradeable one).
 mins = hour(time, tz) * 100 + minute(time, tz)
 isIdx = preset == &quot;Index&quot;
-mark(cond, col) =&gt; cond and showMarks ? color.new(col, 82) : na
+mark(cond, col) =&gt;
+    cond and showMarks ? color.new(col, 82) : na
 bgcolor(mark(isIdx     and mins == 930,  color.teal))
 bgcolor(mark(isIdx     and mins == 1000, color.orange))
 bgcolor(mark(isIdx     and mins &gt;= 1550 and mins &lt; 1600, color.maroon))
@@ -727,16 +728,20 @@ bgcolor(mark(not isIdx and mins == 2215, color.purple))
 // higher; inside = rotation; below = accepted lower. Acceptance/rejection at
 // these edges is auction information; the bands are NOT support/resistance
 // magic lines.
-var float sPV = na, var float sV = na, var float sP2V = na
+var float sPV = na
+var float sV = na
+var float sP2V = na
 if rthStart
-    sPV := 0.0, sV := 0.0, sP2V := 0.0
+    sPV := 0.0
+    sV := 0.0
+    sP2V := 0.0
 if inRTH
-    p    = hlc3
+    p = hlc3
     sPV  := nz(sPV)  + p * volume
     sV   := nz(sV)   + volume
     sP2V := nz(sP2V) + p * p * volume
-vwap  = sV &gt; 0 ? sPV / sV : na
-sig   = sV &gt; 0 ? math.sqrt(math.max(sP2V / sV - vwap * vwap, 0)) : na
+vwap = sV &gt; 0 ? sPV / sV : na
+sig  = sV &gt; 0 ? math.sqrt(math.max(sP2V / sV - vwap * vwap, 0)) : na
 plot(showVWAP and inRTH ? vwap : na,       &quot;sVWAP&quot;, color.new(color.blue, 0),  2, plot.style_linebr)
 plot(showVWAP and inRTH ? vwap + sig : na, &quot;VAH~&quot;,  color.new(color.blue, 55), 1, plot.style_linebr)
 plot(showVWAP and inRTH ? vwap - sig : na, &quot;VAL~&quot;,  color.new(color.blue, 55), 1, plot.style_linebr)
@@ -744,7 +749,8 @@ plot(showVWAP and inRTH ? vwap - sig : na, &quot;VAL~&quot;,  color.new(color.bl
 // --- prior RTH close: the overnight anchor ------------------------------------
 // Overnight inventory is priced against yesterday&#x27;s RTH close; gap direction
 // vs this line is the cleanest one-number summary of overnight flow.
-var float rthClose = na, var float priorClose = na
+var float rthClose = na
+var float priorClose = na
 if rthEnd
     priorClose := rthClose
 if inRTH
@@ -757,11 +763,11 @@ plot(showPrior ? priorClose : na, &quot;prior RTH close&quot;, color.new(color.g
   <div class="script-head">
     <div>
       <h2>FP2 RVOL Engine</h2>
-      <p class="blurb">Participation anomalies: volume vs its own time-of-day baseline (EMA per minute bucket) plus session-cumulative RVOL. The one place execution algos betray themselves. Real CME volume required.</p>
+      <p class="blurb">Participation anomalies: volume vs its own time-of-day baseline (EMA per minute bucket) plus session-cumulative RVOL. The one place execution algos betray themselves. Real CME volume required. VALIDATED r33b: extreme RVOL predicts ~2x forward range (t &gt; +48, all instruments) - a volatility/regime tool; it carries NO directional information.</p>
     </div>
     <button class="copy" data-target="fp2">Copy code</button>
   </div>
-  <div class="codewrap"><pre id="fp2"><code>//@version=5
+  <div class="codewrap"><pre id="fp2"><code>//@version=6
 // FP2 - RELATIVE VOLUME ENGINE (Project Footprint, module 2 of 7) ---------------
 // The one place execution algos DO betray themselves. Institutional parents are
 // sliced by VWAP/POV algos that benchmark against the historical volume curve
@@ -818,7 +824,7 @@ hline(exTh, &quot;extreme&quot;, color.red, hline.style_dotted)
 var label warned = na
 if barstate.islastconfirmedhistory and syminfo.type != &quot;futures&quot; and na(warned)
     warned := label.new(bar_index, 0, &quot;RVOL on a non-futures symbol:\nvolume may be synthetic (CFD) -\nuse ES1!/NQ1!/RTY1!/GC1!&quot;,
-         style = label.style_label_up, color = color.new(color.red, 20), textcolor = color.white, force_overlay = false)
+         style = label.style_label_up, color = color.new(color.red, 20), textcolor = color.white)
 
 alertcondition(not na(rvol) and rvol &gt;= exTh, &quot;RVOL extreme&quot;, &quot;FP2: extreme participation anomaly (RVOL &gt;= threshold)&quot;)
 alertcondition(not na(rvol) and rvol &gt;= hiTh and rvol[1] &lt; hiTh, &quot;RVOL elevated&quot;, &quot;FP2: volume running above time-of-day baseline&quot;)
@@ -833,7 +839,7 @@ alertcondition(not na(rvol) and rvol &gt;= hiTh and rvol[1] &lt; hiTh, &quot;RVO
     </div>
     <button class="copy" data-target="fp3">Copy code</button>
   </div>
-  <div class="codewrap"><pre id="fp3"><code>//@version=5
+  <div class="codewrap"><pre id="fp3"><code>//@version=6
 // FP3 - HTF BIAS: OVERNIGHT/INTRADAY FLOW DECOMPOSITION (module 3 of 7) ---------
 // The honest version of &quot;institutional flow&quot;. Our round-30 study on 21 years of
 // index data: the equity drift lives almost entirely CLOSE -&gt; OPEN (SPX +2.3,
@@ -896,11 +902,11 @@ alertcondition(biasShort and not biasShort[1], &quot;Bias -&gt; SHORT&quot;, &qu
   <div class="script-head">
     <div>
       <h2>FP4 Absorption Proxy</h2>
-      <p class="blurb">Effort-vs-result: high volume percentile + low range percentile at an N-bar extreme, with close-location direction. Includes a lower-timeframe CVD PROXY, labeled as such - Pine has no true aggressor delta.</p>
+      <p class="blurb">Effort-vs-result: high volume percentile + low range percentile at an N-bar extreme, with close-location direction. Includes a lower-timeframe CVD PROXY, labeled as such - Pine has no true aggressor delta. r33b: too rare to power a test (~2-8 events/yr) - context only.</p>
     </div>
     <button class="copy" data-target="fp4">Copy code</button>
   </div>
-  <div class="codewrap"><pre id="fp4"><code>//@version=5
+  <div class="codewrap"><pre id="fp4"><code>//@version=6
 // FP4 - ABSORPTION PROXY + CVD PROXY (module 4 of 7) ----------------------------
 // The best idea in footprint trading, translated honestly to bar data.
 // Absorption = heavy aggressive volume that produces almost no price progress,
@@ -961,11 +967,11 @@ alertcondition(absorbSell, &quot;Absorption SELL side&quot;, &quot;FP4: effort/n
   <div class="script-head">
     <div>
       <h2>FP5 Displacement Meter</h2>
-      <p class="blurb">Initiative vs rotational regime from TR/ATR with body dominance, plus an on-chart follow-through scoreboard that prints this symbol's actual next-bar base rate (usually a coin flip - that is the lesson).</p>
+      <p class="blurb">Initiative vs rotational regime from TR/ATR with body dominance, plus an on-chart follow-through scoreboard that prints this symbol's actual next-bar base rate (usually a coin flip - that is the lesson). VALIDATED r33b: continuation is real gross on NDX (+2.4 bps/h, t +4.3) and SMALLER THAN ONE ROUND TRIP - net negative; regime context only.</p>
     </div>
     <button class="copy" data-target="fp5">Copy code</button>
   </div>
-  <div class="codewrap"><pre id="fp5"><code>//@version=5
+  <div class="codewrap"><pre id="fp5"><code>//@version=6
 // FP5 - DISPLACEMENT METER (module 5 of 7) --------------------------------------
 // Initiative vs rotational auction. A displacement bar - range well beyond the
 // recent ATR with a dominant directional body - marks INITIATIVE activity:
@@ -1036,17 +1042,16 @@ alertcondition(initiative and not initiative[1], &quot;Regime -&gt; initiative&q
     </div>
     <button class="copy" data-target="fp6">Copy code</button>
   </div>
-  <div class="codewrap"><pre id="fp6"><code>//@version=5
+  <div class="codewrap"><pre id="fp6"><code>//@version=6
 // FP6 - LIQUIDITY LEVELS &amp; SWEEP DETECTOR (module 6 of 7) -----------------------
-// The one genuinely open question of this project (grade C+). What is real:
-// stops DO cluster at salient reference prices (prior-day high/low, overnight
-// extremes, the opening range) - salience, not conspiracy - and a FAILED break
-// is auction information: price advertised beyond the level and found no
-// business. What is folklore: &quot;institutions hunting your stops then reversing.&quot;
-// Our own receipts: the same trade on gold died in round 8; the reclaim entry
-// added nothing on AUDUSD. Index RTH extremes are the untested case - which is
-// why this module keeps a running SCOREBOARD of what sweeps actually did on
-// YOUR symbol, instead of asking you to believe anecdotes.
+// CONTEXT ONLY - validated round 33 (results/r33_sweeps.json): across ~36k
+// breach events on SPX/NDX/RTY, breaches of these levels close back inside
+// 54-80% of the time (the base rate that fuels sweep folklore) but the
+// reversal is worth &lt;= 1.6 bps gross at 30 minutes and EVERY tradeable cell
+// (failure-close entry, sweep-extreme stop, EOD exit, real costs) loses.
+// What is real: stops cluster at salient reference prices, and a failed break
+// is auction rejection. What is folklore: that it pays. The levels remain
+// useful CONTEXT; the scoreboard shows your symbol&#x27;s actual base rate.
 indicator(&quot;FP6 Liquidity Sweeps&quot;, overlay = true, max_lines_count = 500, max_labels_count = 500)
 
 tz      = input.string(&quot;America/New_York&quot;, &quot;Timezone&quot;)
@@ -1060,23 +1065,39 @@ rthStart = inRTH and not inRTH[1]
 rthEnd   = not inRTH and inRTH[1]
 
 // ---- reference levels ---------------------------------------------------------
-var float dayH = na, var float dayL = na, var float pdh = na, var float pdl = na
-var float onH = na, var float onL = na, var float onHf = na, var float onLf = na
-var float orH = na, var float orL = na, var int orEndT = na
+var float dayH = na
+var float dayL = na
+var float pdh = na
+var float pdl = na
+var float onH = na
+var float onL = na
+var float onHf = na
+var float onLf = na
+var float orH = na
+var float orL = na
+var int orEndT = na
 if rthStart
-    pdh := dayH, pdl := dayL          // freeze yesterday&#x27;s RTH extremes
-    dayH := high, dayL := low
-    onHf := onH, onLf := onL          // freeze the just-finished overnight
-    orH := high, orL := low
+    pdh := dayH                      // freeze yesterday&#x27;s RTH extremes
+    pdl := dayL
+    dayH := high
+    dayL := low
+    onHf := onH                      // freeze the just-finished overnight
+    onLf := onL
+    orH := high
+    orL := low
     orEndT := time + orMins * 60000
 if inRTH
-    dayH := math.max(nz(dayH, high), high), dayL := math.min(nz(dayL, low), low)
+    dayH := math.max(nz(dayH, high), high)
+    dayL := math.min(nz(dayL, low), low)
     if time &lt; orEndT
-        orH := math.max(nz(orH, high), high), orL := math.min(nz(orL, low), low)
+        orH := math.max(nz(orH, high), high)
+        orL := math.min(nz(orL, low), low)
 if rthEnd
-    onH := high, onL := low           // restart overnight accumulation
+    onH := high                      // restart overnight accumulation
+    onL := low
 if not inRTH
-    onH := math.max(nz(onH, high), high), onL := math.min(nz(onL, low), low)
+    onH := math.max(nz(onH, high), high)
+    onL := math.min(nz(onL, low), low)
 
 plot(inRTH ? pdh : na, &quot;PDH&quot;, color.new(color.maroon, 30), 1, plot.style_linebr)
 plot(inRTH ? pdl : na, &quot;PDL&quot;, color.new(color.teal, 30), 1, plot.style_linebr)
@@ -1088,36 +1109,52 @@ plot(inRTH and time &gt;= orEndT ? orL : na, &quot;OR low&quot;, color.new(color
 // ---- sweep state machine ------------------------------------------------------
 // Breach = trade beyond a level. Failure = a CLOSE back on the original side
 // within failK bars of the breach. Acceptance = still beyond after failK bars.
-// One event per level per session. The scoreboard tallies failures vs
-// acceptances and the mean forward move after each failure - the base rate.
-var int swN = 0, var int swFail = 0, var float swFwd = 0.0
-var int fwdWait = na, var float fwdRef = na, var int fwdDir = 0
-
+// One event per level per session. Same definition as the round-33 validation,
+// so the chart and the research pipeline measure the same thing.
 evalLevel(bool active, float lvl, bool upSide, int state, int sinceBreach) =&gt;
-    // state: 0 armed, 1 breached, 2 done
-    s = state, sb = sinceBreach, failed = false, accepted = false
+    s = state
+    sb = sinceBreach
+    failed = false
+    accepted = false
     if active and not na(lvl)
         if s == 0 and (upSide ? high &gt; lvl : low &lt; lvl)
-            s := 1, sb := 0
+            s := 1
+            sb := 0
         else if s == 1
             sb += 1
             if upSide ? close &lt; lvl : close &gt; lvl
-                failed := true, s := 2
+                failed := true
+                s := 2
             else if sb &gt;= failK
-                accepted := true, s := 2
+                accepted := true
+                s := 2
     [s, sb, failed, accepted]
 
-var int s1 = 0, var int b1 = 0
-var int s2 = 0, var int b2 = 0
-var int s3 = 0, var int b3 = 0
-var int s4 = 0, var int b4 = 0
+var int s1 = 0
+var int b1 = 0
+var int s2 = 0
+var int b2 = 0
+var int s3 = 0
+var int b3 = 0
+var int s4 = 0
+var int b4 = 0
 if rthStart
-    s1 := 0, s2 := 0, s3 := 0, s4 := 0
+    s1 := 0
+    s2 := 0
+    s3 := 0
+    s4 := 0
 [ns1, nb1, f1, a1] = evalLevel(inRTH, pdh,  true,  s1, b1)
 [ns2, nb2, f2, a2] = evalLevel(inRTH, pdl,  false, s2, b2)
 [ns3, nb3, f3, a3] = evalLevel(inRTH, onHf, true,  s3, b3)
 [ns4, nb4, f4, a4] = evalLevel(inRTH, onLf, false, s4, b4)
-s1 := ns1, b1 := nb1, s2 := ns2, b2 := nb2, s3 := ns3, b3 := nb3, s4 := ns4, b4 := nb4
+s1 := ns1
+b1 := nb1
+s2 := ns2
+b2 := nb2
+s3 := ns3
+b3 := nb3
+s4 := ns4
+b4 := nb4
 
 anyFailUp = f1 or f3          // failed break of a HIGH -&gt; bearish information
 anyFailDn = f2 or f4          // failed break of a LOW  -&gt; bullish information
@@ -1126,9 +1163,18 @@ plotshape(anyFailUp, &quot;failed break high&quot;, shape.labeldown, location.ab
 plotshape(anyFailDn, &quot;failed break low&quot;,  shape.labelup,   location.belowbar, color.teal,   text = &quot;sweep x&quot;, textcolor = color.white, size = size.tiny)
 
 // forward tracking for the scoreboard (one at a time - keeps it simple)
+var int swN = 0
+var int swFail = 0
+var float swFwd = 0.0
+var int fwdWait = na
+var float fwdRef = na
+var int fwdDir = 0
 if (anyFailUp or anyFailDn) and na(fwdWait)
-    fwdWait := fwdN, fwdRef := close, fwdDir := anyFailDn ? 1 : -1
-    swN += 1, swFail += 1
+    fwdWait := fwdN
+    fwdRef := close
+    fwdDir := anyFailDn ? 1 : -1
+    swN += 1
+    swFail += 1
 if anyAccept
     swN += 1
 if not na(fwdWait)
@@ -1146,8 +1192,8 @@ if barstate.islast
     table.cell(tbl, 0, 2, &quot;avg fwd after fail&quot;, text_size = size.small)
     table.cell(tbl, 1, 2, swFail &gt; 0 ? str.tostring(swFwd / swFail, &quot;#.#&quot;) + &quot; bps&quot; : &quot;-&quot;, text_size = size.small)
 
-alertcondition(anyFailDn, &quot;Sweep failure at a LOW&quot;,  &quot;FP6: failed break below PDL/ON low (bullish auction rejection)&quot;)
-alertcondition(anyFailUp, &quot;Sweep failure at a HIGH&quot;, &quot;FP6: failed break above PDH/ON high (bearish auction rejection)&quot;)
+alertcondition(anyFailDn, &quot;Sweep failure at a LOW&quot;,  &quot;FP6: failed break below PDL/ON low (bullish auction rejection - CONTEXT, not a signal)&quot;)
+alertcondition(anyFailUp, &quot;Sweep failure at a HIGH&quot;, &quot;FP6: failed break above PDH/ON high (bearish auction rejection - CONTEXT, not a signal)&quot;)
 </code></pre></div>
 </section>
 
@@ -1159,7 +1205,7 @@ alertcondition(anyFailUp, &quot;Sweep failure at a HIGH&quot;, &quot;FP6: failed
     </div>
     <button class="copy" data-target="fp7">Copy code</button>
   </div>
-  <div class="codewrap"><pre id="fp7"><code>//@version=5
+  <div class="codewrap"><pre id="fp7"><code>//@version=6
 // FP7 - SMC VISUALS: ORDER BLOCKS &amp; FVGs (module 7 of 7) ------------------------
 // ============================ VISUALIZATION ONLY ==============================
 // Grade D on the Project Footprint map, and drawn anyway - so you can watch
@@ -1191,15 +1237,19 @@ dispDn = disp and close &lt; open
 // ---- FVGs: 3-bar imbalance, with an honest fill-rate tally --------------------
 var fvgBoxes = array.new_box()
 var fvgBull  = array.new_bool()
-var int fvgN = 0, var int fvgFilled = 0, var float fvgBars = 0.0
+var int fvgN = 0
+var int fvgFilled = 0
+var float fvgBars = 0.0
 bullFVG = showFVG and low &gt; high[2]
 bearFVG = showFVG and high &lt; low[2]
 if bullFVG
     array.push(fvgBoxes, box.new(bar_index - 2, low, bar_index, high[2], border_color = color.new(color.teal, 60), bgcolor = color.new(color.teal, 88)))
-    array.push(fvgBull, true), fvgN += 1
+    array.push(fvgBull, true)
+    fvgN += 1
 if bearFVG
     array.push(fvgBoxes, box.new(bar_index - 2, low[2], bar_index, high, border_color = color.new(color.maroon, 60), bgcolor = color.new(color.maroon, 88)))
-    array.push(fvgBull, false), fvgN += 1
+    array.push(fvgBull, false)
+    fvgN += 1
 if array.size(fvgBoxes) &gt; 0
     for i = array.size(fvgBoxes) - 1 to 0
         bx = array.get(fvgBoxes, i)
@@ -1211,7 +1261,8 @@ if array.size(fvgBoxes) &gt; 0
             fvgBars += bar_index - box.get_left(bx)
         if filled or aged
             box.delete(bx)
-            array.remove(fvgBoxes, i), array.remove(fvgBull, i)
+            array.remove(fvgBoxes, i)
+            array.remove(fvgBull, i)
         else
             box.set_right(bx, bar_index)
 
@@ -1230,7 +1281,8 @@ if array.size(obBoxes) &gt; 0
         mitig = array.get(obBull, i) ? close &lt; box.get_bottom(bx) : close &gt; box.get_top(bx)
         if mitig or bar_index - box.get_left(bx) &gt; maxAge
             box.delete(bx)
-            array.remove(obBoxes, i), array.remove(obBull, i)
+            array.remove(obBoxes, i)
+            array.remove(obBull, i)
         else
             box.set_right(bx, bar_index)
 
