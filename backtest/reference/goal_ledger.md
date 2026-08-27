@@ -637,3 +637,27 @@ Registered prior: magnitude helps but the best cell stays marginal; at MGC
 costs the full-sample net turns positive but thin, and 2020-23 remains the
 referee. Nothing deploys from this round regardless - anything that clears
 the bars goes to the WATCH LIST behind the frozen SPRT/journal process.
+
+## Round 26b results (run 2026-08-27): the signal cannot be monetized, and the hit rate explains why
+
+(run_r26b_monetize.py -> results/r26b_monetize.json)
+**The framing stat first: the candle's directional hit rate is 50.8%**
+(49.8% in 2020-23, 52.9% in 2024-25). The round-26 t-stats were high because
+n=1,267, not because any single day is predictable - this is exactly the
+Medallion power-analysis lesson from round 24 (a 50.75%-grade edge is
+monetizable only at thousands of trades/year and near-zero cost).
+**A. Magnitude gradient: non-monotone, and the top quintile fails halves.**
+Net expectancy by |candle|/ATR quintile: -0.69 / -0.47 / +0.98 / +0.94 /
+-0.06 $/oz - a hump, not a slope. The biggest candles carry LESS forward
+information (exhaustion), so "trade only the strong signals" selects the
+wrong days. Top quintile: 2020-23 -$0.61/oz, 2024-25 +$1.14 - era-dependent.
+**B. Cost structures: even free execution does not save it.** Full strategy
+at zero cost: +$0.74/oz, t +1.22 - the tradable one-position-per-day version
+is statistically indistinguishable from noise even before any toll. MGC
+costs: t +0.73. Spot: t +0.03.
+Verdict: no construction exists at our trade frequency. The information is
+real (the two-sample tests prove the auction participates in setting
+direction) but it is spread too thin across days to be captured one trade at
+a time. The deployed rule already monetizes this session's directionality the
+only way that clears costs: by waiting for the range to break and the regime
+gate to be open. Round 26 fully closed; nothing to the watch list.
