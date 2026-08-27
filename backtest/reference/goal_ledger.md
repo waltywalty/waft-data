@@ -878,3 +878,19 @@ Deep-dive (run_r28b_d7.py -> results/r28b_d7.json; dossier artifact published):
   frozen 7/200), sprt.py D7 stream (p1=0.802, b=0.57, ~13/yr: median 25
   trades to promote, 22 to kill), monthly routine now scores four streams
   and runs every stream's W/L through the SPRT.
+
+## Round 28d: the symphony portfolio (user commission; descriptive, not a promotion)
+
+All streams combined on the common window 2020-11..2025-08
+(run_r28d_symphony.py -> results/r28d_symphony.json; artifact published).
+Sleeve daily-return correlations: gold-D7 0.001, gold-MHI -0.006, D7-MHI
+0.020 - genuinely uncorrelated books. In-sample max-Sharpe split (5% grid,
+MHI capped at 25% as an n=43 watch item): gold 20 / D7 55 / MHI 25 ->
+Sharpe 1.38, 9.0%/yr at 5.8% maxDD (MAR 1.56); levered 2x: 18.4%/yr at
+11.4% DD, same Sharpe. Always-invested variant (100% S&P B&H + the mix as
+margin overlay): 22.8%/yr at 22.9% DD vs the index's 13.0% at 22.1%.
+Singles on the window: 100% gold 20.7%/16.1% (matches the account sim);
+100% D7 7.4%/10.2%. Caveats registered on the page: weights in-sample,
+window friendly to every sleeve, MHI paper-only, gold sleeve modeled
+single-leg (the deployed split is slightly better), CFD swap unmodeled.
+Posture unchanged: paper-first, SPRT boundaries decide promotions.
