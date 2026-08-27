@@ -661,3 +661,56 @@ direction) but it is spread too thin across days to be captured one trade at
 a time. The deployed rule already monetizes this session's directionality the
 only way that clears costs: by waiting for the range to break and the regime
 gate to be open. Round 26 fully closed; nothing to the watch list.
+
+## Round 27 pre-registration: the confirmation-stack commission (user list, triaged)
+
+The user's list, triaged against the record BEFORE testing. Already tested and
+buried (cited, not re-run): reversals/sweep entries (r2, r8, r9 - adversely
+selected on three markets); change of character / CISD (r10 - dead in both ICT
+windows on four markets; the gold CISD-to-EoD variant is watch item #1); break
+of structure (r8 daily-structure Judas - dead); Bollinger/band 2-2.6-sigma
+reversion (r8 gold: worth one spread; r9 indices: same) and band/EMA pullback
+continuation (r11 - dead); support/resistance levels incl. confluence
+"magnets" (r14 - falsified with matched controls; r24 David Paul assessment);
+accumulation-manipulation-distribution identification (the Judas/stop-run
+family, six independent constructions dead; the one survivor is the HSI
+pre-open fade, which lives on a mechanism, not the pattern); HTF trend
+continuation as added bias (r15 TSMOM overlays on the gold rule: no gradient;
+r16D vol-regime: descriptive). Untestable on our data: true order-book/DOM
+flow (no depth feed; spot volume is tick count). POC/value-area: r11's gated
+VP reversion is already watch item #2; the POC-magnet variant died in the
+same grid. Frequency framing registered up front: r3's threshold gradient
+showed the marginal trades near the gate are coin flips - frequency bought by
+loosening confirmation is negative expectancy, so only INDEPENDENT new edges
+add frequency honestly.
+
+Two genuinely new items, registered to run now:
+
+**27A - Fair value gaps and inversions (16 counted cells).** FVG = 3-bar
+imbalance (bull: low[t] > high[t-2]; zone = [high[t-2], low[t]]; bear
+mirrored). Formation windows anchored to the sessions we know: gold 00:00-
+04:00 UTC (Asia), indices 09:30-10:30 ET (NY open hour). Constructions:
+(1) continuation - first retrace touch into the zone enters in gap direction,
+stop beyond the far edge, flat session end (gold 16:00 NY, indices 16:00 ET);
+(2) inversion (iFVG) - a bar CLOSING through the far edge enters in the
+violation direction, stop at the near edge, same exit. Markets XAU/SPX/NDX/
+RTY x TFs {15m, H1} x 2 constructions = 16 cells, sides pooled (side split
+reported). Costs per mkts.py + equal stop slippage. Bar: same sign both
+halves AND full-sample |t| >= 3.0 (~Bonferroni 0.05/16). Registered prior:
+negative - FVGs are the last untested member of the imbalance/pattern family
+that is 0-for-6+ here; the honest reason to run it is that it has never
+actually been run.
+
+**27B - The inversion commission: gold/dollar as signals to trade equity
+futures (36 counted cells).** Signals, all lag-1 closed-data: (1) gold daily
+return sign; (2) gold 5d return sign; (3) synthetic-DXY daily return sign
+(r13 weights); (4) DXY 20d trend sign; (5) gold/AUD 20d corr <= 0.5 (the
+deployed gate as a risk-state descriptor); (6) gold-SPX 20d rolling corr,
+median split. Targets: (a) next-day close-to-close, (b) NY session 09:30->
+16:00 ET. Markets SPX/NDX/RTY. Statistic: two-sample t of target returns in
+signal-up vs signal-down (state vs non-state) days. Window: 2012-06..data end
+(gold spliced daily x index feeds; RTY ends 2020); halves at 2019-01-01.
+Max-stat circular day-shift over all 36 cells (500 perms, shared offset);
+Bonferroni quoted. Registered prior: flight-to-safety gold-equity correlation
+is CONTEMPORANEOUS in the literature, not predictive at lag 1; expect
+descriptive-at-best. Any survivor faces the r16B drift null before promotion.
