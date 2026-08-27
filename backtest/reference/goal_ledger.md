@@ -1262,3 +1262,22 @@ No candidates; nothing to the watch list. Cross-source note for the
 playbook: two of the user's three sources contradict each other on the
 same strategy family, which is itself the cleanest demonstration this
 round produced.
+
+## Round 33 opened: Project Footprint (smart-money alignment arc, user commission)
+
+Four-phase arc: (1) concept map of institutional footprints detectable in
+price+volume on ES/NQ/RTY/GC via TradingView/Pine, ranked by evidence; (2)
+modular Pine v5 indicator suite; (3) confluence strategy(); (4) validation
+through the house pipeline. Phase 1 delivered: reference/footprints.md -
+ten footprints graded A to D with microstructure logic, our own prior
+results attached (r8 Judas sweep dead, r27 FVG 0/12, r24 COT p 0.76, r30
+overnight decomposition as the honest HTF-flow read, r26 SGE descriptive),
+Pine blind spots stated (no DOM/delta/icebergs/MOC feeds; CFD volume
+synthetic; tester intrabar ambiguity), and a 7-module Phase 2 shortlist
+proposed. Registered now for Phase 3: confluence gates capped and
+pre-registered before any backtest (r27 noise-combo demonstration is the
+standing reason); any footprint receiving strategy weight must first pass
+pre-registration + both-halves + drift-null + costs on OUR data - the Pine
+tester is an execution-fidelity check, not evidence. Web check performed:
+no peer-reviewed empirical support exists for SMC/ICT constructs;
+circulating "FVG fills 70%" figures are base rates without time-stops.
