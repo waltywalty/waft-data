@@ -551,3 +551,36 @@ and only looks alive in the 2024-25 era.
 Verdict: nothing below 30m is tradable; the low-TF cells are cost-dominated
 whipsaw harvesting. The entry-timeframe axis is now closed 5m-90m. No change
 to the deployed rule. Running cell total this round: 33 + 12 = 45.
+
+## Round 26 pre-registration: the SGE auction-window battery (user commission)
+
+The user's three hypotheses around the Shanghai Gold Exchange AM benchmark
+auction (10:15 Beijing = 02:15 UTC, verified in round 17 from the data; the
+auction sits INSIDE the deployed 01:30-02:30 UTC opening range - overlap with
+the deployed signal will be reported):
+**A. Auction-candle bias (4 cells).** Sign of the first post-auction candle
+(02:15-02:20 5m; 02:15-02:30 15m) vs forward return (a) to the 16:00 NY close,
+(b) to 08:00 London. Statistic: two-sample t of forward returns, up-candle
+days vs down-candle days.
+**B. Match/contrast with the 09:30 open candle (4 cells).** Sign agreement of
+the 01:30 open candle (5m and 15m) with the auction candle: forward return to
+NY close when they AGREE vs DISAGREE (the user's continuation-vs-reversal
+idea). Two candle-TF constructions x two targets.
+**C. Auction-hour value zone (2 trade cells + controls).** The 02:15-03:15 UTC
+range as a mean-reverting zone: after 03:15, fade the first touch of each
+range edge (long at low edge, short at high edge), target the range mid, stop
+0.5x range beyond the edge, flat 16:00 NY, costs $0.30 + $0.30 stop slippage.
+Control: the identical construction on the 03:15-04:15 range (no auction) -
+if the auction range and an arbitrary hour behave alike, the zone is
+geometry, not value.
+**Multiplicity:** max-stat circular day-shift over the 8 A/B cells + the 2 C
+cells (500 perms); Bonferroni quoted. Halves 2020-23 / 2024-25 with the sign
+bar. Gate interaction (corr<=0.5 vs stand-aside days) reported descriptively,
+not counted.
+**Registered priors:** A/B negative - candle-sign conditioning is the
+price-pattern family that has died 6+ times here, mechanism-adjacent window
+or not; the 01:30 candle's sign also partially proxies the deployed breakout
+direction, so B risks rediscovering the deployed edge in costume. C negative -
+round 14 falsified the "confluent level = magnet" premise; the control is the
+referee. Round 17's measured auction drift (+0.76bps/day) is SUB-COST, which
+bounds how much information the window can carry.
