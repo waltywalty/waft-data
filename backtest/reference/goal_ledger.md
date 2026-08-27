@@ -451,3 +451,40 @@ challenge from the most famous risk framework in trading folklore, the
 best-specified free-data signal from the trader list is now a documented
 negative, one process gate is adopted, and the gap-tail is measured and
 benign. Score vs the old 5-upgrades goal: unchanged at 1.5.
+
+## Round 25 pre-registration: the correlation-timescale battery (user commission)
+
+The user asked whether the gate's timescale was ever fully crossed against the
+entry timescale, and whether an intraday-computed correlation was tested. Round
+3 swept the DAILY corr window (10-90d, plateau at 10-30d) and the threshold
+(-0.4..0.9, smooth monotone gradient); round 1 swept the range/entry length
+(30/60/90m). Never tested: correlation computed from INTRADAY returns, and the
+explicit window x entry-timeframe cross. Registered here before running.
+
+**A. Intraday-frequency corr as a gate replacement (18 counted cells).**
+Constructions: gold/AUD rolling corr of H1 log returns, windows {24, 48, 120,
+240} bars; and of M15 returns, windows {96, 480} bars - 6 sensors from ~1 day
+to ~2 weeks of intraday information. No lookahead: each day's value uses only
+bars closed before 01:30 UTC (the range start). Applied as day-masks at
+thresholds {0.3, 0.5, 0.7} to the unfiltered 60m base trade set. Cell
+statistic: two-sample t of kept vs excluded trade returns (isolates the gate's
+information from the base drift).
+Data constraint documented up front: AUDUSD intraday exists 2020-08..2022-03
+(M5 + ejtrader) and 2024-04..2026-08 (collector); trades in the hole are
+excluded and the two segments ARE the halves test.
+**B. Adjunct gradient (6 counted slope stats).** Within trades the deployed
+daily gate already keeps, tercile-split by each intraday sensor: is there a
+monotone quality slope left after the daily gate? (Spearman of return vs
+tercile.)
+**C. Window x entry-timeframe cross (9 cells).** Daily corr windows {10, 20,
+40}d x (range = entry) in {30, 60, 90}m at threshold 0.5. The check is
+interaction: does 60m dominate at every window, or does the surface tilt?
+**Multiplicity:** max-stat circular day-shift permutation (500 perms, one
+shared offset per perm across all A cells); Bonferroni quoted. Success bar
+for A: beat the deployed gate's PF on the same tradable days AND same sign in
+both segments AND survive the max-stat. B and C are judged by slope/
+consistency, not peaks.
+**Registered prior: negative.** Same-day AUDUSD confluence died in round 2;
+the daily signal's half-life is ~27 days (the regime is slow); round 13's
+416-cell partner sweep found no second axis. Costs as deployed
+($0.30 + $0.30 stop slippage).
