@@ -692,3 +692,20 @@ high-frequency rows, and a zero-edge selection null reproduces the bulk of
 its Sharpe column (expected max 0.60 from instrument choice alone; sheet
 median 0.69). Bonus: the Scribd sheet's own frictionless ORB row (PF 1.01)
 refutes TradeAlgo's ORB claim — the user's sources disagree with each other.
+
+## Round 33 — Project Footprint (smart-money alignment arc)
+
+Phase 1 mapped ten "institutional footprint" concepts onto evidence grades
+(`reference/footprints.md`): the honest core is session structure, relative
+volume vs time-of-day baselines, and our round-30 overnight/intraday flow
+decomposition — while order blocks and FVGs are folklore (grade D, r27:
+0/12). Phase 2 shipped seven modular Pine v5 indicators
+(`tradingview/footprint/FP1..FP7`): session map with VWAP-sigma value
+proxy, RVOL engine, HTF bias, absorption + CVD proxy, displacement meter
+with follow-through scoreboard, liquidity-sweep detector with an honest
+base-rate table, and SMC visuals explicitly tagged visualization-only.
+Phase 4a then validated the sweep question on ~36k events across
+SPX/NDX/RTY: breaches close back inside 54–80% of the time (the base rate
+that fuels the folklore) but the reversal is worth ≤1.6 bps gross and all
+12 tradeable cells lose net — FP6 demoted to context. Phase 3 confluence
+will be built only from gates that pass their own pre-registered tests.

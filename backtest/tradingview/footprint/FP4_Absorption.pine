@@ -1,0 +1,54 @@
+//@version=5
+// FP4 - ABSORPTION PROXY + CVD PROXY (module 4 of 7) ----------------------------
+// The best idea in footprint trading, translated honestly to bar data.
+// Absorption = heavy aggressive volume that produces almost no price progress,
+// because passive limit interest on the other side is soaking it. In the order
+// book this is directly visible; bars can only shadow it as EFFORT (volume
+// percentile high) vs RESULT (range percentile low), located AT an extreme
+// (an N-bar low that closes in its upper half on heavy volume = someone bought
+// everything thrown at them).
+//
+// CVD PROXY, stated plainly: Pine has NO aggressor-side data. The lower-TF
+// up/down-volume split below correlates only moderately with true bid/ask
+// delta and misses everything inside each 1-minute bucket. It refines the
+// absorption read; it is NOT real delta and is labeled PROXY on the pane.
+indicator("FP4 Absorption Proxy", overlay = false)
+
+lookN  = input.int(100, "Percentile lookback (bars)", minval = 20)
+volTh  = input.int(80, "Volume percentile >=", minval = 50, maxval = 99)
+rngTh  = input.int(40, "Range percentile <=", minval = 1,  maxval = 60)
+extN   = input.int(20, "Extreme lookback (bars)", minval = 5)
+useLTF = input.bool(true, "CVD proxy from lower TF")
+ltfRes = input.string("1", "Lower TF")
+
+volP = ta.percentrank(volume, lookN)
+tr   = ta.tr(true)
+rngP = ta.percentrank(tr, lookN)
+clv  = high != low ? (2 * close - high - low) / (high - low) : 0.0   // -1..+1
+
+atLow  = low  <= ta.lowest(low, extN)
+atHigh = high >= ta.highest(high, extN)
+effortNoResult = volP >= volTh and rngP <= rngTh
+absorbBuy  = effortNoResult and atLow  and clv > 0    // sellers pressed a low, someone ate it
+absorbSell = effortNoResult and atHigh and clv < 0    // buyers pressed a high, someone faded it
+
+// CVD proxy: sum of signed lower-TF volume (up-close = +, down-close = -).
+deltaArr = request.security_lower_tf(syminfo.tickerid, ltfRes, close >= open ? volume : -volume)
+deltaPx  = useLTF and array.size(deltaArr) > 0 ? array.sum(deltaArr) : (close >= open ? volume : -volume)
+var float cvd = 0.0
+cvd += nz(deltaPx)
+
+plot(deltaPx, "delta PROXY (per bar)", deltaPx >= 0 ? color.new(color.teal, 40) : color.new(color.maroon, 40), 1, plot.style_columns)
+plot(cvd, "cum delta PROXY", color.new(color.blue, 0), 2)
+plotshape(absorbBuy,  "absorption (buy side)",  shape.triangleup,   location.belowbar, color.teal,   size = size.small, force_overlay = true)
+plotshape(absorbSell, "absorption (sell side)", shape.triangledown, location.abovebar, color.maroon, size = size.small, force_overlay = true)
+
+// divergence flag: price makes an extN-bar extreme the CVD proxy does not
+// confirm - weak evidence by itself, context for sweeps (FP6).
+divBull = atLow  and cvd > ta.lowest(cvd, extN)
+divBear = atHigh and cvd < ta.highest(cvd, extN)
+plotshape(divBull, "delta divergence bull", shape.circle, location.bottom, color.new(color.teal, 50),   size = size.tiny)
+plotshape(divBear, "delta divergence bear", shape.circle, location.top,    color.new(color.maroon, 50), size = size.tiny)
+
+alertcondition(absorbBuy,  "Absorption BUY side",  "FP4: effort/no-result at a low, close upper half")
+alertcondition(absorbSell, "Absorption SELL side", "FP4: effort/no-result at a high, close lower half")

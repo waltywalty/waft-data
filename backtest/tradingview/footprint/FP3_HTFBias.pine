@@ -1,0 +1,56 @@
+//@version=5
+// FP3 - HTF BIAS: OVERNIGHT/INTRADAY FLOW DECOMPOSITION (module 3 of 7) ---------
+// The honest version of "institutional flow". Our round-30 study on 21 years of
+// index data: the equity drift lives almost entirely CLOSE -> OPEN (SPX +2.3,
+// NDX +3.8 bps per night gross, stable across both decade-halves); open->close
+// is ~nothing. Whoever is patiently accumulating does it around the close and
+// overnight - that persistent pressure is the most defensible "smart money"
+// bias available from bars. (Costs kill it as a standalone trade - round 30 -
+// its job here is DIRECTIONAL BIAS for other setups, nothing more.)
+indicator("FP3 HTF Bias", overlay = false)
+
+winN   = input.int(63, "Drift window (days)", minval = 20)
+smaN   = input.int(200, "Trend SMA (days)", minval = 50)
+
+// Daily figures from confirmed bars only ([1] offsets) - no lookahead, no
+// repaint: today's still-forming daily bar never enters the calculation.
+[dO, dC, dC2] = request.security(syminfo.tickerid, "D", [open[1], close[1], close[2]], lookahead = barmerge.lookahead_off)
+onRet = dC2 != 0 ? dO / dC2 - 1 : na      // close[t-1] -> open[t]  (overnight)
+idRet = dO  != 0 ? dC / dO  - 1 : na      // open[t]    -> close[t] (intraday)
+dNew  = ta.change(time("D")) != 0
+
+var float cumON = 0.0, var float cumID = 0.0
+var onArr = array.new_float()
+if dNew and not na(onRet)
+    cumON += onRet
+    cumID += idRet
+    array.push(onArr, onRet)
+    if array.size(onArr) > winN
+        array.shift(onArr)
+
+onDrift = array.size(onArr) >= winN ? array.avg(onArr) * 1e4 : na   // bps/night
+dSMA    = request.security(syminfo.tickerid, "D", ta.sma(close[1], smaN), lookahead = barmerge.lookahead_off)
+trendUp = close > dSMA
+
+// Combined bias: overnight drift sign agrees with the slow trend -> conviction;
+// disagreement -> stand down. This is a FILTER for other modules' setups.
+biasLong  = trendUp and onDrift > 0
+biasShort = not trendUp and onDrift < 0
+
+plot(cumON * 100, "cum overnight ret %", color.new(color.teal, 0), 2)
+plot(cumID * 100, "cum intraday ret %", color.new(color.orange, 0), 2)
+hline(0, "0", color.gray, hline.style_dotted)
+
+var tbl = table.new(position.top_right, 2, 3, border_width = 1)
+if barstate.islast
+    bias = biasLong ? "LONG" : biasShort ? "SHORT" : "NEUTRAL"
+    bcol = biasLong ? color.teal : biasShort ? color.maroon : color.gray
+    table.cell(tbl, 0, 0, "ON drift " + str.tostring(winN) + "d", text_size = size.small)
+    table.cell(tbl, 1, 0, (na(onDrift) ? "warmup" : str.tostring(onDrift, "#.##") + " bps/n"), text_size = size.small)
+    table.cell(tbl, 0, 1, "trend vs " + str.tostring(smaN) + "d", text_size = size.small)
+    table.cell(tbl, 1, 1, trendUp ? "above" : "below", text_size = size.small)
+    table.cell(tbl, 0, 2, "BIAS", text_size = size.small)
+    table.cell(tbl, 1, 2, bias, text_color = color.white, bgcolor = bcol, text_size = size.small)
+
+alertcondition(biasLong  and not biasLong[1],  "Bias -> LONG",  "FP3: overnight drift + trend aligned long")
+alertcondition(biasShort and not biasShort[1], "Bias -> SHORT", "FP3: overnight drift + trend aligned short")

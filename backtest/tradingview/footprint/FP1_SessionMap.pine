@@ -1,0 +1,76 @@
+//@version=5
+// FP1 - SESSION MAP (Project Footprint, module 1 of 7) --------------------------
+// The chassis. Every other footprint is meaningless without session context:
+// the intraday volume/volatility U-shape is the most replicated fact in market
+// microstructure, because informed AND forced flow concentrate where liquidity
+// is (opens, closes, auctions), and liquidity begets liquidity.
+// This module paints the clock: RTH vs Globex, the key minutes, session VWAP
+// with sigma bands as a *value-area proxy* (a true volume profile needs
+// tick/footprint data Pine does not have; VWAP +/-1 sigma covering ~70% of
+// volume-time is the standard bar-data stand-in for the value area).
+// Load on: ES1!/NQ1!/RTY1! (index preset) or GC1! (gold preset), 1-15m charts.
+indicator("FP1 Session Map", overlay = true, max_lines_count = 500)
+
+tz        = input.string("America/New_York", "Timezone")
+rthSess   = input.session("0930-1600", "RTH session")
+preset    = input.string("Index", "Instrument preset", options = ["Index", "Gold"])
+showGlobex= input.bool(true,  "Shade Globex (overnight)")
+showMarks = input.bool(true,  "Key-minute markers")
+showVWAP  = input.bool(true,  "Session VWAP + sigma bands (value proxy)")
+showPrior = input.bool(true,  "Prior RTH close line")
+
+inRTH    = not na(time(timeframe.period, rthSess, tz))
+rthStart = inRTH and not inRTH[1]
+rthEnd   = not inRTH and inRTH[1]
+
+// --- Globex shading: everything that is not RTH -------------------------------
+bgcolor(showGlobex and not inRTH ? color.new(color.blue, 96) : na)
+
+// --- key minutes: where forced/informed flow clusters -------------------------
+// Index: 09:30 cash open (largest liquidity event of the day), 10:00 ET (most
+// US macro releases print here), 15:50-16:00 (MOC window - index funds MUST
+// trade the close; do not fade forced flow). Gold: London AM/PM fixes (05:30 /
+// 10:00 ET - reference prices for OTC business), COMEX settle ~13:30 ET, and
+// 22:15 ET = 10:15 HKT SGE auction (a real descriptive signal in our research,
+// not a tradeable one).
+mins = hour(time, tz) * 100 + minute(time, tz)
+isIdx = preset == "Index"
+mark(cond, col) => cond and showMarks ? color.new(col, 82) : na
+bgcolor(mark(isIdx     and mins == 930,  color.teal))
+bgcolor(mark(isIdx     and mins == 1000, color.orange))
+bgcolor(mark(isIdx     and mins >= 1550 and mins < 1600, color.maroon))
+bgcolor(mark(not isIdx and mins == 530,  color.orange))
+bgcolor(mark(not isIdx and mins == 1000, color.orange))
+bgcolor(mark(not isIdx and mins == 1330, color.maroon))
+bgcolor(mark(not isIdx and mins == 2215, color.purple))
+
+// --- session VWAP + sigma bands (value-area proxy) ----------------------------
+// Accumulate price*volume from the RTH open. Sigma is the volume-weighted
+// stdev of price, so vwap +/- 1 sigma ~ where ~70% of RTH business was done -
+// the closest bar-data analog of the value area. Above value = accepted
+// higher; inside = rotation; below = accepted lower. Acceptance/rejection at
+// these edges is auction information; the bands are NOT support/resistance
+// magic lines.
+var float sPV = na, var float sV = na, var float sP2V = na
+if rthStart
+    sPV := 0.0, sV := 0.0, sP2V := 0.0
+if inRTH
+    p    = hlc3
+    sPV  := nz(sPV)  + p * volume
+    sV   := nz(sV)   + volume
+    sP2V := nz(sP2V) + p * p * volume
+vwap  = sV > 0 ? sPV / sV : na
+sig   = sV > 0 ? math.sqrt(math.max(sP2V / sV - vwap * vwap, 0)) : na
+plot(showVWAP and inRTH ? vwap : na,       "sVWAP", color.new(color.blue, 0),  2, plot.style_linebr)
+plot(showVWAP and inRTH ? vwap + sig : na, "VAH~",  color.new(color.blue, 55), 1, plot.style_linebr)
+plot(showVWAP and inRTH ? vwap - sig : na, "VAL~",  color.new(color.blue, 55), 1, plot.style_linebr)
+
+// --- prior RTH close: the overnight anchor ------------------------------------
+// Overnight inventory is priced against yesterday's RTH close; gap direction
+// vs this line is the cleanest one-number summary of overnight flow.
+var float rthClose = na, var float priorClose = na
+if rthEnd
+    priorClose := rthClose
+if inRTH
+    rthClose := close
+plot(showPrior ? priorClose : na, "prior RTH close", color.new(color.gray, 30), 1, plot.style_linebr)

@@ -162,7 +162,7 @@ a:focus-visible, :focus-visible { outline:2px solid var(--brass); outline-offset
 </style>
 <div class="wrap">
 <header>
-<p class="eyebrow">Asia gold strategy &middot; TradingView port &middot; four scripts: gold, HSI fade, Double Seven</p>
+<p class="eyebrow">TradingView scripts &middot; gold, HSI fade, Double Seven &middot; Project Footprint suite (FP1&ndash;FP7)</p>
 <h1>Pine Paste Board</h1>
 <p class="standfirst">Both scripts, ready to copy on any device. Tap Copy, then paste
 into TradingView&rsquo;s Pine Editor over the existing script and Save. On an iPad use
@@ -653,6 +653,596 @@ if barstate.islast
          text_size = size.large, text_color = color.white, bgcolor = inPos ? C_OK : C_NO)
     table.cell(card, 0, 3, &quot;exit at (7d closing high)&quot;, text_size = size.large, text_color = color.white, bgcolor = C_LBL)
     table.cell(card, 1, 3, str.tostring(high7, &quot;#.##&quot;), text_size = size.large, text_color = color.white, bgcolor = C_LBL)
+</code></pre></div>
+</section>
+
+<section>
+<h2>Project Footprint suite (round 33)</h2>
+<p class="standfirst">Seven modular indicators for reading auction behaviour on
+ES1!/NQ1!/RTY1!/GC1! &mdash; use real CME symbols, never CFDs (synthetic volume).
+These are measurement instruments for discretionary context, not signals: the
+evidence grades live in <code>reference/footprints.md</code>, and round 33
+validation demoted sweep entries (FP6) to context-only. FP7 is visualization
+only by design.</p>
+</section>
+
+<section class="script">
+  <div class="script-head">
+    <div>
+      <h2>FP1 Session Map</h2>
+      <p class="blurb">The chassis: RTH/Globex shading, key-minute markers (cash open, 10:00 data, MOC window; London fixes / COMEX settle / SGE on the Gold preset), session VWAP with sigma bands as a value-area proxy, prior RTH close.</p>
+    </div>
+    <button class="copy" data-target="fp1">Copy code</button>
+  </div>
+  <div class="codewrap"><pre id="fp1"><code>//@version=5
+// FP1 - SESSION MAP (Project Footprint, module 1 of 7) --------------------------
+// The chassis. Every other footprint is meaningless without session context:
+// the intraday volume/volatility U-shape is the most replicated fact in market
+// microstructure, because informed AND forced flow concentrate where liquidity
+// is (opens, closes, auctions), and liquidity begets liquidity.
+// This module paints the clock: RTH vs Globex, the key minutes, session VWAP
+// with sigma bands as a *value-area proxy* (a true volume profile needs
+// tick/footprint data Pine does not have; VWAP +/-1 sigma covering ~70% of
+// volume-time is the standard bar-data stand-in for the value area).
+// Load on: ES1!/NQ1!/RTY1! (index preset) or GC1! (gold preset), 1-15m charts.
+indicator(&quot;FP1 Session Map&quot;, overlay = true, max_lines_count = 500)
+
+tz        = input.string(&quot;America/New_York&quot;, &quot;Timezone&quot;)
+rthSess   = input.session(&quot;0930-1600&quot;, &quot;RTH session&quot;)
+preset    = input.string(&quot;Index&quot;, &quot;Instrument preset&quot;, options = [&quot;Index&quot;, &quot;Gold&quot;])
+showGlobex= input.bool(true,  &quot;Shade Globex (overnight)&quot;)
+showMarks = input.bool(true,  &quot;Key-minute markers&quot;)
+showVWAP  = input.bool(true,  &quot;Session VWAP + sigma bands (value proxy)&quot;)
+showPrior = input.bool(true,  &quot;Prior RTH close line&quot;)
+
+inRTH    = not na(time(timeframe.period, rthSess, tz))
+rthStart = inRTH and not inRTH[1]
+rthEnd   = not inRTH and inRTH[1]
+
+// --- Globex shading: everything that is not RTH -------------------------------
+bgcolor(showGlobex and not inRTH ? color.new(color.blue, 96) : na)
+
+// --- key minutes: where forced/informed flow clusters -------------------------
+// Index: 09:30 cash open (largest liquidity event of the day), 10:00 ET (most
+// US macro releases print here), 15:50-16:00 (MOC window - index funds MUST
+// trade the close; do not fade forced flow). Gold: London AM/PM fixes (05:30 /
+// 10:00 ET - reference prices for OTC business), COMEX settle ~13:30 ET, and
+// 22:15 ET = 10:15 HKT SGE auction (a real descriptive signal in our research,
+// not a tradeable one).
+mins = hour(time, tz) * 100 + minute(time, tz)
+isIdx = preset == &quot;Index&quot;
+mark(cond, col) =&gt; cond and showMarks ? color.new(col, 82) : na
+bgcolor(mark(isIdx     and mins == 930,  color.teal))
+bgcolor(mark(isIdx     and mins == 1000, color.orange))
+bgcolor(mark(isIdx     and mins &gt;= 1550 and mins &lt; 1600, color.maroon))
+bgcolor(mark(not isIdx and mins == 530,  color.orange))
+bgcolor(mark(not isIdx and mins == 1000, color.orange))
+bgcolor(mark(not isIdx and mins == 1330, color.maroon))
+bgcolor(mark(not isIdx and mins == 2215, color.purple))
+
+// --- session VWAP + sigma bands (value-area proxy) ----------------------------
+// Accumulate price*volume from the RTH open. Sigma is the volume-weighted
+// stdev of price, so vwap +/- 1 sigma ~ where ~70% of RTH business was done -
+// the closest bar-data analog of the value area. Above value = accepted
+// higher; inside = rotation; below = accepted lower. Acceptance/rejection at
+// these edges is auction information; the bands are NOT support/resistance
+// magic lines.
+var float sPV = na, var float sV = na, var float sP2V = na
+if rthStart
+    sPV := 0.0, sV := 0.0, sP2V := 0.0
+if inRTH
+    p    = hlc3
+    sPV  := nz(sPV)  + p * volume
+    sV   := nz(sV)   + volume
+    sP2V := nz(sP2V) + p * p * volume
+vwap  = sV &gt; 0 ? sPV / sV : na
+sig   = sV &gt; 0 ? math.sqrt(math.max(sP2V / sV - vwap * vwap, 0)) : na
+plot(showVWAP and inRTH ? vwap : na,       &quot;sVWAP&quot;, color.new(color.blue, 0),  2, plot.style_linebr)
+plot(showVWAP and inRTH ? vwap + sig : na, &quot;VAH~&quot;,  color.new(color.blue, 55), 1, plot.style_linebr)
+plot(showVWAP and inRTH ? vwap - sig : na, &quot;VAL~&quot;,  color.new(color.blue, 55), 1, plot.style_linebr)
+
+// --- prior RTH close: the overnight anchor ------------------------------------
+// Overnight inventory is priced against yesterday&#x27;s RTH close; gap direction
+// vs this line is the cleanest one-number summary of overnight flow.
+var float rthClose = na, var float priorClose = na
+if rthEnd
+    priorClose := rthClose
+if inRTH
+    rthClose := close
+plot(showPrior ? priorClose : na, &quot;prior RTH close&quot;, color.new(color.gray, 30), 1, plot.style_linebr)
+</code></pre></div>
+</section>
+
+<section class="script">
+  <div class="script-head">
+    <div>
+      <h2>FP2 RVOL Engine</h2>
+      <p class="blurb">Participation anomalies: volume vs its own time-of-day baseline (EMA per minute bucket) plus session-cumulative RVOL. The one place execution algos betray themselves. Real CME volume required.</p>
+    </div>
+    <button class="copy" data-target="fp2">Copy code</button>
+  </div>
+  <div class="codewrap"><pre id="fp2"><code>//@version=5
+// FP2 - RELATIVE VOLUME ENGINE (Project Footprint, module 2 of 7) ---------------
+// The one place execution algos DO betray themselves. Institutional parents are
+// sliced by VWAP/POV algos that benchmark against the historical volume curve
+// for each minute of the day. Raw volume is useless (09:31 always dwarfs 12:30);
+// volume RELATIVE to its own time-of-day baseline is a participation anomaly
+// detector: RVOL 2-3x at a quiet hour means somebody is doing non-routine size.
+//
+// !! DATA WARNING !! This only means something on real CME symbols (ES1!, NQ1!,
+// RTY1!, GC1!). TradingView CFD/index symbols carry synthetic or venue-partial
+// volume - RVOL on those charts measures the broker, not the market.
+indicator(&quot;FP2 RVOL Engine&quot;, overlay = false)
+
+tz      = input.string(&quot;America/New_York&quot;, &quot;Timezone&quot;)
+lookN   = input.int(20, &quot;Baseline sessions (EMA)&quot;, minval = 5)
+warmMin = input.int(5,  &quot;Min sessions before display&quot;, minval = 1)
+hiTh    = input.float(1.5, &quot;Elevated threshold&quot;, step = 0.1)
+exTh    = input.float(2.5, &quot;Extreme threshold&quot;,  step = 0.1)
+
+// Baseline: one EMA per minute-of-day bucket, held in a map. We read the
+// baseline BEFORE updating it with today&#x27;s bar, so today&#x27;s anomaly is judged
+// against history only (no self-contamination).
+var baseline = map.new&lt;int, float&gt;()
+var counts   = map.new&lt;int, int&gt;()
+key   = hour(time, tz) * 60 + minute(time, tz)
+seen  = map.contains(baseline, key)
+base  = seen ? map.get(baseline, key) : na
+n     = seen ? map.get(counts, key) : 0
+rvol  = not na(base) and base &gt; 0 and n &gt;= warmMin ? volume / base : na
+alpha = 2.0 / (lookN + 1)
+map.put(baseline, key, seen ? base + alpha * (volume - base) : volume)
+map.put(counts, key, n + 1)
+
+// Session-cumulative RVOL: is TODAY, up to this minute, running hot or cold
+// overall? (Trend days start hot; fade setups prefer cold tape.)
+var cumBaseline = map.new&lt;int, float&gt;()
+var float cumVol = na
+newDay = ta.change(dayofmonth(time, tz)) != 0
+if newDay
+    cumVol := 0.0
+cumVol := nz(cumVol) + volume
+cseen  = map.contains(cumBaseline, key)
+cbase  = cseen ? map.get(cumBaseline, key) : na
+crvol  = not na(cbase) and cbase &gt; 0 and n &gt;= warmMin ? cumVol / cbase : na
+map.put(cumBaseline, key, cseen ? cbase + alpha * (cumVol - cbase) : cumVol)
+
+col = na(rvol) ? color.gray : rvol &gt;= exTh ? color.red : rvol &gt;= hiTh ? color.orange : color.new(color.gray, 40)
+plot(rvol, &quot;RVOL&quot;, col, 2, plot.style_columns)
+plot(crvol, &quot;session cum RVOL&quot;, color.new(color.blue, 20), 2)
+hline(1.0, &quot;baseline&quot;, color.gray, hline.style_dotted)
+hline(hiTh, &quot;elevated&quot;, color.orange, hline.style_dotted)
+hline(exTh, &quot;extreme&quot;, color.red, hline.style_dotted)
+
+// warn once on non-futures symbols - see DATA WARNING above
+var label warned = na
+if barstate.islastconfirmedhistory and syminfo.type != &quot;futures&quot; and na(warned)
+    warned := label.new(bar_index, 0, &quot;RVOL on a non-futures symbol:\nvolume may be synthetic (CFD) -\nuse ES1!/NQ1!/RTY1!/GC1!&quot;,
+         style = label.style_label_up, color = color.new(color.red, 20), textcolor = color.white, force_overlay = false)
+
+alertcondition(not na(rvol) and rvol &gt;= exTh, &quot;RVOL extreme&quot;, &quot;FP2: extreme participation anomaly (RVOL &gt;= threshold)&quot;)
+alertcondition(not na(rvol) and rvol &gt;= hiTh and rvol[1] &lt; hiTh, &quot;RVOL elevated&quot;, &quot;FP2: volume running above time-of-day baseline&quot;)
+</code></pre></div>
+</section>
+
+<section class="script">
+  <div class="script-head">
+    <div>
+      <h2>FP3 HTF Bias</h2>
+      <p class="blurb">The honest institutional-flow read (round 30): cumulative overnight vs intraday return tracks, rolling overnight drift, 200-day trend state, and a LONG/SHORT/NEUTRAL bias card. A filter, never a standalone trade.</p>
+    </div>
+    <button class="copy" data-target="fp3">Copy code</button>
+  </div>
+  <div class="codewrap"><pre id="fp3"><code>//@version=5
+// FP3 - HTF BIAS: OVERNIGHT/INTRADAY FLOW DECOMPOSITION (module 3 of 7) ---------
+// The honest version of &quot;institutional flow&quot;. Our round-30 study on 21 years of
+// index data: the equity drift lives almost entirely CLOSE -&gt; OPEN (SPX +2.3,
+// NDX +3.8 bps per night gross, stable across both decade-halves); open-&gt;close
+// is ~nothing. Whoever is patiently accumulating does it around the close and
+// overnight - that persistent pressure is the most defensible &quot;smart money&quot;
+// bias available from bars. (Costs kill it as a standalone trade - round 30 -
+// its job here is DIRECTIONAL BIAS for other setups, nothing more.)
+indicator(&quot;FP3 HTF Bias&quot;, overlay = false)
+
+winN   = input.int(63, &quot;Drift window (days)&quot;, minval = 20)
+smaN   = input.int(200, &quot;Trend SMA (days)&quot;, minval = 50)
+
+// Daily figures from confirmed bars only ([1] offsets) - no lookahead, no
+// repaint: today&#x27;s still-forming daily bar never enters the calculation.
+[dO, dC, dC2] = request.security(syminfo.tickerid, &quot;D&quot;, [open[1], close[1], close[2]], lookahead = barmerge.lookahead_off)
+onRet = dC2 != 0 ? dO / dC2 - 1 : na      // close[t-1] -&gt; open[t]  (overnight)
+idRet = dO  != 0 ? dC / dO  - 1 : na      // open[t]    -&gt; close[t] (intraday)
+dNew  = ta.change(time(&quot;D&quot;)) != 0
+
+var float cumON = 0.0, var float cumID = 0.0
+var onArr = array.new_float()
+if dNew and not na(onRet)
+    cumON += onRet
+    cumID += idRet
+    array.push(onArr, onRet)
+    if array.size(onArr) &gt; winN
+        array.shift(onArr)
+
+onDrift = array.size(onArr) &gt;= winN ? array.avg(onArr) * 1e4 : na   // bps/night
+dSMA    = request.security(syminfo.tickerid, &quot;D&quot;, ta.sma(close[1], smaN), lookahead = barmerge.lookahead_off)
+trendUp = close &gt; dSMA
+
+// Combined bias: overnight drift sign agrees with the slow trend -&gt; conviction;
+// disagreement -&gt; stand down. This is a FILTER for other modules&#x27; setups.
+biasLong  = trendUp and onDrift &gt; 0
+biasShort = not trendUp and onDrift &lt; 0
+
+plot(cumON * 100, &quot;cum overnight ret %&quot;, color.new(color.teal, 0), 2)
+plot(cumID * 100, &quot;cum intraday ret %&quot;, color.new(color.orange, 0), 2)
+hline(0, &quot;0&quot;, color.gray, hline.style_dotted)
+
+var tbl = table.new(position.top_right, 2, 3, border_width = 1)
+if barstate.islast
+    bias = biasLong ? &quot;LONG&quot; : biasShort ? &quot;SHORT&quot; : &quot;NEUTRAL&quot;
+    bcol = biasLong ? color.teal : biasShort ? color.maroon : color.gray
+    table.cell(tbl, 0, 0, &quot;ON drift &quot; + str.tostring(winN) + &quot;d&quot;, text_size = size.small)
+    table.cell(tbl, 1, 0, (na(onDrift) ? &quot;warmup&quot; : str.tostring(onDrift, &quot;#.##&quot;) + &quot; bps/n&quot;), text_size = size.small)
+    table.cell(tbl, 0, 1, &quot;trend vs &quot; + str.tostring(smaN) + &quot;d&quot;, text_size = size.small)
+    table.cell(tbl, 1, 1, trendUp ? &quot;above&quot; : &quot;below&quot;, text_size = size.small)
+    table.cell(tbl, 0, 2, &quot;BIAS&quot;, text_size = size.small)
+    table.cell(tbl, 1, 2, bias, text_color = color.white, bgcolor = bcol, text_size = size.small)
+
+alertcondition(biasLong  and not biasLong[1],  &quot;Bias -&gt; LONG&quot;,  &quot;FP3: overnight drift + trend aligned long&quot;)
+alertcondition(biasShort and not biasShort[1], &quot;Bias -&gt; SHORT&quot;, &quot;FP3: overnight drift + trend aligned short&quot;)
+</code></pre></div>
+</section>
+
+<section class="script">
+  <div class="script-head">
+    <div>
+      <h2>FP4 Absorption Proxy</h2>
+      <p class="blurb">Effort-vs-result: high volume percentile + low range percentile at an N-bar extreme, with close-location direction. Includes a lower-timeframe CVD PROXY, labeled as such - Pine has no true aggressor delta.</p>
+    </div>
+    <button class="copy" data-target="fp4">Copy code</button>
+  </div>
+  <div class="codewrap"><pre id="fp4"><code>//@version=5
+// FP4 - ABSORPTION PROXY + CVD PROXY (module 4 of 7) ----------------------------
+// The best idea in footprint trading, translated honestly to bar data.
+// Absorption = heavy aggressive volume that produces almost no price progress,
+// because passive limit interest on the other side is soaking it. In the order
+// book this is directly visible; bars can only shadow it as EFFORT (volume
+// percentile high) vs RESULT (range percentile low), located AT an extreme
+// (an N-bar low that closes in its upper half on heavy volume = someone bought
+// everything thrown at them).
+//
+// CVD PROXY, stated plainly: Pine has NO aggressor-side data. The lower-TF
+// up/down-volume split below correlates only moderately with true bid/ask
+// delta and misses everything inside each 1-minute bucket. It refines the
+// absorption read; it is NOT real delta and is labeled PROXY on the pane.
+indicator(&quot;FP4 Absorption Proxy&quot;, overlay = false)
+
+lookN  = input.int(100, &quot;Percentile lookback (bars)&quot;, minval = 20)
+volTh  = input.int(80, &quot;Volume percentile &gt;=&quot;, minval = 50, maxval = 99)
+rngTh  = input.int(40, &quot;Range percentile &lt;=&quot;, minval = 1,  maxval = 60)
+extN   = input.int(20, &quot;Extreme lookback (bars)&quot;, minval = 5)
+useLTF = input.bool(true, &quot;CVD proxy from lower TF&quot;)
+ltfRes = input.string(&quot;1&quot;, &quot;Lower TF&quot;)
+
+volP = ta.percentrank(volume, lookN)
+tr   = ta.tr(true)
+rngP = ta.percentrank(tr, lookN)
+clv  = high != low ? (2 * close - high - low) / (high - low) : 0.0   // -1..+1
+
+atLow  = low  &lt;= ta.lowest(low, extN)
+atHigh = high &gt;= ta.highest(high, extN)
+effortNoResult = volP &gt;= volTh and rngP &lt;= rngTh
+absorbBuy  = effortNoResult and atLow  and clv &gt; 0    // sellers pressed a low, someone ate it
+absorbSell = effortNoResult and atHigh and clv &lt; 0    // buyers pressed a high, someone faded it
+
+// CVD proxy: sum of signed lower-TF volume (up-close = +, down-close = -).
+deltaArr = request.security_lower_tf(syminfo.tickerid, ltfRes, close &gt;= open ? volume : -volume)
+deltaPx  = useLTF and array.size(deltaArr) &gt; 0 ? array.sum(deltaArr) : (close &gt;= open ? volume : -volume)
+var float cvd = 0.0
+cvd += nz(deltaPx)
+
+plot(deltaPx, &quot;delta PROXY (per bar)&quot;, deltaPx &gt;= 0 ? color.new(color.teal, 40) : color.new(color.maroon, 40), 1, plot.style_columns)
+plot(cvd, &quot;cum delta PROXY&quot;, color.new(color.blue, 0), 2)
+plotshape(absorbBuy,  &quot;absorption (buy side)&quot;,  shape.triangleup,   location.belowbar, color.teal,   size = size.small, force_overlay = true)
+plotshape(absorbSell, &quot;absorption (sell side)&quot;, shape.triangledown, location.abovebar, color.maroon, size = size.small, force_overlay = true)
+
+// divergence flag: price makes an extN-bar extreme the CVD proxy does not
+// confirm - weak evidence by itself, context for sweeps (FP6).
+divBull = atLow  and cvd &gt; ta.lowest(cvd, extN)
+divBear = atHigh and cvd &lt; ta.highest(cvd, extN)
+plotshape(divBull, &quot;delta divergence bull&quot;, shape.circle, location.bottom, color.new(color.teal, 50),   size = size.tiny)
+plotshape(divBear, &quot;delta divergence bear&quot;, shape.circle, location.top,    color.new(color.maroon, 50), size = size.tiny)
+
+alertcondition(absorbBuy,  &quot;Absorption BUY side&quot;,  &quot;FP4: effort/no-result at a low, close upper half&quot;)
+alertcondition(absorbSell, &quot;Absorption SELL side&quot;, &quot;FP4: effort/no-result at a high, close lower half&quot;)
+</code></pre></div>
+</section>
+
+<section class="script">
+  <div class="script-head">
+    <div>
+      <h2>FP5 Displacement Meter</h2>
+      <p class="blurb">Initiative vs rotational regime from TR/ATR with body dominance, plus an on-chart follow-through scoreboard that prints this symbol's actual next-bar base rate (usually a coin flip - that is the lesson).</p>
+    </div>
+    <button class="copy" data-target="fp5">Copy code</button>
+  </div>
+  <div class="codewrap"><pre id="fp5"><code>//@version=5
+// FP5 - DISPLACEMENT METER (module 5 of 7) --------------------------------------
+// Initiative vs rotational auction. A displacement bar - range well beyond the
+// recent ATR with a dominant directional body - marks INITIATIVE activity:
+// someone paying up for immediacy. Academic cousin: the intraday-momentum
+// literature (first-30-min return predicting the last 30) - real, but weakened
+// since publication. The regime read (initiative vs rotation) is the durable
+// part; a single big candle is not a signal by itself.
+//
+// The scoreboard prints THIS symbol&#x27;s actual follow-through base rate, because
+// the honest number is usually close to a coin flip - that is the point of
+// showing it. Judge the gradient, not one anecdote.
+indicator(&quot;FP5 Displacement Meter&quot;, overlay = false)
+
+atrN   = input.int(14, &quot;ATR length&quot;, minval = 5)
+kMult  = input.float(1.5, &quot;Displacement: TR &gt;= k x ATR&quot;, step = 0.1)
+bodyTh = input.float(0.6, &quot;Min body/range&quot;, step = 0.05, minval = 0.3, maxval = 0.95)
+regN   = input.int(30, &quot;Regime window (bars)&quot;, minval = 10)
+regTh  = input.int(3, &quot;Initiative if &gt;= N displacement bars in window&quot;, minval = 1)
+
+atr  = ta.atr(atrN)
+tr   = ta.tr(true)
+body = math.abs(close - open)
+disp = tr &gt;= kMult * atr and (high != low ? body / (high - low) : 0) &gt;= bodyTh
+dUp  = disp and close &gt; open
+dDn  = disp and close &lt; open
+
+cnt = math.sum(disp ? 1 : 0, regN)
+initiative = cnt &gt;= regTh
+
+plot(tr / atr, &quot;TR / ATR&quot;, disp ? color.new(color.orange, 0) : color.new(color.gray, 50), 2, plot.style_columns)
+hline(1.0, &quot;ATR par&quot;, color.gray, hline.style_dotted)
+bgcolor(initiative ? color.new(color.orange, 90) : na)
+plotshape(dUp, &quot;displacement up&quot;,   shape.triangleup,   location.belowbar, color.teal,   size = size.tiny, force_overlay = true)
+plotshape(dDn, &quot;displacement down&quot;, shape.triangledown, location.abovebar, color.maroon, size = size.tiny, force_overlay = true)
+
+// follow-through scoreboard: after an up/down displacement bar, how often did
+// the NEXT bar close in the same direction? Running, on-chart, this symbol/TF.
+var int upN = 0, var int upF = 0, var int dnN = 0, var int dnF = 0
+if barstate.isconfirmed
+    if dUp[1]
+        upN += 1
+        upF += close &gt; close[1] ? 1 : 0
+    if dDn[1]
+        dnN += 1
+        dnF += close &lt; close[1] ? 1 : 0
+var tbl = table.new(position.bottom_right, 3, 3, border_width = 1)
+if barstate.islast
+    table.cell(tbl, 0, 0, &quot;follow-through&quot;, text_size = size.small)
+    table.cell(tbl, 1, 0, &quot;n&quot;, text_size = size.small)
+    table.cell(tbl, 2, 0, &quot;next-bar same dir&quot;, text_size = size.small)
+    table.cell(tbl, 0, 1, &quot;after disp UP&quot;, text_size = size.small)
+    table.cell(tbl, 1, 1, str.tostring(upN), text_size = size.small)
+    table.cell(tbl, 2, 1, upN &gt; 0 ? str.tostring(100.0 * upF / upN, &quot;#.#&quot;) + &quot;%&quot; : &quot;-&quot;, text_size = size.small)
+    table.cell(tbl, 0, 2, &quot;after disp DOWN&quot;, text_size = size.small)
+    table.cell(tbl, 1, 2, str.tostring(dnN), text_size = size.small)
+    table.cell(tbl, 2, 2, dnN &gt; 0 ? str.tostring(100.0 * dnF / dnN, &quot;#.#&quot;) + &quot;%&quot; : &quot;-&quot;, text_size = size.small)
+
+alertcondition(disp, &quot;Displacement bar&quot;, &quot;FP5: initiative range expansion&quot;)
+alertcondition(initiative and not initiative[1], &quot;Regime -&gt; initiative&quot;, &quot;FP5: rotation -&gt; initiative regime&quot;)
+</code></pre></div>
+</section>
+
+<section class="script">
+  <div class="script-head">
+    <div>
+      <h2>FP6 Liquidity Sweeps (context only)</h2>
+      <p class="blurb">PDH/PDL, overnight extremes, opening range, with failed-break detection and a running scoreboard. Round 33: breaches close back inside 54-80% of the time but the reversal is worth <2bps and every tradeable cell loses - levels are context, sweep entries are not signals.</p>
+    </div>
+    <button class="copy" data-target="fp6">Copy code</button>
+  </div>
+  <div class="codewrap"><pre id="fp6"><code>//@version=5
+// FP6 - LIQUIDITY LEVELS &amp; SWEEP DETECTOR (module 6 of 7) -----------------------
+// The one genuinely open question of this project (grade C+). What is real:
+// stops DO cluster at salient reference prices (prior-day high/low, overnight
+// extremes, the opening range) - salience, not conspiracy - and a FAILED break
+// is auction information: price advertised beyond the level and found no
+// business. What is folklore: &quot;institutions hunting your stops then reversing.&quot;
+// Our own receipts: the same trade on gold died in round 8; the reclaim entry
+// added nothing on AUDUSD. Index RTH extremes are the untested case - which is
+// why this module keeps a running SCOREBOARD of what sweeps actually did on
+// YOUR symbol, instead of asking you to believe anecdotes.
+indicator(&quot;FP6 Liquidity Sweeps&quot;, overlay = true, max_lines_count = 500, max_labels_count = 500)
+
+tz      = input.string(&quot;America/New_York&quot;, &quot;Timezone&quot;)
+rthSess = input.session(&quot;0930-1600&quot;, &quot;RTH session&quot;)
+orMins  = input.int(30, &quot;Opening range (minutes)&quot;, minval = 5)
+failK   = input.int(6, &quot;Failure window (bars)&quot;, minval = 1)
+fwdN    = input.int(6, &quot;Scoreboard: forward bars&quot;, minval = 1)
+
+inRTH    = not na(time(timeframe.period, rthSess, tz))
+rthStart = inRTH and not inRTH[1]
+rthEnd   = not inRTH and inRTH[1]
+
+// ---- reference levels ---------------------------------------------------------
+var float dayH = na, var float dayL = na, var float pdh = na, var float pdl = na
+var float onH = na, var float onL = na, var float onHf = na, var float onLf = na
+var float orH = na, var float orL = na, var int orEndT = na
+if rthStart
+    pdh := dayH, pdl := dayL          // freeze yesterday&#x27;s RTH extremes
+    dayH := high, dayL := low
+    onHf := onH, onLf := onL          // freeze the just-finished overnight
+    orH := high, orL := low
+    orEndT := time + orMins * 60000
+if inRTH
+    dayH := math.max(nz(dayH, high), high), dayL := math.min(nz(dayL, low), low)
+    if time &lt; orEndT
+        orH := math.max(nz(orH, high), high), orL := math.min(nz(orL, low), low)
+if rthEnd
+    onH := high, onL := low           // restart overnight accumulation
+if not inRTH
+    onH := math.max(nz(onH, high), high), onL := math.min(nz(onL, low), low)
+
+plot(inRTH ? pdh : na, &quot;PDH&quot;, color.new(color.maroon, 30), 1, plot.style_linebr)
+plot(inRTH ? pdl : na, &quot;PDL&quot;, color.new(color.teal, 30), 1, plot.style_linebr)
+plot(inRTH ? onHf : na, &quot;ON high&quot;, color.new(color.maroon, 65), 1, plot.style_linebr)
+plot(inRTH ? onLf : na, &quot;ON low&quot;, color.new(color.teal, 65), 1, plot.style_linebr)
+plot(inRTH and time &gt;= orEndT ? orH : na, &quot;OR high&quot;, color.new(color.orange, 45), 1, plot.style_linebr)
+plot(inRTH and time &gt;= orEndT ? orL : na, &quot;OR low&quot;, color.new(color.orange, 45), 1, plot.style_linebr)
+
+// ---- sweep state machine ------------------------------------------------------
+// Breach = trade beyond a level. Failure = a CLOSE back on the original side
+// within failK bars of the breach. Acceptance = still beyond after failK bars.
+// One event per level per session. The scoreboard tallies failures vs
+// acceptances and the mean forward move after each failure - the base rate.
+var int swN = 0, var int swFail = 0, var float swFwd = 0.0
+var int fwdWait = na, var float fwdRef = na, var int fwdDir = 0
+
+evalLevel(bool active, float lvl, bool upSide, int state, int sinceBreach) =&gt;
+    // state: 0 armed, 1 breached, 2 done
+    s = state, sb = sinceBreach, failed = false, accepted = false
+    if active and not na(lvl)
+        if s == 0 and (upSide ? high &gt; lvl : low &lt; lvl)
+            s := 1, sb := 0
+        else if s == 1
+            sb += 1
+            if upSide ? close &lt; lvl : close &gt; lvl
+                failed := true, s := 2
+            else if sb &gt;= failK
+                accepted := true, s := 2
+    [s, sb, failed, accepted]
+
+var int s1 = 0, var int b1 = 0
+var int s2 = 0, var int b2 = 0
+var int s3 = 0, var int b3 = 0
+var int s4 = 0, var int b4 = 0
+if rthStart
+    s1 := 0, s2 := 0, s3 := 0, s4 := 0
+[ns1, nb1, f1, a1] = evalLevel(inRTH, pdh,  true,  s1, b1)
+[ns2, nb2, f2, a2] = evalLevel(inRTH, pdl,  false, s2, b2)
+[ns3, nb3, f3, a3] = evalLevel(inRTH, onHf, true,  s3, b3)
+[ns4, nb4, f4, a4] = evalLevel(inRTH, onLf, false, s4, b4)
+s1 := ns1, b1 := nb1, s2 := ns2, b2 := nb2, s3 := ns3, b3 := nb3, s4 := ns4, b4 := nb4
+
+anyFailUp = f1 or f3          // failed break of a HIGH -&gt; bearish information
+anyFailDn = f2 or f4          // failed break of a LOW  -&gt; bullish information
+anyAccept = a1 or a2 or a3 or a4
+plotshape(anyFailUp, &quot;failed break high&quot;, shape.labeldown, location.abovebar, color.maroon, text = &quot;sweep x&quot;, textcolor = color.white, size = size.tiny)
+plotshape(anyFailDn, &quot;failed break low&quot;,  shape.labelup,   location.belowbar, color.teal,   text = &quot;sweep x&quot;, textcolor = color.white, size = size.tiny)
+
+// forward tracking for the scoreboard (one at a time - keeps it simple)
+if (anyFailUp or anyFailDn) and na(fwdWait)
+    fwdWait := fwdN, fwdRef := close, fwdDir := anyFailDn ? 1 : -1
+    swN += 1, swFail += 1
+if anyAccept
+    swN += 1
+if not na(fwdWait)
+    fwdWait -= 1
+    if fwdWait &lt;= 0
+        swFwd += fwdDir * (close - fwdRef) / fwdRef * 1e4    // bps, reversal dir
+        fwdWait := na
+
+var tbl = table.new(position.bottom_left, 2, 3, border_width = 1)
+if barstate.islast
+    table.cell(tbl, 0, 0, &quot;sweep events&quot;, text_size = size.small)
+    table.cell(tbl, 1, 0, str.tostring(swN), text_size = size.small)
+    table.cell(tbl, 0, 1, &quot;% failed (reversed)&quot;, text_size = size.small)
+    table.cell(tbl, 1, 1, swN &gt; 0 ? str.tostring(100.0 * swFail / swN, &quot;#.#&quot;) + &quot;%&quot; : &quot;-&quot;, text_size = size.small)
+    table.cell(tbl, 0, 2, &quot;avg fwd after fail&quot;, text_size = size.small)
+    table.cell(tbl, 1, 2, swFail &gt; 0 ? str.tostring(swFwd / swFail, &quot;#.#&quot;) + &quot; bps&quot; : &quot;-&quot;, text_size = size.small)
+
+alertcondition(anyFailDn, &quot;Sweep failure at a LOW&quot;,  &quot;FP6: failed break below PDL/ON low (bullish auction rejection)&quot;)
+alertcondition(anyFailUp, &quot;Sweep failure at a HIGH&quot;, &quot;FP6: failed break above PDH/ON high (bearish auction rejection)&quot;)
+</code></pre></div>
+</section>
+
+<section class="script">
+  <div class="script-head">
+    <div>
+      <h2>FP7 SMC Visuals (viz only)</h2>
+      <p class="blurb">Order blocks and FVGs, drawn with an honesty table: fill % is a base rate, not an edge (round 27: 0/12 cells). Zero strategy weight unless they ever pass validation.</p>
+    </div>
+    <button class="copy" data-target="fp7">Copy code</button>
+  </div>
+  <div class="codewrap"><pre id="fp7"><code>//@version=5
+// FP7 - SMC VISUALS: ORDER BLOCKS &amp; FVGs (module 7 of 7) ------------------------
+// ============================ VISUALIZATION ONLY ==============================
+// Grade D on the Project Footprint map, and drawn anyway - so you can watch
+// these constructs with real statistics attached instead of anecdotes.
+// Why grade D, in microstructure terms: institutional parent orders are sliced
+// by execution algos across hours precisely so that NO single candle carries
+// them; resting liquidity is invisible without the order book. &quot;The last
+// opposing candle before the impulse is where institutions positioned&quot; is a
+// story about a pattern, not a mechanism. Our own tests: the FVG family went
+// 0-for-12 runnable cells (round 27); no peer-reviewed support exists for
+// either construct. The FILL-RATE table below usually prints a high fill % -
+// that is a BASE RATE (most gaps fill because volatility is large relative to
+// gap size), not an edge: an edge needs direction + time-stop + costs, which
+// is what the validation pipeline tests and these patterns failed.
+// These boxes receive ZERO strategy weight unless they pass validation.
+indicator(&quot;FP7 SMC Visuals (viz only)&quot;, overlay = true, max_boxes_count = 500)
+
+atrN   = input.int(14, &quot;ATR length (displacement ref)&quot;, minval = 5)
+kMult  = input.float(1.5, &quot;Displacement: TR &gt;= k x ATR&quot;, step = 0.1)
+maxAge = input.int(300, &quot;Max box age (bars)&quot;, minval = 20)
+showOB = input.bool(true, &quot;Order blocks&quot;)
+showFVG= input.bool(true, &quot;Fair value gaps&quot;)
+
+atr  = ta.atr(atrN)
+disp = ta.tr(true) &gt;= kMult * atr
+dispUp = disp and close &gt; open
+dispDn = disp and close &lt; open
+
+// ---- FVGs: 3-bar imbalance, with an honest fill-rate tally --------------------
+var fvgBoxes = array.new_box()
+var fvgBull  = array.new_bool()
+var int fvgN = 0, var int fvgFilled = 0, var float fvgBars = 0.0
+bullFVG = showFVG and low &gt; high[2]
+bearFVG = showFVG and high &lt; low[2]
+if bullFVG
+    array.push(fvgBoxes, box.new(bar_index - 2, low, bar_index, high[2], border_color = color.new(color.teal, 60), bgcolor = color.new(color.teal, 88)))
+    array.push(fvgBull, true), fvgN += 1
+if bearFVG
+    array.push(fvgBoxes, box.new(bar_index - 2, low[2], bar_index, high, border_color = color.new(color.maroon, 60), bgcolor = color.new(color.maroon, 88)))
+    array.push(fvgBull, false), fvgN += 1
+if array.size(fvgBoxes) &gt; 0
+    for i = array.size(fvgBoxes) - 1 to 0
+        bx = array.get(fvgBoxes, i)
+        isBull = array.get(fvgBull, i)
+        filled = isBull ? low &lt;= box.get_bottom(bx) : high &gt;= box.get_top(bx)
+        aged = bar_index - box.get_left(bx) &gt; maxAge
+        if filled
+            fvgFilled += 1
+            fvgBars += bar_index - box.get_left(bx)
+        if filled or aged
+            box.delete(bx)
+            array.remove(fvgBoxes, i), array.remove(fvgBull, i)
+        else
+            box.set_right(bx, bar_index)
+
+// ---- Order blocks: last opposing candle before a displacement bar -------------
+var obBoxes = array.new_box()
+var obBull  = array.new_bool()
+if showOB and dispUp and close[1] &lt; open[1]
+    array.push(obBoxes, box.new(bar_index - 1, high[1], bar_index, low[1], border_color = color.new(color.teal, 40), bgcolor = color.new(color.teal, 92)))
+    array.push(obBull, true)
+if showOB and dispDn and close[1] &gt; open[1]
+    array.push(obBoxes, box.new(bar_index - 1, high[1], bar_index, low[1], border_color = color.new(color.maroon, 40), bgcolor = color.new(color.maroon, 92)))
+    array.push(obBull, false)
+if array.size(obBoxes) &gt; 0
+    for i = array.size(obBoxes) - 1 to 0
+        bx = array.get(obBoxes, i)
+        mitig = array.get(obBull, i) ? close &lt; box.get_bottom(bx) : close &gt; box.get_top(bx)
+        if mitig or bar_index - box.get_left(bx) &gt; maxAge
+            box.delete(bx)
+            array.remove(obBoxes, i), array.remove(obBull, i)
+        else
+            box.set_right(bx, bar_index)
+
+// ---- the honesty table --------------------------------------------------------
+var tbl = table.new(position.top_left, 2, 3, border_width = 1)
+if barstate.islast
+    table.cell(tbl, 0, 0, &quot;FVG fill rate&quot;, text_size = size.small)
+    table.cell(tbl, 1, 0, fvgN &gt; 0 ? str.tostring(100.0 * fvgFilled / fvgN, &quot;#.#&quot;) + &quot;% of &quot; + str.tostring(fvgN) : &quot;-&quot;, text_size = size.small)
+    table.cell(tbl, 0, 1, &quot;median-ish bars to fill&quot;, text_size = size.small)
+    table.cell(tbl, 1, 1, fvgFilled &gt; 0 ? str.tostring(fvgBars / fvgFilled, &quot;#&quot;) : &quot;-&quot;, text_size = size.small)
+    table.cell(tbl, 0, 2, &quot;NOTE&quot;, text_size = size.small)
+    table.cell(tbl, 1, 2, &quot;fill % is a BASE RATE,\nnot an edge (r27: 0/12)&quot;, text_size = size.small, text_color = color.new(color.maroon, 0))
 </code></pre></div>
 </section>
 

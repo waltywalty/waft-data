@@ -1,0 +1,60 @@
+//@version=5
+// FP5 - DISPLACEMENT METER (module 5 of 7) --------------------------------------
+// Initiative vs rotational auction. A displacement bar - range well beyond the
+// recent ATR with a dominant directional body - marks INITIATIVE activity:
+// someone paying up for immediacy. Academic cousin: the intraday-momentum
+// literature (first-30-min return predicting the last 30) - real, but weakened
+// since publication. The regime read (initiative vs rotation) is the durable
+// part; a single big candle is not a signal by itself.
+//
+// The scoreboard prints THIS symbol's actual follow-through base rate, because
+// the honest number is usually close to a coin flip - that is the point of
+// showing it. Judge the gradient, not one anecdote.
+indicator("FP5 Displacement Meter", overlay = false)
+
+atrN   = input.int(14, "ATR length", minval = 5)
+kMult  = input.float(1.5, "Displacement: TR >= k x ATR", step = 0.1)
+bodyTh = input.float(0.6, "Min body/range", step = 0.05, minval = 0.3, maxval = 0.95)
+regN   = input.int(30, "Regime window (bars)", minval = 10)
+regTh  = input.int(3, "Initiative if >= N displacement bars in window", minval = 1)
+
+atr  = ta.atr(atrN)
+tr   = ta.tr(true)
+body = math.abs(close - open)
+disp = tr >= kMult * atr and (high != low ? body / (high - low) : 0) >= bodyTh
+dUp  = disp and close > open
+dDn  = disp and close < open
+
+cnt = math.sum(disp ? 1 : 0, regN)
+initiative = cnt >= regTh
+
+plot(tr / atr, "TR / ATR", disp ? color.new(color.orange, 0) : color.new(color.gray, 50), 2, plot.style_columns)
+hline(1.0, "ATR par", color.gray, hline.style_dotted)
+bgcolor(initiative ? color.new(color.orange, 90) : na)
+plotshape(dUp, "displacement up",   shape.triangleup,   location.belowbar, color.teal,   size = size.tiny, force_overlay = true)
+plotshape(dDn, "displacement down", shape.triangledown, location.abovebar, color.maroon, size = size.tiny, force_overlay = true)
+
+// follow-through scoreboard: after an up/down displacement bar, how often did
+// the NEXT bar close in the same direction? Running, on-chart, this symbol/TF.
+var int upN = 0, var int upF = 0, var int dnN = 0, var int dnF = 0
+if barstate.isconfirmed
+    if dUp[1]
+        upN += 1
+        upF += close > close[1] ? 1 : 0
+    if dDn[1]
+        dnN += 1
+        dnF += close < close[1] ? 1 : 0
+var tbl = table.new(position.bottom_right, 3, 3, border_width = 1)
+if barstate.islast
+    table.cell(tbl, 0, 0, "follow-through", text_size = size.small)
+    table.cell(tbl, 1, 0, "n", text_size = size.small)
+    table.cell(tbl, 2, 0, "next-bar same dir", text_size = size.small)
+    table.cell(tbl, 0, 1, "after disp UP", text_size = size.small)
+    table.cell(tbl, 1, 1, str.tostring(upN), text_size = size.small)
+    table.cell(tbl, 2, 1, upN > 0 ? str.tostring(100.0 * upF / upN, "#.#") + "%" : "-", text_size = size.small)
+    table.cell(tbl, 0, 2, "after disp DOWN", text_size = size.small)
+    table.cell(tbl, 1, 2, str.tostring(dnN), text_size = size.small)
+    table.cell(tbl, 2, 2, dnN > 0 ? str.tostring(100.0 * dnF / dnN, "#.#") + "%" : "-", text_size = size.small)
+
+alertcondition(disp, "Displacement bar", "FP5: initiative range expansion")
+alertcondition(initiative and not initiative[1], "Regime -> initiative", "FP5: rotation -> initiative regime")

@@ -1,0 +1,84 @@
+//@version=5
+// FP7 - SMC VISUALS: ORDER BLOCKS & FVGs (module 7 of 7) ------------------------
+// ============================ VISUALIZATION ONLY ==============================
+// Grade D on the Project Footprint map, and drawn anyway - so you can watch
+// these constructs with real statistics attached instead of anecdotes.
+// Why grade D, in microstructure terms: institutional parent orders are sliced
+// by execution algos across hours precisely so that NO single candle carries
+// them; resting liquidity is invisible without the order book. "The last
+// opposing candle before the impulse is where institutions positioned" is a
+// story about a pattern, not a mechanism. Our own tests: the FVG family went
+// 0-for-12 runnable cells (round 27); no peer-reviewed support exists for
+// either construct. The FILL-RATE table below usually prints a high fill % -
+// that is a BASE RATE (most gaps fill because volatility is large relative to
+// gap size), not an edge: an edge needs direction + time-stop + costs, which
+// is what the validation pipeline tests and these patterns failed.
+// These boxes receive ZERO strategy weight unless they pass validation.
+indicator("FP7 SMC Visuals (viz only)", overlay = true, max_boxes_count = 500)
+
+atrN   = input.int(14, "ATR length (displacement ref)", minval = 5)
+kMult  = input.float(1.5, "Displacement: TR >= k x ATR", step = 0.1)
+maxAge = input.int(300, "Max box age (bars)", minval = 20)
+showOB = input.bool(true, "Order blocks")
+showFVG= input.bool(true, "Fair value gaps")
+
+atr  = ta.atr(atrN)
+disp = ta.tr(true) >= kMult * atr
+dispUp = disp and close > open
+dispDn = disp and close < open
+
+// ---- FVGs: 3-bar imbalance, with an honest fill-rate tally --------------------
+var fvgBoxes = array.new_box()
+var fvgBull  = array.new_bool()
+var int fvgN = 0, var int fvgFilled = 0, var float fvgBars = 0.0
+bullFVG = showFVG and low > high[2]
+bearFVG = showFVG and high < low[2]
+if bullFVG
+    array.push(fvgBoxes, box.new(bar_index - 2, low, bar_index, high[2], border_color = color.new(color.teal, 60), bgcolor = color.new(color.teal, 88)))
+    array.push(fvgBull, true), fvgN += 1
+if bearFVG
+    array.push(fvgBoxes, box.new(bar_index - 2, low[2], bar_index, high, border_color = color.new(color.maroon, 60), bgcolor = color.new(color.maroon, 88)))
+    array.push(fvgBull, false), fvgN += 1
+if array.size(fvgBoxes) > 0
+    for i = array.size(fvgBoxes) - 1 to 0
+        bx = array.get(fvgBoxes, i)
+        isBull = array.get(fvgBull, i)
+        filled = isBull ? low <= box.get_bottom(bx) : high >= box.get_top(bx)
+        aged = bar_index - box.get_left(bx) > maxAge
+        if filled
+            fvgFilled += 1
+            fvgBars += bar_index - box.get_left(bx)
+        if filled or aged
+            box.delete(bx)
+            array.remove(fvgBoxes, i), array.remove(fvgBull, i)
+        else
+            box.set_right(bx, bar_index)
+
+// ---- Order blocks: last opposing candle before a displacement bar -------------
+var obBoxes = array.new_box()
+var obBull  = array.new_bool()
+if showOB and dispUp and close[1] < open[1]
+    array.push(obBoxes, box.new(bar_index - 1, high[1], bar_index, low[1], border_color = color.new(color.teal, 40), bgcolor = color.new(color.teal, 92)))
+    array.push(obBull, true)
+if showOB and dispDn and close[1] > open[1]
+    array.push(obBoxes, box.new(bar_index - 1, high[1], bar_index, low[1], border_color = color.new(color.maroon, 40), bgcolor = color.new(color.maroon, 92)))
+    array.push(obBull, false)
+if array.size(obBoxes) > 0
+    for i = array.size(obBoxes) - 1 to 0
+        bx = array.get(obBoxes, i)
+        mitig = array.get(obBull, i) ? close < box.get_bottom(bx) : close > box.get_top(bx)
+        if mitig or bar_index - box.get_left(bx) > maxAge
+            box.delete(bx)
+            array.remove(obBoxes, i), array.remove(obBull, i)
+        else
+            box.set_right(bx, bar_index)
+
+// ---- the honesty table --------------------------------------------------------
+var tbl = table.new(position.top_left, 2, 3, border_width = 1)
+if barstate.islast
+    table.cell(tbl, 0, 0, "FVG fill rate", text_size = size.small)
+    table.cell(tbl, 1, 0, fvgN > 0 ? str.tostring(100.0 * fvgFilled / fvgN, "#.#") + "% of " + str.tostring(fvgN) : "-", text_size = size.small)
+    table.cell(tbl, 0, 1, "median-ish bars to fill", text_size = size.small)
+    table.cell(tbl, 1, 1, fvgFilled > 0 ? str.tostring(fvgBars / fvgFilled, "#") : "-", text_size = size.small)
+    table.cell(tbl, 0, 2, "NOTE", text_size = size.small)
+    table.cell(tbl, 1, 2, "fill % is a BASE RATE,\nnot an edge (r27: 0/12)", text_size = size.small, text_color = color.new(color.maroon, 0))

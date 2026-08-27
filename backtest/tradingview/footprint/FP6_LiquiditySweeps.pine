@@ -1,0 +1,112 @@
+//@version=5
+// FP6 - LIQUIDITY LEVELS & SWEEP DETECTOR (module 6 of 7) -----------------------
+// The one genuinely open question of this project (grade C+). What is real:
+// stops DO cluster at salient reference prices (prior-day high/low, overnight
+// extremes, the opening range) - salience, not conspiracy - and a FAILED break
+// is auction information: price advertised beyond the level and found no
+// business. What is folklore: "institutions hunting your stops then reversing."
+// Our own receipts: the same trade on gold died in round 8; the reclaim entry
+// added nothing on AUDUSD. Index RTH extremes are the untested case - which is
+// why this module keeps a running SCOREBOARD of what sweeps actually did on
+// YOUR symbol, instead of asking you to believe anecdotes.
+indicator("FP6 Liquidity Sweeps", overlay = true, max_lines_count = 500, max_labels_count = 500)
+
+tz      = input.string("America/New_York", "Timezone")
+rthSess = input.session("0930-1600", "RTH session")
+orMins  = input.int(30, "Opening range (minutes)", minval = 5)
+failK   = input.int(6, "Failure window (bars)", minval = 1)
+fwdN    = input.int(6, "Scoreboard: forward bars", minval = 1)
+
+inRTH    = not na(time(timeframe.period, rthSess, tz))
+rthStart = inRTH and not inRTH[1]
+rthEnd   = not inRTH and inRTH[1]
+
+// ---- reference levels ---------------------------------------------------------
+var float dayH = na, var float dayL = na, var float pdh = na, var float pdl = na
+var float onH = na, var float onL = na, var float onHf = na, var float onLf = na
+var float orH = na, var float orL = na, var int orEndT = na
+if rthStart
+    pdh := dayH, pdl := dayL          // freeze yesterday's RTH extremes
+    dayH := high, dayL := low
+    onHf := onH, onLf := onL          // freeze the just-finished overnight
+    orH := high, orL := low
+    orEndT := time + orMins * 60000
+if inRTH
+    dayH := math.max(nz(dayH, high), high), dayL := math.min(nz(dayL, low), low)
+    if time < orEndT
+        orH := math.max(nz(orH, high), high), orL := math.min(nz(orL, low), low)
+if rthEnd
+    onH := high, onL := low           // restart overnight accumulation
+if not inRTH
+    onH := math.max(nz(onH, high), high), onL := math.min(nz(onL, low), low)
+
+plot(inRTH ? pdh : na, "PDH", color.new(color.maroon, 30), 1, plot.style_linebr)
+plot(inRTH ? pdl : na, "PDL", color.new(color.teal, 30), 1, plot.style_linebr)
+plot(inRTH ? onHf : na, "ON high", color.new(color.maroon, 65), 1, plot.style_linebr)
+plot(inRTH ? onLf : na, "ON low", color.new(color.teal, 65), 1, plot.style_linebr)
+plot(inRTH and time >= orEndT ? orH : na, "OR high", color.new(color.orange, 45), 1, plot.style_linebr)
+plot(inRTH and time >= orEndT ? orL : na, "OR low", color.new(color.orange, 45), 1, plot.style_linebr)
+
+// ---- sweep state machine ------------------------------------------------------
+// Breach = trade beyond a level. Failure = a CLOSE back on the original side
+// within failK bars of the breach. Acceptance = still beyond after failK bars.
+// One event per level per session. The scoreboard tallies failures vs
+// acceptances and the mean forward move after each failure - the base rate.
+var int swN = 0, var int swFail = 0, var float swFwd = 0.0
+var int fwdWait = na, var float fwdRef = na, var int fwdDir = 0
+
+evalLevel(bool active, float lvl, bool upSide, int state, int sinceBreach) =>
+    // state: 0 armed, 1 breached, 2 done
+    s = state, sb = sinceBreach, failed = false, accepted = false
+    if active and not na(lvl)
+        if s == 0 and (upSide ? high > lvl : low < lvl)
+            s := 1, sb := 0
+        else if s == 1
+            sb += 1
+            if upSide ? close < lvl : close > lvl
+                failed := true, s := 2
+            else if sb >= failK
+                accepted := true, s := 2
+    [s, sb, failed, accepted]
+
+var int s1 = 0, var int b1 = 0
+var int s2 = 0, var int b2 = 0
+var int s3 = 0, var int b3 = 0
+var int s4 = 0, var int b4 = 0
+if rthStart
+    s1 := 0, s2 := 0, s3 := 0, s4 := 0
+[ns1, nb1, f1, a1] = evalLevel(inRTH, pdh,  true,  s1, b1)
+[ns2, nb2, f2, a2] = evalLevel(inRTH, pdl,  false, s2, b2)
+[ns3, nb3, f3, a3] = evalLevel(inRTH, onHf, true,  s3, b3)
+[ns4, nb4, f4, a4] = evalLevel(inRTH, onLf, false, s4, b4)
+s1 := ns1, b1 := nb1, s2 := ns2, b2 := nb2, s3 := ns3, b3 := nb3, s4 := ns4, b4 := nb4
+
+anyFailUp = f1 or f3          // failed break of a HIGH -> bearish information
+anyFailDn = f2 or f4          // failed break of a LOW  -> bullish information
+anyAccept = a1 or a2 or a3 or a4
+plotshape(anyFailUp, "failed break high", shape.labeldown, location.abovebar, color.maroon, text = "sweep x", textcolor = color.white, size = size.tiny)
+plotshape(anyFailDn, "failed break low",  shape.labelup,   location.belowbar, color.teal,   text = "sweep x", textcolor = color.white, size = size.tiny)
+
+// forward tracking for the scoreboard (one at a time - keeps it simple)
+if (anyFailUp or anyFailDn) and na(fwdWait)
+    fwdWait := fwdN, fwdRef := close, fwdDir := anyFailDn ? 1 : -1
+    swN += 1, swFail += 1
+if anyAccept
+    swN += 1
+if not na(fwdWait)
+    fwdWait -= 1
+    if fwdWait <= 0
+        swFwd += fwdDir * (close - fwdRef) / fwdRef * 1e4    // bps, reversal dir
+        fwdWait := na
+
+var tbl = table.new(position.bottom_left, 2, 3, border_width = 1)
+if barstate.islast
+    table.cell(tbl, 0, 0, "sweep events", text_size = size.small)
+    table.cell(tbl, 1, 0, str.tostring(swN), text_size = size.small)
+    table.cell(tbl, 0, 1, "% failed (reversed)", text_size = size.small)
+    table.cell(tbl, 1, 1, swN > 0 ? str.tostring(100.0 * swFail / swN, "#.#") + "%" : "-", text_size = size.small)
+    table.cell(tbl, 0, 2, "avg fwd after fail", text_size = size.small)
+    table.cell(tbl, 1, 2, swFail > 0 ? str.tostring(swFwd / swFail, "#.#") + " bps" : "-", text_size = size.small)
+
+alertcondition(anyFailDn, "Sweep failure at a LOW",  "FP6: failed break below PDL/ON low (bullish auction rejection)")
+alertcondition(anyFailUp, "Sweep failure at a HIGH", "FP6: failed break above PDH/ON high (bearish auction rejection)")

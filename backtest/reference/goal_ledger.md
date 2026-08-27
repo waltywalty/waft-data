@@ -1281,3 +1281,47 @@ pre-registration + both-halves + drift-null + costs on OUR data - the Pine
 tester is an execution-fidelity check, not evidence. Web check performed:
 no peer-reviewed empirical support exists for SMC/ICT constructs;
 circulating "FVG fills 70%" figures are base rates without time-stops.
+
+## Round 33 Phase 4a pre-registration: index sweep-failure validation
+
+The map's one open question (footprint #6, grade C+). Registered prior:
+near-coin-flip, consistent with r8 (gold Judas sweep dead) and the AUDUSD
+reclaim result; index RTH extremes are the strongest-salience case and get
+one clean test before FP6 can carry any strategy weight in Phase 3.
+Design, frozen: SPX/NDX 5m 2005-2025 and RTY 2005-2020 (ET); session key =
+overnight (16:00 prev to 09:25) + RTH (09:30-15:55). Levels: PDH/PDL
+(prior RTH extremes), ONH/ONL (overnight extremes), OR30 H/L (first six
+5m bars; breaches counted only after the window). Event = FIRST breach per
+level per session; failure = a 5m close back on the original side within
+6 bars; acceptance otherwise. Descriptive cells (all 3 x 6): breach count,
+failure rate, forward 30m and EOD reversal-direction return after the
+failure close (gross bps, t). Tradeable cells (PDH/PDL/ONH/ONL only,
+3 x 4): enter failure close in the reversal direction, stop at the sweep
+extreme, EOD exit, house costs (SPX 0.6 / NDX 2.0 / RTY 0.4 pts RT);
+halves must agree in sign. 18 descriptive + 12 tradeable cells, all
+counted. Any "candidate" additionally needs a max-stat check against the
+full surface before promotion. FP6's on-chart scoreboard mirrors this
+definition (close-back-inside within K bars) so chart and pipeline measure
+the same thing.
+
+## Round 33 Phase 4a results: sweep-failure = a base rate, not an edge
+
+(run_r33_sweeps.py, results/r33_sweeps.json) 18 descriptive + 12 tradeable
+cells, ~36k breach events. The folklore's kernel CONFIRMED as description:
+across every instrument and level class, 54-80% of breaches close back
+inside within 30 minutes - which is why sweep-reversal anecdotes are so
+easy to collect. Monetization REFUTED: the post-failure reversal is worth
++0.3 to +1.6 bps gross at 30 minutes (best single cell t +2.16 on an
+18-cell surface - dead under max-stat), decays or flips by EOD (the
+intraday drift swamps it), and the canonical trade (failure-close entry,
+sweep-extreme stop, EOD exit) LOSES in all 12 cells net (PF 0.79-0.99,
+WR 17-23%, t to -2.7, halves both-negative in 9/12). The tight
+stop-at-the-extreme geometry is the killer: the entry is fine, the stop
+gets run by the same noise that produced the "sweep". Fully consistent
+with r8 (gold) and the AUDUSD reclaim. DECISION: FP6 carries zero strategy
+weight in Phase 3; it survives as levels + on-chart scoreboard (the
+scoreboard now shows users the base rate honestly). Footprint #6 regraded
+C+ -> resolved negative. The Phase 3 confluence set is therefore drawn
+only from: session context (FP1), RVOL (FP2), HTF bias (FP3), absorption
+(FP4), displacement regime (FP5) - and each gate still needs its own
+pre-registered pass before weights are assigned.

@@ -1,0 +1,61 @@
+//@version=5
+// FP2 - RELATIVE VOLUME ENGINE (Project Footprint, module 2 of 7) ---------------
+// The one place execution algos DO betray themselves. Institutional parents are
+// sliced by VWAP/POV algos that benchmark against the historical volume curve
+// for each minute of the day. Raw volume is useless (09:31 always dwarfs 12:30);
+// volume RELATIVE to its own time-of-day baseline is a participation anomaly
+// detector: RVOL 2-3x at a quiet hour means somebody is doing non-routine size.
+//
+// !! DATA WARNING !! This only means something on real CME symbols (ES1!, NQ1!,
+// RTY1!, GC1!). TradingView CFD/index symbols carry synthetic or venue-partial
+// volume - RVOL on those charts measures the broker, not the market.
+indicator("FP2 RVOL Engine", overlay = false)
+
+tz      = input.string("America/New_York", "Timezone")
+lookN   = input.int(20, "Baseline sessions (EMA)", minval = 5)
+warmMin = input.int(5,  "Min sessions before display", minval = 1)
+hiTh    = input.float(1.5, "Elevated threshold", step = 0.1)
+exTh    = input.float(2.5, "Extreme threshold",  step = 0.1)
+
+// Baseline: one EMA per minute-of-day bucket, held in a map. We read the
+// baseline BEFORE updating it with today's bar, so today's anomaly is judged
+// against history only (no self-contamination).
+var baseline = map.new<int, float>()
+var counts   = map.new<int, int>()
+key   = hour(time, tz) * 60 + minute(time, tz)
+seen  = map.contains(baseline, key)
+base  = seen ? map.get(baseline, key) : na
+n     = seen ? map.get(counts, key) : 0
+rvol  = not na(base) and base > 0 and n >= warmMin ? volume / base : na
+alpha = 2.0 / (lookN + 1)
+map.put(baseline, key, seen ? base + alpha * (volume - base) : volume)
+map.put(counts, key, n + 1)
+
+// Session-cumulative RVOL: is TODAY, up to this minute, running hot or cold
+// overall? (Trend days start hot; fade setups prefer cold tape.)
+var cumBaseline = map.new<int, float>()
+var float cumVol = na
+newDay = ta.change(dayofmonth(time, tz)) != 0
+if newDay
+    cumVol := 0.0
+cumVol := nz(cumVol) + volume
+cseen  = map.contains(cumBaseline, key)
+cbase  = cseen ? map.get(cumBaseline, key) : na
+crvol  = not na(cbase) and cbase > 0 and n >= warmMin ? cumVol / cbase : na
+map.put(cumBaseline, key, cseen ? cbase + alpha * (cumVol - cbase) : cumVol)
+
+col = na(rvol) ? color.gray : rvol >= exTh ? color.red : rvol >= hiTh ? color.orange : color.new(color.gray, 40)
+plot(rvol, "RVOL", col, 2, plot.style_columns)
+plot(crvol, "session cum RVOL", color.new(color.blue, 20), 2)
+hline(1.0, "baseline", color.gray, hline.style_dotted)
+hline(hiTh, "elevated", color.orange, hline.style_dotted)
+hline(exTh, "extreme", color.red, hline.style_dotted)
+
+// warn once on non-futures symbols - see DATA WARNING above
+var label warned = na
+if barstate.islastconfirmedhistory and syminfo.type != "futures" and na(warned)
+    warned := label.new(bar_index, 0, "RVOL on a non-futures symbol:\nvolume may be synthetic (CFD) -\nuse ES1!/NQ1!/RTY1!/GC1!",
+         style = label.style_label_up, color = color.new(color.red, 20), textcolor = color.white, force_overlay = false)
+
+alertcondition(not na(rvol) and rvol >= exTh, "RVOL extreme", "FP2: extreme participation anomaly (RVOL >= threshold)")
+alertcondition(not na(rvol) and rvol >= hiTh and rvol[1] < hiTh, "RVOL elevated", "FP2: volume running above time-of-day baseline")
