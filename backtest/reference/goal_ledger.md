@@ -517,3 +517,19 @@ gradient), partner (r13: 416 cells), intraday frequency (r25: dead), adjunct
 residual (r25: dead), and the window x entry-timeframe cross (r25: no
 interaction). 20-day daily correlation at 0.5 with the 60m range/entry is the
 finished form.
+
+## Round 25b pre-registration: the lower-timeframe extension (user commission)
+
+Extend arm C downward: (range = entry confirmation) in {5, 10, 15, 20} minutes
+x daily corr windows {10, 20, 40}d at threshold 0.5 - 12 new cells, same
+construction as deployed (first close beyond the range, 2x-range stop with
+$0.30 stop slippage, no entry after 08:00 London, flat 16:00 NY, $0.30 cost).
+Judged as a GRADIENT together with the existing 30/60/90m cells: the question
+is whether the timeframe surface is smooth and where it rolls over, not
+whether any single cell wins. Registered expectations: (1) trade counts rise
+and per-trade edge falls as the range shrinks; (2) tighter ranges mean tighter
+2x stops, so stop rates and cost sensitivity worsen - report both; (3) prior
+is monotone degradation below 30m. A cost-sensitivity pass (x0, x1, x2 costs)
+runs on the best low-TF cell regardless of outcome.
+Intraday corr sensors below M15 are a documented NON-test: AUDUSD M5 exists
+only 2020-08..2021-06, too short for the segment structure.
