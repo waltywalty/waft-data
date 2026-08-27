@@ -618,3 +618,22 @@ real-but-untradeable ledger - a mechanism-anchored description of WHY the
 Asia session sets direction, not a new trade. Re-scored yearly alongside the
 r17 monitor. No change to the deployed rule. Cells this round: 10 counted +
 registered descriptive follow-ups.
+
+## Round 26b pre-registration: monetization attempts on the auction-candle signal
+
+The user's challenge: if the bias is detectable, a construction should exist.
+First the framing correction is registered as a deliverable: report the raw
+DIRECTIONAL HIT RATE of the candle (the t-stats are high because n=1,267, not
+because the per-day signal is strong). Then the two honest levers:
+**A. Magnitude conditioning (1 gradient, counted).** Split days into quintiles
+by |auction candle| / 14-day ATR. If information scales with conviction, the
+top quintiles should show larger forward drift AND clear costs. Judged by the
+slope across quintiles; the top-quintile subset must also pass halves.
+**B. Cost-structure sensitivity (descriptive).** Same strategy (enter 02:30,
+candle direction, flat NY close) at three cost models: spot CFD $0.60/oz RT,
+MGC micro futures ~$0.25/oz RT (1-tick spread + commissions, round-11 model),
+and zero (information bound).
+Registered prior: magnitude helps but the best cell stays marginal; at MGC
+costs the full-sample net turns positive but thin, and 2020-23 remains the
+referee. Nothing deploys from this round regardless - anything that clears
+the bars goes to the WATCH LIST behind the frozen SPRT/journal process.
