@@ -584,3 +584,37 @@ direction, so B risks rediscovering the deployed edge in costume. C negative -
 round 14 falsified the "confluent level = magnet" premise; the control is the
 referee. Round 17's measured auction drift (+0.76bps/day) is SUB-COST, which
 bounds how much information the window can carry.
+
+## Round 26 results (run 2026-08-27): one arm buried, one arm real-but-untradeable
+
+(run_r26_sge.py -> results/r26_sge.json; 1,537 days, auction candle on 83%)
+
+**C. Auction-hour value zone: dead, and the control killed it twice.** Fading
+the 02:15-03:15 range edges to the mid loses heavily (PF 0.625, t -7.49) and
+is WORSE than the identical construction on the no-auction 03:15-04:15
+control hour (PF 0.733). The auction hour is anti-mean-reverting - it is a
+trend-setting window (it sits inside the deployed breakout range), and its
+range is a launch pad, not a value zone. Round 14's magnet falsification,
+third confirmation.
+
+**A/B. The post-auction candle carries REAL directional information - the
+strongest descriptive signal since the VIX gradient.** The 02:15-02:30
+15m candle's sign predicts drift to both 08:00 London (t2 +3.11, halves
++2.12/+2.29) and the NY close (t2 +2.29); max-stat over all 8 A/B cells
+p = 0.004. B (open-candle agreement) is the same signal restated: the
+disagreement cells' negative drift is the auction candle winning the
+argument with the 09:30 candle.
+**And it is untradeable, on two independent grounds:**
+1. Sub-cost standalone: enter 02:30 in the candle direction, flat NY close -
+   gross +$0.70/oz (PF 1.105), NET +$0.10 (PF 1.015, t -0.04); the 2020-23
+   half is net negative (PF 0.912). ~5bps of information vs ~3bps of costs.
+2. Non-additive to the deployed rule: on deployed-trade days the candle
+   agrees with the breakout direction only 56% of the time, and the deployed
+   edge is healthy on BOTH subsets (agree PF 1.425, disagree PF 1.287) -
+   filtering would discard 44% of trades to chase a within-noise delta, the
+   round-16D "descriptive, not an upgrade" pattern exactly.
+Verdict: joins the SGE AM-fix drift (r17) and the VIX gradient (r16D) in the
+real-but-untradeable ledger - a mechanism-anchored description of WHY the
+Asia session sets direction, not a new trade. Re-scored yearly alongside the
+r17 monitor. No change to the deployed rule. Cells this round: 10 counted +
+registered descriptive follow-ups.

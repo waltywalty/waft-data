@@ -578,3 +578,17 @@ range shrinks (1.03 -> 1.41 across 5m -> 90m at the deployed window), stop
 rates hit 67-84%, and costs eat half the gross edge - the deployed 60m sits on
 a smooth seven-point slope, and nothing below 30m survives costs or the halves
 lens.
+
+## Round 26 — the SGE auction window (real information, untradeable)
+
+The user's three auction hypotheses (`run_r26_sge.py`, pre-registered): the
+02:15 UTC auction-hour range as a value zone is dead — fading its edges loses
+worse than a control hour (PF 0.625 vs 0.733; it is a trend window, not
+value). But the post-auction 15m candle's direction is the strongest
+descriptive signal since the VIX gradient: it predicts drift to London
+(t +3.11, both halves +2.1/+2.3) and survives the max-stat (p = 0.004) — and
+is untradeable twice over: net of costs the standalone trade earns +$0.10/oz
+(PF 1.015, negative in 2020-23), and on deployed-trade days the deployed edge
+is healthy whether the candle agrees (PF 1.43) or not (PF 1.29). Filed with
+the r17 SGE drift as a mechanism note: the auction is part of why Asia sets
+direction; it is not a separate trade.
