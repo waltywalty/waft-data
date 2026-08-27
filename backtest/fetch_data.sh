@@ -66,3 +66,8 @@ curl -fL --retry 3 -o COT_gold_github.csv "https://raw.githubusercontent.com/krs
 # (Alpha Vantage GOLD_SILVER_HISTORY, symbol GOLD, interval daily ->
 #  data/GOLD_daily_av.csv, columns date,price, 2011-06..present; cross-check
 #  the overlap against XAUUSD_5m daily closes before trusting it.)
+
+# MU_daily_equibles.csv (round 30): daily date,open,close,adj for MU
+# 2020-01-02..2026-08-26, pulled via the Equibles MCP GetStockPrices tool in
+# four <=500-row chunks (its full MU history; no earlier data served). Not
+# fetchable by this script - re-pull through the connector if regenerating.

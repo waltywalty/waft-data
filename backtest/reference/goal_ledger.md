@@ -1022,3 +1022,50 @@ trade is implementable via MOC/MOO auctions, so low-bps models are fair;
 2015-01-01 (crowding-era check); per-ticker. Also report: worst single
 overnight gap (earnings risk), volatility drag, and the tax note
 (short-term gains on ~252 trades/yr) as unmodeled.
+
+## Round 30: overnight-anomaly audit - gross claim real, magnitude overstated, era-dependent
+
+(run_r30_overnight.py, results/r30_overnight.json) Deviations from the
+pre-registration, forced by data access and documented before running: Alpha
+Vantage adjusted endpoints are premium-blocked, so MU daily OHLC came from
+Equibles (2020-01..2026-08, its full MU history; MU has no splits in the
+window and Adj-Close differs from Close only by small dividends, whose
+omission biases AGAINST the overnight leg - conservative). NVDA/AAPL/SPY
+references were replaced by SPX and NDX cut from our own session-verified 5m
+feeds (09:30-ET bar open to 15:55-ET bar close, 2005-2025, 21 years), which
+is a stronger long-sample check than three more 2020-era tickers.
+
+MU 2020-01..2026-08 (1,671 sessions): B&H 16.9x. Overnight leg GROSS 11.6x
+(CAGR +44.6%, +17.3 bps/day, t +3.07, Sharpe 1.19) vs intraday leg 1.46x.
+So the direction of the viral chart is real: most of MU's return accrued
+close-to-open. But (1) overnight did NOT beat simply holding (11.6x < 16.9x
+gross, and the strategy pays costs while B&H pays none); (2) net of costs
+the multiple collapses: 8.3x at 2 bps RT/day, 5.0x at 5 bps, 2.2x at 10 bps
+- daily compounding makes even auction-quality frictions eat 30-80% of
+final wealth; (3) the halves split FAILS our stability bar: first half
+(2020-01..2023-04) +1.8 bps/day t +0.28 - indistinguishable from zero -
+second half +32.8 bps t +3.58. The entire edge is the 2023-2026 HBM/AI
+repricing, i.e. concentrated single-name beta, not a stable anomaly. 2022
+overnight was -25.8 bps/day. Max drawdown 54% gross (72% at 10 bps); worst
+single night -13.3% (2024-12-19 guidance gap), best +18.1% (2024-09-26
+earnings) - the P&L is earnings-gap risk in costume.
+
+Long-sample check, 21 years: SPX overnight +2.3 bps/day gross t +2.30 vs
+intraday +1.8 bps t +1.38; NDX overnight +3.8 bps t +3.47 vs intraday +2.0
+bps t +1.26. Halves same-sign on both (SPX +2.1/+2.4, NDX +4.6/+3.0) - the
+documented anomaly is real and stable in the indices at GROSS. Net: SPX
+overnight at 2 bps RT = 1.00x over 21 years (exactly zero); NDX at 2 bps =
+2.11x vs 11.5x B&H; at 5 bps both are ruinous (SPX 0.21x, NDX 0.46x). The
+anomaly survives publication as a description of WHERE returns accrue, and
+dies as a strategy at any realistic cost.
+
+Unmodeled, both conservative against the strategy: ~252 short-term taxable
+events/yr vs B&H deferral, and dividend capture (small, slightly favors the
+overnight leg; MU yield ~0.5%). Verdict for the user's two questions:
+accuracy - the charts are near-accurate GROSS for 2023-2026 MU but describe
+beta concentration, not an exploitable pattern (pre-2023 the same trade was
+zero for three years); replicability - not net of execution at index level,
+and in MU only if the 2023-2026 rally repeats, which is a bet on Micron,
+not on the close-to-open mechanism. Tests run: 3 instruments x 4 cost
+cells + halves = counted; no selection among tickers was performed (MU was
+the user's named target, SPX/NDX fixed references).

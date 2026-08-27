@@ -643,3 +643,18 @@ cannot be a cost artifact; and on the year that overlaps their own claim
 window, 10 of 12 are below water. Verdict: manufactured numbers (template
 Sharpe 2.50 on 8 of 12 pages, duplicate listings, all-zero stats panels),
 not exaggerated backtests.
+
+## Round 30 — the overnight anomaly (buy the close, sell the open)
+
+The user's side quest: the viral "buy $MU every close, sell every open"
+compounding charts. Pre-registered prior: gross claim real (this is the
+documented overnight anomaly); questions are magnitude, era, and costs
+(`run_r30_overnight.py`). Confirmed with the twist that matters: MU's
+overnight leg is 11.6x gross over 2020-2026 (vs intraday 1.46x) — but buy
+& hold made 16.9x for zero cost, the leg was worth +1.8 bps/day ≈ zero from
+2020 to early 2023 (the whole edge is the 2023-2026 HBM repricing), and at
+2/5/10 bps round-trip per day the multiple falls to 8.3x/5.0x/2.2x with a
+54-72% drawdown built on earnings gaps (worst night -13.3%). The 21-year
+SPX/NDX check on our own feeds shows the anomaly is real and half-stable
+GROSS (+2.3/+3.8 bps/day) and worthless net: SPX at 2 bps compounds to
+exactly 1.00x. A description of where returns accrue, not a strategy.
