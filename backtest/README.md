@@ -658,3 +658,18 @@ overnight leg is 11.6x gross over 2020-2026 (vs intraday 1.46x) — but buy
 SPX/NDX check on our own feeds shows the anomaly is real and half-stable
 GROSS (+2.3/+3.8 bps/day) and worthless net: SPX at 2 bps compounds to
 exactly 1.00x. A description of where returns accrue, not a strategy.
+
+## Round 31 — the ALMA averaging grid (76% win rate, mechanically)
+
+Review of a TradingView-style Idea: "ALMA Averaging" on Russell 6H — ALMA
+3/σ2, 2-SD band, 25%×4 scale-in, −10% hard stop, claimed 76% WR / PF 2.8 /
+maxDD 20% on 306 trades. The literal spec is unrunnable (a 2-SD band on a
+3-bar ALMA can never be touched: max z on 3 points ≈ 1.15), so
+`run_r31_alma.py` runs four defensible completions on our verified RTY
+feed. The claimed win rate reproduces exactly (76.3%) — and is mechanical:
+every completion yields 73–80% WR because taking +1% wins fast and holding
+losers to a −10% full-grid stop manufactures hit rate. Nothing else
+survives: PF 1.10 (1.20 zero-cost) vs claimed 2.8, payoff inverted (avg win
++1.2% vs avg loss −3.5%), halves sign-flip, and the house drift null puts
+the grid's timing BELOW random matched-hold long exposure (p 0.76). The
+attached EMA/SMC "factor board" is confirmation stacking, not evidence.

@@ -1069,3 +1069,74 @@ and in MU only if the 2023-2026 rally repeats, which is a bet on Micron,
 not on the close-to-open mechanism. Tests run: 3 instruments x 4 cost
 cells + halves = counted; no selection among tickers was performed (MU was
 the user's named target, SPX/NDX fixed references).
+
+## Round 31 pre-registration: ALMA averaging grid on Russell 6H (user commission)
+
+Claim under test (TradingView-style "Idea"): "ALMA Averaging Strategy" on
+RUSSELL 6H, long only - ALMA 3 / sigma 2, SD band 2, min diff 1/1, 25%
+scale-in per qualifying bar up to 4 tranches, hard stop -10% from average
+entry, exit on ALMA flip + min diff. Claimed: 76% WR, PF 2.8, maxDD 20%,
+avg win +2.5% / avg loss -2.3%, ~25-bar winner holds, 306 trades (window
+unstated). Registered prior: averaging-down grids mechanically buy high win
+rates by holding losers until either recovery or a large stop; the claimed
+combination (PF 2.8 WITH maxDD 20% and a -10% full-size stop) is the part
+least likely to replicate. Note the internal arithmetic: 76% x 2.5% vs 24%
+x 2.3% implies PF ~3.4 on equal size; the stated 2.8 already implies losers
+run bigger notional than winners (they must - losers are the full grid).
+Design: our verified RTY 5m feed (Oanda 2005-2020, 15.4y), resampled to 6H
+anchored 05:00 UTC (the anchor implied by the Idea's own 05:00/11:00 fill
+stamps). Frozen conventions where the Idea is silent, documented up front:
+ALMA(window 3, offset 0.85, sigma 2) on closes; band = ALMA - 2 x rolling
+SD(close, 3); entry 25% tranche on bar CLOSE below band, executed next bar
+open; adds on further qualifying closes >=1% below last fill (min diff 1),
+max 4 tranches; exit next open after a close >=1% above ALMA (min diff 1);
+hard stop intrabar at 0.90 x average entry on the full position. Cells:
+house cost 0.4pt RT per tranche + zero-cost diagnostic; halves; 8H variant
+(the "sister" template); anchor-0 and SD-length-20 sensitivity. All cells
+counted. Claim window (2026) sits outside our data - documented limitation,
+same status as round 29; the 15.4y sample is the test of the RULE, not of
+their specific fills.
+
+## Round 31: ALMA averaging grid - the win rate replicates, the profit does not
+
+(run_r31_alma.py, results/r31_alma.json, trades in r31_trades.json)
+Documented additions to the pre-registration: the literal band (ALMA3 -
+2xSD3) fired ZERO times in 15.4y - the max z-score of a point against a
+3-sample SD is ~1.15, so a 2-SD band around a 3-bar ALMA is mathematically
+(near-)unreachable and the stated spec cannot be what generated their 306
+trades. The battery therefore ran four defensible completions of the text
+(SD len 20 on ALMA3 band; both len 20; close >=1% below ALMA3 = the "min
+diff" reading, whose cross-under count of 323 in 15.4y is the only one
+matching their 306-trade claim), plus no-spacing adds, anchor-0, 8H, and
+zero-cost - 9 cells, all counted. House drift null added per standing rule
+for long-only systems.
+
+Result grid (RTY 6H, 2005-2020, 0.4pt RT/tranche): headline "mindiff" cell
+n=152 grid cycles, WR 76.3% - the claimed 76% reproduces to the decimal -
+and PF 1.10, t +0.35, total 1.06x in 15.4 years, maxDD 25.6%. Zero-cost PF
+1.20 (no gross edge to blame on costs). Every other completion lands the
+same way: band20/20 WR 79.5% PF 1.29 t +1.13; 8H WR 76.9% PF 1.24. Avg
+winner +1.17% vs avg loser -3.45%: the real payoff is INVERTED vs the
+claimed +2.5%/-2.3% - averaging grids clip many small wins and take rare
+4-tranche losses through the -10% stop (8 full-size stop events, each
+~-10% of account). Halves: PF 0.89 then 1.32 - SIGN FLIP, fails the
+both-halves rule. Drift null (random entries, matched hold + size): actual
++12.1% vs null mean +36.4%, p 0.76 - the ALMA timing is WORSE than random
+long exposure on the same clock, because the grid concentrates size into
+downtrends.
+
+The diagnosis, for the vendor-claim taxonomy: the 76% WR is MECHANICAL -
+every completion of the spec produces 73-80% WR regardless of
+profitability, because the exit asymmetry (take +1% quickly, hold losers
+to -10%) manufactures hit rate. WR is the one statistic an averaging
+template always delivers and the one the Idea leads with. The PF 2.8 /
+maxDD 20% / avg-loss-smaller-than-avg-win combination reproduces in no
+cell and is internally inconsistent with 76%x2.5/24%x2.3 arithmetic
+(implies ~3.4 equal-size, and losers cannot be equal-size in a grid).
+Classified: real-mechanics, manufactured-or-era-picked numbers. The
+surrounding "factor board" (EMA/SMC/FVG scores, long-score 19.5) is
+unfalsifiable confirmation stacking of the kind the round-27 noise-combo
+demonstration covers. No candidate; nothing to the watch list. Claim-era
+caveat as in r29: our RTY data ends 2020-05; their fills are 2026 - but a
+rule with a 15-year sign-flip and drift-null p 0.76 has no standing to be
+rescued by a window argument.
