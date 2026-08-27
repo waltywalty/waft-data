@@ -912,3 +912,22 @@ portfolio; the named reference split is the max-MAR corner ~35/40/25
 (2x-levered: ~21%/yr at ~10% DD in-sample). This is the gradient-over-peak
 house rule applied to portfolio weights. Posture unchanged: paper-first;
 leverage applies only to a promoted live book, never to a paper backtest.
+
+## Portfolio reference split ADOPTED (user decision, 2026-08-27)
+
+The max-MAR corner of the round-28e plateau is the standing reference split
+for the four-stream book:
+
+  GOLD (deployed rule + XAUAUD half-leg)  35%
+  D7   (Double Seven, SPX only)           40%
+  MHI  (HSI pre-open fade)                25%   (watch-item cap)
+
+Recorded as a SHAPE, not a dial: the plateau spans gold 15-40 / D7 40-70 /
+MHI 0-25, so rebalancing precision is noise; round numbers stand. In-sample
+reference numbers (2020-11..2025-08): unlevered ~10.6%/yr at 5.1% maxDD
+(MAR 2.07, Sharpe 1.36); at 2x ~21%/yr at ~10% DD. Status: PAPER - the split
+allocates paper capital across the journal streams today. Leverage and real
+funding follow the promotion sequence only: SPRT boundary promotes a sleeve
+-> fund at 1x -> live results confirm the backtest envelope -> then leverage.
+Weights re-examined only when a sleeve is promoted, killed, or added - never
+re-optimized on a rolling window (round 28e showed yearly re-optima whipsaw).
