@@ -1,0 +1,176 @@
+"""Rounds 25-26 report: the correlation-timescale battery and the SGE auction window."""
+HTML = """<title>The Timescale and the Auction</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:wght@600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root { --ground:#FBFBFC; --surface:#FFFFFF; --sunk:#F3F4F7; --ink:#16191F;
+  --ink-2:#4A515E; --ink-3:#7C8496; --rule:#DFE2E9; --brass:#8A6420;
+  --pos:#1B6E55; --neg:#A83226; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --ground:#0E1116; --surface:#161A21; --sunk:#1B2029; --ink:#E8EAEF;
+  --ink-2:#A7AEBC; --ink-3:#767E8E; --rule:#272D38; --brass:#D5A64A;
+  --pos:#5CBE99; --neg:#E58275; } }
+:root[data-theme="dark"] { --ground:#0E1116; --surface:#161A21; --sunk:#1B2029;
+  --ink:#E8EAEF; --ink-2:#A7AEBC; --ink-3:#767E8E; --rule:#272D38;
+  --brass:#D5A64A; --pos:#5CBE99; --neg:#E58275; }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--ground); color:var(--ink);
+  font-family:"IBM Plex Sans",system-ui,sans-serif; font-size:16px; line-height:1.6; }
+.wrap { max-width:880px; margin:0 auto; padding:34px 20px 90px; }
+h1 { font-family:Spectral,Georgia,serif; font-weight:600; font-size:32px; margin:0 0 4px; text-wrap:balance; }
+h2 { font-family:Spectral,Georgia,serif; font-weight:600; font-size:21px; margin:38px 0 10px; }
+h2 .n { color:var(--brass); font-family:"IBM Plex Mono",monospace; font-size:13px;
+  margin-right:10px; letter-spacing:.06em; }
+p, li { max-width:72ch; color:var(--ink-2); }
+p strong, li strong { color:var(--ink); }
+.kicker { font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--brass); margin-bottom:8px; }
+.verdict { background:var(--surface); border:1px solid var(--rule); border-left:3px solid var(--brass);
+  border-radius:6px; padding:16px 20px; margin:20px 0; }
+.verdict p { margin:6px 0; }
+.tblwrap { overflow-x:auto; border:1px solid var(--rule); border-radius:6px;
+  background:var(--surface); margin:14px 0; }
+table { border-collapse:collapse; width:100%; font-size:13.5px; }
+th { font-family:"IBM Plex Mono",monospace; font-size:10px; letter-spacing:.07em;
+  text-transform:uppercase; color:var(--ink-3); text-align:left; padding:10px 12px;
+  border-bottom:1px solid var(--rule); }
+td { padding:9px 12px; border-bottom:1px solid var(--rule); vertical-align:top; }
+td.r { text-align:right; font-family:"IBM Plex Mono",monospace; white-space:nowrap;
+  font-variant-numeric:tabular-nums; }
+tr:last-child td { border-bottom:none; }
+.pos { color:var(--pos); } .neg { color:var(--neg); }
+footer { margin-top:44px; padding-top:16px; border-top:1px solid var(--rule);
+  font-size:13px; color:var(--ink-3); max-width:72ch; }
+ul { padding-left:20px; }
+code { font-family:"IBM Plex Mono",monospace; font-size:.9em; background:var(--sunk);
+  padding:1px 5px; border-radius:4px; }
+</style>
+<div class="wrap">
+<div class="kicker">research rounds 25&ndash;26 &middot; two user commissions &middot; August 2026</div>
+<h1>The gate is finished, and the auction is its engine</h1>
+<p>Two commissions in one report. First: close the last untested corners of the
+correlation gate &mdash; intraday-computed correlation, and the full cross of
+correlation window against entry timeframe, extended down to 5-minute ranges.
+Second: three hypotheses about the Shanghai Gold Exchange benchmark auction
+(10:15 Beijing = 02:15 UTC, inside our opening range) &mdash; the post-auction
+candle as a bias signal, its agreement with the 09:30 open candle, and the
+auction-hour range as a value zone. Ninety-odd pre-registered cells across four
+batteries.</p>
+
+<div class="verdict">
+<p><strong>The deployed rule survives everything again &mdash; and gained its best
+mechanism evidence yet.</strong> The correlation gate's timescale question is now
+closed from every direction: intraday sensors are noise (max-stat p&nbsp;=&nbsp;0.948),
+the window&nbsp;&times;&nbsp;timeframe surface has no interaction, and the entry
+gradient from 5 to 90 minutes is one smooth slope with 60m on it. The SGE
+battery found the strongest descriptive signal since the VIX study &mdash; the
+post-auction candle predicts the day's drift with max-stat p&nbsp;=&nbsp;0.004
+&mdash; and it is unmonetizable three ways: 50.8% hit rate, sub-cost economics
+even at zero toll (t&nbsp;+1.22), and no residual value on top of the deployed
+edge. The auction is part of <em>why</em> our rule works, not a second trade.</p>
+</div>
+
+<h2><span class="n">01</span>Round 25 &mdash; the correlation gate, closed from every direction</h2>
+<div class="tblwrap"><table>
+<thead><tr><th>Arm</th><th>Result</th><th class="r">Verdict</th></tr></thead>
+<tbody>
+<tr><td><strong>A</strong> Intraday-computed corr as gate (6 sensors, H1/M15
+returns, ~1 day to ~2 weeks; 18 cells)</td>
+<td>Best cell |t| 1.16; max-stat p = 0.948 &mdash; indistinguishable from shifted
+noise. Segment signs flip nearly everywhere. The deployed daily gate on the SAME
+days: t +1.69, better than every intraday cell.</td>
+<td class="r neg">dead</td></tr>
+<tr><td><strong>B</strong> Intraday corr as adjunct inside the deployed gate</td>
+<td>All six sensors: |&rho;| &le; 0.05, p &ge; 0.30, terciles non-monotone. Once
+the daily gate picks the day, intraday co-movement says nothing more.</td>
+<td class="r neg">nothing residual</td></tr>
+<tr><td><strong>C</strong> Daily window &times; entry timeframe cross
+({10,20,40}d &times; {30,60,90}m)</td>
+<td>No interaction: 60m &ge; 30m at every window, 20d best at every timeframe.
+The one tilt (90m, full-sample PF 1.413 vs 1.329) fails halves &mdash; worse than
+60m in 2020-23, better only in 2024-25. Era artifact.</td>
+<td class="r">no interaction</td></tr>
+<tr><td><strong>25b</strong> Lower timeframes (5/10/15/20m ranges, 12 cells)</td>
+<td>Net PF gradient 1.03 &rarr; 1.06 &rarr; 1.11 &rarr; 1.11, joining 30/60/90m at
+1.22/1.33/1.41 &mdash; monotone across seven timeframes. Mechanism visible: a
+5-20m range is $1.50-2.80 wide, the 2&times; stop sits $3-6 away against $0.60 of
+cost; stop rates 67-84%; costs eat half the gross; best cell dies at 2&times;
+costs; every cell flat-or-negative in 2020-23.</td>
+<td class="r neg">cost-dominated</td></tr>
+</tbody></table></div>
+<p><strong>What this closes:</strong> window length (r3: 10-90d plateau), threshold
+(r3: smooth monotone gradient), partner (r13: 416 cells), intraday frequency
+(r25), residual information (r25), the window &times; timeframe cross (r25), and
+the entry axis 5m-90m (r25b). The 20-day daily correlation at &le;0.5 with the
+60-minute range is the finished form. The seven-point timeframe slope is the
+best possible news for the deployed 60m: it sits on a hill, not a spike.</p>
+
+<h2><span class="n">02</span>Round 26 &mdash; the auction window: one burial, one real signal</h2>
+<div class="tblwrap"><table>
+<thead><tr><th>Hypothesis</th><th>Result</th><th class="r">Verdict</th></tr></thead>
+<tbody>
+<tr><td>Auction-hour range (02:15-03:15 UTC) as a mean-reverting value zone</td>
+<td>Fading its edges to the mid: PF 0.625, t &minus;7.49 &mdash; and the identical
+construction on the no-auction control hour loses LESS (PF 0.733). The auction
+hour is a launch pad, not a magnet; it sits inside the breakout range for a
+reason.</td>
+<td class="r neg">dead, twice</td></tr>
+<tr><td>Post-auction candle (02:15-02:30) as daily bias</td>
+<td>REAL: predicts drift to London (t +3.11, halves +2.12/+2.29) and to the NY
+close (t +2.29); max-stat over 8 cells p = 0.004. Up-candle days drift +5bps,
+down days &minus;6bps. The strongest descriptive signal since the VIX gradient.</td>
+<td class="r pos">real&hellip;</td></tr>
+<tr><td>Agreement with the 09:30 open candle (continuation vs reversal)</td>
+<td>The same signal restated: disagreement days' negative drift is the auction
+candle winning the argument. On deployed-trade days the candle agrees with our
+breakout direction just 56% of the time, and the deployed edge is healthy on both
+subsets (PF 1.43 agree / 1.29 disagree).</td>
+<td class="r">not independent</td></tr>
+</tbody></table></div>
+
+<h2><span class="n">03</span>Round 26b &mdash; &ldquo;surely we can build something on it&rdquo;: no, and here is exactly why</h2>
+<p>The fair challenge, tested with the two honest levers left. First the framing
+stat the t-scores hide: <strong>the candle's directional hit rate is 50.8%</strong>
+(49.8% in 2020-23). The statistics were confident because n = 1,267 days, not
+because any single day is predictable &mdash; the same power-analysis lesson the
+Medallion research taught in round 24: a 50.75%-grade edge is monetizable only at
+thousands of trades per year and near-zero cost.</p>
+<div class="tblwrap"><table>
+<thead><tr><th>Construction attempt</th><th class="r">Net $/oz</th><th class="r">t</th><th class="r">Outcome</th></tr></thead>
+<tbody>
+<tr><td>Trade every candle, spot costs ($0.60)</td><td class="r">+0.14</td><td class="r">+0.03</td><td class="r neg">noise</td></tr>
+<tr><td>Trade every candle, MGC futures costs ($0.25)</td><td class="r">+0.49</td><td class="r">+0.73</td><td class="r neg">noise</td></tr>
+<tr><td>Trade every candle, ZERO costs (information bound)</td><td class="r">+0.74</td><td class="r">+1.22</td><td class="r neg">still noise</td></tr>
+<tr><td>Only the biggest candles (top |candle|/ATR quintile)</td><td class="r">&minus;0.06</td><td class="r">&minus;0.02</td><td class="r neg">worse</td></tr>
+</tbody></table></div>
+<ul>
+<li><strong>Magnitude does not help:</strong> the quintile gradient is a hump
+(&minus;0.69 / &minus;0.47 / +0.98 / +0.94 / &minus;0.06), not a slope &mdash; the
+biggest candles carry <em>less</em> forward information, and the top quintile is
+negative in 2020-23. &ldquo;Trade only the strong signals&rdquo; selects exhaustion.</li>
+<li><strong>Even free execution fails:</strong> at zero cost the one-trade-per-day
+version earns t +1.22 over five years &mdash; statistically indistinguishable from
+nothing. The information is real in aggregate and unreachable one position at a
+time.</li>
+<li><strong>The construction that DOES monetize this session already exists:</strong>
+the deployed rule. It waits for the range (which contains the auction) to actually
+break, on days the regime gate says gold is trading on its own flows &mdash; and
+that concentration is what turns ~5bps of diffuse daily bias into +$1.70/oz of
+tradable expectancy. The auction candle is a description of the engine, not a
+second engine.</li>
+</ul>
+
+<h2><span class="n">04</span>The record</h2>
+<p>Pre-registrations and full numbers: <code>reference/goal_ledger.md</code>
+(rounds 25, 25b, 26, 26b); batteries: <code>run_r25_corrtf.py</code>,
+<code>run_r25b_lowtf.py</code>, <code>run_r26_sge.py</code>,
+<code>run_r26b_monetize.py</code>. Deployed rule, paper streams, and forward-test
+process unchanged throughout. The playbook remains the standing reference.</p>
+<footer>All cells counted, all priors registered before running, both user
+hypotheses credited where the data backed them: the ping-pong was real (round 14),
+and the auction bias is real (round 26). The market charges almost exactly what
+micro-effects are worth; the edges that clear the toll are the slow, regime-level
+ones.</footer>
+</div>
+"""
+open("results/report25_26.html", "w").write(HTML)
+print("results/report25_26.html written")

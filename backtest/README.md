@@ -592,3 +592,8 @@ is untradeable twice over: net of costs the standalone trade earns +$0.10/oz
 is healthy whether the candle agrees (PF 1.43) or not (PF 1.29). Filed with
 the r17 SGE drift as a mechanism note: the auction is part of why Asia sets
 direction; it is not a separate trade.
+
+Round 26b closed the monetization question on the auction candle: the hit rate
+is 50.8% (49.8% in 2020-23), the magnitude gradient is a hump not a slope, and
+even at ZERO cost the one-trade-per-day construction earns t +1.22 — noise.
+The rounds 25-26 report is `results/report25_26.html`.
