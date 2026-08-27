@@ -1,0 +1,280 @@
+"""Round 24 report: the 13-trader commission - synthesis and batteries."""
+HTML = """<title>The Trader Commission</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:wght@600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root { --ground:#FBFBFC; --surface:#FFFFFF; --sunk:#F3F4F7; --ink:#16191F;
+  --ink-2:#4A515E; --ink-3:#7C8496; --rule:#DFE2E9; --brass:#8A6420;
+  --pos:#1B6E55; --neg:#A83226; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --ground:#0E1116; --surface:#161A21; --sunk:#1B2029; --ink:#E8EAEF;
+  --ink-2:#A7AEBC; --ink-3:#767E8E; --rule:#272D38; --brass:#D5A64A;
+  --pos:#5CBE99; --neg:#E58275; } }
+:root[data-theme="dark"] { --ground:#0E1116; --surface:#161A21; --sunk:#1B2029;
+  --ink:#E8EAEF; --ink-2:#A7AEBC; --ink-3:#767E8E; --rule:#272D38;
+  --brass:#D5A64A; --pos:#5CBE99; --neg:#E58275; }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--ground); color:var(--ink);
+  font-family:"IBM Plex Sans",system-ui,sans-serif; font-size:16px; line-height:1.6; }
+.wrap { max-width:880px; margin:0 auto; padding:34px 20px 90px; }
+h1 { font-family:Spectral,Georgia,serif; font-weight:600; font-size:32px; margin:0 0 4px; text-wrap:balance; }
+h2 { font-family:Spectral,Georgia,serif; font-weight:600; font-size:21px; margin:38px 0 10px; }
+h2 .n { color:var(--brass); font-family:"IBM Plex Mono",monospace; font-size:13px;
+  margin-right:10px; letter-spacing:.06em; }
+p, li { max-width:72ch; color:var(--ink-2); }
+p strong, li strong { color:var(--ink); }
+.kicker { font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--brass); margin-bottom:8px; }
+.verdict { background:var(--surface); border:1px solid var(--rule); border-left:3px solid var(--brass);
+  border-radius:6px; padding:16px 20px; margin:20px 0; }
+.verdict p { margin:6px 0; }
+.tblwrap { overflow-x:auto; border:1px solid var(--rule); border-radius:6px;
+  background:var(--surface); margin:14px 0; }
+table { border-collapse:collapse; width:100%; font-size:13.5px; }
+th { font-family:"IBM Plex Mono",monospace; font-size:10px; letter-spacing:.07em;
+  text-transform:uppercase; color:var(--ink-3); text-align:left; padding:10px 12px;
+  border-bottom:1px solid var(--rule); }
+td { padding:9px 12px; border-bottom:1px solid var(--rule); vertical-align:top; }
+td.r { text-align:right; font-family:"IBM Plex Mono",monospace; white-space:nowrap;
+  font-variant-numeric:tabular-nums; }
+tr:last-child td { border-bottom:none; }
+.pos { color:var(--pos); } .neg { color:var(--neg); }
+.tier { font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.05em;
+  text-transform:uppercase; white-space:nowrap; }
+footer { margin-top:44px; padding-top:16px; border-top:1px solid var(--rule);
+  font-size:13px; color:var(--ink-3); max-width:72ch; }
+ul { padding-left:20px; }
+code { font-family:"IBM Plex Mono",monospace; font-size:.9em; background:var(--sunk);
+  padding:1px 5px; border-radius:4px; }
+</style>
+<div class="wrap">
+<div class="kicker">research round 24 &middot; the thirteen-name commission &middot; August 2026</div>
+<h1>Thirteen legends, one testable rule, zero changes</h1>
+<p>The commission: research thirteen named traders deeply, identify how each
+actually obtained an edge, and extract whatever can be copied or transplanted.
+Four research dives (macro legends, systematic camp, pattern camp, and the
+commentator/vendor remainder) produced verified records, mechanisms, and
+myth-vs-record separations for all thirteen. Exactly one new well-specified,
+free-data rule emerged. It was pre-registered, run, and buried. The risk
+frameworks were transplanted onto our deployed trade set and lost every cell
+to the sizing we already run.</p>
+
+<div class="verdict">
+<p><strong>The deployed rule survives its most famous challengers unchanged.</strong>
+Williams' COT Index &mdash; the best-specified free-data idea on the entire list
+&mdash; fails both halves on 2012&ndash;2026 weekly gold (max-stat p&nbsp;=&nbsp;0.76
+over 30 counted cells). The Turtle risk layer scores below our stop-distance
+sizing on every overlay, with intraday pyramiding showing a cleanly negative
+gradient. The Marcus gap audit measured our worst-case stop overrun at 1.25&times;
+intended &mdash; benign. One process gate (Unger's average-trade cost floor) is
+adopted. Goal score stands at 1.5.</p>
+</div>
+
+<h2><span class="n">01</span>The tier list: what is actually verified</h2>
+<p>The single sharpest pattern across thirteen names: <strong>the mythology
+concentrates exactly where verification is weakest</strong>, and the
+best-documented artifacts are all about failure containment, not prediction.</p>
+<div class="tblwrap"><table>
+<thead><tr><th>Trader</th><th>Record, verified core</th><th>The edge, honestly stated</th><th class="r">Tier</th></tr></thead>
+<tbody>
+<tr><td><strong>Jim Simons</strong></td>
+<td>Medallion 66.1% gross / 39.1% net 1988&ndash;2018, one losing year (Zuckerman's
+investor-doc table; Senate record corroborates the leverage structure).</td>
+<td>Thin edge (&asymp;50.75% hit rate), enormous N, short horizons, cost modeling,
+12.5&ndash;20&times; leverage, hard capacity cap. In 2020 Medallion made +76% while
+RenTech's own copyable-horizon funds lost 22&ndash;33% &mdash; the edge does not
+exist at horizons outsiders can access.</td>
+<td class="r tier pos">verified, uncopyable</td></tr>
+<tr><td><strong>Stanley Druckenmiller</strong></td>
+<td>~30%/yr over 30 years, no down year (consistently reported, never publicly
+audited); the 1992 sterling trade is documented end to end.</td>
+<td>Bet-size elasticity: near-flat without conviction, multiples of the fund when
+a setup is one-way. Liquidity/central-bank framework. His own 2000 confession
+(&ldquo;$3B in six weeks&hellip; emotional basket case&rdquo;) is the record's best
+argument FOR mechanical systems.</td>
+<td class="r tier pos">verified, discretionary</td></tr>
+<tr><td><strong>Paul Tudor Jones</strong></td>
+<td>Oct 1987 +62% month / +125.9% year documented; 31-year ~17%/yr; an $800k SEC
+uptick-rule settlement is the most concrete evidence of how he actually traded.</td>
+<td>Payoff asymmetry as a precondition (5:1), 200-day MA as catastrophe filter,
+loss discipline. The 1929-analog crash &ldquo;prediction&rdquo; is admitted myth
+(Borish: &ldquo;fudged the exercise&rdquo;); the construction, not the forecast,
+made the money.</td>
+<td class="r tier pos">verified, front-loaded</td></tr>
+<tr><td><strong>Andrea Unger</strong></td>
+<td>Four World Cup wins (real money, audited entries), +672% best &mdash; produced
+by contest sizing he himself disavows for real capital.</td>
+<td>Process, not signals: market-character matching, average-trade-vs-cost hard
+gate, plateau optimization (= our gradient rule), incubation. His raw breakout
+entry died in our round 16.</td>
+<td class="r tier">verified, contest-shaped</td></tr>
+<tr><td><strong>Mark Minervini</strong></td>
+<td>Two USIC contest years verified (+155% 1997, +334.8% 2021, one account each);
+the &ldquo;220% annualized 1994&ndash;2000&rdquo; centerpiece is privately audited,
+never published.</td>
+<td>Cross-sectional stock momentum (SEPA/VCP) with expectancy bookkeeping. Two of
+three legs have no XAUUSD analogue; the VCP contraction gate is deferred, not
+smuggled in.</td>
+<td class="r tier">verified, contest-shaped</td></tr>
+<tr><td><strong>Larry Williams</strong></td>
+<td>1987 World Cup +11,376% real and broker-tracked &mdash; while his pooled client
+account lost $6.1M the same period (disclosure fine on record); later funds closed
+down &gt;50%.</td>
+<td>Contest sizing on a wild process, plus genuinely original public research
+objects (%R, COT Index, seasonals). His COT Index was our one testable extract
+&mdash; see below.</td>
+<td class="r tier">verified, double-edged</td></tr>
+<tr><td><strong>Richard Dennis</strong></td>
+<td>The up-leg (~$1,600 to ~$200M) is journalistic; the down-legs are documented:
+Drexel funds halted 1988 after ~50% drawdowns, second fund closed 2000.</td>
+<td>1970s&ndash;80s trend era + aggressive sizing. The published Turtle rules
+decayed from the mid-90s; surviving Turtles changed the parameters. The risk layer
+was the transplantable part &mdash; tested below.</td>
+<td class="r tier">verified rise and blowups</td></tr>
+<tr><td><strong>Michael Marcus</strong></td>
+<td>The 2,500&times; claim rests entirely on one Schwager interview; the blowups he
+volunteers against interest are the credible part.</td>
+<td>1970s inflation supertrends, triple confirmation (fundamentals + technicals +
+tone), hard 5% cap and stops after the soybean limit-down disaster &mdash; which
+motivated our gap audit.</td>
+<td class="r tier">single-source</td></tr>
+<tr><td><strong>Thomas Bulkowski</strong></td>
+<td>No trading record at all; the largest pattern catalogue in print (~38,500+
+samples), cleanest incentives of the pattern camp (books only).</td>
+<td>His numbers score perfect trades to unknowable exits &mdash; frequency, not
+expectancy. Academic replication weak-to-negative. Identical to our own six-round
+finding: patterns are real, edges are not.</td>
+<td class="r tier">statistician, not trader</td></tr>
+<tr><td><strong>Dr.&nbsp;David Paul</strong></td>
+<td>No audited anything; career was seminars and a VectorVest directorship. (Died
+July 2023.)</td>
+<td>Process coaching &mdash; &ldquo;follow the system like a robot,&rdquo; 1&ndash;2%
+risk. Sound, generic, zero backtest content.</td>
+<td class="r tier">pedagogy only</td></tr>
+<tr><td><strong>Peter Schiff</strong></td>
+<td>SEC-registered funds &mdash; which is exactly why underperformance is documented:
+EPIVX ~5.1% vs benchmark ~10.3% since 2010; clients &minus;40&ndash;70% in 2008, the
+year his thesis was right.</td>
+<td>Macro narration without an implementation edge. His gold-decoupling claim is a
+vaguer version of the correlation gate we already run &mdash; and round 13 already
+showed the tradeable axis is AUD, not the broad dollar.</td>
+<td class="r tier neg">documented no-alpha</td></tr>
+<tr><td><strong>Inna Rosputnia</strong></td>
+<td>No audited performance, no surfaceable registration, pay-to-play awards,
+client-loss complaints on record.</td>
+<td>A manufactured-credibility funnel for unregulated managed accounts. Nothing
+specified precisely enough to test.</td>
+<td class="r tier neg">marketing persona</td></tr>
+<tr><td><strong>Tirutrade AG</strong></td>
+<td>Real Swiss registry entry (CHE-470.723.554); signal vendor; claims rest on
+75-year backtests and best-of-1000 venue rankings.</td>
+<td>Black box behind a $6,600/yr + commissions cost stack. No disclosed mechanism,
+nothing testable.</td>
+<td class="r tier neg">opaque vendor</td></tr>
+</tbody></table></div>
+
+<h2><span class="n">02</span>Spec B &mdash; the Williams COT Index, replicated and buried</h2>
+<p>His best-specified idea: stochastic-normalize the commercials' net futures
+position over 26 weeks; &ge;80 is a bullish extreme (trade with the hedgers),
+&le;20 bearish. We ran his published form exactly &mdash; legacy futures-only gold
+COT, Friday-release alignment, Monday-open execution, 715 tradable weeks
+2012&ndash;2026 &mdash; plus his own WillCo refinement, a large-speculator fade,
+and a 24-cell gradient, all pre-registered, all counted.</p>
+<div class="tblwrap"><table>
+<thead><tr><th>Construction (26w, 80/20)</th><th class="r">Full t</th><th class="r">2012&ndash;18</th><th class="r">2019&ndash;26</th><th class="r">Verdict</th></tr></thead>
+<tbody>
+<tr><td>LW-1 commercials, long/short</td><td class="r">+0.57</td><td class="r">+0.86</td><td class="r neg">&minus;0.03</td><td class="r neg">sign fails</td></tr>
+<tr><td>LW-1 long-only</td><td class="r">+1.12</td><td class="r neg">&minus;0.13</td><td class="r">+1.98</td><td class="r neg">sign flips (drift)</td></tr>
+<tr><td>LW-2 WillCo (net / open interest)</td><td class="r">+0.22</td><td class="r">+0.65</td><td class="r neg">&minus;0.42</td><td class="r neg">sign fails</td></tr>
+<tr><td>Large-spec fade</td><td class="r">+0.67</td><td class="r">+1.04</td><td class="r neg">&minus;0.06</td><td class="r neg">mirror of LW-1</td></tr>
+</tbody></table></div>
+<ul>
+<li>The 24-cell gradient is ragged and sign-flipping (+1.57 to &minus;1.61), with the
+<em>structural</em> 156-week lookback negative everywhere. No smooth slope, so no
+real effect by the house rule.</li>
+<li>Max-stat over all 30 counted cells: observed max |t| 1.65, <strong>p = 0.76</strong>.
+Costs are not the story (t +0.64 gross). The registered structural-short caveat
+(miners hedge permanently) was real but not binding &mdash; the signal simply
+carries nothing here.</li>
+<li>Provenance note: the third-party daily gold series failed its pre-registered
+cross-check (synthetic weekend rows, &plusmn;40&ndash;100bp day noise) and was
+rejected; the test ran on a splice of our own cross-verified feeds
+(agreement ~1bp, return correlation 0.9995+).</li>
+</ul>
+
+<h2><span class="n">03</span>Spec A &mdash; the Turtle risk layer loses to what we already run</h2>
+<p>The famous risk framework, transplanted piece by piece onto the deployed
+652-trade set ($2,000 account, 1% risk). Our baseline sizes each trade off its
+actual stop distance &mdash; which turns out to BE volatility normalization, at
+finer grain than the Turtles' 20-day N.</p>
+<div class="tblwrap"><table>
+<thead><tr><th>Overlay</th><th class="r">Final</th><th class="r">Max DD</th><th class="r">MAR</th><th class="r">Verdict</th></tr></thead>
+<tbody>
+<tr><td><strong>Deployed baseline</strong> (1% / stop distance)</td><td class="r">$4,865</td><td class="r">16.1%</td><td class="r pos">1.29</td><td class="r pos">wins</td></tr>
+<tr><td>N-sizing (1% / 20d ATR)</td><td class="r">$2,825</td><td class="r">7.2%</td><td class="r">1.06</td><td class="r neg">just trades smaller</td></tr>
+<tr><td>2N stop (replaces 2&times;range)</td><td class="r">$2,570</td><td class="r">5.9%</td><td class="r">0.93</td><td class="r neg">kills sizing efficiency</td></tr>
+<tr><td>Drawdown throttle (&minus;20%/&minus;10% DD)</td><td class="r">$4,149</td><td class="r">14.1%</td><td class="r">1.18</td><td class="r neg">lags recoveries</td></tr>
+</tbody></table></div>
+<p>Pyramiding (add every &frac12;N, stops to 2N below the last add) is the clean
+kill: per-unit expectancy degrades <strong>monotonely</strong> with allowed units
+&mdash; t +2.50 / &minus;2.22 / &minus;4.51 / &minus;5.23 for max-units 1/2/3/4. A
+smooth gradient pointing down: adds buy worse prices inside an intraday drift of
++$2.28/oz with ~$12 add-spacing. The one interesting nuance: the 2N stop RAISES
+per-ounce expectancy (PF 1.412, t +3.14, 2% stopped) &mdash; replicating our known
+no-stop result &mdash; but risk-sizing off a $49 stop shrinks positions so much the
+account ends behind. The stop earns its keep through sizing, not through the
+trades it saves.</p>
+
+<h2><span class="n">04</span>The Marcus audit and the Unger gates</h2>
+<p><strong>Gap-through-stop tail (descriptive):</strong> across 339 stop exits, the
+realized loss was a median 1.08&times; the intended stop distance, p99 1.21&times;,
+worst 1.25&times; &mdash; so at 1% intended risk the worst single trade cost 1.25%
+of equity. Largest data gap inside any sampled trade window: five minutes. The
+limit-lock nightmare that cost Marcus $600k does not apply to intraday spot gold
+at our size; the existing $0.30 slippage model already covers the observed median.</p>
+<p><strong>Adopted from Unger</strong> (the one camp whose extract was process, and
+whose validation checklist maps almost one-to-one onto our house rules):</p>
+<ul>
+<li><strong>Average-trade cost floor:</strong> any candidate must show average net
+trade &ge; 2&times; round-trip cost before any other statistic is computed. The
+deployed rule passes: $1.60/oz vs the $1.20 bar.</li>
+<li><strong>Market-character pre-test:</strong> measure follow-through before
+choosing breakout vs fade for any new market/session &mdash; the round-16/18
+cross-market failures were this lesson, learned the expensive way.</li>
+<li><strong>Incubation:</strong> already satisfied &mdash; the SPRT boundaries and
+the journal's live-vs-backtest comparison are exactly his envelope discipline.</li>
+</ul>
+
+<h2><span class="n">05</span>What thirteen names converge on</h2>
+<ul>
+<li><strong>Nobody's verified edge was prediction.</strong> PTJ expects to be wrong
+80% of the time; Druckenmiller's lesson is sizing; Simons wins 50.75% of trades.
+Every verified record is a payoff-structure record &mdash; which is what our
+deployed rule already is (40% win rate, 1.96 payoff).</li>
+<li><strong>The copyable era is gone; the copyable discipline is not.</strong> Pit
+order flow, 1970s supertrends, pegged-currency breaks, Medallion's data moat &mdash;
+none transfer. Stops, sizing, cost floors, and regime gates all do, and we already
+run stricter versions than most of the list published.</li>
+<li><strong>Contest returns are max-statistics, not expectancies.</strong> Williams,
+Unger, and Minervini prove skill exists &mdash; and their own real-capital records
+(client fund &minus;$6.1M; &ldquo;I would never run that risk&rdquo;; unpublished
+audits) prove contest numbers are the wrong thing to copy.</li>
+<li><strong>The sales funnel predicts the evidence quality.</strong> Ranked by
+incentive cleanliness &mdash; Bulkowski (books) to Rosputnia (unregulated managed
+accounts) &mdash; verifiability falls almost monotonically. Weight claims
+accordingly.</li>
+</ul>
+
+<footer>
+Round 24 &middot; pre-registered in <code>reference/goal_ledger.md</code> before any
+battery ran &middot; batteries: <code>run_r24_cot.py</code>,
+<code>run_r24_turtle.py</code> &middot; data: CFTC legacy COT (gold 088691,
+cross-feed verified) &times; spliced in-house daily gold 2012&ndash;2026 &middot;
+all four research dives sourced from primary-ish records (SEC/NFA filings, contest
+organizers, Zuckerman/Schwager/Mallaby, regulator registries) with myth flagged
+against record throughout &middot; deployed rule and forward-test streams
+unchanged.
+</footer>
+</div>
+"""
+open("results/report24.html", "w").write(HTML)
+print("results/report24.html written")

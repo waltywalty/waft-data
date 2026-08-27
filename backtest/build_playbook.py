@@ -12,7 +12,7 @@ HTML = f"""<title>Asia Gold Playbook</title>
 {CSS}
 <div class="wrap">
 <header>
-<p class="eyebrow">Living document &middot; last updated 2026-08-26 &middot; after round 22</p>
+<p class="eyebrow">Living document &middot; last updated 2026-08-27 &middot; after round 24</p>
 <h1>The Asia gold playbook</h1>
 <p class="standfirst">One strategy survived nine rounds of testing: the Asia-open
 range breakout on gold, gated by the gold/AUDUSD correlation regime. This page is the
@@ -252,6 +252,33 @@ spread. The apparent survivor &mdash; Turtle Soup long on JP225
 later by its own out-of-sample extension: the frozen rule loses on 2005-2016
 (PF 0.58, t &minus;0.80). Era-specific, not structural; retracted before it ever
 reached the watch list page.</li>
+<li>Denominator extensions beyond AUD (rounds 19-20): EUR/JPY baskets fail the
+pre-registered Sharpe bar in both eras (they correlate ~0.6 with the USD leg vs
+AUD&rsquo;s 0.41), and silver fails the same construction. The corr gate itself
+selects the days XAUAUD decouples &mdash; the USD/AUD 50/50 split is the closed,
+final form of upgrade #1.</li>
+<li>Trading WITH the high-correlation regime (round 21) &mdash; the tether idea:
+if corr &gt; 0.5 makes gold a dollar proxy, trade it as one. Dead through a third
+independent lens; high-corr days tax every construction pointed at them
+(breakout r13, fade r8/13, tether r21).</li>
+<li>The Williams COT Index on gold (round 24) &mdash; the best-specified free-data
+rule from the 13-trader commission, run as an exact replication (26w commercials
+stochastic, 80/20, WillCo variant, Friday-release alignment, 715 weeks
+2012&ndash;2026): every construction fails both halves (LW-1 halves +0.86 /
+&minus;0.03), the 24-cell gradient is ragged and sign-flipping, max-stat p 0.76
+over 30 counted cells. The large-spec fade is its mirror image, as legacy COT
+data dictates.</li>
+<li>The Turtle risk layer on the deployed entries (round 24): N-sizing just
+trades smaller (MAR 1.06 vs our 1.29), the 2N stop raises per-oz expectancy but
+collapses sizing efficiency (MAR 0.93), the drawdown throttle lags recoveries,
+and intraday pyramiding shows a clean monotone NEGATIVE gradient (per-unit t
++2.50 &rarr; &minus;5.23 across max-units 1&rarr;4). Sizing off the actual stop
+distance IS volatility normalization, at finer grain than N. Adopted from the
+same commission instead: Unger&rsquo;s average-trade &ge; 2&times;-cost floor as
+a hard pre-filter on all future candidates (the deployed rule passes at $1.60/oz
+vs the $1.20 bar), and the Marcus gap audit&rsquo;s comfort: worst realized stop
+overrun in 652 trades was 1.25&times; intended &mdash; 1.25% of equity at 1%
+risk.</li>
 </ul>
 <div class="note"><p><strong>Watch list (not tradeable, not forgotten):</strong>
 (1) the gold CISD-to-EoD reversal (09:00-10:00 ET range, entry against the first break

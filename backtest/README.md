@@ -522,3 +522,41 @@ Sharpe below the 2-way in both eras; EUR/JPY correlate ~0.6 with USD vs AUD's
 are by construction the days XAUAUD decouples from XAUUSD. The USD/AUD 50/50
 split is the optimal, final form of upgrade #1. Goal score 1.5/5; remaining
 paths are forward-data promotion and new mechanisms, per the goal ledger.
+
+## Rounds 20-24 — the upgrade hunt closes; the trader commission
+
+Rounds 20-23 (`reference/goal_ledger.md`): silver denominator fails the basket
+bar (r20); the high-corr "tether" idea — trading WITH the correlation the gate
+avoids — is dead through a third lens (r21); SPRT sequential boundaries frozen
+(`sprt.py`), manual-execution latency measured free, indicator v1.2 regime
+alerts shipped (r22); the edgeful.com 5-minute ES ORB claim fully reconciled —
+our pipeline reproduces their win rate, costs and window selection explain the
+rest (r23).
+
+Round 24 — the 13-trader commission (Paul, PTJ, Druckenmiller, Bulkowski,
+Simons, Marcus, Dennis, Minervini, Schiff, Unger, Rosputnia, Tirutrade,
+Williams). Four research dives produced exactly one new well-specified,
+free-data rule; everything was pre-registered then run
+(`run_r24_cot.py`, `run_r24_turtle.py`):
+* **Williams COT Index on gold: negative.** His published form (26w
+  commercials stochastic, 80/20) and the WillCo variant fail both-halves on
+  2012-2026 weekly gold; 30-cell gradient is ragged and sign-flipping;
+  max-stat p = 0.76. The large-spec fade is the mirror image, as legacy data
+  dictates. The best-specified idea on the whole list does not replicate.
+* **Turtle risk layer: our deployed sizing wins every cell.** N-sizing just
+  trades smaller (MAR 1.06 vs 1.29); the 2N stop raises per-oz expectancy but
+  collapses sizing efficiency (MAR 0.93); intraday pyramiding shows a clean
+  monotone NEGATIVE gradient (t +2.50 → −5.23 across max-units 1→4); the
+  drawdown throttle lags recoveries (MAR 1.18). Sizing off the actual stop
+  distance IS volatility normalization, at finer grain than N.
+* **Marcus gap audit: the tail is benign.** Worst realized stop loss in 652
+  trades = 1.25x intended (1.25% of equity at 1% risk); no data holes.
+* **Unger process gates adopted:** average-trade ≥ 2x round-trip cost as a
+  hard pre-filter (deployed rule passes at $1.60 vs $1.20); market-character
+  pre-test before choosing archetype; incubation = the SPRT + journal
+  envelope already in place.
+
+Net change to the deployed rule: none — which is the finding. The deployed
+risk model survived a direct challenge from the most famous risk framework in
+trading folklore, and the commission's one testable signal joined the
+graveyard with full honors.
