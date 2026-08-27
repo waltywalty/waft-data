@@ -533,3 +533,21 @@ is monotone degradation below 30m. A cost-sensitivity pass (x0, x1, x2 costs)
 runs on the best low-TF cell regardless of outcome.
 Intraday corr sensors below M15 are a documented NON-test: AUDUSD M5 exists
 only 2020-08..2021-06, too short for the segment structure.
+
+## Round 25b results (run 2026-08-27): monotone degradation below 30m; the surface is a smooth slope
+
+(run_r25b_lowtf.py -> results/r25b_lowtf.json; 12 cells)
+The full timeframe gradient at the deployed window (w=20d, corr<=0.5), net PF:
+5m 1.028 -> 10m 1.064 -> 15m 1.113 -> 20m 1.110 -> 30m 1.224 -> 60m 1.329 ->
+90m 1.413. Monotone within noise across SEVEN timeframes - the deployed 60m
+sits on a smooth slope, not a spike (and 90m's tip is the era artifact killed
+in 25a). Same ordering at w=10 and w=40.
+The mechanism is visible in the diagnostics: a 5-20m Asia range is $1.5-2.8
+wide, so the 2x-range stop is $3-6 against $0.60 of round-trip cost - stop
+rates run 67-84% and costs eat half the gross edge (L5: PF 1.223 gross ->
+1.028 net; best low-TF cell L15 dies at 2x costs, PF 0.998). The halves lens
+adds the kill: every low-TF cell is negative or flat in 2020-23 (PF 0.96-1.02)
+and only looks alive in the 2024-25 era.
+Verdict: nothing below 30m is tradable; the low-TF cells are cost-dominated
+whipsaw harvesting. The entry-timeframe axis is now closed 5m-90m. No change
+to the deployed rule. Running cell total this round: 33 + 12 = 45.

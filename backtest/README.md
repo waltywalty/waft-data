@@ -572,4 +572,9 @@ p 0.948) and carry no residual information inside the daily gate (all
 lone full-sample tilt (90m entries) fails the halves lens — worse than 60m in
 2020-23, better only in 2024-25. The 20-day daily correlation at 0.5 with the
 60m range is the finished form, now closed from every direction: window,
-threshold, partner, frequency, residual, and cross.
+threshold, partner, frequency, residual, and cross. The 25b extension ran the
+entry grid down to 5/10/15/20 minutes: net PF degrades monotonically as the
+range shrinks (1.03 -> 1.41 across 5m -> 90m at the deployed window), stop
+rates hit 67-84%, and costs eat half the gross edge - the deployed 60m sits on
+a smooth seven-point slope, and nothing below 30m survives costs or the halves
+lens.
