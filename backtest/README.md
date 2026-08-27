@@ -597,3 +597,15 @@ Round 26b closed the monetization question on the auction candle: the hit rate
 is 50.8% (49.8% in 2020-23), the magnitude gradient is a hump not a slope, and
 even at ZERO cost the one-trade-per-day construction earns t +1.22 — noise.
 The rounds 25-26 report is `results/report25_26.html`.
+
+## Round 27 — the confirmation-stack commission (list triaged, two new families tested, both dead)
+
+The user's signal list triaged against the record (most items already buried
+in rounds 2-16; order-book flow untestable on our feeds), then the two
+genuinely new items run (`run_r27a_fvg.py`, `run_r27b_inversion.py`): fair
+value gaps and inversions fail on all four markets (0 of 12 runnable cells;
+several significantly negative; the pattern family is now 0-for-7+), and
+gold/dollar as lag-1 signals for ES/NQ/RTY finds nothing (36 cells, best
+|t| 1.63, max-stat p 0.86 - the gold-equity link is contemporaneous, not
+predictive). Frequency comes from independent edges, not stacked
+confirmations; the deployed rule stands.

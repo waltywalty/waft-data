@@ -714,3 +714,38 @@ Max-stat circular day-shift over all 36 cells (500 perms, shared offset);
 Bonferroni quoted. Registered prior: flight-to-safety gold-equity correlation
 is CONTEMPORANEOUS in the literature, not predictive at lag 1; expect
 descriptive-at-best. Any survivor faces the r16B drift null before promotion.
+
+## Round 27 results (run 2026-08-27): both new families negative
+
+**27A - FVG/iFVG: dead.** (run_r27a_fvg.py -> results/r27a_fvg.json) 12 of 16
+cells runnable (the indices' 1-hour formation window cannot hold a 3-bar H1
+pattern - spec limitation, logged). Zero cells pass: every runnable cell has
+negative t or halves that disagree, and several are SIGNIFICANTLY negative
+(NDX 15m inversion t -8.21, SPX both constructions t -2.8/-2.9). The tiny
+15m zones make the far-edge stop a cost-harvesting machine (win rates 6-24%).
+The one full-sample positive (XAU 60m continuation, PF 1.336) has halves
+0.712/1.827 - the era artifact shape again. The imbalance/pattern family is
+now 0-for-7+ in this repo. Post-hoc note, not counted and not run: RTY 15m
+inversion loses in BOTH halves (0.764/0.715), so its mirror (fading iFVG
+violations) would have been consistently positive gross - it is the sweep-
+fade family in a new costume, six prior burials, and stays un-run.
+
+**27B - gold/dollar as lag-1 signals for equity futures: nothing.**
+(run_r27b_inversion.py -> results/r27b_inversion.json; 36 cells, 2012-2026,
+~2,000-4,200 days per cell) Best cell |t| = 1.63 (gold 5d momentum -> SPX
+session); max-stat p = 0.860 - the best cell is unremarkable against shifted
+noise. The only internally consistent family is gold-5d-up -> equities-up
+(all 6 cells positive, ~3-5bps/day difference) but it is far inside noise and
+inside the drift null's reach. The deployed corr gate as a risk-state
+descriptor tells equities nothing (|t| <= 0.54 everywhere). Registered prior
+confirmed: the gold-equity relationship is contemporaneous flight-to-safety,
+not lag-1 predictive.
+
+**The frequency question, answered by the round:** confirmation-stacking on
+existing signals REDUCES frequency (it subsets); new frequency requires new
+independent edges, and this round tested the last two candidates from the
+user's list that had not already been buried. Cells this round: 52. The
+honest paths to more trades remain the ones already on the books: the
+dual-denominator split (deployed), the HSI fade (accruing toward its 80-trade
+bar), the forward-test satellites (rvol gate, inside-day, London add-leg),
+and new MECHANISMS as they are found - not more confirmations.
