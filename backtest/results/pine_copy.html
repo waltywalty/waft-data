@@ -162,7 +162,7 @@ a:focus-visible, :focus-visible { outline:2px solid var(--brass); outline-offset
 </style>
 <div class="wrap">
 <header>
-<p class="eyebrow">Asia gold strategy &middot; TradingView port &middot; indicator v1.2 + HSI fade</p>
+<p class="eyebrow">Asia gold strategy &middot; TradingView port &middot; four scripts: gold, HSI fade, Double Seven</p>
 <h1>Pine Paste Board</h1>
 <p class="standfirst">Both scripts, ready to copy on any device. Tap Copy, then paste
 into TradingView&rsquo;s Pine Editor over the existing script and Save. On an iPad use
@@ -585,6 +585,74 @@ if barstate.islast
          text_size = size.large, text_color = color.white, bgcolor = armedToday ? C_OK : C_NO)
     table.cell(card, 0, 4, &quot;signals on chart&quot;, text_size = size.large, text_color = color.white, bgcolor = C_LBL)
     table.cell(card, 1, 4, str.tostring(sigCount), text_size = size.large, text_color = color.white, bgcolor = C_LBL)
+</code></pre></div>
+</section>
+
+<section class="script">
+  <div class="script-head">
+    <div>
+      <h2>Double Seven (paper only)</h2>
+      <p class="blurb">Watch-list item 4 (round 28): buy a 7-day closing low above the 200-day SMA on the S&P, exit at a 7-day closing high, long only, no stop. Load on a DAILY S&P chart (SP:SPX or OANDA:SPX500USD); alerts D7 BUY / D7 EXIT fire at the close. Parameters frozen at the published 7/200.</p>
+    </div>
+    <button class="copy" data-target="d7">Copy code</button>
+  </div>
+  <div class="codewrap"><pre id="d7"><code>//@version=6
+// DOUBLE SEVEN [paper] - watch-list item #4 (round 28 replication; params
+// FROZEN at the published 7/200 - do not tune).
+// Rule: close above the 200-day SMA AND close at a 7-day closing low -&gt; BUY
+// at the close; exit when close reaches a 7-day closing high. Long only,
+// no stop (as published) - size small and expect open trades to ride dips.
+// Chart: S&amp;P 500 daily (SP:SPX, or OANDA:SPX500USD / an ES-tracking CFD).
+indicator(&quot;Double Seven [paper]&quot;, overlay = true)
+
+smaLen  = input.int(200, &quot;Trend SMA (FROZEN)&quot;)
+lookback = input.int(7, &quot;Entry/exit closing-extreme lookback (FROZEN)&quot;)
+cardPos = input.string(&quot;top right&quot;, &quot;Card position&quot;,
+     options = [&quot;top right&quot;, &quot;top left&quot;, &quot;bottom right&quot;, &quot;bottom left&quot;])
+
+sma200 = ta.sma(close, smaLen)
+low7   = ta.lowest(close, lookback)
+high7  = ta.highest(close, lookback)
+
+var bool inPos = false
+buySig  = not inPos and close &gt; sma200 and close &lt;= low7 and barstate.isconfirmed
+exitSig = inPos and close &gt;= high7 and barstate.isconfirmed
+if buySig
+    inPos := true
+if exitSig
+    inPos := false
+
+alertcondition(buySig,  &quot;D7 BUY&quot;,  &quot;Double Seven: paper BUY S&amp;P at the close (7-day closing low above the 200 SMA)&quot;)
+alertcondition(exitSig, &quot;D7 EXIT&quot;, &quot;Double Seven: paper EXIT at the close (7-day closing high reached)&quot;)
+
+plot(sma200, &quot;SMA 200&quot;, color.new(color.orange, 0), 2)
+plotshape(buySig,  &quot;Buy&quot;,  shape.triangleup,   location.belowbar,
+     color.new(color.green, 0), size = size.normal, text = &quot;D7 BUY&quot;,
+     textcolor = color.new(color.green, 0))
+plotshape(exitSig, &quot;Exit&quot;, shape.xcross, location.abovebar,
+     color.new(color.gray, 0), size = size.small, text = &quot;EXIT&quot;,
+     textcolor = color.new(color.gray, 0))
+bgcolor(inPos ? color.new(color.green, 92) : na)
+
+pos = cardPos == &quot;top right&quot; ? position.top_right : cardPos == &quot;top left&quot; ? position.top_left :
+     cardPos == &quot;bottom right&quot; ? position.bottom_right : position.bottom_left
+C_LBL = color.rgb(42, 49, 64)
+C_OK  = color.rgb(27, 110, 85)
+C_NO  = color.rgb(120, 128, 145)
+var table card = table.new(pos, 2, 4, border_width = 1, border_color = color.rgb(120, 128, 145))
+if barstate.islast
+    above = close &gt; sma200
+    table.cell(card, 0, 0, &quot;trend (close vs 200 SMA)&quot;, text_size = size.large, text_color = color.white, bgcolor = C_LBL)
+    table.cell(card, 1, 0, above ? &quot;ABOVE - eligible&quot; : &quot;below - stand aside&quot;,
+         text_size = size.large, text_color = color.white, bgcolor = above ? C_OK : C_NO)
+    table.cell(card, 0, 1, &quot;close vs 7d low&quot;, text_size = size.large, text_color = color.white, bgcolor = C_LBL)
+    table.cell(card, 1, 1, str.tostring(close, &quot;#.##&quot;) + &quot; / &quot; + str.tostring(low7, &quot;#.##&quot;),
+         text_size = size.large, text_color = color.white, bgcolor = C_LBL)
+    table.cell(card, 0, 2, &quot;position&quot;, text_size = size.large, text_color = color.white, bgcolor = C_LBL)
+    table.cell(card, 1, 2, inPos ? &quot;HOLDING (wait 7d high)&quot; : &quot;flat&quot;,
+         text_size = size.large, text_color = color.white, bgcolor = inPos ? C_OK : C_NO)
+    table.cell(card, 0, 3, &quot;exit at (7d closing high)&quot;, text_size = size.large, text_color = color.white, bgcolor = C_LBL)
+    table.cell(card, 1, 3, str.tostring(high7, &quot;#.##&quot;), text_size = size.large, text_color = color.white, bgcolor = C_LBL)
 </code></pre></div>
 </section>
 

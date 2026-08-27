@@ -8,6 +8,7 @@ assert "{{" not in CSS
 ind = open("tradingview/AsiaOpenGold_indicator.pine").read()
 strat = open("tradingview/AsiaOpenGold_strategy.pine").read()
 hsi = open("tradingview/HSIPreOpenFade_indicator.pine").read()
+d7 = open("tradingview/DoubleSeven_indicator.pine").read()
 
 
 def card(cid, name, blurb, code):
@@ -49,7 +50,7 @@ HTML_DOC = f"""<title>Pine Paste Board</title>
 </style>
 <div class="wrap">
 <header>
-<p class="eyebrow">Asia gold strategy &middot; TradingView port &middot; indicator v1.2 + HSI fade</p>
+<p class="eyebrow">Asia gold strategy &middot; TradingView port &middot; four scripts: gold, HSI fade, Double Seven</p>
 <h1>Pine Paste Board</h1>
 <p class="standfirst">Both scripts, ready to copy on any device. Tap Copy, then paste
 into TradingView&rsquo;s Pine Editor over the existing script and Save. On an iPad use
@@ -73,6 +74,7 @@ Settings) and two new card rows: <strong>signals on chart</strong> and
 {card("ind", "Signal indicator (v1.2)", "Now with three regime alerts (REGIME ON / OFF / APPROACHING) so the end of a drought reaches your phone, plus a corr-trend row on the card. Re-paste over v1.1 and re-create alerts to add the new ones.", ind)}
 {card("strat", "Backtest strategy", "The full rule for the Strategy Tester, with webhook-ready order alerts for a bridge later.", strat)}
 {card("hsi", "HSI pre-open fade (paper only)", "Watch-list item: fades a >=0.3-ATR push in the 09:15-09:30 HKT futures-only window. Load on an OANDA HK33HKD 15-minute chart; alerts FADE LONG / FADE SHORT / EXIT. Parameters frozen until 80 trades.", hsi)}
+{card("d7", "Double Seven (paper only)", "Watch-list item 4 (round 28): buy a 7-day closing low above the 200-day SMA on the S&P, exit at a 7-day closing high, long only, no stop. Load on a DAILY S&P chart (SP:SPX or OANDA:SPX500USD); alerts D7 BUY / D7 EXIT fire at the close. Parameters frozen at the published 7/200.", d7)}
 
 <footer><p>Generated from <code>backtest/tradingview/</code> by
 <code>build_pine_copy.py</code> &mdash; the repository copy is the source of truth.</p></footer>

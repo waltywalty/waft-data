@@ -624,3 +624,9 @@ area 46% (SPX) / 32% (gold) of the time, and Crabel's 60-76% pattern win
 rates measure 26-30% today. Zarattini's noise-area momentum is real gross
 and dead at our costs (PF 1.15 → 0.96); Hikkake, Holy Grail, TTM Squeeze,
 and Momentum Pinball are dead at frozen parameters.
+
+Round 28b: Double Seven joined as paper stream 4 (SPX only, frozen 7/200; the
+NQ variant's -37.7% open excursion and borderline drift null keep it out). The
+dossier with equity curves, the 2x-overlay variant, and ES/NQ runs is
+`results/report_d7.html`; journal v3, the Pine indicator, and the D7 SPRT
+stream shipped alongside.

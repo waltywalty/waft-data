@@ -858,3 +858,23 @@ H1 SPX PF 0.583, t -2.75; the book's chart examples were the evidence, and
 the rule at frozen parameters has none); TTM Squeeze (PF ~1.0 all six
 cells - the vendor numbers have no support); Momentum Pinball (XAU 1.18 at
 t +0.89, SPX 0.93 - noise).
+
+## Round 28b: Double Seven becomes paper stream 4 (user decision, 2026-08-27)
+
+Deep-dive (run_r28b_d7.py -> results/r28b_d7.json; dossier artifact published):
+- SPX strategy-only: 6.5%/yr at 15.3% maxDD, Sharpe 0.69, MAR 0.43, 28%
+  exposure - vs buy & hold 8.6%/yr at 56.9% DD (Sharpe 0.48). Lower return,
+  a quarter of the drawdown, better risk-adjusted everywhere.
+- The user's "reinvest idle cash in S&P" variant resolves to buy & hold
+  (the trades ARE S&P longs); the real construction is the 2x-overlay:
+  15.2%/yr but 60% maxDD - it doubles into dips during crashes. Documented;
+  the paper stream tracks the strategy-only form.
+- ES/NQ futures costs change nothing at a ~7-day hold. NQ's tail is the
+  warning: worst trade -22.9%, worst open excursion -37.7%, drift-null only
+  p 0.028 - the stream is SPX ONLY. CFD swap on multi-day holds is not
+  modeled; futures (MES) preferred if ever funded.
+- Infrastructure shipped: journal v3 (D7 chip, live state was empty),
+  DoubleSeven_indicator.pine on the paste board (D7 BUY / D7 EXIT alerts,
+  frozen 7/200), sprt.py D7 stream (p1=0.802, b=0.57, ~13/yr: median 25
+  trades to promote, 22 to kill), monthly routine now scores four streams
+  and runs every stream's W/L through the SPRT.

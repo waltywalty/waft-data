@@ -27,6 +27,7 @@ STREAMS = {
     "XAU":    (0.402, 1.96, 140, "652-trade backtest, PF 1.320"),
     "XAUAUD": (0.402, 1.96, 140, "same signals as XAU (dual-denominator leg)"),
     "MHI":    (0.760, 0.64, 10,  "43-trade watch item, PF 2.02 - boundaries only advisory below n=80"),
+    "D7":     (0.802, 0.57, 13,  "253-trade SPX replication (r28), PF 2.30 - watch item 4, frozen 7/200"),
 }
 ALPHA = BETA = 0.10
 A = np.log((1 - BETA) / ALPHA)      # promote when LLR >= A

@@ -1,0 +1,57 @@
+//@version=6
+// DOUBLE SEVEN [paper] - watch-list item #4 (round 28 replication; params
+// FROZEN at the published 7/200 - do not tune).
+// Rule: close above the 200-day SMA AND close at a 7-day closing low -> BUY
+// at the close; exit when close reaches a 7-day closing high. Long only,
+// no stop (as published) - size small and expect open trades to ride dips.
+// Chart: S&P 500 daily (SP:SPX, or OANDA:SPX500USD / an ES-tracking CFD).
+indicator("Double Seven [paper]", overlay = true)
+
+smaLen  = input.int(200, "Trend SMA (FROZEN)")
+lookback = input.int(7, "Entry/exit closing-extreme lookback (FROZEN)")
+cardPos = input.string("top right", "Card position",
+     options = ["top right", "top left", "bottom right", "bottom left"])
+
+sma200 = ta.sma(close, smaLen)
+low7   = ta.lowest(close, lookback)
+high7  = ta.highest(close, lookback)
+
+var bool inPos = false
+buySig  = not inPos and close > sma200 and close <= low7 and barstate.isconfirmed
+exitSig = inPos and close >= high7 and barstate.isconfirmed
+if buySig
+    inPos := true
+if exitSig
+    inPos := false
+
+alertcondition(buySig,  "D7 BUY",  "Double Seven: paper BUY S&P at the close (7-day closing low above the 200 SMA)")
+alertcondition(exitSig, "D7 EXIT", "Double Seven: paper EXIT at the close (7-day closing high reached)")
+
+plot(sma200, "SMA 200", color.new(color.orange, 0), 2)
+plotshape(buySig,  "Buy",  shape.triangleup,   location.belowbar,
+     color.new(color.green, 0), size = size.normal, text = "D7 BUY",
+     textcolor = color.new(color.green, 0))
+plotshape(exitSig, "Exit", shape.xcross, location.abovebar,
+     color.new(color.gray, 0), size = size.small, text = "EXIT",
+     textcolor = color.new(color.gray, 0))
+bgcolor(inPos ? color.new(color.green, 92) : na)
+
+pos = cardPos == "top right" ? position.top_right : cardPos == "top left" ? position.top_left :
+     cardPos == "bottom right" ? position.bottom_right : position.bottom_left
+C_LBL = color.rgb(42, 49, 64)
+C_OK  = color.rgb(27, 110, 85)
+C_NO  = color.rgb(120, 128, 145)
+var table card = table.new(pos, 2, 4, border_width = 1, border_color = color.rgb(120, 128, 145))
+if barstate.islast
+    above = close > sma200
+    table.cell(card, 0, 0, "trend (close vs 200 SMA)", text_size = size.large, text_color = color.white, bgcolor = C_LBL)
+    table.cell(card, 1, 0, above ? "ABOVE - eligible" : "below - stand aside",
+         text_size = size.large, text_color = color.white, bgcolor = above ? C_OK : C_NO)
+    table.cell(card, 0, 1, "close vs 7d low", text_size = size.large, text_color = color.white, bgcolor = C_LBL)
+    table.cell(card, 1, 1, str.tostring(close, "#.##") + " / " + str.tostring(low7, "#.##"),
+         text_size = size.large, text_color = color.white, bgcolor = C_LBL)
+    table.cell(card, 0, 2, "position", text_size = size.large, text_color = color.white, bgcolor = C_LBL)
+    table.cell(card, 1, 2, inPos ? "HOLDING (wait 7d high)" : "flat",
+         text_size = size.large, text_color = color.white, bgcolor = inPos ? C_OK : C_NO)
+    table.cell(card, 0, 3, "exit at (7d closing high)", text_size = size.large, text_color = color.white, bgcolor = C_LBL)
+    table.cell(card, 1, 3, str.tostring(high7, "#.##"), text_size = size.large, text_color = color.white, bgcolor = C_LBL)

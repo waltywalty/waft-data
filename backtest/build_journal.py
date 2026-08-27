@@ -70,13 +70,13 @@ footer { margin-top:26px; font-size:12.5px; color:var(--ink-3); max-width:64ch; 
 </style></head><body>
 <div class="wrap">
 <h1>Asia Gold Trade Journal</h1>
-<p class="sub">One row per paper trade across the three streams: the gold rule (XAU),
+<p class="sub">One row per paper trade across the four streams: the gold rule (XAU),
 its XAUAUD half-leg, and the HSI pre-open fade (MHI). Adding or removing a row saves
 the page itself &mdash; this page is the record.</p>
 <div class="stats" id="stats"></div>
 <form id="f" autocomplete="off">
   <label>Date<input type="date" id="f-date"></label>
-  <label>Stream<span class="seg"><button type="button" class="ins" id="insXAU">XAU</button><button type="button" class="ins" id="insAUD">XAUAUD</button><button type="button" class="ins" id="insMHI">MHI</button></span></label>
+  <label>Stream<span class="seg"><button type="button" class="ins" id="insXAU">XAU</button><button type="button" class="ins" id="insAUD">XAUAUD</button><button type="button" class="ins" id="insMHI">MHI</button><button type="button" class="ins" id="insD7">D7</button></span></label>
   <label>Side<span class="seg"><button type="button" id="btnL">LONG</button><button type="button" id="btnS">SHORT</button></span></label>
   <label>Entry<input type="text" inputmode="decimal" id="f-entry" placeholder="4661.8"></label>
   <label>Stop<input type="text" inputmode="decimal" id="f-stop" placeholder="4616.3"></label>
@@ -93,7 +93,11 @@ the page itself &mdash; this page is the record.</p>
 <strong>XAUAUD</strong> &mdash; same signals, half size, same stop %, on OANDA:XAUAUD
 (P&amp;L in A$/oz). <strong>MHI</strong> &mdash; 09:15&ndash;09:30 HKT push &ge; 0.3&times;ATR14
 faded at the cash open, stop 0.5&times; the pre-open range, flat 16:00 HKT (P&amp;L in
-index points; paper only, frozen until 80 trades). Log every trade including losers
+index points; paper only, frozen until 80 trades). <strong>D7</strong> &mdash; S&amp;P
+daily close above the 200-day SMA at a 7-day closing low, buy the close; exit at a
+7-day closing high; long only, NO stop (as published) &mdash; log entry, exit, and
+stop = entry (none) when it closes (P&amp;L in index points; paper only, frozen 7/200).
+Log every trade including losers
 &mdash; the monthly review scores each stream separately.</footer>
 </div>
 <script id="state" type="application/json">@@STATE@@</script>
@@ -125,7 +129,7 @@ function render() {
     }).join('');
   }
   var st = [['all trades', state.trades.length]];
-  ['XAU', 'XAUAUD', 'MHI'].forEach(function (ins) {
+  ['XAU', 'XAUAUD', 'MHI', 'D7'].forEach(function (ins) {
     var ps = state.trades.filter(function (r) { return (r.instr || 'XAU') === ins; }).map(pnl);
     if (!ps.length) { st.push([ins, '-']); return; }
     var wins = ps.filter(function (x) { return x > 0; });
@@ -153,13 +157,14 @@ function save(msg) {
 }
 function pickIns(i) {
   instr = i;
-  [['insXAU','XAU'],['insAUD','XAUAUD'],['insMHI','MHI']].forEach(function (p) {
+  [['insXAU','XAU'],['insAUD','XAUAUD'],['insMHI','MHI'],['insD7','D7']].forEach(function (p) {
     document.getElementById(p[0]).className = 'ins' + (p[1] === i ? ' on-I' : '');
   });
 }
 document.getElementById('insXAU').addEventListener('click', function () { pickIns('XAU'); });
 document.getElementById('insAUD').addEventListener('click', function () { pickIns('XAUAUD'); });
 document.getElementById('insMHI').addEventListener('click', function () { pickIns('MHI'); });
+document.getElementById('insD7').addEventListener('click', function () { pickIns('D7'); });
 function pick(s) {
   side = s;
   document.getElementById('btnL').className = s === 'L' ? 'on-L' : '';
@@ -194,7 +199,7 @@ render();
 </script>
 </body></html>"""
 
-init = {"version": 2, "trades": []}
+init = {"version": 3, "trades": []}
 doc = TEMPLATE.replace("@@STATE@@", json.dumps(init))
 doc = doc.replace("@@TPL@@", TEMPLATE.replace("</", "<\\/"))
 open("results/trade_journal.html", "w").write(doc)
