@@ -1003,3 +1003,22 @@ unstated indicator periods (TV defaults, documented), position sizing
 window (their 2023-2026 claim window is 2/3 outside our data; the overlapping
 final year tested in r29). None of these can bridge gross PF ~1.0 to claimed
 2.66. Verdict unchanged: manufactured.
+
+## Round 30 pre-registration: the overnight-anomaly audit (user commission)
+
+Claim under test (viral chart family): buying $MU (and similar tickers) at
+every market close and selling at the next open compounds to an extremely
+high return. This is the documented "overnight anomaly" (Cooper/Cliff/Gulen
+and successors: close-to-open carries the equity premium, intraday ~zero or
+negative in many names) - so unlike round 29 the registered prior is that
+the GROSS claim is real; the questions are magnitude accuracy, era
+stability, and net-of-execution replicability.
+Design: daily adjusted OHLC (Alpha Vantage, split/dividend-adjusted) for MU
+plus references SPY, NVDA, AAPL, full available history. Decompose
+buy-and-hold into overnight (close->open) and intraday (open->close)
+compounded legs. Cells: gross; net at round-trip cost {2, 5, 10} bps (the
+trade is implementable via MOC/MOO auctions, so low-bps models are fair;
+10bps = retail sloppiness); halves split at the sample midpoint and
+2015-01-01 (crowding-era check); per-ticker. Also report: worst single
+overnight gap (earnings risk), volatility drag, and the tax note
+(short-term gains on ~252 trades/yr) as unmodeled.
