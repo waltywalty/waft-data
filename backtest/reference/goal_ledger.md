@@ -1140,3 +1140,125 @@ demonstration covers. No candidate; nothing to the watch list. Claim-era
 caveat as in r29: our RTY data ends 2020-05; their fills are 2026 - but a
 rule with a 15-year sign-flip and drift-null p 0.76 has no standing to be
 rescued by a window argument.
+
+## Round 32 pre-registration: three-source vendor audit (user commission)
+
+Sources retrieved 2026-08-27 via remote browser (all three domains
+egress-blocked locally; Medium article recovered from the 2024-10 Wayback
+capture - the live page is Cloudflare-blocked; full retrieval provenance in
+the round-32 scripts' docstrings and the fetched-text copies in scratch).
+
+32a - Medium "Automated Trading Strategy #60" (Celan Bryant, ATS
+newsletter, Jan 2023). Claim: $408,975/yr net on 1-lot ES/NQ/RTY/EMD/YM
+basket, PF 1.44, 53.3% of 2,732 trades, combined maxDD -$16,660.24,
+window 2022 only. Entry/exit rules and both indicator names are PAYWALLED:
+nothing is runnable, and the registered outcome class is
+unverifiable-by-construction. The audit is therefore a claims audit only:
+(1) recompute every derivable number in the two published tables (sums, PF,
+weighted WR); (2) test the "combined max drawdown" figure against the
+portfolio arithmetic - registered prediction: it is an AVERAGE of the five
+per-instrument DDs (~$16.9K), not a portfolio equity-curve DD, and the .24
+cents is impossible in these contracts' tick sizes; (3) quantify the risk
+understatement in the author's own sizing formula (account / average DD)
+for five correlated same-session index strategies, where per-instrument DDs
+sum to $84,825; (4) structural flags: per-instrument optimized bar periods
+(14/13/60/18/17 min), single-year window (2022), strategy #60 of a 60+
+family with a claimed family-average PF of 9.43, costs never mentioned,
+slippage admitted unmodeled.
+
+32b - TradeAlgo "Futures Trading Strategies: 6 Proven Methods (2026
+Data)". Content marketing for a signals subscription; only one specific
+performance claim: ORB (30-min opening range) "74.5% win rate, 2.51 profit
+factor, across hundreds of trades" on NQ, unattributed, no window, no
+costs. Arithmetic flag registered up front: their own spec (stop = far
+side of range, target 1.5-2x range) at 74.5% WR implies PF 3.3-4.4, and
+PF 2.51 with 74.5% WR implies avg RR 0.86 < 1 - the two numbers cannot
+both come from the stated geometry. Replication: NDX 5m feed (2005-2025,
+7.5-month 2020 hole documented), RTH 09:30-10:00 ET range, first
+breakout per day, long+short. Cells: entry {touch, close-beyond} x target
+{1.5x range, 2x range, none-EOD} x filter {none, overnight-gap-align} at
+house cost 2.0 NDX pts RT, plus zero-cost on the primary
+(close-entry/1.5x) - 12 + 2 cells, all counted. EOD flat 15:55 ET. Their
+other five "methods" carry no specific claims (round-number WR ranges);
+cross-referenced to existing rounds (RSI2 r28: dead net; BB fade r21/28;
+gap fill r15; Turtle r24) rather than re-run.
+
+32c - Scribd "Futures Strategies Performance Summary" (uploader not
+author; no vendor identified; 32 strategies "backtested 2015-2026, Round
+5: plateau-tuned parameters + best-fit instrument per strategy" across a
+28-contract sweep; frictionless by its own admission; "win rate" = share
+of profitable BARS; no rules given for any row). Nothing is runnable; the
+audit quantifies the two structural defects from the sheet's own numbers:
+(1) cost arithmetic on the four high-frequency rows (133k-551k trades at
+PF 1.00-1.02): implied gross edge per trade in index points vs any
+plausible friction; registered prediction: <=1 tick of round-trip cost
+turns all four negative; (2) selection-effect null: Monte Carlo of 28
+zero-edge instruments over ~11y, take the best Sharpe per "strategy" -
+registered prediction: expected max ~0.6-0.7 Sharpe from selection alone,
+covering the bulk of the table (median row Sharpe ~0.68). Cross-checks:
+their Turtle ES-only baseline (-0.2% CAGR) matches our r24 result; their
+frictionless NQ ORB row (PF 1.01, WR 50.4%) directly contradicts source
+32b's NQ ORB claim (PF 2.51, WR 74.5%) - the two user-submitted sources
+refute each other on the same strategy family.
+
+## Round 32: three-source audit results - one refuted, one unverifiable-with-broken-risk-math, one self-refuting
+
+(run_r32_orb.py, run_r32_medium.py, run_r32_scribd.py; results/r32_*.json)
+
+32a Medium "Strategy 60": all additive table statistics recompute exactly
+(net $408,975, gross, trades, weighted WR 53.33% - the tables are real NT8
+output, not invented sums). The pre-registered predictions on the risk
+numbers confirmed: the "combined max drawdown" $16,660.24 is 0.98x the
+MEAN of the five per-instrument DDs (mean $16,965; sum $84,825), sits
+BELOW the worst single sleeve (NQ -$33,760), cannot be a dollar P&L of
+these contracts (per-instrument rows are commission-free multiples of
+$2.50; .24 cents is unreachable by any combination), and the author's own
+sizing text calls it "avg max drawdown" outright. His formula (account /
+average DD -> 25 lots on $1M) therefore books portfolio risk at 8.3% of
+account while his own per-sleeve numbers, drawn together (five long/short
+strategies on the SAME correlated index complex in 2022, when they did
+draw together), bound it at 17-42% - a 2-5x understatement. One number in
+the text is flatly wrong from his own table: NQ "win/loss 2.56" is 1.88.
+Structure: rules and both indicator names paywalled (unfalsifiable),
+per-instrument optimized bar periods (14/13/60/18/17-min - five free
+parameters), one calendar year (2022), strategy #60 of a family whose
+claimed AVERAGE PF is 9.43. Verdict: unverifiable-by-construction sales
+funnel; the checkable parts contain a material risk-accounting error.
+Taxonomy: plausible-gross-numbers, broken-risk-math, unfalsifiable-rules.
+
+32b TradeAlgo NQ ORB (74.5% WR / PF 2.51): REFUTED on a 14-cell surface.
+NDX 2005-2025, 5,104-5,152 trades/cell: WR 37.9-47.1%, PF 0.87-1.04,
+best cell t +0.94 (touch entry, 1.5x target, ZERO cost). At house costs
+every cell is PF <= 1.03; nothing is within a factor of ~2.5 of the
+claimed PF or within 27 WR points of the claimed WR. The registered
+arithmetic flag stands: their own stop/target geometry cannot produce
+74.5% WR and PF 2.51 simultaneously. The claim is unattributed, undated,
+and appears in a subscription funnel between real CME volume statistics -
+credibility scaffolding, not evidence. Their one honest citation (39% WR,
+-58% maxDD trend following, Quantified Strategies) matches the literature
+and our r24 Turtle results. Taxonomy: manufactured-or-repeated-folklore
+(the 74.5/2.51 pair circulates verbatim in ORB marketing).
+
+32c Scribd 32-strategy sheet: predictions confirmed. (1) Cost arithmetic:
+the four high-frequency rows (133k-551k "trades", PF 1.00-1.02) carry
+implied edges of +0.008 to +0.094 index points per trade; ONE tick of
+round-trip cost (0.20 GC / 0.50 NQ pts) makes all four negative - the
+sheet's own frictionless admission is fatal to its top-3 row (Day Trading
+GC, 18.7% CAGR on 469k trades at PF 1.02). (2) Selection null: best-of-28
+zero-edge instruments at their stated 20% vol target over 11y yields
+expected max Sharpe 0.60 (q10-q90 0.42-0.80) from selection ALONE; the
+sheet's median row Sharpe is 0.69 and 20/32 rows sit at or below the
+null's 90th percentile - before counting the "Round 5 plateau-tuned"
+parameter search stacked on top. (3) Cross-checks: its Turtle ES-only
+baseline (-0.2% CAGR) independently matches our r24 replication, and its
+frictionless NQ ORB row (PF 1.01, WR 50.4%, 195k trades) agrees with OUR
+32b replication - and thereby refutes source 32b's headline claim. The
+sheet is the most honest of the three (it discloses its own frictionless
++ selection methodology) and still not evidence of any tradeable edge.
+Taxonomy: honest-methods-disclosure, selection-artifact numbers.
+
+Tests counted: 14 ORB cells + 2 arithmetic audits + 1 Monte Carlo null.
+No candidates; nothing to the watch list. Cross-source note for the
+playbook: two of the user's three sources contradict each other on the
+same strategy family, which is itself the cleanest demonstration this
+round produced.

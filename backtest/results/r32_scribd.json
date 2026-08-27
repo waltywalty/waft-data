@@ -1,0 +1,58 @@
+{
+ "cost_arithmetic": [
+  {
+   "row": "Day Trading (5-min)",
+   "ticker": "GC",
+   "trades": 469101,
+   "edge_pts": 0.007867394223071145,
+   "one_tick_rt_pts": 0.2,
+   "edge_after_1tick": -0.19213260577692887,
+   "dies": true
+  },
+  {
+   "row": "Scalping (5-min)",
+   "ticker": "NQ",
+   "trades": 133031,
+   "edge_pts": 0.09384123529709854,
+   "one_tick_rt_pts": 0.5,
+   "edge_after_1tick": -0.40615876470290146,
+   "dies": true
+  },
+  {
+   "row": "Order Flow (proxy)",
+   "ticker": "NQ",
+   "trades": 551528,
+   "edge_pts": 0.021331120712453355,
+   "one_tick_rt_pts": 0.5,
+   "edge_after_1tick": -0.47866887928754664,
+   "dies": true
+  },
+  {
+   "row": "Opening Range Breakout",
+   "ticker": "NQ",
+   "trades": 195406,
+   "edge_pts": 0.044830396746853296,
+   "one_tick_rt_pts": 0.5,
+   "edge_after_1tick": -0.4551696032531467,
+   "dies": true
+  }
+ ],
+ "selection_null": {
+  "n_instruments": 28,
+  "years": 11,
+  "sims": 2000,
+  "exp_max_sharpe": 0.6035805417406928,
+  "sharpe_q10_q90": [
+   0.4233112268568363,
+   0.8047370692480289
+  ],
+  "exp_max_cagr": 0.10632875935517823,
+  "note": "zero-edge instruments at their stated 20% vol target; instrument selection only - parameter tuning ('Round 5 plateau-tuned') stacks on top of this"
+ },
+ "sheet_vs_null": {
+  "median_sheet_sharpe": 0.695,
+  "null_q90": 0.8047370692480289,
+  "rows_below_null_q90": 20,
+  "rows_total": 32
+ }
+}

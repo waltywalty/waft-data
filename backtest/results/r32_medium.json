@@ -1,0 +1,63 @@
+{
+ "sums": {
+  "net": [
+   408975,
+   408975,
+   true
+  ],
+  "gross_win": [
+   1340410,
+   1340410,
+   true
+  ],
+  "gross_loss": [
+   931435,
+   931435,
+   true
+  ],
+  "pf": [
+   1.439,
+   1.44
+  ],
+  "trades": [
+   2732,
+   2732,
+   true
+  ],
+  "weighted_wr": [
+   0.5333,
+   0.5333
+  ]
+ },
+ "drawdown": {
+  "per_instrument": [
+   19540,
+   16625,
+   33760,
+   6035,
+   8865
+  ],
+  "summed": 84825,
+  "mean": 16965.0,
+  "claimed_combined": 16660.24,
+  "claimed_over_mean": 0.9820359563807841,
+  "worst_single": 33760,
+  "table2_combined": 83301.18,
+  "table2_is_5x_table1": true,
+  "cents_possible": false,
+  "note": "claimed combined DD (16,660) < worst single instrument DD (NQ 33,760): impossible for a portfolio equity curve that includes NQ unless other sleeves rally >17K exactly through NQ's trough; it is ~0.98x the MEAN of the five DDs and scales exactly 5x in Table 2 - a derived average, not a portfolio drawdown. The .24 cents cannot arise from these contracts' tick values."
+ },
+ "winloss": {
+  "nq_actual": 1.88,
+  "nq_claimed": 2.56,
+  "combined_actual": 1.26,
+  "combined_claimed": 1.24
+ },
+ "sizing": {
+  "formula": "account / average per-instrument DD",
+  "implied_risk_25_lots": 83301.18,
+  "summed_dd_25_lots": 424125,
+  "understatement": 5.091464490659076,
+  "pct_of_1M_account": 0.424125
+ }
+}

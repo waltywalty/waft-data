@@ -673,3 +673,22 @@ survives: PF 1.10 (1.20 zero-cost) vs claimed 2.8, payoff inverted (avg win
 +1.2% vs avg loss −3.5%), halves sign-flip, and the house drift null puts
 the grid's timing BELOW random matched-hold long exposure (p 0.76). The
 attached EMA/SMC "factor board" is confirmation stacking, not evidence.
+
+## Round 32 — three vendor sources, three failure modes
+
+Audit of three user-submitted sources (`run_r32_orb.py`, `run_r32_medium.py`,
+`run_r32_scribd.py`). **Medium "Strategy 60"** ($408K/yr claim): rules
+paywalled and indicators unnamed — unverifiable by construction — but its
+own tables show the "combined max drawdown" is an *average* of five
+correlated sleeves (below the worst single sleeve, cents impossible from
+tick values), so its sizing formula understates portfolio risk 2–5x.
+**TradeAlgo's** NQ opening-range-breakout claim (74.5% WR / PF 2.51) is
+refuted on a 14-cell replication over 21 years of NDX data: WR 38–47%,
+PF 0.87–1.04, zero-cost included — and the claimed WR/PF pair is
+arithmetically inconsistent with its own stop/target spec. The **Scribd
+32-strategy sheet** honestly discloses frictionless backtests and
+best-of-28-instrument selection: one tick of cost kills its four
+high-frequency rows, and a zero-edge selection null reproduces the bulk of
+its Sharpe column (expected max 0.60 from instrument choice alone; sheet
+median 0.69). Bonus: the Scribd sheet's own frictionless ORB row (PF 1.01)
+refutes TradeAlgo's ORB claim — the user's sources disagree with each other.
