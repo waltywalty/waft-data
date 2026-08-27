@@ -630,3 +630,16 @@ NQ variant's -37.7% open excursion and borderline drift null keep it out). The
 dossier with equity curves, the 2x-overlay variant, and ES/NQ runs is
 `results/report_d7.html`; journal v3, the Pine indicator, and the D7 SPRT
 stream shipped alongside.
+
+## Round 29 — the pinescriptforge audit (all 12 claims falsified)
+
+The user's side quest: audit the 12 "audited backtests" for RTY swing
+strategies on pinescriptforge.com (claims PF 1.57-2.66, +196% to +1,323%,
+maxDD <= 6.3%). Specs recovered verbatim from the live pages, replicated at
+frozen stated parameters (`run_r29_forge.py`). On 15.4 years of our verified
+RTY data every strategy LOSES (PF 0.63-0.91, all t negative); at ZERO cost
+they are coin flips (PF 0.95-1.02) - no gross signal exists, so the claims
+cannot be a cost artifact; and on the year that overlaps their own claim
+window, 10 of 12 are below water. Verdict: manufactured numbers (template
+Sharpe 2.50 on 8 of 12 pages, duplicate listings, all-zero stats panels),
+not exaggerated backtests.

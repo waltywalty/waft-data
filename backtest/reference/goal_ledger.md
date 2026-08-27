@@ -960,3 +960,30 @@ strategy: replicates / inflated / dead. 12 strategies x 2 windows = 24
 cells + zero-cost sensitivity; Bonferroni quoted. Registered prior: the
 recipe-battery base rate (r28: 1 candidate in 8) and the template red flags
 predict near-zero replication.
+
+## Round 29 results (run 2026-08-27): all 12 claims falsified; the site's numbers are not backtests
+
+(run_r29_forge.py -> results/r29_forge.json; 24 cells + zero-cost)
+**Primary window (15.4y, 2005-2020, 1H, house costs): every strategy loses.**
+PF 0.63-0.91, every t-statistic negative (worst -9.0), across 82 to 13,752
+trades. Nothing is close to any claimed number.
+**The decisive cell is zero-cost: PF 0.95-1.02 on all 12.** The strategies
+carry no gross signal content at all - so the claimed PF 1.57-2.66
+"post-friction" cannot be explained by cost differences, window luck, or our
+parameter conventions for the UNSTATED inputs. A real PF 2.66 does not
+degrade to 0.97 gross under any reasonable parameterization.
+**The overlap check kills the claims on their own window:** on 2025-03..
+2026-04 (the final year of their claimed Jan 2023 - Mar 2026 period), 10 of
+12 sit below PF 1.0; the two above (Marubozu 1.15 on n=76, DEMA 1.02) are
+noise. They claim +196% to +1,323% on this period.
+**Verdict: not "inflated" - fabricated or never run.** Consistent with the
+pre-registered red flags: template Sharpe 2.50 on 8 of 12 pages, the same
+strategy listed twice with different numbers, all-zero "Detailed Statistics"
+panels, MAR ~64 arithmetic, and an AI-script-generator business model whose
+strategy pages are programmatic SEO. The edgeful contrast is instructive:
+edgeful's descriptive claims REPRODUCED (their error was costs and window
+selection); pinescriptforge's numbers do not reproduce even gross. Grade of
+vendor claims now on file: real-but-cost-blind (edgeful), decayed-but-once-
+real (Crabel, Connors book claims), and manufactured (this).
+No candidates; nothing to the watch list; 0.4pt-cost and zero-cost cells all
+logged.
