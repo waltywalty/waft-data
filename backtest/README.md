@@ -560,3 +560,16 @@ Net change to the deployed rule: none — which is the finding. The deployed
 risk model survived a direct challenge from the most famous risk framework in
 trading folklore, and the commission's one testable signal joined the
 graveyard with full honors.
+
+## Round 25 — the correlation-timescale battery (negative; the gate is closed)
+
+The last untested corner of the gate: correlation computed from intraday
+returns, and the corr-window x entry-timeframe cross (`run_r25_corrtf.py`,
+33 pre-registered cells). All negative: six intraday sensors (H1/M15, ~1 day
+to ~2 weeks) are indistinguishable from shifted noise as gates (max-stat
+p 0.948) and carry no residual information inside the daily gate (all
+|rho| <= 0.05); the window x timeframe surface shows no interaction, and the
+lone full-sample tilt (90m entries) fails the halves lens — worse than 60m in
+2020-23, better only in 2024-25. The 20-day daily correlation at 0.5 with the
+60m range is the finished form, now closed from every direction: window,
+threshold, partner, frequency, residual, and cross.

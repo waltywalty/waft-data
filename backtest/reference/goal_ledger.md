@@ -488,3 +488,32 @@ consistency, not peaks.
 the daily signal's half-life is ~27 days (the regime is slow); round 13's
 416-cell partner sweep found no second axis. Costs as deployed
 ($0.30 + $0.30 stop slippage).
+
+## Round 25 results (run 2026-08-27): all three arms negative; the deployed gate stands
+
+**A. Intraday-frequency corr gates: dead.** (run_r25_corrtf.py ->
+results/r25_corrtf.json) Best of 18 cells |t2| = 1.16; max-stat p = 0.948 -
+the intraday sensors are indistinguishable from shifted noise. Segment signs
+flip in nearly every cell (e.g. H1_48<=0.3: -2.80 / +0.16). The deployed
+daily gate scored on the SAME available days: PF 1.439, t2 +1.69 - better
+than every intraday cell. The registered prior held: the regime is slow
+(half-life ~27d), and a fast sensor only adds noise to it.
+**B. Adjunct terciles inside the deployed gate: nothing.** All six sensors
+give |rho| <= 0.05, p >= 0.30, tercile PFs non-monotone. Once the daily gate
+has selected the day, intraday gold/AUD co-movement carries no residual
+information about trade quality.
+**C. Window x entry-timeframe cross: no interaction; 60m confirmed.** The
+surface is well-behaved - L60 beats L30 at every window (10/20/40d), and the
+20d window is best or tied for every entry length, so the two deployed
+parameters do not interact. The one full-sample tilt (L90 PF 1.413 vs L60
+1.329 at w=20) FAILS the halves lens: 2020-23 L90 1.103 vs L60 1.149 (worse),
+2024-25 L90 1.824 vs 1.537 (better) - the improvement lives entirely in the
+strong era. Era artifact; no change. Cell count this round: 18 + 6 + 9 = 33,
+all logged.
+
+Verdict: the correlation gate's timescale question is now CLOSED from every
+direction - daily window (r3: 10-90d plateau), threshold (r3: smooth monotone
+gradient), partner (r13: 416 cells), intraday frequency (r25: dead), adjunct
+residual (r25: dead), and the window x entry-timeframe cross (r25: no
+interaction). 20-day daily correlation at 0.5 with the 60m range/entry is the
+finished form.
