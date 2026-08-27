@@ -987,3 +987,19 @@ vendor claims now on file: real-but-cost-blind (edgeful), decayed-but-once-
 real (Crabel, Connors book claims), and manufactured (this).
 No candidates; nothing to the watch list; 0.4pt-cost and zero-cost cells all
 logged.
+
+## Round 29b: timeframe sensitivity (user follow-up) - the verdict is TF-invariant
+
+(results/r29b_tfsens.json) All 12 strategies re-run on 15min, 4H, and Daily
+(every timeframe their pages list) over 2005-2020 at house costs, plus
+zero-cost at each strategy's best timeframe. Best net cell anywhere in the
+whole 36-cell surface: DEMA daily PF 1.12 at t +0.3 (noise); best zero-cost
+cell 1.15. The 15min cells are annihilated by trade frequency (t to -30 on
+up to 55k trades). No timeframe on any strategy comes within a factor of
+~2 of the weakest claimed PF (1.57). Deviations-from-exact accounting, for
+the record: operating TF (they never state it - now all four tested),
+unstated indicator periods (TV defaults, documented), position sizing
+(unstated; flat one-unit used), instrument (session-verified RTY CFD proxy),
+window (their 2023-2026 claim window is 2/3 outside our data; the overlapping
+final year tested in r29). None of these can bridge gross PF ~1.0 to claimed
+2.66. Verdict unchanged: manufactured.
