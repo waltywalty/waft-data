@@ -749,3 +749,65 @@ honest paths to more trades remain the ones already on the books: the
 dual-denominator split (deployed), the HSI fade (accruing toward its 80-trade
 bar), the forward-test satellites (rvol gate, inside-day, London add-leg),
 and new MECHANISMS as they are found - not more confirmations.
+
+## Round 28 pre-registration: the researched-recipe replication battery (user commission)
+
+Web research returned 14 named multi-signal recipes ranked by evidence grade
+(peer-reviewed > working paper/independent backtest > book > influencer).
+Excluded on sight: Gao last-half-hour intraday momentum (grade A paper, but
+round 15 already ran it on our own 20y index data - sign-flipped);
+The Anti and Wyckoff Spring (not mechanizable without inventing the spec -
+and the Spring is our six-times-buried sweep-reclaim in Wyckoff clothing);
+ICT Silver Bullet and Unicorn are DEFERRED, not run: their defining input
+("bias", swing convention) is undefined in the published form, so any test
+would be of our convention, not their claim - plus the arXiv MNQ
+falsification study (2605.04004: 14 OHLCV signal families, walk-forward,
+none clear a 1.5pt cost wall) sets the prior. If the user wants them, we
+freeze OUR convention and say so.
+
+EIGHT recipes run at FROZEN published parameters (replication, not search).
+Registered cost-wall prior for every intraday cell: the MNQ study's
+arithmetic. Registered drift-null requirement for every long-only daily
+equity cell (round 16B). Bonferroni over the actual cell count quoted with
+results; halves split per market (indices 2015-01, gold 2023-01 given spans).
+
+DAILY-BAR GROUP (indices 2005-2025 from the 5m feeds; gold 2020-2025 - the
+spliced long series is close-only, documented):
+1. Double Seven (Connors/Alvarez, book): close > 200d SMA, buy 7-day closing
+   low, exit 7-day closing high, no stop (as published). 4 markets, long
+   side as published. Drift null mandatory. Claim: 77-81% win.
+2. NR7 and ID/NR4 breakout (Crabel, book): next-day stop entry 1 tick beyond
+   pattern-day extreme, stop at opposite extreme, exit same-day close
+   (frozen variant); same-day trigger+stop resolves to STOP (conservative,
+   documented). 4 markets x 2 patterns. Claim: 60-76% win pre-1990.
+3. Hikkake, best published form (Chesler spec + Oxfordstrat trend filter):
+   inside bar -> false-break bar -> stop entry at inside-bar extreme within
+   3 bars, WITH 50-EMA trend context, 10-bar time exit, stop at false-break
+   extreme. 4 markets. Bulkowski/Oxfordstrat: works only with filter+hold.
+4. Holy Grail (Raschke/Connors, book): ADX14 > 30 AND ADX > ADX[1] (frozen
+   convention for "rising"), pullback touches 20 EMA, buy stop above touch-
+   bar high, stop below touch-bar low, exit at prior swing high or 10-bar
+   time stop (frozen). 4 markets, both sides. No published aggregate stats -
+   this is the first rigorous test at book parameters.
+5. TTM Squeeze (Carter, book): BB(20,2.0) inside KC(20,1.5xATR20) for >= 5
+   bars, fire = first bar BB re-exits, direction = 12-bar linreg momentum
+   sign, entry fire close, exit on 2-bar momentum deceleration, stop at
+   opposite squeeze-range extreme. 4 markets daily + XAU/SPX H1. Claim
+   (vendor, not credible): 68% "2xADR in 5 bars".
+INTRADAY GROUP (5m):
+6. Zarattini/Concretum noise-area intraday momentum (working paper + ES/NQ
+   replication): sigma(t) = 14-day average |open->t| move per minute-of-day;
+   bands = open x (1 +/- sigma(t)) with gap adjustment; entries only at
+   HH:00/HH:30 beyond a band; trail = max(band, session VWAP) checked at
+   30m marks; flat at close; reversals allowed. SPX/NDX/RTY (09:30-16:00 ET
+   session) + XAU port (01:30 UTC session open, flat 16:00 NY). Claim:
+   Sharpe 1.33 SPY / 1.57-1.67 ES-NQ; cost sensitivity flagged by
+   reviewers - we run x0/x1/x2 costs.
+7. Momentum Pinball (Raschke/Connors, book): RSI(3) of ROC(1) on daily
+   closes; < 30 -> next day buy stop above FIRST-HOUR high, stop at first-
+   hour low, exit next day's close; > 70 mirrored short. XAU + SPX.
+8. Market Profile 80% rule (Dalton): prior-session 70% volume value area
+   from 5m bars; open outside VA; re-entry held two consecutive 30m closes
+   inside -> enter at VA edge toward the far edge; target far edge; stop
+   0.25 x VA width beyond entry edge; flat session end. SPX + XAU. The 80%
+   fill claim is also scored descriptively (conditional fill rate).
