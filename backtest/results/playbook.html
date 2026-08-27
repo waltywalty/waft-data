@@ -142,7 +142,7 @@ a:focus-visible, :focus-visible { outline:2px solid var(--brass); outline-offset
 </style>
 <div class="wrap">
 <header>
-<p class="eyebrow">Living document &middot; last updated 2026-08-27 &middot; after round 24</p>
+<p class="eyebrow">Living document &middot; last updated 2026-08-27 &middot; after round 28</p>
 <h1>The Asia gold playbook</h1>
 <p class="standfirst">One strategy survived nine rounds of testing: the Asia-open
 range breakout on gold, gated by the gold/AUDUSD correlation regime. This page is the
@@ -409,6 +409,17 @@ a hard pre-filter on all future candidates (the deployed rule passes at $1.60/oz
 vs the $1.20 bar), and the Marcus gap audit&rsquo;s comfort: worst realized stop
 overrun in 652 trades was 1.25&times; intended &mdash; 1.25% of equity at 1%
 risk.</li>
+<li>Rounds 25-28 sweeps: intraday-computed correlation gates (max-stat p 0.95)
+and every entry timeframe below 30m (cost-dominated, monotone gradient);
+the SGE auction candle (real at max-stat p 0.004, unmonetizable: 50.8% hit
+rate, t +1.22 at ZERO cost); FVG/iFVG on four markets (0 of 12 cells, several
+significantly negative); gold/dollar as lag-1 signals for ES/NQ/RTY (36
+cells, max-stat p 0.86); and the researched-recipe battery &mdash; Hikkake,
+Holy Grail, TTM Squeeze, Momentum Pinball all dead at frozen published
+parameters, the Market Profile &ldquo;80% rule&rdquo; measured at 46%/32%
+actual fill, Crabel&rsquo;s 60-76% win rates measured at 26-30%, and the
+Zarattini noise-area strategy real gross but dead at our costs. One survivor
+crossed to the watch list: Double Seven on SPX (item 4).</li>
 </ul>
 <div class="note"><p><strong>Watch list (not tradeable, not forgotten):</strong>
 (1) the gold CISD-to-EoD reversal (09:00-10:00 ET range, entry against the first break
@@ -428,7 +439,15 @@ re-test at 80+ trades on the live feed; promote at PF &ge;1.4 with both halves
 positive; no parameter may move. Round-18 caveat: the same construction FAILS on
 the Nikkei&rsquo;s identical 08:45/09:00 futures-cash structure (both arms), so
 the mechanism is HK-specific at best &mdash; the item stands on its own market&rsquo;s
-numbers only.</p></div>
+numbers only.
+(4) Double Seven on SPX (round 28, Connors/Alvarez replication): close above
+the 200-day SMA, buy a 7-day closing low, exit a 7-day closing high, no stop,
+long only &mdash; PF 2.30, win 80%, halves 2.40/2.28 on 20 years, and the
+2015-2025 half is fully post-publication out-of-sample; beats a matched-hold
+drift null at p 0.005 but not the round&rsquo;s strict Bonferroni, so it
+waits here at frozen parameters. Equity-index-specific (gold and RTY sit
+inside the drift null); ~13 signals/yr; the published form carries no stop,
+so size accordingly if it is ever papered.</p></div>
 <div class="note"><p><strong>One sentence:</strong> trade the Asia open only when gold
 is not a dollar proxy, hold to the New York close with a wide stop at flat 1% risk, and
 let the forward log &mdash; not another backtest &mdash; earn every change.</p></div>

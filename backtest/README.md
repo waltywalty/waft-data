@@ -609,3 +609,18 @@ gold/dollar as lag-1 signals for ES/NQ/RTY finds nothing (36 cells, best
 |t| 1.63, max-stat p 0.86 - the gold-equity link is contemporaneous, not
 predictive). Frequency comes from independent edges, not stacked
 confirmations; the deployed rule stands.
+
+## Round 28 — eight researched recipes at frozen published parameters
+
+Web research graded 14 named multi-signal recipes by evidence; eight precise
+enough to replicate were run as published (`run_r28_daily.py`,
+`run_r28_intraday.py`, shared `indicators.py`). One candidate: **Double Seven
+on SPX** (PF 2.30, win 80% — the book's claim replicates; halves 2.40/2.28;
+the 2015-2025 half is fully post-publication out-of-sample; beats a
+matched-hold drift null at p 0.005) — sub-strict-Bonferroni, so it joins the
+playbook watch list at frozen parameters rather than deploying. Two famous
+claims quantitatively busted: the Market Profile "80% rule" fills the value
+area 46% (SPX) / 32% (gold) of the time, and Crabel's 60-76% pattern win
+rates measure 26-30% today. Zarattini's noise-area momentum is real gross
+and dead at our costs (PF 1.15 → 0.96); Hikkake, Holy Grail, TTM Squeeze,
+and Momentum Pinball are dead at frozen parameters.

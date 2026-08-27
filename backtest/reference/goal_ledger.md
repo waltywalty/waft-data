@@ -811,3 +811,50 @@ INTRADAY GROUP (5m):
    inside -> enter at VA edge toward the far edge; target far edge; stop
    0.25 x VA width beyond entry edge; flat session end. SPX + XAU. The 80%
    fill claim is also scored descriptively (conditional fill rate).
+
+## Round 28 results (run 2026-08-27): one candidate, two busted claims, five burials
+
+~40 cells across the eight frozen recipes. Bonferroni note: at this round's
+cell count the strict familywise bar is p ~ 0.00125 / |t| ~ 3.2.
+
+**THE CANDIDATE - Double Seven on SPX (Connors/Alvarez 2008).** PF 2.303,
+win 80.2% (book claimed 77-81% - the claim REPLICATES), t +5.15, halves
+2.40/2.28, n=253 over 20y (~13 trades/yr). Matched-hold drift null (random
+long entries above the 200SMA with the trade set's exact bar-hold
+distribution, 3,000 sims): p = 0.005. Decisive context: the book's test
+window was ~1995-2007, so our 2015-2025 half (PF 2.28) is fully
+POST-PUBLICATION out-of-sample - the hardest test a published recipe can
+face, and it passes on SPX. NDX: PF 2.64, drift p = 0.028 (borderline).
+XAU (p 0.40) and RTY (p 0.47) are inside the drift null - the effect is
+large-cap-equity-specific, consistent with the literature (institutional
+dip-buying in trending index products). Sub-strict-Bonferroni for the round
+(0.005 vs 0.00125), so per house rules it does NOT deploy: it goes to the
+WATCH LIST at frozen parameters (7/200, long-only, no stop, as published)
+with the standard promotion bar. Caveats registered: no stop (worst
+open-trade excursions ride through corrections); in-market ~25% of time;
+long-only equity = drift-adjacent even after the null.
+
+**BUSTED CLAIM 1 - Market Profile "80% rule": the number is wrong.** The
+conditional value-area fill rate, measured exactly per the published trigger
+(open outside VA, two consecutive 30m closes back inside): 46% on SPX
+(n=1,186 setups, 19y) and 32% on gold - nowhere near 80%. The trade
+expression is flat-to-negative (PF 0.995 / 0.907).
+**BUSTED CLAIM 2 - Crabel ID/NR4 and NR7 win rates.** Published 60-76%;
+measured 26-30% across all eight cells. The pattern is not dead as an
+EDGE shape - all 8 cells have PF > 1 (1.09-1.41, NR7 SPX t +2.52) because
+rare big winners pay for the many small stops - but the famous win-rate
+claim belongs to pre-1990 futures, not modern markets. Sub-bar; logged as a
+consistent-but-thin family (the volatility-contraction cousin of our r25b
+findings).
+**Zarattini noise-area momentum: gross yes, net no.** At zero cost the SPX
+gross effect is real (PF 1.148, t +3.28 - direction consistent with the
+paper); at our CFD costs all four markets are dead (PF 0.88-1.05) and at 2x
+costs strongly negative (t -6.5). The reviewers' cost-sensitivity flag was
+the story - the edgeful lesson at working-paper quality. A futures-cost
+re-run is the one legitimate follow-up if the user ever trades ES directly.
+**Buried:** Hikkake best-published-form (PF 0.24-0.64 everywhere, NDX/RTY
+t ~ -3); Holy Grail (daily setups near-nonexistent at ADX14>30 - n 1-18;
+H1 SPX PF 0.583, t -2.75; the book's chart examples were the evidence, and
+the rule at frozen parameters has none); TTM Squeeze (PF ~1.0 all six
+cells - the vendor numbers have no support); Momentum Pinball (XAU 1.18 at
+t +0.89, SPX 0.93 - noise).
