@@ -12,23 +12,15 @@ indicator("FP3 HTF Bias", overlay = false)
 winN   = input.int(63, "Drift window (days)", minval = 20)
 smaN   = input.int(200, "Trend SMA (days)", minval = 50)
 
-// Daily figures from confirmed bars only ([1] offsets) - no lookahead, no
-// repaint: today's still-forming daily bar never enters the calculation.
-[dO, dC, dC2] = request.security(syminfo.tickerid, "D", [open[1], close[1], close[2]], lookahead = barmerge.lookahead_off)
-onRet = dC2 != 0 ? dO / dC2 - 1 : na      // close[t-1] -> open[t]  (overnight)
-idRet = dO  != 0 ? dC / dO  - 1 : na      // open[t]    -> close[t] (intraday)
-dNew  = ta.change(time("D")) != 0
-
-var float cumON = 0.0, var float cumID = 0.0
-var onArr = array.new_float()
-if dNew and not na(onRet)
-    cumON += onRet
-    cumID += idRet
-    array.push(onArr, onRet)
-    if array.size(onArr) > winN
-        array.shift(onArr)
-
-onDrift = array.size(onArr) >= winN ? array.avg(onArr) * 1e4 : na   // bps/night
+// All daily figures computed INSIDE the daily context (request.security
+// expressions with [1] = yesterday's completed value): they use the daily
+// feed's full history, fill regardless of intraday chart depth, and cannot
+// repaint or look ahead.
+[onDriftRaw, cumON, cumID] = request.security(syminfo.tickerid, "D",
+     [ta.sma(open / close[1] - 1, winN)[1],
+      ta.cum(nz(open / close[1] - 1))[1],
+      ta.cum(nz(close / open - 1))[1]], lookahead = barmerge.lookahead_off)
+onDrift = onDriftRaw * 1e4                 // bps/night
 dSMA    = request.security(syminfo.tickerid, "D", ta.sma(close[1], smaN), lookahead = barmerge.lookahead_off)
 trendUp = close > dSMA
 

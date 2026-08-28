@@ -56,9 +56,9 @@ if inRTH
     sP2V := nz(sP2V) + p * p * volume
 vwap = sV > 0 ? sPV / sV : na
 sig  = sV > 0 ? math.sqrt(math.max(sP2V / sV - vwap * vwap, 0)) : na
-plot(useMap and inRTH ? vwap : na,       "sVWAP", color.new(color.blue, 0),  2, plot.style_linebr)
-plot(useMap and inRTH ? vwap + sig : na, "VAH~",  color.new(color.blue, 55), 1, plot.style_linebr)
-plot(useMap and inRTH ? vwap - sig : na, "VAL~",  color.new(color.blue, 55), 1, plot.style_linebr)
+plot(useMap and inRTH ? vwap : na,       "sVWAP", color.new(color.blue, 0),  2, plot.style_linebr, display = display.pane)
+plot(useMap and inRTH ? vwap + sig : na, "VAH~",  color.new(color.blue, 55), 1, plot.style_linebr, display = display.pane)
+plot(useMap and inRTH ? vwap - sig : na, "VAL~",  color.new(color.blue, 55), 1, plot.style_linebr, display = display.pane)
 
 var float rthClose = na
 var float priorClose = na
@@ -66,19 +66,15 @@ if rthEnd
     priorClose := rthClose
 if inRTH
     rthClose := close
-plot(useMap ? priorClose : na, "prior RTH close", color.new(color.gray, 30), 1, plot.style_linebr)
+plot(useMap ? priorClose : na, "prior RTH close", color.new(color.gray, 30), 1, plot.style_linebr, display = display.pane)
 
 // ========================= FP3 layer: HTF bias card ===========================
-// Confirmed daily bars only ([1] offsets): no lookahead, no repaint.
-[dO, dC, dC2] = request.security(syminfo.tickerid, "D", [open[1], close[1], close[2]], lookahead = barmerge.lookahead_off)
-onRet = dC2 != 0 ? dO / dC2 - 1 : na
-dNew  = ta.change(time("D")) != 0
-var onArr = array.new_float()
-if dNew and not na(onRet)
-    array.push(onArr, onRet)
-    if array.size(onArr) > winN
-        array.shift(onArr)
-onDrift = array.size(onArr) >= winN ? array.avg(onArr) * 1e4 : na
+// The drift SMA is computed INSIDE the daily context (request.security
+// expression), so it uses the daily feed's full history - it fills even when
+// the intraday chart itself holds only a few weeks of bars. [1] = yesterday's
+// completed value: no lookahead, no repaint.
+onDrift = request.security(syminfo.tickerid, "D",
+     ta.sma(open / close[1] - 1, winN)[1], lookahead = barmerge.lookahead_off) * 1e4
 dSMA    = request.security(syminfo.tickerid, "D", ta.sma(close[1], smaN), lookahead = barmerge.lookahead_off)
 trendUp = close > dSMA
 biasLong  = trendUp and onDrift > 0
@@ -130,12 +126,12 @@ if not inRTH
     onH := math.max(nz(onH, high), high)
     onL := math.min(nz(onL, low), low)
 
-plot(useLvls and inRTH ? pdh : na, "PDH", color.new(color.maroon, 30), 1, plot.style_linebr)
-plot(useLvls and inRTH ? pdl : na, "PDL", color.new(color.teal, 30), 1, plot.style_linebr)
-plot(useLvls and inRTH ? onHf : na, "ON high", color.new(color.maroon, 65), 1, plot.style_linebr)
-plot(useLvls and inRTH ? onLf : na, "ON low", color.new(color.teal, 65), 1, plot.style_linebr)
-plot(useLvls and inRTH and time >= orEndT ? orH : na, "OR high", color.new(color.orange, 45), 1, plot.style_linebr)
-plot(useLvls and inRTH and time >= orEndT ? orL : na, "OR low", color.new(color.orange, 45), 1, plot.style_linebr)
+plot(useLvls and inRTH ? pdh : na, "PDH", color.new(color.maroon, 30), 1, plot.style_linebr, display = display.pane)
+plot(useLvls and inRTH ? pdl : na, "PDL", color.new(color.teal, 30), 1, plot.style_linebr, display = display.pane)
+plot(useLvls and inRTH ? onHf : na, "ON high", color.new(color.maroon, 65), 1, plot.style_linebr, display = display.pane)
+plot(useLvls and inRTH ? onLf : na, "ON low", color.new(color.teal, 65), 1, plot.style_linebr, display = display.pane)
+plot(useLvls and inRTH and time >= orEndT ? orH : na, "OR high", color.new(color.orange, 45), 1, plot.style_linebr, display = display.pane)
+plot(useLvls and inRTH and time >= orEndT ? orL : na, "OR low", color.new(color.orange, 45), 1, plot.style_linebr, display = display.pane)
 
 evalLevel(bool active, float lvl, bool upSide, int state, int sinceBreach) =>
     s = state

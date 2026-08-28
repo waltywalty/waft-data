@@ -733,9 +733,9 @@ if inRTH
     sP2V := nz(sP2V) + p * p * volume
 vwap = sV &gt; 0 ? sPV / sV : na
 sig  = sV &gt; 0 ? math.sqrt(math.max(sP2V / sV - vwap * vwap, 0)) : na
-plot(useMap and inRTH ? vwap : na,       &quot;sVWAP&quot;, color.new(color.blue, 0),  2, plot.style_linebr)
-plot(useMap and inRTH ? vwap + sig : na, &quot;VAH~&quot;,  color.new(color.blue, 55), 1, plot.style_linebr)
-plot(useMap and inRTH ? vwap - sig : na, &quot;VAL~&quot;,  color.new(color.blue, 55), 1, plot.style_linebr)
+plot(useMap and inRTH ? vwap : na,       &quot;sVWAP&quot;, color.new(color.blue, 0),  2, plot.style_linebr, display = display.pane)
+plot(useMap and inRTH ? vwap + sig : na, &quot;VAH~&quot;,  color.new(color.blue, 55), 1, plot.style_linebr, display = display.pane)
+plot(useMap and inRTH ? vwap - sig : na, &quot;VAL~&quot;,  color.new(color.blue, 55), 1, plot.style_linebr, display = display.pane)
 
 var float rthClose = na
 var float priorClose = na
@@ -743,19 +743,15 @@ if rthEnd
     priorClose := rthClose
 if inRTH
     rthClose := close
-plot(useMap ? priorClose : na, &quot;prior RTH close&quot;, color.new(color.gray, 30), 1, plot.style_linebr)
+plot(useMap ? priorClose : na, &quot;prior RTH close&quot;, color.new(color.gray, 30), 1, plot.style_linebr, display = display.pane)
 
 // ========================= FP3 layer: HTF bias card ===========================
-// Confirmed daily bars only ([1] offsets): no lookahead, no repaint.
-[dO, dC, dC2] = request.security(syminfo.tickerid, &quot;D&quot;, [open[1], close[1], close[2]], lookahead = barmerge.lookahead_off)
-onRet = dC2 != 0 ? dO / dC2 - 1 : na
-dNew  = ta.change(time(&quot;D&quot;)) != 0
-var onArr = array.new_float()
-if dNew and not na(onRet)
-    array.push(onArr, onRet)
-    if array.size(onArr) &gt; winN
-        array.shift(onArr)
-onDrift = array.size(onArr) &gt;= winN ? array.avg(onArr) * 1e4 : na
+// The drift SMA is computed INSIDE the daily context (request.security
+// expression), so it uses the daily feed&#x27;s full history - it fills even when
+// the intraday chart itself holds only a few weeks of bars. [1] = yesterday&#x27;s
+// completed value: no lookahead, no repaint.
+onDrift = request.security(syminfo.tickerid, &quot;D&quot;,
+     ta.sma(open / close[1] - 1, winN)[1], lookahead = barmerge.lookahead_off) * 1e4
 dSMA    = request.security(syminfo.tickerid, &quot;D&quot;, ta.sma(close[1], smaN), lookahead = barmerge.lookahead_off)
 trendUp = close &gt; dSMA
 biasLong  = trendUp and onDrift &gt; 0
@@ -807,12 +803,12 @@ if not inRTH
     onH := math.max(nz(onH, high), high)
     onL := math.min(nz(onL, low), low)
 
-plot(useLvls and inRTH ? pdh : na, &quot;PDH&quot;, color.new(color.maroon, 30), 1, plot.style_linebr)
-plot(useLvls and inRTH ? pdl : na, &quot;PDL&quot;, color.new(color.teal, 30), 1, plot.style_linebr)
-plot(useLvls and inRTH ? onHf : na, &quot;ON high&quot;, color.new(color.maroon, 65), 1, plot.style_linebr)
-plot(useLvls and inRTH ? onLf : na, &quot;ON low&quot;, color.new(color.teal, 65), 1, plot.style_linebr)
-plot(useLvls and inRTH and time &gt;= orEndT ? orH : na, &quot;OR high&quot;, color.new(color.orange, 45), 1, plot.style_linebr)
-plot(useLvls and inRTH and time &gt;= orEndT ? orL : na, &quot;OR low&quot;, color.new(color.orange, 45), 1, plot.style_linebr)
+plot(useLvls and inRTH ? pdh : na, &quot;PDH&quot;, color.new(color.maroon, 30), 1, plot.style_linebr, display = display.pane)
+plot(useLvls and inRTH ? pdl : na, &quot;PDL&quot;, color.new(color.teal, 30), 1, plot.style_linebr, display = display.pane)
+plot(useLvls and inRTH ? onHf : na, &quot;ON high&quot;, color.new(color.maroon, 65), 1, plot.style_linebr, display = display.pane)
+plot(useLvls and inRTH ? onLf : na, &quot;ON low&quot;, color.new(color.teal, 65), 1, plot.style_linebr, display = display.pane)
+plot(useLvls and inRTH and time &gt;= orEndT ? orH : na, &quot;OR high&quot;, color.new(color.orange, 45), 1, plot.style_linebr, display = display.pane)
+plot(useLvls and inRTH and time &gt;= orEndT ? orL : na, &quot;OR low&quot;, color.new(color.orange, 45), 1, plot.style_linebr, display = display.pane)
 
 evalLevel(bool active, float lvl, bool upSide, int state, int sinceBreach) =&gt;
     s = state
@@ -1078,23 +1074,15 @@ indicator(&quot;FP3 HTF Bias&quot;, overlay = false)
 winN   = input.int(63, &quot;Drift window (days)&quot;, minval = 20)
 smaN   = input.int(200, &quot;Trend SMA (days)&quot;, minval = 50)
 
-// Daily figures from confirmed bars only ([1] offsets) - no lookahead, no
-// repaint: today&#x27;s still-forming daily bar never enters the calculation.
-[dO, dC, dC2] = request.security(syminfo.tickerid, &quot;D&quot;, [open[1], close[1], close[2]], lookahead = barmerge.lookahead_off)
-onRet = dC2 != 0 ? dO / dC2 - 1 : na      // close[t-1] -&gt; open[t]  (overnight)
-idRet = dO  != 0 ? dC / dO  - 1 : na      // open[t]    -&gt; close[t] (intraday)
-dNew  = ta.change(time(&quot;D&quot;)) != 0
-
-var float cumON = 0.0, var float cumID = 0.0
-var onArr = array.new_float()
-if dNew and not na(onRet)
-    cumON += onRet
-    cumID += idRet
-    array.push(onArr, onRet)
-    if array.size(onArr) &gt; winN
-        array.shift(onArr)
-
-onDrift = array.size(onArr) &gt;= winN ? array.avg(onArr) * 1e4 : na   // bps/night
+// All daily figures computed INSIDE the daily context (request.security
+// expressions with [1] = yesterday&#x27;s completed value): they use the daily
+// feed&#x27;s full history, fill regardless of intraday chart depth, and cannot
+// repaint or look ahead.
+[onDriftRaw, cumON, cumID] = request.security(syminfo.tickerid, &quot;D&quot;,
+     [ta.sma(open / close[1] - 1, winN)[1],
+      ta.cum(nz(open / close[1] - 1))[1],
+      ta.cum(nz(close / open - 1))[1]], lookahead = barmerge.lookahead_off)
+onDrift = onDriftRaw * 1e4                 // bps/night
 dSMA    = request.security(syminfo.tickerid, &quot;D&quot;, ta.sma(close[1], smaN), lookahead = barmerge.lookahead_off)
 trendUp = close &gt; dSMA
 
@@ -1153,6 +1141,8 @@ rngTh  = input.int(40, &quot;Range percentile &lt;=&quot;, minval = 1,  maxval =
 extN   = input.int(20, &quot;Extreme lookback (bars)&quot;, minval = 5)
 useLTF = input.bool(true, &quot;CVD proxy from lower TF&quot;)
 ltfRes = input.string(&quot;1&quot;, &quot;Lower TF&quot;)
+dispMode = input.string(&quot;delta columns&quot;, &quot;Pane display (one scale at a time)&quot;,
+     options = [&quot;delta columns&quot;, &quot;CVD line&quot;])
 
 volP = ta.percentrank(volume, lookN)
 tr   = ta.tr(true)
@@ -1171,8 +1161,12 @@ deltaPx  = useLTF and array.size(deltaArr) &gt; 0 ? array.sum(deltaArr) : (close
 var float cvd = 0.0
 cvd += nz(deltaPx)
 
-plot(deltaPx, &quot;delta PROXY (per bar)&quot;, deltaPx &gt;= 0 ? color.new(color.teal, 40) : color.new(color.maroon, 40), 1, plot.style_columns)
-plot(cvd, &quot;cum delta PROXY&quot;, color.new(color.blue, 0), 2)
+// One series per scale: the cumulative line is ~10,000x the size of a single
+// bar&#x27;s delta, so plotting both in one pane crushes the columns to nothing
+// (as seen in live use). Pick the view; markers stay on in both.
+plot(dispMode == &quot;delta columns&quot; ? deltaPx : na, &quot;delta PROXY (per bar)&quot;,
+     deltaPx &gt;= 0 ? color.new(color.teal, 40) : color.new(color.maroon, 40), 1, plot.style_columns)
+plot(dispMode == &quot;CVD line&quot; ? cvd : na, &quot;cum delta PROXY&quot;, color.new(color.blue, 0), 2)
 plotshape(absorbBuy,  &quot;absorption (buy side)&quot;,  shape.triangleup,   location.belowbar, color.teal,   size = size.small, force_overlay = true)
 plotshape(absorbSell, &quot;absorption (sell side)&quot;, shape.triangledown, location.abovebar, color.maroon, size = size.small, force_overlay = true)
 

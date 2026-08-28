@@ -20,6 +20,8 @@ rngTh  = input.int(40, "Range percentile <=", minval = 1,  maxval = 60)
 extN   = input.int(20, "Extreme lookback (bars)", minval = 5)
 useLTF = input.bool(true, "CVD proxy from lower TF")
 ltfRes = input.string("1", "Lower TF")
+dispMode = input.string("delta columns", "Pane display (one scale at a time)",
+     options = ["delta columns", "CVD line"])
 
 volP = ta.percentrank(volume, lookN)
 tr   = ta.tr(true)
@@ -38,8 +40,12 @@ deltaPx  = useLTF and array.size(deltaArr) > 0 ? array.sum(deltaArr) : (close >=
 var float cvd = 0.0
 cvd += nz(deltaPx)
 
-plot(deltaPx, "delta PROXY (per bar)", deltaPx >= 0 ? color.new(color.teal, 40) : color.new(color.maroon, 40), 1, plot.style_columns)
-plot(cvd, "cum delta PROXY", color.new(color.blue, 0), 2)
+// One series per scale: the cumulative line is ~10,000x the size of a single
+// bar's delta, so plotting both in one pane crushes the columns to nothing
+// (as seen in live use). Pick the view; markers stay on in both.
+plot(dispMode == "delta columns" ? deltaPx : na, "delta PROXY (per bar)",
+     deltaPx >= 0 ? color.new(color.teal, 40) : color.new(color.maroon, 40), 1, plot.style_columns)
+plot(dispMode == "CVD line" ? cvd : na, "cum delta PROXY", color.new(color.blue, 0), 2)
 plotshape(absorbBuy,  "absorption (buy side)",  shape.triangleup,   location.belowbar, color.teal,   size = size.small, force_overlay = true)
 plotshape(absorbSell, "absorption (sell side)", shape.triangledown, location.abovebar, color.maroon, size = size.small, force_overlay = true)
 
