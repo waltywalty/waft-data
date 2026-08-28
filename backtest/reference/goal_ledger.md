@@ -1450,3 +1450,45 @@ continues"), promotable only via a dedicated pre-registered test (halves
 directional cell exceeds |t| 2.6. Console guidance updated accordingly:
 session bands modulate HOW MUCH things move and how much breaches stick,
 not WHICH WAY - which is precisely what the bands are for.
+
+## Round 34b pre-registration: the user's delta-flip hypothesis
+
+First user-originated hypothesis from live console use, verbatim reading:
+"a strong green FP4 delta bar after a trend of selling with a red closing
+candle seems to determine absorption and a likely flip". Frozen test:
+15m bars (5m aggregation; delta15 = sum of sign(close-open) x volume over
+the three 5m sub-bars - the research analog of the chart's 1m split),
+2010+ (tick-volume granularity), SPX/NDX/RTY, all sessions, forward
+windows within the session-day. LONG event: close < open AND delta15 > 0
+AND prior-8-bar return < 0 (the "trend of selling"). Control: close <
+open AND delta15 <= 0 AND same prior-trend condition (an ordinary red bar
+in a downtrend). Mirror SHORT event/control. Measures: forward 4-bar and
+12-bar return in the flip direction, event vs control, Welch t; halves.
+Also the unconditioned variant (no prior-trend filter). 3 x 2 x 2 x 2 =
+24 cells, all counted; promotion bar as r33b (|t| >= 3, halves same-sign,
+>= 2/3 instruments). Chart-side: the marker ships in FP4 either way,
+labeled with this round's verdict.
+
+## Round 34b documented addition (registered before running)
+
+The frozen spec used delta15 > 0; the user's verbal hypothesis specified a
+"STRONG BIG green bar". One addition, long side only (their exact claim):
+delta15 >= its rolling-250-bar 80th percentile of |delta15|, same controls
+and horizons. 6 cells. No further variants will be run whatever the result.
+
+## Round 34b results: delta-flip hypothesis refuted (cleanly, well-powered)
+
+(run_r34b_deltaflip.py, results/r34b_deltaflip.json + addendum cells in
+this entry) Base spec: a red 15m candle with positive sub-bar delta after
+an 8-bar selloff behaves IDENTICALLY to an ordinary red candle - event vs
+control diffs of -0.1 to +0.3 bps, all |t| < 1.1 on the long side across
+9k-26k events per instrument; the mirror short side mildly contradicts
+(RTY t -2.6 AGAINST the divergence read). Addendum (big delta >= 80th
+pct): WORSE - all six cells negative diff (event underperforms ordinary
+red bars by 0.1-1.9 bps, RTY 1h t -1.44). The visual impression of "it
+does pretty well" is hindsight selection - the eye finds the flips that
+worked and skips the ones that bled. Well-powered null, not an absence of
+data. FP4's delta-flip marker ships as an OFF-by-default study toggle
+carrying this verdict, so the user can watch the null live if they wish.
+Positive framing for the journal: hypothesis -> pre-registration -> test
+-> verdict took under an hour; this is the loop the whole arc exists for.

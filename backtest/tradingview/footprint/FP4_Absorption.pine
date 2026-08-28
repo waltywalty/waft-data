@@ -14,10 +14,18 @@
 // absorption read; it is NOT real delta and is labeled PROXY on the pane.
 indicator("FP4 Absorption Proxy", overlay = false)
 
+// Defaults loosened for chart visibility (75/50/14; the r33b research spec
+// was 80/40/20 - restore those for the strict read). Neither setting is a
+// validated signal; looser just means "show me more candidates to judge".
 lookN  = input.int(100, "Percentile lookback (bars)", minval = 20)
-volTh  = input.int(80, "Volume percentile >=", minval = 50, maxval = 99)
-rngTh  = input.int(40, "Range percentile <=", minval = 1,  maxval = 60)
-extN   = input.int(20, "Extreme lookback (bars)", minval = 5)
+volTh  = input.int(75, "Volume percentile >=", minval = 50, maxval = 99)
+rngTh  = input.int(50, "Range percentile <=", minval = 1,  maxval = 60)
+extN   = input.int(14, "Extreme lookback (bars)", minval = 5)
+// Delta-flip marker (USER HYPOTHESIS, TESTED r34b: REFUTED - a red candle
+// with positive delta, even a big one after a selloff, performs the same
+// as or slightly worse than an ordinary red candle; 24+6 cells, 9k-26k
+// events each). OFF by default; turn on to watch the null live.
+showFlip = input.bool(false, "Delta-flip marker (r34b: no edge - study only)")
 useLTF = input.bool(true, "CVD proxy from lower TF")
 ltfRes = input.string("1", "Lower TF")
 dispMode = input.string("delta columns", "Pane display (one scale at a time)",
@@ -53,6 +61,10 @@ plotshape(absorbSell, "absorption (sell side)", shape.triangledown, location.abo
 // confirm - weak evidence by itself, context for sweeps (FP6).
 divBull = atLow  and cvd > ta.lowest(cvd, extN)
 divBear = atHigh and cvd < ta.highest(cvd, extN)
+flipBull = showFlip and close < open and deltaPx > 0
+flipBear = showFlip and close > open and deltaPx < 0
+plotshape(flipBull, "delta flip bull (study)", shape.diamond, location.belowbar, color.new(color.teal, 30),   size = size.tiny, force_overlay = true)
+plotshape(flipBear, "delta flip bear (study)", shape.diamond, location.abovebar, color.new(color.maroon, 30), size = size.tiny, force_overlay = true)
 plotshape(divBull, "delta divergence bull", shape.circle, location.bottom, color.new(color.teal, 50),   size = size.tiny)
 plotshape(divBear, "delta divergence bear", shape.circle, location.top,    color.new(color.maroon, 50), size = size.tiny)
 

@@ -1174,10 +1174,18 @@ alertcondition(biasShort and not biasShort[1], &quot;Bias -&gt; SHORT&quot;, &qu
 // absorption read; it is NOT real delta and is labeled PROXY on the pane.
 indicator(&quot;FP4 Absorption Proxy&quot;, overlay = false)
 
+// Defaults loosened for chart visibility (75/50/14; the r33b research spec
+// was 80/40/20 - restore those for the strict read). Neither setting is a
+// validated signal; looser just means &quot;show me more candidates to judge&quot;.
 lookN  = input.int(100, &quot;Percentile lookback (bars)&quot;, minval = 20)
-volTh  = input.int(80, &quot;Volume percentile &gt;=&quot;, minval = 50, maxval = 99)
-rngTh  = input.int(40, &quot;Range percentile &lt;=&quot;, minval = 1,  maxval = 60)
-extN   = input.int(20, &quot;Extreme lookback (bars)&quot;, minval = 5)
+volTh  = input.int(75, &quot;Volume percentile &gt;=&quot;, minval = 50, maxval = 99)
+rngTh  = input.int(50, &quot;Range percentile &lt;=&quot;, minval = 1,  maxval = 60)
+extN   = input.int(14, &quot;Extreme lookback (bars)&quot;, minval = 5)
+// Delta-flip marker (USER HYPOTHESIS, TESTED r34b: REFUTED - a red candle
+// with positive delta, even a big one after a selloff, performs the same
+// as or slightly worse than an ordinary red candle; 24+6 cells, 9k-26k
+// events each). OFF by default; turn on to watch the null live.
+showFlip = input.bool(false, &quot;Delta-flip marker (r34b: no edge - study only)&quot;)
 useLTF = input.bool(true, &quot;CVD proxy from lower TF&quot;)
 ltfRes = input.string(&quot;1&quot;, &quot;Lower TF&quot;)
 dispMode = input.string(&quot;delta columns&quot;, &quot;Pane display (one scale at a time)&quot;,
@@ -1213,6 +1221,10 @@ plotshape(absorbSell, &quot;absorption (sell side)&quot;, shape.triangledown, lo
 // confirm - weak evidence by itself, context for sweeps (FP6).
 divBull = atLow  and cvd &gt; ta.lowest(cvd, extN)
 divBear = atHigh and cvd &lt; ta.highest(cvd, extN)
+flipBull = showFlip and close &lt; open and deltaPx &gt; 0
+flipBear = showFlip and close &gt; open and deltaPx &lt; 0
+plotshape(flipBull, &quot;delta flip bull (study)&quot;, shape.diamond, location.belowbar, color.new(color.teal, 30),   size = size.tiny, force_overlay = true)
+plotshape(flipBear, &quot;delta flip bear (study)&quot;, shape.diamond, location.abovebar, color.new(color.maroon, 30), size = size.tiny, force_overlay = true)
 plotshape(divBull, &quot;delta divergence bull&quot;, shape.circle, location.bottom, color.new(color.teal, 50),   size = size.tiny)
 plotshape(divBear, &quot;delta divergence bear&quot;, shape.circle, location.top,    color.new(color.maroon, 50), size = size.tiny)
 
