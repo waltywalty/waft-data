@@ -1400,3 +1400,53 @@ actionable part). FP2 remains separate by necessity (own pane, real CME
 volume). Recommended loadout: FP0 + FP2 = two slots for the whole
 validated suite; FP4/FP5/FP7 remain available standalone for study.
 No logic changed from the validated modules.
+
+## Round 34 pre-registration: per-session behaviour atlas (user commission)
+
+Purpose: a descriptive MAP of how the three footprint families behave per
+session window, to ground the user's discretionary use of the console -
+NOT a candidate hunt. Sessions (ET, matching the FP0 band defaults): Asia
+20:00-00:00, London 02:00-05:00, NY AM 09:30-11:00, NY lunch 12:00-13:00,
+NY PM 13:30-16:00; bars outside these windows are excluded from session
+cells. Instruments SPX/NDX 2005-2025, RTY 2005-2020 (24h CFD feeds).
+Families, definitions frozen identical to r33/r33b: (A) sweep failures -
+prior-RTH PDH/PDL breaches scanned across ALL sessions (r33 scanned RTH
+only; extension registered here), first breach per level per session-day,
+failure = close back inside within six 5m bars, forward-30m
+reversal-direction return gross; (B) RVOL >= 2.5 events (5m, 2010+,
+trailing-20-session minute-bucket baseline) vs same-session RVOL < 1.25
+controls - forward 6-bar range ratio and signed-continuation difference;
+(C) displacement bars (15m, k=1.5, body >= 0.6) vs same-session controls -
+next-4-bar signed continuation difference. ~75 cells, all counted;
+promotion bar unchanged from r33b (|t| >= 3 AND halves same-sign AND
+>= 2 of 3 instruments) for anything that looks tradeable; registered
+prior: session modulates the VOLATILITY numbers strongly (U-shape) and
+the directional numbers not at all.
+
+## Round 34 results: the session atlas - volatility structured, direction flat
+
+(run_r34_sessions.py, results/r34_sessions.json; ~75 cells, all counted)
+Registered prior confirmed on both halves of it.
+VOLATILITY: RVOL >= 2.5 predicts 1.5-2.2x forward range in EVERY session
+on every instrument (weakest London ~1.6x, strongest Asia/NYPM ~2.2x) -
+the FP2 pass generalizes across the clock. RVOL extremes are 3-6x more
+FREQUENT overnight (Asia ~500-700/yr vs NY AM ~90-230/yr): quiet-tape
+baselines are easier to breach, so an overnight orange bar means less
+than a NY-AM one.
+SWEEPS: the failure base rate RISES through the day - Asia 59-66%,
+London 68-74%, NY AM 73-76%, lunch 76-82% - i.e. overnight breaches of
+PDH/PDL stick more often (real repricing), lunch pokes almost always come
+back (noise), and none of it pays: fwd30 after failures is -4.8 to +2.7
+bps, no |t| >= 2, with NY PM failures slightly CONTINUING against the
+reversal (SPX -4.8 bps t -1.9) - do not fade PM breaks.
+DIRECTION: one cell approaches the bar - NY PM displacement continuation
+(NDX +4.1 bps/h vs ~0 control, t +3.07; SPX +2.1 t +1.9; RTY +2.4 t +1.4,
+same sign 3/3). Honest accounting: the expected MAX |t| across a ~75-cell
+null surface is ~3.0-3.2, so a single 3.07 with the other two instruments
+sub-2 is exactly what selection produces; halves were not computed in
+this atlas. Logged as a WATCH HYPOTHESIS ("afternoon displacement
+continues"), promotable only via a dedicated pre-registered test (halves
++ max-stat + all-instrument sign) before it may touch Phase 3. No other
+directional cell exceeds |t| 2.6. Console guidance updated accordingly:
+session bands modulate HOW MUCH things move and how much breaches stick,
+not WHICH WAY - which is precisely what the bands are for.
