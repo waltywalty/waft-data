@@ -1159,74 +1159,84 @@ alertcondition(biasShort and not biasShort[1], &quot;Bias -&gt; SHORT&quot;, &qu
     <button class="copy" data-target="fp4">Copy code</button>
   </div>
   <div class="codewrap"><pre id="fp4"><code>//@version=6
-// FP4 - ABSORPTION PROXY + CVD PROXY (module 4 of 7) ----------------------------
-// The best idea in footprint trading, translated honestly to bar data.
+// FP4 - ABSORPTION PROXY + CVD PROXY (module 4 of 7, v2) ------------------------
 // Absorption = heavy aggressive volume that produces almost no price progress,
-// because passive limit interest on the other side is soaking it. In the order
-// book this is directly visible; bars can only shadow it as EFFORT (volume
-// percentile high) vs RESULT (range percentile low), located AT an extreme
-// (an N-bar low that closes in its upper half on heavy volume = someone bought
-// everything thrown at them).
+// because passive limit interest on the other side is soaking it.
+//
+// v2 REDESIGN (why the old triangles never printed): volume and range are
+// strongly POSITIVELY correlated - big-volume bars are usually big-range bars -
+// so the old hard conjunction &quot;volume &gt;= 75th pct AND range &lt;= 50th pct&quot; is
+// structurally rare (a handful of events per month even loosened). v2 uses a
+// graded ABSORPTION SCORE = volume percentile minus range percentile (0..100
+// scale, positive = more volume than the range &#x27;deserves&#x27;). Score &gt;= threshold
+// at an N-bar extreme with a confirming close = event. Tune the threshold to
+// taste; lower = more candidates. None of this is a validated signal - it is
+// a lens for judging effort-vs-result, and r33b/r34b results stand.
 //
 // CVD PROXY, stated plainly: Pine has NO aggressor-side data. The lower-TF
-// up/down-volume split below correlates only moderately with true bid/ask
-// delta and misses everything inside each 1-minute bucket. It refines the
-// absorption read; it is NOT real delta and is labeled PROXY on the pane.
+// up/down-volume split is a shadow of true bid/ask delta and misses everything
+// inside each 1-minute bucket. Labeled PROXY everywhere on purpose.
 indicator(&quot;FP4 Absorption Proxy&quot;, overlay = false)
 
-// Defaults loosened for chart visibility (75/50/14; the r33b research spec
-// was 80/40/20 - restore those for the strict read). Neither setting is a
-// validated signal; looser just means &quot;show me more candidates to judge&quot;.
-lookN  = input.int(100, &quot;Percentile lookback (bars)&quot;, minval = 20)
-volTh  = input.int(75, &quot;Volume percentile &gt;=&quot;, minval = 50, maxval = 99)
-rngTh  = input.int(50, &quot;Range percentile &lt;=&quot;, minval = 1,  maxval = 60)
-extN   = input.int(14, &quot;Extreme lookback (bars)&quot;, minval = 5)
-// Delta-flip marker (USER HYPOTHESIS, TESTED r34b: REFUTED - a red candle
-// with positive delta, even a big one after a selloff, performs the same
-// as or slightly worse than an ordinary red candle; 24+6 cells, 9k-26k
-// events each). OFF by default; turn on to watch the null live.
-showFlip = input.bool(false, &quot;Delta-flip marker (r34b: no edge - study only)&quot;)
-useLTF = input.bool(true, &quot;CVD proxy from lower TF&quot;)
-ltfRes = input.string(&quot;1&quot;, &quot;Lower TF&quot;)
+lookN   = input.int(100, &quot;Percentile lookback (bars)&quot;, minval = 20)
+scoreTh = input.int(35, &quot;Absorption score &gt;= (vol pct - range pct)&quot;, minval = 10, maxval = 90,
+     tooltip = &quot;Lower = more events. 35 prints a few per week on 15m; 50+ approaches the old strict behaviour&quot;)
+extN    = input.int(14, &quot;Extreme lookback (bars)&quot;, minval = 5)
+useLTF  = input.bool(true, &quot;CVD proxy from lower TF&quot;)
+ltfRes  = input.string(&quot;1&quot;, &quot;Lower TF&quot;)
 dispMode = input.string(&quot;delta columns&quot;, &quot;Pane display (one scale at a time)&quot;,
      options = [&quot;delta columns&quot;, &quot;CVD line&quot;])
+// Delta-flip coloring (USER HYPOTHESIS, TESTED r34b: REFUTED - no forward
+// edge, base and big-delta variants, 30 cells, 9k-26k events each). Kept as
+// a STUDY lens at the user&#x27;s request: columns recolor when the bar&#x27;s delta
+// fights the candle AND clears the magnitude threshold, so only meaningful
+// disagreements light up instead of every tiny one.
+showFlip = input.bool(true, &quot;Highlight delta-flip columns (study only - r34b: no edge)&quot;)
+flipTh   = input.int(70, &quot;Flip: |delta| percentile &gt;=&quot;, minval = 50, maxval = 95)
 
-volP = ta.percentrank(volume, lookN)
-tr   = ta.tr(true)
-rngP = ta.percentrank(tr, lookN)
-clv  = high != low ? (2 * close - high - low) / (high - low) : 0.0   // -1..+1
-
+// ---- absorption score ---------------------------------------------------------
+volP  = ta.percentrank(volume, lookN)
+rngP  = ta.percentrank(ta.tr(true), lookN)
+score = volP - rngP
+clv   = high != low ? (2 * close - high - low) / (high - low) : 0.0   // -1..+1
 atLow  = low  &lt;= ta.lowest(low, extN)
 atHigh = high &gt;= ta.highest(high, extN)
-effortNoResult = volP &gt;= volTh and rngP &lt;= rngTh
-absorbBuy  = effortNoResult and atLow  and clv &gt; 0    // sellers pressed a low, someone ate it
-absorbSell = effortNoResult and atHigh and clv &lt; 0    // buyers pressed a high, someone faded it
+absorbBuy  = score &gt;= scoreTh and atLow  and clv &gt; 0    // sellers pressed a low, someone ate it
+absorbSell = score &gt;= scoreTh and atHigh and clv &lt; 0    // buyers pressed a high, someone faded it
 
-// CVD proxy: sum of signed lower-TF volume (up-close = +, down-close = -).
+// ---- CVD proxy ----------------------------------------------------------------
 deltaArr = request.security_lower_tf(syminfo.tickerid, ltfRes, close &gt;= open ? volume : -volume)
 deltaPx  = useLTF and array.size(deltaArr) &gt; 0 ? array.sum(deltaArr) : (close &gt;= open ? volume : -volume)
 var float cvd = 0.0
 cvd += nz(deltaPx)
 
-// One series per scale: the cumulative line is ~10,000x the size of a single
-// bar&#x27;s delta, so plotting both in one pane crushes the columns to nothing
-// (as seen in live use). Pick the view; markers stay on in both.
-plot(dispMode == &quot;delta columns&quot; ? deltaPx : na, &quot;delta PROXY (per bar)&quot;,
-     deltaPx &gt;= 0 ? color.new(color.teal, 40) : color.new(color.maroon, 40), 1, plot.style_columns)
+// ---- pane ---------------------------------------------------------------------
+// Delta-flip: sign of the bar&#x27;s delta disagrees with the candle AND the delta
+// is big (&gt;= flipTh percentile of |delta|). Lime column = positive delta into
+// a red close; fuchsia = negative delta into a green close.
+bigDelta = math.abs(deltaPx) &gt;= ta.percentile_nearest_rank(math.abs(deltaPx), lookN, flipTh)
+flipBull = showFlip and close &lt; open and deltaPx &gt; 0 and bigDelta
+flipBear = showFlip and close &gt; open and deltaPx &lt; 0 and bigDelta
+colCol = flipBull ? color.new(color.lime, 0) : flipBear ? color.new(color.fuchsia, 0) :
+     deltaPx &gt;= 0 ? color.new(color.teal, 40) : color.new(color.maroon, 40)
+plot(dispMode == &quot;delta columns&quot; ? deltaPx : na, &quot;delta PROXY (per bar)&quot;, colCol, 1, plot.style_columns)
 plot(dispMode == &quot;CVD line&quot; ? cvd : na, &quot;cum delta PROXY&quot;, color.new(color.blue, 0), 2)
+
+// absorption events on the price panel (the headline output)
 plotshape(absorbBuy,  &quot;absorption (buy side)&quot;,  shape.triangleup,   location.belowbar, color.teal,   size = size.small, force_overlay = true)
 plotshape(absorbSell, &quot;absorption (sell side)&quot;, shape.triangledown, location.abovebar, color.maroon, size = size.small, force_overlay = true)
 
-// divergence flag: price makes an extN-bar extreme the CVD proxy does not
-// confirm - weak evidence by itself, context for sweeps (FP6).
+// ---- CVD divergence circles ---------------------------------------------------
+// These compare PRICE extremes against the CUMULATIVE delta line, not single
+// bars: teal circle (pane bottom) = price made a new extN-bar LOW but the
+// running delta sum did not - the decline happened without fresh net selling
+// (a &quot;hollow selloff&quot;). Maroon circle (pane top) = new price HIGH without a
+// new delta high - a rally without fresh net buying (a &quot;hollow rally&quot;).
+// Weak evidence alone; context at levels.
 divBull = atLow  and cvd &gt; ta.lowest(cvd, extN)
 divBear = atHigh and cvd &lt; ta.highest(cvd, extN)
-flipBull = showFlip and close &lt; open and deltaPx &gt; 0
-flipBear = showFlip and close &gt; open and deltaPx &lt; 0
-plotshape(flipBull, &quot;delta flip bull (study)&quot;, shape.diamond, location.belowbar, color.new(color.teal, 30),   size = size.tiny, force_overlay = true)
-plotshape(flipBear, &quot;delta flip bear (study)&quot;, shape.diamond, location.abovebar, color.new(color.maroon, 30), size = size.tiny, force_overlay = true)
-plotshape(divBull, &quot;delta divergence bull&quot;, shape.circle, location.bottom, color.new(color.teal, 50),   size = size.tiny)
-plotshape(divBear, &quot;delta divergence bear&quot;, shape.circle, location.top,    color.new(color.maroon, 50), size = size.tiny)
+plotshape(divBull, &quot;hollow selloff (CVD divergence)&quot;, shape.circle, location.bottom, color.new(color.teal, 50),   size = size.tiny)
+plotshape(divBear, &quot;hollow rally (CVD divergence)&quot;,   shape.circle, location.top,    color.new(color.maroon, 50), size = size.tiny)
 
 alertcondition(absorbBuy,  &quot;Absorption BUY side&quot;,  &quot;FP4: effort/no-result at a low, close upper half&quot;)
 alertcondition(absorbSell, &quot;Absorption SELL side&quot;, &quot;FP4: effort/no-result at a high, close lower half&quot;)
