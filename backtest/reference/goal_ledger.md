@@ -1643,3 +1643,86 @@ intrabar and open-anchor measurements check. Checked: ~1 bp. The
 signal-TF/entry-TF separation itself is legitimate technique (our
 deployed gold rule IS one: daily-computed correlation signal, 60m entry)
 - it just cannot rescue a pattern whose event-level expectation is null.
+
+## Round 36 pre-registration: fixed 10-point scalp target x stop sweep (user commission)
+
+Question: on the live/paper futures strategies, replace each system's own
+exit with TP = +10 points and SL in {5, 10, 20, none}; how do the
+performances look? Registered framing: fixed-POINT brackets are
+volatility-blind (10 pts = ~0.25% gold, ~0.13% SPX, ~0.04% HSI - on MHI
+our modeled cost IS 10 points), which is why the validated configs use
+range-scaled exits; prediction = win rates rise steeply as SL widens,
+expectancy falls versus each deployed baseline because the tight target
+amputates the right tail that carries the edge (gold rule especially:
+its PF lives in trend-day holds to 16:00 NY).
+Frozen design: entries and filters UNCHANGED from each validated spec;
+only exits replaced. Gold - the 652 deployable entries walked forward on
+the verified 5m feed; TP/SL intrabar, worst-case ordering when both
+touch in one bar (SL first, documented); 16:00 NY remains the backstop
+exit; costs $0.30 + slippage convention unchanged. MHI - the 43-trade
+fade regenerated on 15m bars, same worst-case rule, session-end backstop,
+10-pt cost. D7 - entries at signal closes walked on SPX 5m RTH; TP/SL
+intrabar; the 7-day-high signal close remains the backstop; $0.6 cost.
+Baselines: each strategy's deployed exit. 3 strategies x 4 SLs + 3
+baselines = 15 cells, all counted. Metrics: n, WR, PF, avg pnl/trade
+(points), total points, worst trade; no promotion question - this is a
+geometry study on already-validated entries.
+
+## Round 36 results: the 10-point target amputates every edge it touches
+
+(results/r36_brackets.json) All 15 registered cells, points net of house
+costs. The registered prediction held in every strategy, and one cell
+failed by pure arithmetic before a single bar was walked.
+
+GOLD (652 deployable entries, $ per oz):
+  SL 5     n 652  WR 38.0%  PF 1.03  avg +0.09  total   +58  worst  -5.6
+  SL 10    n 652  WR 50.0%  PF 1.13  avg +0.52  total  +342  worst -10.6
+  SL 20    n 652  WR 52.6%  PF 1.15  avg +0.61  total  +396  worst -20.6
+  SL none  n 652  WR 52.8%  PF 1.15  avg +0.62  total  +407  worst -32.8
+  baseline (2xrange stop, hold to 16:00 NY)
+           n 652  WR 40.2%  PF 1.32  avg +1.62  total +1059  worst -33.0
+  Reading: every bracket variant keeps barely a third of the deployed
+  system's total (+407 at best vs +1059). WR rises to ~53% but avg pnl
+  falls ~60% - the classic amputated right tail. The 5-pt stop sits
+  inside ordinary 5m noise for a market that moves $20-40/day: it takes
+  the win rate DOWN to 38% while capping wins at 10, leaving PF 1.03 =
+  breakeven. The deployed rule's PF lives in trend-day holds; capping
+  them at +10 removes exactly the trades that pay for the rest.
+
+MHI (43-trade fade, HSI points):
+  SL 5 / 10 / 20 / none: WR 0.0% in ALL four cells.
+  avg -12.9 / -15.8 / -20.9 / -18.0; totals -555 / -680 / -900 / -776.
+  baseline (0.5xrange stop, session end)
+           n 43  WR 46.5%  PF 2.02  avg +65.2  total +2805  worst -365.5
+  Reading: not a data artifact - an impossibility. The modeled MHI cost
+  IS 10 HSI points, so a +10 target grosses at most +10 and nets at most
+  0.0: a net win cannot exist in any cell. 10 pts is 0.04% of a ~25,000
+  index whose average day ranges hundreds of points. This is the
+  volatility-blindness point in its purest form.
+
+D7 (SPX points, long only, 204 signals):
+  SL 5     n 204  WR 43.6%  PF 1.30  avg +0.94  total  +193  worst  -5.6
+  SL 10    n 204  WR 58.8%  PF 1.26  avg +1.15  total  +235  worst -10.6
+  SL 20    n 204  WR 67.6%  PF 0.95  avg -0.32  total   -65  worst -20.6
+  SL none  n 204  WR 89.7%  PF 1.28  avg +1.78  total  +363  worst -717.5
+  baseline (7-day-high exit, no stop)
+           n 204  WR 76.5%  PF 1.71  avg +11.6  total +2373  worst -717.5
+  Reading: the seductive cell is SL none - 89.7% WR - and it is the
+  vendor-brochure trap this repo keeps meeting: +10 capped wins against
+  an uncapped -717 worst trade, avg +1.78 vs the baseline's +11.6. The
+  SL 20 cell is the sweep's own refutation of "just give it room": WR
+  rises to 67.6% yet expectancy goes NEGATIVE (PF 0.95), because D7
+  entries are pullback buys that routinely trade >20 pts underwater
+  before the 7-day-high exit pays - a 20-pt stop harvests max drawdowns.
+  Non-monotonicity of avg pnl in SL (0.94/1.15/-0.32/+1.78) is the
+  gradient telling you the geometry is fighting the entry, not tuning it.
+
+Verdict (registered, no promotion question): fixed-point brackets are
+dominated by the deployed exits in all three systems - best bracket cell
+retains 38% (gold), 15% (D7), and less than nothing (MHI) of baseline
+total pnl. The win-rate/expectancy trade-off is exactly the r31/r32
+vendor mechanism, now demonstrated on our OWN validated entries: any
+entry with positive drift can be dressed to 90% WR by capping wins and
+uncapping losses. If a scalp variant is ever wanted, the honest route is
+range- or ATR-scaled brackets re-registered as a new study - not fixed
+points, and not on MHI where cost = target.
