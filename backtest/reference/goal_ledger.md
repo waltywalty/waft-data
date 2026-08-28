@@ -2781,3 +2781,71 @@ Program score: 0 graduates / 14 tested + 1 aborted.
 Sitting summary: attempt 14 month-end rebalancing = FAIL but
 strongest residue (OOS sign+PF survived, watch item registered);
 attempt 15 Asia tone = lookahead caught, honest version null.
+
+### Attempt 16 pre-registration: gold/silver relative-value session reversion
+
+HONESTY CHECKPOINT APPLIED FIRST: of the remaining queued directions,
+quarter-end is adjacent to the burned month-end family, CFFEX/China-
+close is adjacent to the burned Asia-tone family, a UST10Y regime gate
+has no validated base strategy to gate (r39 lesson), and RTY-vs-SPX
+relative intraday has no published or structural mechanism worth an
+attempt. Gold/silver RV is the ONE remaining non-adjacent candidate;
+if it fails, the next deliverable is a candid program-status report,
+not another attempt.
+MECHANISM: gold and silver share the precious-metals complex (daily
+return correlation ~0.8); a large one-day divergence between them is
+disproportionately idiosyncratic flow (one leg's ETF/futures pressure)
+rather than complex-wide news, and partially reverts as dealers and
+RV traders rebalance the pair. Published support moderate (gold-silver
+ratio mean reversion literature is mixed at long horizons; short-
+horizon pair reversion is a structural-liquidity claim); registered
+prior: modest. DISCLOSURE: silver feed is H1 (2016-2026) - session
+closes only, no intrabar path; the trade is a 2-leg pair (MGC + SIL),
+a different execution shape from the single-leg program so far; cost
+registered at 4 bps per round trip BOTH legs (2 x ~2bp micro
+estimate), sensitivity at x1.5.
+FROZEN GRID (6 cells): daily spread s = r_gold - r_silver measured
+16:00-ET-to-16:00-ET session closes; sigma20 = 20d rolling std of s;
+event: |s_yesterday| >= k x sigma20, k in {1.0, 1.5, 2.0}; position =
+CONVERGENCE (long laggard / short leader, equal $ legs); hold in
+{next NY RTH 09:30->16:00; next full session close->close from 09:30
+entry}. pnl in spread-return bps minus cost; normalized by sigma20.
+Signal availability check: signal complete at prior 16:00 ET, entry
+next 09:30 - printed in the run. Selection: IS t >= 2 floor, min 120
+IS trades, neighbor-majority; one OOS shot (last 25% of sessions);
+family burns after.
+
+### Attempt 16 result: IS-FAIL - and the program pauses at the honesty checkpoint
+
+(results/r42p_gsrv.json) Gold/silver next-session convergence after a
+>=k-sigma daily divergence: all 6 cells flat-to-negative net of 4bp
+pair costs (best -0.12bps, t -0.30). The pair does not revert at the
+one-session horizon in 2020-2024 data. Family closed at IS.
+
+## Round 42 PROGRAM STATUS: paused at the honesty checkpoint
+
+Score: 0 graduates / 15 tested attempts + 1 aborted (FOMC calendar
+provenance). Families burned: ORB, late-day serial dependence, FP5
+displacement, RTH-open gap, overnight-drift window, gold clock split,
+ALMA, VIX-gated dip-buy, gold 08:30 impulse, announcement-day/NFP,
+corr-regime London->NY gold, month-end rebalancing (WATCH item),
+Asia-tone spillover, gold/silver session RV. Aborted-not-burned:
+FOMC pre-drift (revives with a verified ex-ante calendar).
+The checkpoint rule fired: no remaining candidate is simultaneously
+(a) non-adjacent to a burned family and (b) supported by a real
+mechanism. Running further attempts from the same data would be
+attempt-count theater and would inflate the program-level false-pass
+budget for nothing. THE CONSTRAINT IS NOW DATA, NOT SEARCH:
+1. A verified economic calendar with CONSENSUS + ACTUAL (enables the
+   announcement-surprise family properly, incl. reviving FOMC).
+2. True CME session data for ES/NQ/RTY/GC (settles the attempt-6
+   overnight-window feed-artifact question; enables auction-based
+   families: opening auction imbalance, settlement windows).
+3. Any order-flow/depth product (enables the microstructure families
+   OHLC structurally cannot test - the r37/arXiv falsification point).
+Standing assets that keep accruing without new searches: 4 deployed/
+paper streams (gold rule, XAUAUD, MHI, D7 - monthly routine scores
+them, next fire 2026-09-01), 2 watch items (NY-PM displacement,
+month-end rebalancing fade). The 3-edge goal remains open; it resumes
+when new data or a genuinely new user hypothesis arrives. No further
+continuation triggers armed - by checkpoint rule, not fatigue.
