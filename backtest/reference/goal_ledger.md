@@ -1726,3 +1726,83 @@ entry with positive drift can be dressed to 90% WR by capping wins and
 uncapping losses. If a scalp variant is ever wanted, the honest route is
 range- or ATR-scaled brackets re-registered as a new study - not fixed
 points, and not on MHI where cost = target.
+
+## Round 37 pre-registration: footprint confirmations as 10-point scalps (user commission)
+
+User's (correct) objection to r36's framing: r36 bolted scalp exits onto
+the LONG-HOLD systems. The real question is about the NEW exploration -
+the ES/NQ/RTY/GC footprint signals were judged with swing-style fixed-
+horizon event studies (hold 1h / EOD, measure drift), but futures scalpers
+use these as short-term triggers: enter on the confirmation, take +10
+points fast. Would the same signals look different judged as scalps?
+Registered analytic frame: r33/r33b measured each signal's event-level
+expectation and found none survives (sweeps: all 12 trade cells lose;
+displacement: gross-positive NDX only, below one RT cost; absorption:
+unpowered/null). The r35d principle says exit geometry MULTIPLIES an
+event-level expectation but cannot create one from zero - so the
+registered prediction is: no cell passes the promotion bar (|t|>=3,
+halves same-sign, sign agreement in >=2/3 sibling instruments), and the
+instrument scaling should show TP+10 is a DIFFERENT trade everywhere:
+~0.15% on SPX, ~0.04% on NDX (cost 2.0 = 20% of the gross win), ~0.5%
+on RTY (TP rarely reached -> mostly backstop exits), ~0.3% on gold.
+Frozen design - signals BYTE-IDENTICAL to the validated definitions:
+(1) SWEEP-RECLAIM (FP6, r33): first breach per session of PDH/PDL/ONH/
+ONL, failure = 5m close back inside within 6 bars; enter at the failure
+close, direction = reversal; four level classes pooled per instrument.
+(2) DISPLACEMENT (FP5, r33b): 15m RTH bar with TR >= 1.5x ATR14 and
+body >= 0.6x range; enter at bar close in the bar's direction.
+(3) ABSORPTION (FP4, r33b): 15m bar with volume pctile >= 80, range
+pctile <= 40 (100-bar), at a 20-bar extreme, CLV-confirmed; enter at
+close, fade direction (buy low / sell high); 2010+ where volume exists.
+Execution: walk the 5m feed strictly after the signal bar; TP = +10 pts;
+SL in {5, 10, 20, none}; worst-case intrabar ordering (SL first);
+backstop = session-end close. One open trade per family per instrument
+(later signals skipped while a trade is on - documented). Instruments:
+SPX, NDX, RTY (r33 RTH session logic), gold (same logic on NY 09:30-
+16:00 with overnight = 16:00-09:30, an ADAPTATION, documented). House
+costs per RT: SPX 0.6, NDX 2.0, RTY 0.4, gold 0.6 pts.
+Cells: 3 families x 4 instruments x 4 SLs = 48, all counted. Metrics:
+n, WR, PF, avg pts, total, worst; t on per-trade pnl; halves sign.
+Promotion question IS live this time (it is a new strategy search), so
+the multiplicity bar applies over all 48 cells.
+
+## Round 37 results: 48 cells, zero positive - the scalp frame does not rescue the footprint signals
+
+(results/r37_scalps.json) Signal counts after one-trade-at-a-time dedupe:
+sweeps ~1.0-6.9k, displacement ~1.2-8.7k, absorption 18-107 per
+instrument. Every one of the 48 registered cells has NEGATIIVE net
+expectancy; no promotion candidate exists, so the multiplicity correction
+never even engages. Highlights (avg pts/trade net, t):
+
+  SPX  sweep SL5..none: -0.60..-0.76, t -7.2..-4.0 (halves both neg)
+  SPX  disp  SL5: -0.08 t -1.1 | SL none: -0.70 t -3.6
+  NDX  sweep SL5: -2.32 t -28.3 | disp SL none: -4.66 t -9.7
+  RTY  sweep/disp: -0.18..-0.55, t -2.2..-4.2
+  GOLD sweep/disp: -0.40..-1.02, t -2.5..-3.9
+  absorption everywhere: n 18-107, all negative, unpowered as ever
+
+Structure worth recording:
+1. The WR illusion reappears on schedule: NDX sweep SL-none = 72.1% WR
+   with avg -2.19/trade and a -603-pt worst trade. Chasing +10 with no
+   stop wins often and loses everything, exactly as registered.
+2. GROSS vs NET: the tightest cells are cost-dominated, not signal-
+   dominated. SPX disp SL5 nets -0.08 vs cost 0.6 => gross ~ +0.5/trade;
+   RTY disp SL5 gross ~ +0.2; gold disp SL5 gross ~ +0.2. This is r33b's
+   FP5 verdict wearing a bracket: displacement continuation is REAL but
+   smaller than one round trip. The scalp frame cannot monetize it
+   because a 10-pt target pays ~9-16 gross wins per 100 trades of edge
+   while eating 60-200 bps of cost-equivalent on every single trade.
+3. NDX is the worst place to scalp 10 fixed points (cost 2.0 = 20% of
+   the target; every cell t <= -5.7), RTY the least bad (cost 0.4) -
+   pure cost ratio ordering, as predicted.
+4. Sweep-reclaim SIGNIFICANTLY loses in all 16 cells (t -3.4..-28.3,
+   halves agree) - consistent with r33's finding that reclaim entries
+   pay only on the descriptive fail-rate, not as trades; the scalp
+   bracket makes it strictly worse than r33's sweep-extreme-stop sim.
+Verdict (registered prediction CONFIRMED): judging the footprint
+confirmations "as scalpers actually use them" changes nothing - r35d
+principle holds: exit geometry multiplies event-level expectation and
+these events have none net of costs. The one live residue remains FP5
+displacement gross drift (NDX/SPX), which no fixed-point bracket can
+harvest; if it is ever attacked again the lever is COST (exchange-fee
+futures, limit entries), not exit design. 48/48 cells counted.
