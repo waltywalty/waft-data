@@ -2064,3 +2064,49 @@ often. What the flip genuinely says is "expect larger swings in the
 next 2h" - a regime input (sizing/stop width), never an entry. FP4's
 flip lens stays labeled study-only; comments to be updated with the
 r40 result. 288 comparisons counted with the battery.
+
+## Round 41 pre-registration: specification-mining demonstration on the flip scalp (user question)
+
+User's question after r40: "why can't this succeed as a scalping
+strategy - can you not derive more specifications to make it work?"
+Registered purpose: DEMONSTRATION of why derived specifications cannot
+be trusted, run live on the user's own instrument (gold 15m). This is
+not an edge search; it is the max-stat lesson made concrete.
+Frozen design. Gold 15m 24h frame with the r40 delta proxy. BULL flip
+events only. Specification grid: threshold pct {70, 80, 90, 95, 97} x
+context {all, prior-8-bar downtrend, at 20-bar low, downtrend AND low}
+x entry {at event close; at next bar close only if that bar dips below
+the event low (the user's "falls a little more first")} x exit {TP5/
+SL5, TP10/SL5, TP10/SL10, time 4 bars, time 8 bars, TP10/SL20} = 240
+variants, micro cost 0.35/RT, worst-case intrabar ordering, 32-bar cap.
+Split: events in the FIRST HALF of the sample are in-sample (IS); the
+winner by IS t-stat (and the top 10) are then evaluated on the SECOND
+HALF (OOS), untouched by selection. Registered prediction: the IS
+winner will show an attractive equity line (expected max-|t| of 240
+correlated noise draws ~ 2.5-3.5, PF ~ 1.2-1.5) and will collapse to
+~zero or negative OOS; the top-10's OOS mean will shrink toward zero
+(regression to the mean under selection). If instead the winner HOLDS
+OOS with same sign and material size, it graduates to a registered
+candidate and the promotion bar applies - the demonstration is honest
+in both directions. 240 IS cells + 11 OOS evaluations counted.
+
+## Round 41 results: the derived specification, delivered and dissected
+
+(results/r41_specmine.json) 240 variants searched on the first half of
+the gold 15m sample; 114 had >=30 IS trades. The in-sample winner is
+exactly what a strategy vendor would publish: th90 flip + wait-for-the-
+extra-dip entry + TP10/SL20 -> 69.4% WR, PF 1.72, +1.78 pts/trade net.
+Same frozen spec on the untouched second half: 54.4% WR, PF 0.94,
+-0.26 pts/trade. The top 10 IS specs averaged +0.82 pts/trade in
+sample and -0.27 out of sample; 8 of 10 degraded, 7 flipped sign.
+Note also: even the WINNER's in-sample t was only +1.31 - selection
+dressed statistical nothing in a 69% win rate and a 1.7 profit factor.
+Verdict: demonstration complete, prediction confirmed. The registered
+lesson, stated once for the ledger: deriving more specifications is
+never the bottleneck - noise plus a large enough grid always yields a
+handsome backtest. A spec is only evidence when it was written down
+BEFORE the data that judges it, survives on data it never touched, and
+sits on a smooth parameter gradient. r40 already established the flip
+event has no conditional expectation to amplify (recovery LESS likely
+than control); r41 shows what "making it work" actually produces.
+240 + 11 cells counted with the battery.
