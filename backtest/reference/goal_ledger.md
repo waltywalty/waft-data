@@ -2392,3 +2392,102 @@ inside RTH chop. Recommendation on record: after ALMA, widen the
 program's search space to session-handoff and cross-market families
 (Asia/London opens on MGC, overnight-session behavior, index-gold
 interactions) before burning more RTH families.
+
+### Attempt 6 pre-registration: the overnight-drift window (European open)
+
+MECHANISM (external, published): Boyarchenko, Larsen & Whelan, "The
+Overnight Drift" (NY Fed staff report / RFS): S&P futures returns
+concentrate in the hours around the European open (~02:00-03:30 ET),
+attributed to dealer inventory management - liquidity providers absorb
+Asian-hours order flow and unwind into European liquidity; long-only,
+strongest after negative prior sessions. Classes #3 (clock-window
+session concentration - the purest member we have tested) and #7.
+DISCLOSURE: r30 tested the WHOLE overnight (close-to-open, daily ETF/
+index data) and found it dead net at the index level; this is a finer
+claim - a specific 1-3h futures window at micro costs - but the
+adjacency is on record. The r34 atlas measured session-conditional
+sweep/RVOL/displacement behavior, not unconditional clock-window
+drift; overlap minimal but noted. Post-publication decay (paper
+public since 2018) is the registered principal risk.
+FROZEN GRID (6 variants, long-only, IS = all but last 25% of
+sessions): window in {01:00-04:00, 02:00-03:30, 02:30-03:30 ET} x
+prior-session filter in {all days; prior 24h session return < 0}.
+Enter first bar open in the window, exit last bar close in the
+window, one trade per session per instrument, cost micro per RT.
+Instruments SPX/NDX/RTY pooled as the mechanism set; GOLD included as
+a sibling with NO mechanism claim (metals inventory cycle differs) -
+gold's sign is diagnostic, not qualifying. Normalization: ATR20 of
+the 24h session range. Selection: pooled index-only t (gold excluded
+from selection), min 120 IS trades, neighbor-majority within the
+window/filter grid; one OOS shot at the program bar (t>=2, PF>=1.15,
+cost x1.5 positive), family burns after.
+Registered prediction: IS should show the published effect (it
+overlaps the paper's sample); the OOS (2020-2026) decides whether it
+survived publication - genuine uncertainty, this is the cleanest
+decay test the program has run.
+
+### Attempt 6 result: IS-FAIL, sign inverted vs the published effect - OOS not opened
+
+(results/r42f_ondrift.json) All 6 long variants IS-negative; the
+narrow 02:30-03:30 window is the WORST (avgR -0.022, t -17.4, gross
+after cost decomposition ~ -0.016R) - the exact window where the
+published drift is strongest. The prev-down conditioning (the paper's
+own amplifier) stays negative. Gold diagnostic also negative. Family
+fails at IS; OOS untouched. Interpretation registered with explicit
+uncertainty: EITHER post-publication inversion (documented for other
+anomalies) OR a clock-anchored CFD feed artifact (dividend/rollover
+adjustment timing) that genuine ES overnight data would not show. The
+MIRROR (short the European open) is deliberately NOT registered: no
+independent mechanism, and the artifact risk makes an IS-derived flip
+on this feed the exact r41 trap. Logged as a DATA-PROVENANCE question:
+if true CME overnight index data is ever sourced, re-examine before
+any use. Family closed.
+Program score: 0 graduates / 6 attempts.
+
+### Attempt 7 pre-registration: gold session-clock split (Asia long / London short)
+
+MECHANISM (external, gold-specific, decades-documented): gold's
+intraday seasonality - prices tend to RISE through Asian hours and
+FALL through the London session into the fixes (Lucey/O'Connor gold
+intraday seasonality; Caminschi & Heaney on the London fixes; the
+long-standing "gold rises overnight, falls intraday" split). Driver
+accounts: Asian physical demand accumulation vs London/OTC dealer
+supply and fix-related flows. Classes #3 (clock windows) + #7.
+DISCLOSURES: (1) the deployed gold rule trades an Asia-open BREAKOUT
+with a correlation gate - conditional, different object from an
+unconditional clock drift; (2) r15's researched battery included a
+gold session-split cell (full-sample look at the time, not adopted);
+(3) r26 SGE auction battery touched Asian-hours gold; the IS is
+therefore not pristine, and the OOS block (2024-05..2026-08) also
+POSTDATES r15/r26's samples in part, which restores some of its
+value. Gold 5m feed only (2020-08..2026-08, ~1530 sessions; IS ~1150,
+OOS ~380).
+FROZEN GRID (6 variants): legs in {Asia LONG only; London SHORT only;
+both legs} x windows in {A: Asia 19:00-03:00 ET, London 03:00-11:00;
+B: Asia 20:00-02:00, London 03:00-10:00}. Enter first bar open in
+window, exit last bar close, cost 0.35 per leg RT, ATR20 (24h range)
+normalization, one trade per leg per session. Selection: IS t, min
+120 trades, neighbor-majority; one OOS shot at the program bar;
+family burns after.
+Registered prediction: genuine uncertainty; the effect is old and
+physical-flow-driven (less crowdable than index microstructure), but
+2020s gold is heavily financialized - the OOS decides.
+
+### Attempt 7 result: FAIL - and a protocol amendment
+
+(results/r42g_goldclock.json) IS: the celebrated gold clock split
+barely exists in 2020-2024 data - best cell (set B London short)
+avgR +0.010, t +0.56; nothing else stronger. The pre-stated rule
+still selected it (it satisfied n and neighbor checks) and the OOS
+shot returned avgR -0.034, t -1.23, halves [-,-]. GATE: FAIL, family
+burned. Post-mortem: the OOS shot was spent on an IS-null spec - the
+selection rule had no minimum-strength floor, so a family whose IS
+grid is already noise can still burn its holdout. AMENDMENT (adopted
+prospectively): an OOS shot is spent only if the selected spec's IS
+t >= 2; otherwise the family fails at IS with its holdout unopened
+(the holdout is then still technically intact, but the family is
+closed regardless - reopening would be rule-shopping).
+Program score: 0 graduates / 7 attempts (burned: ORB, late-day serial
+dependence, FP5 displacement, overnight gap, overnight-drift window
+(IS), gold clock split). Remaining queued: ALMA baseline repair;
+wider families TBD with the user.
