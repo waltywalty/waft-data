@@ -2131,3 +2131,137 @@ the bar by luck (the program-level max-stat problem). The taxonomy doc
 records seven repair classes with their target mechanisms and our own
 ledger evidence for/against each (vol-normalization strongest,
 confirmation-stacking weakest). No new data was touched this round.
+
+## Round 42 program registration: three intraday futures edges (user goal)
+
+GOAL (user, 2026-08-28): run proposal 3 (mechanism-driven development
+under the r41b repair protocol) on intraday MES/MNQ/M2K/MGC until at
+least 3 strategies pass their one-shot OOS gate and graduate to the
+paper/SPRT stage. Registered caveats: the goal is a stopping condition,
+not a promise; attempts are counted program-wide; at the OOS bar
+(same sign, pooled t>=2, PF>=1.15, cost x1.5 still positive) roughly
+2-5% of null attempts pass by luck, so the count of attempts is part
+of every graduate's evidence file, and paper trading remains the
+final judge. House holdout note: the OOS block is the last 25% of
+each instrument's sessions, untouched by all selection.
+
+### Attempt 1 pre-registration: ORB repaired by participation gates
+
+DIAGNOSIS (r32 refutation + r33): plain breakout entries buy strength
+after the move has started, and 54-80% of intraday level breaches
+fail; ungated ORB is a coin flip minus costs. Literature (Zarattini/
+Barbon/Aziz SSRN 4729284, 7000 US stocks 2016-23): plain 5m ORB weak;
+restricting to days with abnormal opening participation ("stocks in
+play", opening relative volume) does nearly all the work, surviving
+costs. Time-series analogue for a single future: trade only days when
+THIS instrument is in play.
+Repair classes invoked (reference/repair_taxonomy.md): #1 regime gate
+(participation/imbalance), #2 vol-normalization (exits in range units,
+pooling in ATR units), #3 session concentration (inherent to ORB).
+FROZEN GRID (48 variants, IS only = all sessions except last 25%):
+OR window W in {15, 30, 60} min x gate in {none; RVOL30 >= 1.5 (first-
+30-min volume vs 20-day mean); |gap| >= 0.5 x ATR20d (RTH open vs
+prior RTH close); NR7 (prior day's range narrowest of its last 7)} x
+stop in {opposite OR level; 0.5 x OR range} x target in {2 x OR range;
+none (EOD close)}. Entry: stop order at the OR level, first breakout
+after the window completes, both-levels-in-one-bar days skipped
+(ambiguous), one trade per day, worst-case stop-first, target from the
+bar after entry, EOD backstop. Costs micro (0.35/1.0/0.35/0.35).
+SELECTION (pre-stated): pooled ATR20-normalized per-trade t across the
+four instruments, min 120 pooled IS trades; gradient check - the
+winner's grid neighbors must be majority same-sign IS, else next
+candidate. ONE spec to OOS, judged once at the program bar above;
+the ORB family's OOS then burns.
+Registered prediction: honest uncertainty - the literature mechanism
+is real in equities cross-section; whether the time-series analogue
+carries to index futures is exactly what the OOS decides. Prior
+lean: gates improve IS materially; OOS pass probability well under
+half.
+
+### Attempt 1 result: FAIL at the OOS gate - ORB family burned
+
+(results/r42a_orb.json) The IS grid behaved like a real mechanism: the
+gap>=0.5xATR gate occupied ALL top-8 slots (every window/stop/target
+variant of it IS-positive, halves [+,+], t to +3.33) - a smooth
+gradient, not a spike. Selected by the pre-stated rule: W60, gap gate,
+half-range stop, EOD exit (neighbors 5/7 positive). One-shot OOS
+(pooled n 960): avgR +0.014, PF 1.10, t +0.93, halves [+,-]; per
+instrument SPX +0.027/NDX +0.011/RTY +0.022/GOLD -0.019. Sign
+survived, significance and PF did not; cost x1.5 stays positive but
+weak. GATE: FAIL (bar: t>=2, PF>=1.15). Per protocol the ORB family's
+OOS is burned - no re-entry for this family regardless of future
+ideas. Honest summary for the program file: gap-day participation is
+probably a weak real tilt on index opens, too small to clear the bar;
+it may legitimately reappear as a FILTER inside some future,
+differently-motivated strategy, but not as the edge itself.
+Program score: 0 graduates / 1 attempt.
+
+### Attempt 2 pre-registration: late-day intraday momentum (Gao-Han-Li-Zhou analogue)
+
+MECHANISM (external literature, primary): Gao, Han, Li & Zhou,
+"Intraday momentum: the first half-hour return predicts the last
+half-hour return" (JFE 2018; SPY 1993-2013, replicated on futures and
+ETFs; attributed to late-informed trading and MOC/rebalancing flows).
+Session-concentration class (#3) + horizon-matching (#7). DISCLOSURE:
+r34's full-sample session atlas flagged NY-PM displacement follow-
+through as a watch hypothesis, and that scan touched all data
+including our OOS blocks; the SPEC below is taken from the external
+literature (predictor = early/day return, not displacement bars), but
+the overlap is recorded and weighs against over-reading a pass.
+FROZEN GRID (12 variants, IS = all but last 25% of sessions):
+predictor P in {first-30m return (09:30 open -> 10:00); day-so-far
+return (09:30 -> 15:00); both-agree (trade only when signs agree)} x
+entry in {15:00 close, hold to session close; 15:30 close, hold to
+close} x filter in {none; |P| >= 0.25 x ATR20d}. Direction = sign(P).
+One trade/day, market entries at bar closes, costs micro full RT.
+Selection and OOS bar identical to attempt 1 (pooled ATR-normalized t,
+min 120 IS trades, neighbor-majority gradient check, one OOS shot,
+then the late-day-momentum family burns).
+
+### Attempt 2 result: IS-FAIL for momentum - and a strong inverted finding
+
+(results/r42b_pm.json) Every one of the 12 late-day MOMENTUM variants
+is significantly NEGATIVE in sample: t -4.2 to -11.8, halves [-,-] in
+all 12, PF 0.73-0.93. No spec selectable; the family fails at IS and
+its OOS block was NOT opened. The Gao-Han-Li-Zhou effect (SPY
+1993-2013) does not exist in these 2005-2026 index/gold sessions with
+this sign - the day's move systematically REVERSES into the close.
+Program score: 0 graduates / 2 attempts.
+
+### Attempt 2b pre-registration: late-day REVERSAL (the mirror)
+
+ORIGIN DISCLOSED: direction chosen from the attempt-2 IS result (all
+selection so far on IS only; this family's OOS remains untouched).
+External support: post-publication replications find intraday
+momentum decayed, and Baltussen, Da, Lammers & Martens ("Hedging
+demand and market intraday momentum" / indexing-era serial dependence
+work) document NEGATIVE index serial dependence in the recent era
+via leveraged-ETF and dealer-gamma rebalancing channels - a mechanism
+consistent with late-day mean reversion in index futures.
+FROZEN GRID: the attempt-2 grid mirrored - direction = MINUS
+sign(P), same 12 variants (predictor first30/day/agree x entry
+15:00/15:30 x filter none/0.25atr), same costs, same selection rule
+on IS, same OOS bar; the late-day family's single OOS shot is spent
+on the selected reversal spec, then the family burns for good.
+
+### Attempt 2b result: IS-FAIL both directions - and a corrected inference
+
+(results/r42c_pmrev.json) All 12 REVERSAL variants also significantly
+IS-negative (t -5.7 to -17.0, halves [-,-]). A trade and its mirror
+cannot both lose gross, so the decomposition was checked: per variant,
+net_mom + net_rev = -2 x cost, giving cost ~ 0.021-0.026 R (early-era
+ATRs are small, so a fixed point cost is large in R units) and GROSS
+late-day serial dependence ~ +0.008 R - a tiny decayed momentum
+remnant, matching the post-publication literature. CORRECTION ON THE
+RECORD: the attempt-2 conclusion "momentum is inverted" was wrong -
+the significance was cost drag in both directions, not signal. The
+mirror run is what exposed it; adopted as standard practice: any
+strongly one-sided net result gets a gross decomposition before it is
+interpreted. Late-day family closed (momentum IS-fail, reversal
+IS-fail); its OOS block was never opened. No spec in this family can
+clear ~0.02R costs on a ~0.008R gross effect at one trade per day.
+Program score: 0 graduates / 3 attempts (families burned: ORB,
+late-day serial dependence).
+Next registered candidates for attempt 4+ (not yet specified): FP5
+displacement magnitude/horizon repair (heavy prior-look disclosure
+required), gap-fill vs gap-continuation family, ALMA baseline repair.
