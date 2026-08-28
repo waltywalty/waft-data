@@ -1806,3 +1806,39 @@ these events have none net of costs. The one live residue remains FP5
 displacement gross drift (NDX/SPX), which no fixed-point bracket can
 harvest; if it is ever attacked again the lever is COST (exchange-fee
 futures, limit entries), not exit design. 48/48 cells counted.
+
+## Round 37b addendum: cost sensitivity (user objection - "futures don't have those fees")
+
+User's objection to r37: the registered costs are CFD-style, real micro
+futures (MES/MNQ/M2K/MGC) are cheaper. Partly right, so per house rule
+the 48 cells were rescored at three levels (results/r37b_costsens.json):
+house (r37 registered), micro best-case (cheap-broker commission +
+exchange fees + one tick of spread crossing: SPX 0.35, NDX 1.0, RTY
+0.35, GOLD 0.35 pts/RT), and ZERO (free trading - unbeatable bound).
+The spread is the point the fee argument misses: commissions on MES are
+indeed ~0.3 SPX pts/RT, but a market-order scalper crosses the bid-ask
+on both sides, and one tick each way is a cost no broker waives.
+
+Findings:
+1. At micro best-case, exactly 1 of 48 cells is positive: SPX
+   displacement SL5 at +0.17 pts/trade (t +2.32, halves [+,+], WR 41%,
+   PF 1.06). That is $0.85 per MES trade. It FAILS the registered
+   promotion bar twice over: t < 3, and its siblings at the same cost
+   level are all negative (NDX -0.58, RTY -0.13, GOLD -0.15) - 0/3
+   sign agreement where >=2/3 is required. With 48 cells searched, a
+   lone t=2.3 is exactly what the max-stat null produces.
+2. At ZERO cost the sweeps are still not positive anywhere - NDX sweep
+   is significantly NEGATIVE gross (-0.32 to -0.40, t to -3.9; the
+   reclaim close is systematically a bad scalp entry, not a costly
+   one). The fee explanation is refuted for this family outright.
+3. At ZERO cost displacement SL5 is genuinely positive gross everywhere
+   (SPX +0.52 t +7.1, NDX +0.42 t +5.7, RTY +0.22 t +2.7, GOLD +0.20)
+   - the r33b FP5 drift again, now bracket-shaped. The entire interval
+   between zero and realistic cost is where it dies: the edge per trade
+   (~0.2-0.5 pt) is smaller than one honest round trip on every
+   instrument. Nothing about contract choice changes that inequality;
+   only fill engineering could (limit entries that EARN the spread),
+   and that is a different, harder study (queue position, adverse
+   selection - not answerable from OHLC bars; noted, not promised).
+Verdict: r37's conclusion stands at futures costs. No promotion.
+3 cost levels x 48 cells counted as part of the r37 battery.

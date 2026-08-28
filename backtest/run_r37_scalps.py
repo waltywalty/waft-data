@@ -168,6 +168,9 @@ def score(p):
                 halves=[float(np.sign(p[:m].mean())), float(np.sign(p[m:].mean()))] if m > 4 else None)
 
 
+if __name__ != "__main__":
+    raise SystemExit  # importable module: r37b reuses the functions above
+
 out = {}
 for idx in ("SPX", "NDX", "RTY", "GOLD"):
     b = load_frame(idx)
