@@ -3392,6 +3392,60 @@ function prevGap(q){
    these four are stale was made against the archive and is written into each why below.
    The predicate only asks whether the condition that judgement was made about is still
    in the payload. */
+/* ------------------------------------------------------------------ THE STAMP
+   WHAT RETIRES THE TWO PREDICATES ABOVE, for any symbol that carries it.
+
+   Both of them are proxies for one question -- is this reference the close of
+   the session that just ended, or of an earlier one -- and the comment above
+   STALE_REF_RANGES says exactly why neither can answer it: "It cannot separate a
+   stale reference from a real weekend gap either; nothing inside one payload
+   can." That was true of every payload this page had ever seen. It is not true
+   of a payload carrying prev_close_sess.
+
+   The relay picks the previous close against the most recent 20:00 UTC cut --
+   the same boundary on_open rolls on -- and publishes which cut it used. This
+   page computes the same cut from the payload's own timestamp and compares. Equal
+   means the reference belongs to the session that just closed. Earlier means it
+   belongs to one already superseded, which is the defect, seen directly rather
+   than inferred from how far the number sits from the open.
+
+   WHY NOT THE BAR STAMP. prev_close_ts is published too and is the honest datum,
+   but it cannot settle this alone: a correct CME reference sits 15 to 63 hours
+   before the cut depending on the weekday and a stale one sits 39 to 87, and
+   those overlap. The boundary is an equality, not a threshold, and equality is
+   the thing a heuristic was standing in for.
+
+   THE OLD PREDICATES ARE NOT DELETED. They still govern every symbol whose
+   payload has no stamp -- which today is all of them, because the fix is
+   committed here and runs on the droplet, and until it is deployed this whole
+   branch is dead code that says what it will do. A page that removed the
+   heuristic before the field arrived would have replaced a bad answer with no
+   answer. */
+function prevSessCut(tsEpoch){
+  /* The same rule as the relay's overnight_start: the most recent 20:00 UTC at
+     or before the given instant. Written out rather than imported because the
+     two live in different repositories and different languages; what keeps them
+     honest is agegate asserting the page agrees with the payload, below. */
+  var d = new Date((tsEpoch || 0) * 1000);
+  var cut = Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate(), 20, 0, 0) / 1000;
+  if (cut > tsEpoch) cut -= 86400;
+  return cut;
+}
+
+/* -> "current" | "stale" | null. null means the payload does not carry the
+   field, so this page cannot answer and the predicates above still apply. */
+function prevRefState(q, payloadTs){
+  if (!q || typeof q.prev_close_sess !== "number" || !isFinite(q.prev_close_sess)) return null;
+  var want = prevSessCut(payloadTs || q.ts);
+  if (q.prev_close_sess === want) return "current";
+  /* NEWER THAN OURS IS NOT "CURRENT", and it is not ignorable either. It means
+     the relay's clock is ahead of the payload's own stamp, which is a fault in
+     the feed rather than in the reference -- reported as unusable rather than
+     quietly accepted, because a reference from a session that has not finished
+     is the one thing worse than one from a session too old. */
+  return "stale";
+}
+
 var STALE_REF_RANGES = 4.5;
 function prevGapRanges(q){
   if (!q) return null;
@@ -3575,6 +3629,24 @@ var PREV_OK = {
    and null when it may — never a bare boolean, because every caller that suppresses
    a number owes the reader a sentence about why, and a boolean cannot carry one. */
 function untrusted(q, key){
+  /* THE STAMP IS ASKED FIRST, and it settles the question outright for any
+     symbol that carries one. Every entry below was written because a single
+     payload could not tell a stale reference from a real gap; where the payload
+     now can, the curated judgement is no longer the best evidence available and
+     should not outrank the measurement. That is the same rule the rest of this
+     page follows -- measured beats remembered -- applied to its own list.
+     A "current" verdict therefore CLEARS an entry whose holds() is null. Those
+     entries say so in their own text: "the only way to see it is to watch the
+     field fail to change across sessions, which a page holding one payload at a
+     time cannot do." The payload can now, so the reason those entries gave for
+     standing has expired. */
+  var st = prevRefState(q, q && q.ts);
+  if (st === "current") return null;
+  if (st === "stale")
+    return "the relay stamped this reference to an earlier session than the one this " +
+           "payload belongs to, so it is the previous session's close and not this one's " +
+           "&mdash; measured from the payload rather than inferred from the size of the gap";
+
   var e = UNTRUSTED_PREV[key];
   if (!e) return null;
   if (!e.holds) return e.why;          /* not checkable from one payload; stands */
@@ -4948,7 +5020,7 @@ function paceTxt(sym, atMs){
    ladder card rendered empty. Data the page paints from is page-wide data.
    Regenerated at each brief — replace everything between the SNAP markers. */
 /* SNAP-BEGIN */
-var SNAPSHOT = {"meta":{"futures_age_s":661,"note":"US index futures are exchange-delayed ~15min. Overnight ranges and levels are unaffected by the delay; the last tick is.","sources":{"rates":"treasury.gov","us_index":"yahoo_delayed","vix":"cnbc"},"took_s":6.0},"quotes":{"CRUDE":{"age_s":661,"bars":285,"chg":-0.6,"chg_pct":-0.718,"cnbc_px":82.93,"d1_high":84.27,"d1_low":80.65,"on_high":83.78,"on_low":82.79,"on_open":83.63,"on_pos":0.141,"on_range":0.99,"prev_close":83.53,"px":82.93,"src":"yahoo","ts":1787899200},"DXY":{"age_s":661,"bars":277,"chg":0.018,"chg_pct":0.018,"d1_high":99.26,"d1_low":99.07,"on_high":99.204,"on_low":99.102,"on_open":99.153,"on_pos":0.745,"on_range":0.102,"prev_close":99.16,"px":99.178,"src":"yahoo","ts":1787899200},"ES":{"age_s":661,"bars":283,"chg":-7.0,"chg_pct":-0.09,"d1_high":7755.5,"d1_low":7702.75,"on_high":7743.25,"on_low":7727.25,"on_open":7741.25,"on_pos":0.516,"on_range":16.0,"prev_close":7742.5,"px":7735.5,"src":"yahoo","ts":1787899200},"GOLD":{"age_s":661,"bars":285,"chg":28.2998,"chg_pct":0.614,"d1_high":4672.3999,"d1_low":4616.0,"on_high":4664.7998,"on_low":4623.0,"on_open":4662.7998,"on_pos":0.359,"on_range":41.7998,"prev_close":4609.7002,"px":4638.0,"src":"yahoo","ts":1787899200},"HSI":{"age_s":961,"bars":122,"chg":61.0488,"chg_pct":0.239,"cnbc_px":25629.24,"d1_high":25699.0898,"d1_low":25410.4609,"on_high":25699.0898,"on_low":25410.4609,"on_open":25410.4609,"on_pos":0.75,"on_range":288.6289,"prev_close":25565.7402,"px":25626.7891,"src":"yahoo","ts":1787898900},"NDX":{"age_s":39361,"bars":156,"chg":416.8262,"chg_pct":1.426,"d1_high":29643.5312,"d1_low":29366.4238,"prev_close":29224.5195,"px":29641.3457,"src":"yahoo","ts":1787860500},"NQ":{"age_s":661,"bars":283,"chg":-96.0,"chg_pct":-0.323,"d1_high":29708.0,"d1_low":29423.75,"on_high":29708.0,"on_low":29592.0,"on_open":29691.75,"on_pos":0.067,"on_range":116.0,"prev_close":29695.75,"px":29599.75,"src":"yahoo","ts":1787899200},"RTY":{"age_s":661,"bars":283,"chg":2.4,"chg_pct":0.079,"d1_high":3024.2,"d1_low":3002.1,"on_high":3023.4,"on_low":3016.8,"on_open":3019.3,"on_pos":0.697,"on_range":6.6,"prev_close":3019.0,"px":3021.4,"src":"yahoo","ts":1787899200},"RUT":{"age_s":39361,"bars":156,"chg":8.3789,"chg_pct":0.279,"cnbc_px":3014.339,"d1_high":3019.3955,"d1_low":3000.9072,"prev_close":3005.8999,"px":3014.2788,"src":"yahoo","ts":1787860500},"SPX":{"age_s":39361,"bars":156,"chg":54.4097,"chg_pct":0.709,"cnbc_px":7730.99,"d1_high":7741.27,"d1_low":7689.8901,"prev_close":7675.7002,"px":7730.1099,"src":"yahoo","ts":1787860500},"US10Y":{"age_s":42961,"bars":160,"chg":0.008,"chg_pct":0.172,"d1_high":4.68,"d1_low":4.649,"prev_close":4.664,"px":4.672,"src":"yahoo","ts":1787856900},"VIX":{"age_s":38461,"bars":312,"chg":-0.7,"chg_pct":-4.602,"cnbc_px":14.51,"d1_high":15.13,"d1_low":14.42,"on_high":14.55,"on_low":14.5,"on_open":14.5,"on_pos":0.2,"on_range":0.05,"prev_close":15.21,"px":14.51,"src":"yahoo","ts":1787861400},"YM":{"age_s":661,"bars":284,"chg":77.0,"chg_pct":0.144,"d1_high":53765.0,"d1_low":53369.0,"on_high":53706.0,"on_low":53571.0,"on_open":53621.0,"on_pos":0.941,"on_range":135.0,"prev_close":53621.0,"px":53698.0,"src":"yahoo","ts":1787899200}},"rates":{"M1":3.81,"M3":3.84,"M6":3.94,"S2s10s":0.47,"Y1":4.04,"Y10":4.67,"Y2":4.2,"Y30":5.19,"Y5":4.38,"src":"treasury.gov","ts":1787788800},"ts":"2026-08-28T06:51:07Z","ts_epoch":1787899861};
+var SNAPSHOT = {"meta":{"futures_age_s":662,"note":"US index futures are exchange-delayed ~15min. Overnight ranges and levels are unaffected by the delay; the last tick is.","sources":{"rates":"treasury.gov","us_index":"yahoo_delayed","vix":"cnbc"},"took_s":6.7},"quotes":{"CRUDE":{"age_s":662,"bars":330,"chg":-0.51,"chg_pct":-0.611,"cnbc_px":83.02,"d1_high":84.27,"d1_low":81.49,"on_high":83.78,"on_low":82.67,"on_open":83.63,"on_pos":0.315,"on_range":1.11,"prev_close":83.53,"px":83.02,"src":"yahoo","ts":1787905500},"DXY":{"age_s":662,"bars":322,"chg":0.023,"chg_pct":0.023,"d1_high":99.26,"d1_low":99.07,"on_high":99.207,"on_low":99.102,"on_open":99.153,"on_pos":0.771,"on_range":0.105,"prev_close":99.16,"px":99.183,"src":"yahoo","ts":1787905500},"ES":{"age_s":662,"bars":328,"chg":-3.5,"chg_pct":-0.045,"d1_high":7755.5,"d1_low":7702.75,"on_high":7747.5,"on_low":7727.25,"on_open":7741.25,"on_pos":0.58,"on_range":20.25,"prev_close":7742.5,"px":7739.0,"src":"yahoo","ts":1787905500},"GOLD":{"age_s":662,"bars":330,"chg":54.6997,"chg_pct":1.187,"d1_high":4672.3999,"d1_low":4616.0,"on_high":4667.7002,"on_low":4623.0,"on_open":4662.7998,"on_pos":0.926,"on_range":44.7002,"prev_close":4609.7002,"px":4664.3999,"src":"yahoo","ts":1787905500},"HSI":{"age_s":1628,"bars":140,"chg":17.7695,"chg_pct":0.07,"d1_high":25699.0898,"d1_low":25410.4609,"on_high":25699.0898,"on_low":25410.4609,"on_open":25410.4609,"on_pos":0.6,"on_range":288.6289,"prev_close":25565.7402,"px":25584.79,"src":"cnbc","ts":1787904534,"yahoo_px":25583.5098},"NDX":{"age_s":45662,"bars":156,"chg":416.8262,"chg_pct":1.426,"d1_high":29643.5312,"d1_low":29366.4238,"prev_close":29224.5195,"px":29641.3457,"src":"yahoo","ts":1787860500},"NQ":{"age_s":662,"bars":328,"chg":-96.5,"chg_pct":-0.325,"d1_high":29708.0,"d1_low":29423.75,"on_high":29708.0,"on_low":29578.25,"on_open":29691.75,"on_pos":0.162,"on_range":129.75,"prev_close":29695.75,"px":29599.25,"src":"yahoo","ts":1787905500},"RTY":{"age_s":662,"bars":328,"chg":2.2,"chg_pct":0.073,"d1_high":3025.5,"d1_low":3002.1,"on_high":3025.5,"on_low":3016.8,"on_open":3019.3,"on_pos":0.506,"on_range":8.7,"prev_close":3019.0,"px":3021.2,"src":"yahoo","ts":1787905500},"RUT":{"age_s":45662,"bars":156,"chg":8.3789,"chg_pct":0.279,"cnbc_px":3014.339,"d1_high":3019.3955,"d1_low":3000.9072,"prev_close":3005.8999,"px":3014.2788,"src":"yahoo","ts":1787860500},"SPX":{"age_s":45662,"bars":156,"chg":54.4097,"chg_pct":0.709,"cnbc_px":7730.99,"d1_high":7741.27,"d1_low":7689.8901,"prev_close":7675.7002,"px":7730.1099,"src":"yahoo","ts":1787860500},"US10Y":{"age_s":49262,"bars":160,"chg":0.008,"chg_pct":0.172,"d1_high":4.68,"d1_low":4.649,"prev_close":4.664,"px":4.672,"src":"yahoo","ts":1787856900},"VIX":{"age_s":16,"bars":170,"chg":0.03,"chg_pct":0.207,"d1_high":15.13,"d1_low":14.42,"on_high":14.58,"on_low":14.5,"on_open":14.5,"on_pos":0.5,"on_range":0.08,"prev_close":14.51,"px":14.48,"src":"cnbc","ts":1787906146,"yahoo_px":14.54},"YM":{"age_s":662,"bars":329,"chg":100.0,"chg_pct":0.186,"d1_high":53765.0,"d1_low":53369.0,"on_high":53751.0,"on_low":53571.0,"on_open":53621.0,"on_pos":0.833,"on_range":180.0,"prev_close":53621.0,"px":53721.0,"src":"yahoo","ts":1787905500}},"rates":{"M1":3.81,"M3":3.84,"M6":3.94,"S2s10s":0.47,"Y1":4.04,"Y10":4.67,"Y2":4.2,"Y30":5.19,"Y5":4.38,"src":"treasury.gov","ts":1787788800},"ts":"2026-08-28T08:36:09Z","ts_epoch":1787906162};
 /* SNAP-END */
 
 /* LADDERS-BEGIN */
@@ -12333,18 +12405,18 @@ function divFill(node, v){            /* v in -1..+1, fills out from the midpoin
    archive, so the SHAPE is one consistent measurement and the LEVEL is offset
    from the headline by tone_gap, which is computed here rather than assumed. */
 var TONEHIST = {
-  eng: "b67361c89249",
-  n: 4439,
-  t0: 1785477592, t1: 1787899682,
+  eng: "278d43525ab6",
+  n: 4457,
+  t0: 1785477592, t1: 1787906162,
   lo: -46, hi: 69,
   minw: 70, thin: 2370,
   reg: ["mixed","real","refl","ease","infl","ftq"],
-  live: 38,
-  live_t: 1787899861,
-  live_w: 87,
-  gap: 4,
-  gap_by: [["breadth",2.7],["pos",1.1],["usd",0.7],["oil",-0.1],["regime",0.0],["vol",0.0],["curve",0.0]],
-  d: { h1: 4, h6: 5, h24: 23, d3: 13 },
+  live: 34,
+  live_t: 1787906162,
+  live_w: 86,
+  gap: -4,
+  gap_by: [["pos",-3.5],["vol",-1.9],["breadth",1.9],["usd",1.0],["curve",-0.9],["oil",-0.5],["regime",0.0]],
+  d: { h1: -1, h6: 7, h24: 17, d3: 2 },
   rows: [
     [1785477592,20,72,0,0],
     [1785477962,19,72,0,0],
@@ -16784,7 +16856,25 @@ var TONEHIST = {
     [1787898602,32,87,0,0],
     [1787898961,33,87,0,0],
     [1787899321,33,87,0,0],
-    [1787899682,34,87,0,0]
+    [1787899682,34,87,0,0],
+    [1787900042,35,87,0,0],
+    [1787900403,42,77,0,0],
+    [1787900762,41,77,0,0],
+    [1787901122,41,77,0,0],
+    [1787901481,37,77,0,0],
+    [1787901842,40,77,0,0],
+    [1787902202,40,77,0,0],
+    [1787902562,39,77,0,0],
+    [1787902922,41,77,0,0],
+    [1787903281,41,77,0,0],
+    [1787903642,40,77,0,0],
+    [1787904003,41,77,0,0],
+    [1787904362,41,77,0,0],
+    [1787904722,39,77,0,0],
+    [1787905082,39,77,0,0],
+    [1787905442,40,77,0,0],
+    [1787905802,37,77,0,0],
+    [1787906162,38,77,0,0]
   ]
 };
 /* TONEHIST-END */
