@@ -2591,3 +2591,117 @@ days (Lucca-Moench; n will be small, decay documented - honest prior
 weak), (b) fresh mechanism research pass (WebSearch) for families not
 yet touched, (c) the weekend-gap question ONLY if it can be honestly
 distinguished from the burned RTH-gap family.
+
+### Attempt 11 pre-registration: macro-announcement-day equity premium
+
+MECHANISM (external, published): Savor & Wilson - the US equity
+premium is earned disproportionately on scheduled macro announcement
+days (FOMC, NFP, CPI); Lucca & Moench - drift accrues in the 24h
+BEFORE FOMC statements. Compensation for macro risk resolution;
+classes #1 (calendar regime) + #3. Two event sets:
+(a) NFP days = first Friday of the month, DETERMINISTIC calendar, no
+lookahead of any kind;
+(b) FOMC-like days DETECTED from the data: 14:00-14:30 realized range
+>= {2.5, 3.5} x its own 60-day rolling median (statement releases at
+14:00 ET post-2011). DISCLOSED approximation: the label uses the
+day's own 14:00 window, which post-dates the trade exit (13:55) -
+this reconstructs calendar knowledge a real trader has ex ante, at
+the price of misclassification noise; sanity check = flagged days/yr
+should be ~6-12.
+FROZEN GRID (7 variants, long-only, indices pooled ATR-normalized):
+NFP: hold {prior 15:55 close -> NFP 15:55 close; NFP 08:00 -> 12:00;
+NFP 09:30 -> 15:55} (3 cells; all other Fridays same-hold printed as
+control, not selectable). FOMC-detected: threshold {2.5, 3.5} x hold
+{prior-day 14:00 -> event-day 13:55; event-day 09:30 -> 13:55}
+(4 cells). Cost micro per RT. Selection: IS t >= 2 floor, min 120
+pooled IS trades, neighbor-majority; one OOS shot (last 25% of
+sessions) at the program bar; the announcement-day family burns after.
+Registered prediction: Savor-Wilson is a risk-premium (not
+mispricing) claim, so decay is less automatic than for r42's
+microstructure families; but Lucca-Moench post-2015 decay is
+documented; genuine uncertainty.
+
+### Attempt 11 result: IS-FAIL + a conditioning-on-the-future lesson
+
+(results/r42k_macro.json) NFP cells (deterministic calendar, clean):
+prevclose->close +0.029R t +0.72 vs other-Friday control -0.027R -
+the Savor-Wilson direction exists faintly, well below the floor; the
+intraday-only harvests are negative. FOMC-DETECTED cells: -0.24 to
+-0.56R, t to -10.7 - NOT a real effect: labeling days by their own
+14:00 volatility conditions on FUTURE vol, which correlates with
+negative same-day returns (leverage effect). The disclosed
+misclassification risk materialized as outright bias; recorded as a
+protocol note - event calendars must be ex-ante; volatility-detected
+event sets are INVALID for directional claims. Family closed at IS.
+Program score: 0 graduates / 11 attempts.
+
+### Attempt 12 pre-registration: FOMC pre-announcement drift, clean ex-ante calendar
+
+JUSTIFICATION FOR RE-TEST: attempt 11's FOMC arm was never validly
+run - the vol-detected event set conditioned on future volatility
+(instrument error, recorded). The NFP arm's IS-fail STANDS and is not
+re-tested. This attempt uses the true ex-ante calendar: FOMC statement
+dates 2013+ (statements at 14:00 ET from 2013, removing release-time
+ambiguity), fetched from federalreserve.gov's published meeting
+calendars - exogenous public facts known in advance by construction.
+MECHANISM: Lucca & Moench pre-FOMC drift (equities rise in the 24h
+before scheduled FOMC statements); Savor-Wilson announcement premium.
+Documented post-2015 decay is the registered principal risk.
+FROZEN GRID (3 cells, long-only, SPX/NDX/RTY pooled ATR-normalized,
+2013+): hold in {prior-day 14:00 -> statement-day 13:55 (the L-M
+window); statement-day 09:30 -> 13:55; prior-day 15:55 close ->
+statement-day 15:55 close (full announcement day)}. Cost micro per
+RT. Selection: IS t >= 2 floor (min 60 pooled IS trades given 8
+meetings/yr), one OOS shot (per-instrument last-25% session cuts) at
+the program bar with OOS n >= 40 pooled; the FOMC family then burns
+for good regardless of outcome.
+
+### Attempt 12 result: ABORTED at the calendar validator - not counted as burned
+
+(results/r42l_fomc.json) The pre-stated validator found only 60% of
+the knowledge-derived FOMC dates carry the 14:00 vol signature (vs 14%
+base rate - the calendar is mostly right but too noisy for a ~100-
+event study; ~40% mislabels destroy power). federalreserve.gov,
+wikipedia and fraser.stlouisfed.org are all blocked by the egress
+proxy, so no verified source is reachable. Attempt aborted BEFORE any
+return was examined; the family is NOT burned - it revives if a
+verified ex-ante calendar is ever sourced (e.g., supplied by the
+user). Program score: 0 graduates / 11 attempts + 1 aborted.
+
+### Attempt 13 pre-registration: corr-regime conditional London->NY gold continuation
+
+MECHANISM (in-house, validated instrument): corr(gold, AUDUSD; 20d
+daily log returns, prior day) is the deployed rule's regime gate -
+LOW corr (<= 0.5) marks "monetary" gold regimes where the Asia
+breakout carries; HIGH corr marks "risk-linked" gold. New harvest
+question: does the LONDON session move (03:00->08:00 ET) continue
+into the NY session in low-corr regimes and fade in high-corr
+regimes? Registered crux = the INTERACTION (follow in low-corr, fade
+in high-corr); a grid where one direction wins in both regimes
+refutes the regime story. Class #1 in its validated form. OVERLAP
+DISCLOSED: a pass would correlate with deployed gold-rule positions
+(same instrument, overlapping hours) - portfolio treatment would be
+needed at the paper stage.
+FROZEN GRID (8 cells, GOLD only): regime {corr <= 0.5; corr > 0.5} x
+London-move threshold {any nonzero; |move| >= 0.25 x ATR20(24h)} x
+hold {09:30->12:00; 09:30->16:00}. Direction = sign(London move) in
+low-corr cells, MINUS sign in high-corr cells (per the crux). Entry
+09:30 RTH open bar close... precisely: first RTH bar close; exit at
+hold-end close; cost 0.35/RT; one trade/day; ATR-normalized.
+Selection: IS t >= 2 floor, min 120 IS trades, neighbor-majority
+scoped WITHIN regime (r42e amendment); one OOS shot (last 25% of
+sessions) at the program bar; family burns after.
+
+### Attempt 13 result: IS-FAIL - the corr regime does not govern London->NY gold
+
+(results/r42m_corrny.json) Full-span rerun after a disclosed IS-stage
+data-source correction (the AUD M15 collector feed spans ~15 months
+and truncated the join to 312 sessions; FRED daily AUD restores 1208).
+All 8 cells flat-to-negative (best +0.003R t +0.06); the registered
+low-corr-follow / high-corr-fade interaction shows NO separation. The
+validated corr gate governs the Asia-open breakout and nothing else we
+have found - a useful boundary on our own edge's mechanism. Family
+closed at IS, holdout unopened.
+Program score: 0 graduates / 12 tested attempts + 1 aborted
+(calendar provenance). Sitting cadence now continuous per the user;
+the continuation trigger is being shortened from 2h to ~15min.
