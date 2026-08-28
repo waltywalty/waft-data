@@ -10,8 +10,8 @@ strat = open("tradingview/AsiaOpenGold_strategy.pine").read()
 hsi = open("tradingview/HSIPreOpenFade_indicator.pine").read()
 d7 = open("tradingview/DoubleSeven_indicator.pine").read()
 fp = {n: open(f"tradingview/footprint/FP{n}_{name}.pine").read()
-      for n, name in ((1, "SessionMap"), (2, "RVOL"), (3, "HTFBias"), (4, "Absorption"),
-                      (5, "Displacement"), (6, "LiquiditySweeps"), (7, "SMCVisuals"))}
+      for n, name in ((0, "FootprintConsole"), (1, "SessionMap"), (2, "RVOL"), (3, "HTFBias"),
+                      (4, "Absorption"), (5, "Displacement"), (6, "LiquiditySweeps"), (7, "SMCVisuals"))}
 
 
 def card(cid, name, blurb, code):
@@ -86,8 +86,10 @@ ES1!/NQ1!/RTY1!/GC1! &mdash; use real CME symbols, never CFDs (synthetic volume)
 These are measurement instruments for discretionary context, not signals: the
 evidence grades live in <code>reference/footprints.md</code>, and round 33
 validation demoted sweep entries (FP6) to context-only. FP7 is visualization
-only by design.</p>
+only by design. <strong>Slot-limited? Load FP0 + FP2 only</strong> &mdash; the
+console merges the whole validated overlay core into one indicator slot.</p>
 </section>
+{card("fp0", "FP0 Footprint Console (recommended)", "The one-slot merge of FP1 + FP3 + FP6: session shading and key minutes, session VWAP-sigma value proxy, the round-30 bias card, and liquidity levels with the sweep scoreboard - each layer toggleable in Settings. Pair with FP2 in its own pane and the whole validated suite costs two of your five slots.", fp[0])}
 {card("fp1", "FP1 Session Map", "The chassis: RTH/Globex shading, key-minute markers (cash open, 10:00 data, MOC window; London fixes / COMEX settle / SGE on the Gold preset), session VWAP with sigma bands as a value-area proxy, prior RTH close.", fp[1])}
 {card("fp2", "FP2 RVOL Engine", "Participation anomalies: volume vs its own time-of-day baseline (EMA per minute bucket) plus session-cumulative RVOL. The one place execution algos betray themselves. Real CME volume required. VALIDATED r33b: extreme RVOL predicts ~2x forward range (t &gt; +48, all instruments) - a volatility/regime tool; it carries NO directional information.", fp[2])}
 {card("fp3", "FP3 HTF Bias", "The honest institutional-flow read (round 30): cumulative overnight vs intraday return tracks, rolling overnight drift, 200-day trend state, and a LONG/SHORT/NEUTRAL bias card. A filter, never a standalone trade.", fp[3])}

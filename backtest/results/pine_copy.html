@@ -663,7 +663,232 @@ ES1!/NQ1!/RTY1!/GC1! &mdash; use real CME symbols, never CFDs (synthetic volume)
 These are measurement instruments for discretionary context, not signals: the
 evidence grades live in <code>reference/footprints.md</code>, and round 33
 validation demoted sweep entries (FP6) to context-only. FP7 is visualization
-only by design.</p>
+only by design. <strong>Slot-limited? Load FP0 + FP2 only</strong> &mdash; the
+console merges the whole validated overlay core into one indicator slot.</p>
+</section>
+
+<section class="script">
+  <div class="script-head">
+    <div>
+      <h2>FP0 Footprint Console (recommended)</h2>
+      <p class="blurb">The one-slot merge of FP1 + FP3 + FP6: session shading and key minutes, session VWAP-sigma value proxy, the round-30 bias card, and liquidity levels with the sweep scoreboard - each layer toggleable in Settings. Pair with FP2 in its own pane and the whole validated suite costs two of your five slots.</p>
+    </div>
+    <button class="copy" data-target="fp0">Copy code</button>
+  </div>
+  <div class="codewrap"><pre id="fp0"><code>//@version=6
+// FP0 - FOOTPRINT CONSOLE (merged FP1 + FP3 + FP6) ------------------------------
+// One indicator slot for the whole validated overlay core. Merge logic:
+//   FP1 Session Map  - shading, key minutes, session VWAP +/- sigma, prior close
+//   FP3 HTF Bias     - the round-30 overnight-drift + trend bias CARD
+//                      (the full cumulative decomposition plot stays in FP3)
+//   FP6 Liquidity    - PDH/PDL/ON/OR levels + sweep scoreboard (CONTEXT ONLY:
+//                      round 33 - all 12 sweep-entry cells lose net)
+// These three never conflict: they are all price-panel context with no shared
+// state and no opposing &quot;signals&quot; (only FP3 renders a directional read at all).
+// FP2 RVOL stays separate because it needs its own pane (and real CME volume).
+// Every layer has a master toggle - turn off what you do not use.
+indicator(&quot;FP0 Footprint Console&quot;, overlay = true, max_lines_count = 500, max_labels_count = 500)
+
+// ================================ inputs ======================================
+tz      = input.string(&quot;America/New_York&quot;, &quot;Timezone&quot;, group = &quot;Session&quot;)
+rthSess = input.session(&quot;0930-1600&quot;, &quot;RTH session&quot;, group = &quot;Session&quot;)
+preset  = input.string(&quot;Index&quot;, &quot;Instrument preset&quot;, options = [&quot;Index&quot;, &quot;Gold&quot;], group = &quot;Session&quot;)
+useMap  = input.bool(true, &quot;Layer: session map (shading, key minutes, VWAP)&quot;, group = &quot;Session&quot;)
+useBias = input.bool(true, &quot;Layer: HTF bias card (round-30 read)&quot;, group = &quot;Bias&quot;)
+winN    = input.int(63, &quot;Bias: overnight-drift window (days)&quot;, group = &quot;Bias&quot;)
+smaN    = input.int(200, &quot;Bias: trend SMA (days)&quot;, group = &quot;Bias&quot;)
+useLvls = input.bool(true, &quot;Layer: liquidity levels + sweep scoreboard&quot;, group = &quot;Levels&quot;)
+orMins  = input.int(30, &quot;Opening range (minutes)&quot;, group = &quot;Levels&quot;)
+failK   = input.int(6, &quot;Sweep failure window (bars)&quot;, group = &quot;Levels&quot;)
+
+inRTH    = not na(time(timeframe.period, rthSess, tz))
+rthStart = inRTH and not inRTH[1]
+rthEnd   = not inRTH and inRTH[1]
+mins     = hour(time, tz) * 100 + minute(time, tz)
+isIdx    = preset == &quot;Index&quot;
+
+// ========================= FP1 layer: session map =============================
+bgcolor(useMap and not inRTH ? color.new(color.blue, 96) : na)
+mark(cond, col) =&gt;
+    useMap and cond ? color.new(col, 82) : na
+bgcolor(mark(isIdx     and mins == 930,  color.teal))
+bgcolor(mark(isIdx     and mins == 1000, color.orange))
+bgcolor(mark(isIdx     and mins &gt;= 1550 and mins &lt; 1600, color.maroon))
+bgcolor(mark(not isIdx and mins == 530,  color.orange))
+bgcolor(mark(not isIdx and mins == 1000, color.orange))
+bgcolor(mark(not isIdx and mins == 1330, color.maroon))
+bgcolor(mark(not isIdx and mins == 2215, color.purple))
+
+var float sPV = na
+var float sV = na
+var float sP2V = na
+if rthStart
+    sPV := 0.0
+    sV := 0.0
+    sP2V := 0.0
+if inRTH
+    p = hlc3
+    sPV  := nz(sPV)  + p * volume
+    sV   := nz(sV)   + volume
+    sP2V := nz(sP2V) + p * p * volume
+vwap = sV &gt; 0 ? sPV / sV : na
+sig  = sV &gt; 0 ? math.sqrt(math.max(sP2V / sV - vwap * vwap, 0)) : na
+plot(useMap and inRTH ? vwap : na,       &quot;sVWAP&quot;, color.new(color.blue, 0),  2, plot.style_linebr)
+plot(useMap and inRTH ? vwap + sig : na, &quot;VAH~&quot;,  color.new(color.blue, 55), 1, plot.style_linebr)
+plot(useMap and inRTH ? vwap - sig : na, &quot;VAL~&quot;,  color.new(color.blue, 55), 1, plot.style_linebr)
+
+var float rthClose = na
+var float priorClose = na
+if rthEnd
+    priorClose := rthClose
+if inRTH
+    rthClose := close
+plot(useMap ? priorClose : na, &quot;prior RTH close&quot;, color.new(color.gray, 30), 1, plot.style_linebr)
+
+// ========================= FP3 layer: HTF bias card ===========================
+// Confirmed daily bars only ([1] offsets): no lookahead, no repaint.
+[dO, dC, dC2] = request.security(syminfo.tickerid, &quot;D&quot;, [open[1], close[1], close[2]], lookahead = barmerge.lookahead_off)
+onRet = dC2 != 0 ? dO / dC2 - 1 : na
+dNew  = ta.change(time(&quot;D&quot;)) != 0
+var onArr = array.new_float()
+if dNew and not na(onRet)
+    array.push(onArr, onRet)
+    if array.size(onArr) &gt; winN
+        array.shift(onArr)
+onDrift = array.size(onArr) &gt;= winN ? array.avg(onArr) * 1e4 : na
+dSMA    = request.security(syminfo.tickerid, &quot;D&quot;, ta.sma(close[1], smaN), lookahead = barmerge.lookahead_off)
+trendUp = close &gt; dSMA
+biasLong  = trendUp and onDrift &gt; 0
+biasShort = not trendUp and onDrift &lt; 0
+
+var biasTbl = table.new(position.top_right, 2, 3, border_width = 1)
+if barstate.islast and useBias
+    bias = biasLong ? &quot;LONG&quot; : biasShort ? &quot;SHORT&quot; : &quot;NEUTRAL&quot;
+    bcol = biasLong ? color.teal : biasShort ? color.maroon : color.gray
+    table.cell(biasTbl, 0, 0, &quot;ON drift &quot; + str.tostring(winN) + &quot;d&quot;, text_size = size.small)
+    table.cell(biasTbl, 1, 0, na(onDrift) ? &quot;warmup&quot; : str.tostring(onDrift, &quot;#.##&quot;) + &quot; bps/n&quot;, text_size = size.small)
+    table.cell(biasTbl, 0, 1, &quot;trend vs &quot; + str.tostring(smaN) + &quot;d&quot;, text_size = size.small)
+    table.cell(biasTbl, 1, 1, trendUp ? &quot;above&quot; : &quot;below&quot;, text_size = size.small)
+    table.cell(biasTbl, 0, 2, &quot;BIAS&quot;, text_size = size.small)
+    table.cell(biasTbl, 1, 2, bias, text_color = color.white, bgcolor = bcol, text_size = size.small)
+
+// ==================== FP6 layer: levels + sweep scoreboard ====================
+var float dayH = na
+var float dayL = na
+var float pdh = na
+var float pdl = na
+var float onH = na
+var float onL = na
+var float onHf = na
+var float onLf = na
+var float orH = na
+var float orL = na
+var int orEndT = na
+if rthStart
+    pdh := dayH
+    pdl := dayL
+    dayH := high
+    dayL := low
+    onHf := onH
+    onLf := onL
+    orH := high
+    orL := low
+    orEndT := time + orMins * 60000
+if inRTH
+    dayH := math.max(nz(dayH, high), high)
+    dayL := math.min(nz(dayL, low), low)
+    if time &lt; orEndT
+        orH := math.max(nz(orH, high), high)
+        orL := math.min(nz(orL, low), low)
+if rthEnd
+    onH := high
+    onL := low
+if not inRTH
+    onH := math.max(nz(onH, high), high)
+    onL := math.min(nz(onL, low), low)
+
+plot(useLvls and inRTH ? pdh : na, &quot;PDH&quot;, color.new(color.maroon, 30), 1, plot.style_linebr)
+plot(useLvls and inRTH ? pdl : na, &quot;PDL&quot;, color.new(color.teal, 30), 1, plot.style_linebr)
+plot(useLvls and inRTH ? onHf : na, &quot;ON high&quot;, color.new(color.maroon, 65), 1, plot.style_linebr)
+plot(useLvls and inRTH ? onLf : na, &quot;ON low&quot;, color.new(color.teal, 65), 1, plot.style_linebr)
+plot(useLvls and inRTH and time &gt;= orEndT ? orH : na, &quot;OR high&quot;, color.new(color.orange, 45), 1, plot.style_linebr)
+plot(useLvls and inRTH and time &gt;= orEndT ? orL : na, &quot;OR low&quot;, color.new(color.orange, 45), 1, plot.style_linebr)
+
+evalLevel(bool active, float lvl, bool upSide, int state, int sinceBreach) =&gt;
+    s = state
+    sb = sinceBreach
+    failed = false
+    if active and not na(lvl)
+        if s == 0 and (upSide ? high &gt; lvl : low &lt; lvl)
+            s := 1
+            sb := 0
+        else if s == 1
+            sb += 1
+            if upSide ? close &lt; lvl : close &gt; lvl
+                failed := true
+                s := 2
+            else if sb &gt;= failK
+                s := 2
+    [s, sb, failed]
+
+var int s1 = 0
+var int b1 = 0
+var int s2 = 0
+var int b2 = 0
+var int s3 = 0
+var int b3 = 0
+var int s4 = 0
+var int b4 = 0
+if rthStart
+    s1 := 0
+    s2 := 0
+    s3 := 0
+    s4 := 0
+[ns1, nb1, f1] = evalLevel(useLvls and inRTH, pdh,  true,  s1, b1)
+[ns2, nb2, f2] = evalLevel(useLvls and inRTH, pdl,  false, s2, b2)
+[ns3, nb3, f3] = evalLevel(useLvls and inRTH, onHf, true,  s3, b3)
+[ns4, nb4, f4] = evalLevel(useLvls and inRTH, onLf, false, s4, b4)
+s1 := ns1
+b1 := nb1
+s2 := ns2
+b2 := nb2
+s3 := ns3
+b3 := nb3
+s4 := ns4
+b4 := nb4
+anyFailUp = f1 or f3
+anyFailDn = f2 or f4
+plotshape(useLvls and anyFailUp, &quot;failed break high&quot;, shape.labeldown, location.abovebar, color.maroon, text = &quot;sweep x&quot;, textcolor = color.white, size = size.tiny)
+plotshape(useLvls and anyFailDn, &quot;failed break low&quot;,  shape.labelup,   location.belowbar, color.teal,   text = &quot;sweep x&quot;, textcolor = color.white, size = size.tiny)
+
+var int swDone = 0
+var int swFail = 0
+trans(prev, now) =&gt;
+    prev == 1 and now == 2
+if trans(s1[1], s1)
+    swDone += 1
+if trans(s2[1], s2)
+    swDone += 1
+if trans(s3[1], s3)
+    swDone += 1
+if trans(s4[1], s4)
+    swDone += 1
+if anyFailUp or anyFailDn
+    swFail += 1
+
+var lvlTbl = table.new(position.bottom_left, 2, 2, border_width = 1)
+if barstate.islast and useLvls
+    table.cell(lvlTbl, 0, 0, &quot;sweep events&quot;, text_size = size.small)
+    table.cell(lvlTbl, 1, 0, str.tostring(swDone), text_size = size.small)
+    table.cell(lvlTbl, 0, 1, &quot;% failed (context)&quot;, text_size = size.small)
+    table.cell(lvlTbl, 1, 1, swDone &gt; 0 ? str.tostring(100.0 * swFail / swDone, &quot;#.#&quot;) + &quot;%&quot; : &quot;-&quot;, text_size = size.small)
+
+// ================================ alerts ======================================
+alertcondition(biasLong  and not biasLong[1],  &quot;Bias -&gt; LONG&quot;,  &quot;FP0: overnight drift + trend aligned long&quot;)
+alertcondition(biasShort and not biasShort[1], &quot;Bias -&gt; SHORT&quot;, &quot;FP0: overnight drift + trend aligned short&quot;)
+alertcondition(anyFailDn, &quot;Sweep failure at a LOW&quot;,  &quot;FP0: failed break below PDL/ON low (context only)&quot;)
+alertcondition(anyFailUp, &quot;Sweep failure at a HIGH&quot;, &quot;FP0: failed break above PDH/ON high (context only)&quot;)
+</code></pre></div>
 </section>
 
 <section class="script">

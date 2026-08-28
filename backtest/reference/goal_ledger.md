@@ -1388,3 +1388,15 @@ pre-registered directional test net of costs. Also this round: all seven
 modules upgraded v5 -> v6 and a compile-fix pass (comma-joined statements
 were invalid Pine; FP7 also had comma-joined var declarations) - logic
 unchanged.
+
+## Round 33 addendum: FP0 Footprint Console (slot-limited merge)
+
+User constraint: five indicators per chart. FP1/FP3/FP6 are all overlay
+context layers with no shared state and no conflicting reads (only FP3
+renders a direction), so they merged cleanly into FP0_FootprintConsole
+(per-layer toggles; FP3's cumulative decomposition plot stays in the
+standalone module - the console carries the bias CARD, which is the
+actionable part). FP2 remains separate by necessity (own pane, real CME
+volume). Recommended loadout: FP0 + FP2 = two slots for the whole
+validated suite; FP4/FP5/FP7 remain available standalone for study.
+No logic changed from the validated modules.
