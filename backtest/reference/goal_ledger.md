@@ -1770,7 +1770,7 @@ the multiplicity bar applies over all 48 cells.
 
 (results/r37_scalps.json) Signal counts after one-trade-at-a-time dedupe:
 sweeps ~1.0-6.9k, displacement ~1.2-8.7k, absorption 18-107 per
-instrument. Every one of the 48 registered cells has NEGATIIVE net
+instrument. Every one of the 48 registered cells has NEGATIVE net
 expectancy; no promotion candidate exists, so the multiplicity correction
 never even engages. Highlights (avg pts/trade net, t):
 
