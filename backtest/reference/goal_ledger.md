@@ -1492,3 +1492,55 @@ data. FP4's delta-flip marker ships as an OFF-by-default study toggle
 carrying this verdict, so the user can watch the null live if they wish.
 Positive framing for the journal: hypothesis -> pre-registration -> test
 -> verdict took under an hour; this is the loop the whole arc exists for.
+
+## Round 35 pre-registration: two user hypotheses (gold/DXY divergence; VIX shock)
+
+35a - user hypothesis, verbatim reading: "when gold and DXY are POSITIVELY
+correlated on a short timeframe and moving in the same direction, the
+moment DXY diverges slightly against that shared move, gold makes a very
+strong move continuing its own direction; works both ways". Priors on
+file: r25b killed intraday gold-AUD correlation SENSORS as gates (p
+0.948); this is a different structure (divergence event inside an
+unusual-regime) and gets its own test. Frozen design: 15m bars, gold =
+XAUUSD_m15_ejtrader (/100, Europe/Athens -> UTC, the r24-verified feed);
+synthetic DXY log-returns = 0.809 x (-EURUSD ret) + 0.191 x (+USDJPY
+ret) (r13 weight convention renormalized to available M15 legs, ~71% of
+the real basket - documented proxy). Regime: rolling 24-bar return corr
+>= +0.3 (sensitivity 0.5). Shared trend: both 8-bar returns same sign.
+Event: synDXY 2-bar return flips AGAINST the shared direction. Claim
+measure: gold forward 4-bar (1h) and 16-bar (4h) return IN the shared
+direction, event vs control (regime + trend, no flip), Welch t, halves.
+Both directions. ~16 cells, all counted; r33b promotion bar.
+35b - user hypothesis: "when VIX falls suddenly, equity futures turn very
+bullish". Registered decomposition: the CONTEMPORANEOUS link is
+mechanical (same-day corr ~ -0.8, reported for teaching, not evidence);
+the testable claim is PREDICTIVE. Frozen: VIX_daily_github %change day t;
+events: fall <= -10%, spike >= +10%, plus quintile map; outcomes: SPX/NDX
+(own feeds) next overnight (close t -> open t+1), next day (close ->
+close), next 5 days. ~24 cells, all counted. Prior: predictive content
+weak; any positive expectation likely after SPIKES (vol risk premium),
+not falls - i.e. opposite to the intuitive reading.
+
+## Round 35 results: divergence null; VIX intuition inverted
+
+35a (run_r35_divergence.py, results/r35_divergence.json): NULL. On 217,929
+15m bars (2012-2022), the positive gold/synDXY correlation regime exists
+only ~3% of the time, and within it a DXY counter-flip predicts NOTHING:
+event-vs-control diffs -2.6 to +2.5 bps with |t| <= 0.91 across all 8
+cells, halves inconsistent; in most cells continuation after the flip is
+slightly WEAKER than without it. The remembered "very strong move" is the
+same hindsight-selection mechanism as r34b - the eye keeps the dramatic
+continuations and drops the quiet ones. Also note: the events are rare
+(~600 per decade at corr>=0.3), so even the anecdote pool is thin.
+35b (results/r35b_vixshock.json): the user's observation is REAL but
+CONTEMPORANEOUS (same-day corr(VIX chg, ret) -0.71 SPX / -0.62 NDX) -
+VIX falls WHILE equities rally; that is the mechanics of the index, not a
+signal. Predictively the intuition INVERTS: sudden VIX FALLS <= -10% are
+followed by slightly BELOW-average next-day returns (-6.8 bps vs +3.9
+unconditional, both instruments, t < 1 = noise-to-mildly-negative), while
+VIX SPIKES >= +10% are followed by ABOVE-average returns (+15 bps next
+day, +29-44 bps next 5d, t 1.95-2.31, monotone across the quintile map) -
+the classic vol-risk-premium bounce, known literature, and at t ~2 on a
+24-cell surface not a tradeable discovery. Standing VIX use unchanged:
+the r16D descriptive calm/stressed gradient on the gold rule. No
+candidates; nothing to the watch list.
