@@ -2000,3 +2000,67 @@ expectation as the whole. A filter earns its keep only by CHANGING
 conditional expectation (deployed gold rule's correlation gate does;
 the SMA20 HTF bias gate does not). The user's pipeline remains the
 right way to test such doctrines: freeze, register, count, compare.
+
+## Round 40 pre-registration: extreme delta-flip path study (user chart observation)
+
+User's observation from watching FP4 for weeks (gold 15m): a REALLY
+strong delta-flip bar (big delta fighting the candle) near a low is
+followed either by an immediate up-candle, or by a small further dip
+and then a recovery within the next 1-2 hours. r34b refuted flips at
+the 70th-pct threshold on fixed horizons; this registers the two parts
+of the observation r34b did not test: (a) EXTREME magnitude thresholds,
+(b) the DIP-THEN-RECOVER path shape and the within-2h upside (MFE),
+both of which must be judged against control base rates because "it
+goes up at some point within 2h" is true for most bars, and flexible
+exits chosen after seeing the path flatter any event.
+Frozen design. Frames: 24h 15m bars resampled from the 5m feeds
+(SPX/NDX/RTY/GOLD); delta proxy per 5m bar = sign(close-open)*volume,
+summed to 15m (mirrors FP4's lower-TF proxy; gold uses 5m not 1m -
+documented). Flip (bull): delta > 0 AND close < open AND |delta|
+percentile-rank over the trailing 100 bars >= th, th in {70, 90, 97};
+bear mirrored. Context variants: ALL, and TREND (prior 8-bar move to
+the previous bar's close opposed to the flip direction - "after a
+selling trend" for bull). CONTROLS: same close direction, same context,
+non-flip bars. Measures per event set, all vs matched control: fwd +1
+bar / +4 bars (1h) / +8 bars (2h) mean bps + Welch t + halves; MFE8 =
+max high in next 8 bars vs close, bps, Welch t; pRise8 = P(any close >
+event close within 8); pDipRise8 = P(low breaks event low first, THEN
+a close > event close within the window) - two-proportion z vs control.
+Cells: 4 instruments x 2 sides x 3 thresholds x 2 contexts = 48 event
+definitions x 6 measures = 288 comparisons, all counted with the
+battery. Registered prediction (r34b + base-rate reasoning): event ~
+control on every measure including at 97th pct; the observation is the
+base-rate illusion - the eye sees the recoveries and not the controls
+that recovered equally often without a flip. If ANY cell survives the
+bar (|t| or |z| >= 3, halves same-sign, >=2/3 siblings), the follow-up
+would be a tradeable sim with fixed exits, separately registered.
+
+## Round 40 results: the flip observation is real - and the control group has it MORE
+
+(results/r40_flippath.json) 288 comparisons, registered prediction
+confirmed with an instructive twist.
+1. DIRECTION: no fwd cell passes anywhere (all |t| < 3). The largest
+   extreme-threshold effects lean AGAINST the hypothesis: NDX bull
+   trend th97 fwd4/fwd8 = -8.5/-11.6 bps (t -2.3/-2.6) - the strongest
+   flips after a selldown resolve DOWN if anything. Gold's best cell
+   (bear trend th90 fwd4 +7.3b t +2.7, n 120) is under bar and alone.
+2. pRise8 - the heart of the user's observation: after a bull flip,
+   price DOES print a close above the flip close within 2h about
+   75-80% of the time. But ordinary red candles WITHOUT a flip recover
+   80-82% of the time. Every one of the 48 event definitions has
+   pRise8 event <= control (z to -7.9). The flip makes the recovery
+   the user watches for slightly LESS likely, never more.
+3. pDipRise8 (dip below the flip low, then recover): 42-51% after
+   flips vs 54-62% for controls - again LOWER, z to -16.9.
+4. MFE8: events show much bigger favorable excursions than controls
+   (t +3..+23) - but symmetrically for bull AND bear definitions, with
+   flat fwd means: the flip marks elevated coming VOLATILITY, not
+   direction. This is FP2's r33b verdict rediscovered from a different
+   door: big-delta bars are volatility events.
+Verdict: NO PROMOTION. The observation is the base-rate illusion in
+its cleanest recorded form: the bright column makes the subsequent
+recovery memorable, but red bars without the column recover MORE
+often. What the flip genuinely says is "expect larger swings in the
+next 2h" - a regime input (sizing/stop width), never an entry. FP4's
+flip lens stays labeled study-only; comments to be updated with the
+r40 result. 288 comparisons counted with the battery.
