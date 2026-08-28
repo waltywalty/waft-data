@@ -82,9 +82,9 @@ if array.size(obBoxes) > 0
 // ---- the honesty table --------------------------------------------------------
 var tbl = table.new(position.top_left, 2, 3, border_width = 1)
 if barstate.islast
-    table.cell(tbl, 0, 0, "FVG fill rate", text_size = size.small)
-    table.cell(tbl, 1, 0, fvgN > 0 ? str.tostring(100.0 * fvgFilled / fvgN, "#.#") + "% of " + str.tostring(fvgN) : "-", text_size = size.small)
-    table.cell(tbl, 0, 1, "median-ish bars to fill", text_size = size.small)
-    table.cell(tbl, 1, 1, fvgFilled > 0 ? str.tostring(fvgBars / fvgFilled, "#") : "-", text_size = size.small)
-    table.cell(tbl, 0, 2, "NOTE", text_size = size.small)
-    table.cell(tbl, 1, 2, "fill % is a BASE RATE,\nnot an edge (r27: 0/12)", text_size = size.small, text_color = color.new(color.maroon, 0))
+    table.cell(tbl, 0, 0, "FVG fill rate", text_size = size.normal, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
+    table.cell(tbl, 1, 0, fvgN > 0 ? str.tostring(100.0 * fvgFilled / fvgN, "#.#") + "% of " + str.tostring(fvgN) : "-", text_size = size.normal, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
+    table.cell(tbl, 0, 1, "median-ish bars to fill", text_size = size.normal, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
+    table.cell(tbl, 1, 1, fvgFilled > 0 ? str.tostring(fvgBars / fvgFilled, "#") : "-", text_size = size.normal, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
+    table.cell(tbl, 0, 2, "NOTE", text_size = size.normal, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
+    table.cell(tbl, 1, 2, "fill % is a BASE RATE,\nnot an edge (r27: 0/12)", text_size = size.normal, text_color = color.white, bgcolor = color.new(color.maroon, 20))

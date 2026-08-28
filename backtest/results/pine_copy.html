@@ -701,14 +701,47 @@ useLvls = input.bool(true, &quot;Layer: liquidity levels + sweep scoreboard&quot
 orMins  = input.int(30, &quot;Opening range (minutes)&quot;, group = &quot;Levels&quot;)
 failK   = input.int(6, &quot;Sweep failure window (bars)&quot;, group = &quot;Levels&quot;)
 
+// Session bands: killzone-style background shading for the full 24h clock
+// (concept after ICT Killzones [TFO]; implementation ours). Visual only -
+// VWAP, levels, and the scoreboard still key off the RTH session above.
+grpB   = &quot;Session bands (visual only)&quot;
+useBands = input.bool(true, &quot;Show session bands&quot;, group = grpB)
+bandT  = input.int(90, &quot;Band transparency&quot;, minval = 60, maxval = 98, group = grpB)
+b1on = input.bool(true, &quot;&quot;, inline = &quot;B1&quot;, group = grpB)
+b1c  = input.color(color.blue, &quot;&quot;, inline = &quot;B1&quot;, group = grpB)
+b1s  = input.session(&quot;2000-0000&quot;, &quot;Asia&quot;, inline = &quot;B1&quot;, group = grpB)
+b2on = input.bool(true, &quot;&quot;, inline = &quot;B2&quot;, group = grpB)
+b2c  = input.color(color.red, &quot;&quot;, inline = &quot;B2&quot;, group = grpB)
+b2s  = input.session(&quot;0200-0500&quot;, &quot;London&quot;, inline = &quot;B2&quot;, group = grpB)
+b3on = input.bool(true, &quot;&quot;, inline = &quot;B3&quot;, group = grpB)
+b3c  = input.color(color.teal, &quot;&quot;, inline = &quot;B3&quot;, group = grpB)
+b3s  = input.session(&quot;0930-1100&quot;, &quot;NY AM&quot;, inline = &quot;B3&quot;, group = grpB)
+b4on = input.bool(false, &quot;&quot;, inline = &quot;B4&quot;, group = grpB)
+b4c  = input.color(color.gray, &quot;&quot;, inline = &quot;B4&quot;, group = grpB)
+b4s  = input.session(&quot;1200-1300&quot;, &quot;NY Lunch&quot;, inline = &quot;B4&quot;, group = grpB)
+b5on = input.bool(true, &quot;&quot;, inline = &quot;B5&quot;, group = grpB)
+b5c  = input.color(color.fuchsia, &quot;&quot;, inline = &quot;B5&quot;, group = grpB)
+b5s  = input.session(&quot;1330-1600&quot;, &quot;NY PM&quot;, inline = &quot;B5&quot;, group = grpB)
+
+grpD   = &quot;Display&quot;
+tszStr = input.string(&quot;normal&quot;, &quot;Table text size&quot;, options = [&quot;small&quot;, &quot;normal&quot;, &quot;large&quot;], group = grpD)
+
 inRTH    = not na(time(timeframe.period, rthSess, tz))
 rthStart = inRTH and not inRTH[1]
 rthEnd   = not inRTH and inRTH[1]
 mins     = hour(time, tz) * 100 + minute(time, tz)
 isIdx    = preset == &quot;Index&quot;
 
+tsz    = tszStr == &quot;small&quot; ? size.small : tszStr == &quot;large&quot; ? size.large : size.normal
+C_LBL  = color.rgb(42, 49, 64)          // slate cells, readable on light and dark
+
 // ========================= FP1 layer: session map =============================
-bgcolor(useMap and not inRTH ? color.new(color.blue, 96) : na)
+bgcolor(useBands and b1on and not na(time(timeframe.period, b1s, tz)) ? color.new(b1c, bandT) : na)
+bgcolor(useBands and b2on and not na(time(timeframe.period, b2s, tz)) ? color.new(b2c, bandT) : na)
+bgcolor(useBands and b3on and not na(time(timeframe.period, b3s, tz)) ? color.new(b3c, bandT) : na)
+bgcolor(useBands and b4on and not na(time(timeframe.period, b4s, tz)) ? color.new(b4c, bandT) : na)
+bgcolor(useBands and b5on and not na(time(timeframe.period, b5s, tz)) ? color.new(b5c, bandT) : na)
+bgcolor(useMap and not useBands and not inRTH ? color.new(color.blue, 96) : na)
 mark(cond, col) =&gt;
     useMap and cond ? color.new(col, 82) : na
 bgcolor(mark(isIdx     and mins == 930,  color.teal))
@@ -761,12 +794,12 @@ var biasTbl = table.new(position.top_right, 2, 3, border_width = 1)
 if barstate.islast and useBias
     bias = biasLong ? &quot;LONG&quot; : biasShort ? &quot;SHORT&quot; : &quot;NEUTRAL&quot;
     bcol = biasLong ? color.teal : biasShort ? color.maroon : color.gray
-    table.cell(biasTbl, 0, 0, &quot;ON drift &quot; + str.tostring(winN) + &quot;d&quot;, text_size = size.small)
-    table.cell(biasTbl, 1, 0, na(onDrift) ? &quot;warmup&quot; : str.tostring(onDrift, &quot;#.##&quot;) + &quot; bps/n&quot;, text_size = size.small)
-    table.cell(biasTbl, 0, 1, &quot;trend vs &quot; + str.tostring(smaN) + &quot;d&quot;, text_size = size.small)
-    table.cell(biasTbl, 1, 1, trendUp ? &quot;above&quot; : &quot;below&quot;, text_size = size.small)
-    table.cell(biasTbl, 0, 2, &quot;BIAS&quot;, text_size = size.small)
-    table.cell(biasTbl, 1, 2, bias, text_color = color.white, bgcolor = bcol, text_size = size.small)
+    table.cell(biasTbl, 0, 0, &quot;ON drift &quot; + str.tostring(winN) + &quot;d&quot;, text_size = tsz, text_color = color.white, bgcolor = C_LBL)
+    table.cell(biasTbl, 1, 0, na(onDrift) ? &quot;warmup&quot; : str.tostring(onDrift, &quot;#.##&quot;) + &quot; bps/n&quot;, text_size = tsz, text_color = color.white, bgcolor = C_LBL)
+    table.cell(biasTbl, 0, 1, &quot;trend vs &quot; + str.tostring(smaN) + &quot;d&quot;, text_size = tsz, text_color = color.white, bgcolor = C_LBL)
+    table.cell(biasTbl, 1, 1, trendUp ? &quot;above&quot; : &quot;below&quot;, text_size = tsz, text_color = color.white, bgcolor = C_LBL)
+    table.cell(biasTbl, 0, 2, &quot;BIAS&quot;, text_size = tsz, text_color = color.white, bgcolor = C_LBL)
+    table.cell(biasTbl, 1, 2, bias, text_color = color.white, bgcolor = bcol, text_size = tsz)
 
 // ==================== FP6 layer: levels + sweep scoreboard ====================
 var float dayH = na
@@ -874,10 +907,10 @@ if anyFailUp or anyFailDn
 
 var lvlTbl = table.new(position.bottom_left, 2, 2, border_width = 1)
 if barstate.islast and useLvls
-    table.cell(lvlTbl, 0, 0, &quot;sweep events&quot;, text_size = size.small)
-    table.cell(lvlTbl, 1, 0, str.tostring(swDone), text_size = size.small)
-    table.cell(lvlTbl, 0, 1, &quot;% failed (context)&quot;, text_size = size.small)
-    table.cell(lvlTbl, 1, 1, swDone &gt; 0 ? str.tostring(100.0 * swFail / swDone, &quot;#.#&quot;) + &quot;%&quot; : &quot;-&quot;, text_size = size.small)
+    table.cell(lvlTbl, 0, 0, &quot;sweep events&quot;, text_size = tsz, text_color = color.white, bgcolor = C_LBL)
+    table.cell(lvlTbl, 1, 0, str.tostring(swDone), text_size = tsz, text_color = color.white, bgcolor = C_LBL)
+    table.cell(lvlTbl, 0, 1, &quot;% failed (context)&quot;, text_size = tsz, text_color = color.white, bgcolor = C_LBL)
+    table.cell(lvlTbl, 1, 1, swDone &gt; 0 ? str.tostring(100.0 * swFail / swDone, &quot;#.#&quot;) + &quot;%&quot; : &quot;-&quot;, text_size = tsz, text_color = color.white, bgcolor = C_LBL)
 
 // ================================ alerts ======================================
 alertcondition(biasLong  and not biasLong[1],  &quot;Bias -&gt; LONG&quot;,  &quot;FP0: overnight drift + trend aligned long&quot;)
@@ -1238,15 +1271,15 @@ if barstate.isconfirmed
         dnF += close &lt; close[1] ? 1 : 0
 var tbl = table.new(position.bottom_right, 3, 3, border_width = 1)
 if barstate.islast
-    table.cell(tbl, 0, 0, &quot;follow-through&quot;, text_size = size.small)
-    table.cell(tbl, 1, 0, &quot;n&quot;, text_size = size.small)
-    table.cell(tbl, 2, 0, &quot;next-bar same dir&quot;, text_size = size.small)
-    table.cell(tbl, 0, 1, &quot;after disp UP&quot;, text_size = size.small)
-    table.cell(tbl, 1, 1, str.tostring(upN), text_size = size.small)
-    table.cell(tbl, 2, 1, upN &gt; 0 ? str.tostring(100.0 * upF / upN, &quot;#.#&quot;) + &quot;%&quot; : &quot;-&quot;, text_size = size.small)
-    table.cell(tbl, 0, 2, &quot;after disp DOWN&quot;, text_size = size.small)
-    table.cell(tbl, 1, 2, str.tostring(dnN), text_size = size.small)
-    table.cell(tbl, 2, 2, dnN &gt; 0 ? str.tostring(100.0 * dnF / dnN, &quot;#.#&quot;) + &quot;%&quot; : &quot;-&quot;, text_size = size.small)
+    table.cell(tbl, 0, 0, &quot;follow-through&quot;, text_size = size.normal, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
+    table.cell(tbl, 1, 0, &quot;n&quot;, text_size = size.normal, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
+    table.cell(tbl, 2, 0, &quot;next-bar same dir&quot;, text_size = size.normal, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
+    table.cell(tbl, 0, 1, &quot;after disp UP&quot;, text_size = size.normal, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
+    table.cell(tbl, 1, 1, str.tostring(upN), text_size = size.normal, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
+    table.cell(tbl, 2, 1, upN &gt; 0 ? str.tostring(100.0 * upF / upN, &quot;#.#&quot;) + &quot;%&quot; : &quot;-&quot;, text_size = size.normal, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
+    table.cell(tbl, 0, 2, &quot;after disp DOWN&quot;, text_size = size.normal, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
+    table.cell(tbl, 1, 2, str.tostring(dnN), text_size = size.normal, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
+    table.cell(tbl, 2, 2, dnN &gt; 0 ? str.tostring(100.0 * dnF / dnN, &quot;#.#&quot;) + &quot;%&quot; : &quot;-&quot;, text_size = size.normal, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
 
 alertcondition(disp, &quot;Displacement bar&quot;, &quot;FP5: initiative range expansion&quot;)
 alertcondition(initiative and not initiative[1], &quot;Regime -&gt; initiative&quot;, &quot;FP5: rotation -&gt; initiative regime&quot;)
@@ -1508,12 +1541,12 @@ if array.size(obBoxes) &gt; 0
 // ---- the honesty table --------------------------------------------------------
 var tbl = table.new(position.top_left, 2, 3, border_width = 1)
 if barstate.islast
-    table.cell(tbl, 0, 0, &quot;FVG fill rate&quot;, text_size = size.small)
-    table.cell(tbl, 1, 0, fvgN &gt; 0 ? str.tostring(100.0 * fvgFilled / fvgN, &quot;#.#&quot;) + &quot;% of &quot; + str.tostring(fvgN) : &quot;-&quot;, text_size = size.small)
-    table.cell(tbl, 0, 1, &quot;median-ish bars to fill&quot;, text_size = size.small)
-    table.cell(tbl, 1, 1, fvgFilled &gt; 0 ? str.tostring(fvgBars / fvgFilled, &quot;#&quot;) : &quot;-&quot;, text_size = size.small)
-    table.cell(tbl, 0, 2, &quot;NOTE&quot;, text_size = size.small)
-    table.cell(tbl, 1, 2, &quot;fill % is a BASE RATE,\nnot an edge (r27: 0/12)&quot;, text_size = size.small, text_color = color.new(color.maroon, 0))
+    table.cell(tbl, 0, 0, &quot;FVG fill rate&quot;, text_size = size.normal, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
+    table.cell(tbl, 1, 0, fvgN &gt; 0 ? str.tostring(100.0 * fvgFilled / fvgN, &quot;#.#&quot;) + &quot;% of &quot; + str.tostring(fvgN) : &quot;-&quot;, text_size = size.normal, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
+    table.cell(tbl, 0, 1, &quot;median-ish bars to fill&quot;, text_size = size.normal, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
+    table.cell(tbl, 1, 1, fvgFilled &gt; 0 ? str.tostring(fvgBars / fvgFilled, &quot;#&quot;) : &quot;-&quot;, text_size = size.normal, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
+    table.cell(tbl, 0, 2, &quot;NOTE&quot;, text_size = size.normal, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
+    table.cell(tbl, 1, 2, &quot;fill % is a BASE RATE,\nnot an edge (r27: 0/12)&quot;, text_size = size.normal, text_color = color.white, bgcolor = color.new(color.maroon, 20))
 </code></pre></div>
 </section>
 
