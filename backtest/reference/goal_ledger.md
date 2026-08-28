@@ -1544,3 +1544,59 @@ the classic vol-risk-premium bounce, known literature, and at t ~2 on a
 24-cell surface not a tradeable discovery. Standing VIX use unchanged:
 the r16D descriptive calm/stressed gradient on the gold rule. No
 candidates; nothing to the watch list.
+
+## Round 35c pre-registration: SMT divergence, the user's refined three-phase spec
+
+Refined hypothesis = the ICT "SMT divergence" pattern, which a web check
+confirms is taught everywhere and empirically tested NOWHERE (all sources
+methodology-only, with unfalsifiable confirmation clauses). User's
+verbatim structure: (1) target and driver share a slow move (e.g. both
+down); (2) driver shocks hard AGAINST it while the target barely moves
+("mismatch" - interpreted as MOVE-SIZE mismatch, noted: user said
+"volume" but described price action; volume overlay deferred); (3) driver
+eases slightly -> target snaps much harder the other way. Frozen spec,
+z-units (k-bar move / rolling 250-bar std of k-bar moves): shared trend =
+signs of both 20-bar sums equal (window ending 4 bars back); shock =
+driver 4-bar z >= 1.5 against the shared direction while target |z| <=
+0.5 (event) - the "responded" CONTROL is the same shock with the target
+moving its relation-implied way at |z| >= 1.0; trigger = first driver
+2-bar sign-flip back within 8 bars; claim = target forward 8/24-bar
+return OPPOSITE its relation-implied shock response (= the snap the user
+describes), event vs control, Welch t, halves. Relation sign per pair
+from full-sample return correlation. Frames: XAU vs synDXY(EUR+JPY M15)
+at 15m/1H/4H + daily (5-leg FRED synDXY, gold ejtrader+collector splice);
+EURUSD vs USDCAD (FRED daily, both driver roles); XAU vs WTI (daily).
+~14 event cells + controls, all counted; r33b promotion bar. Prior:
+skeptical (r35a null; no published evidence anywhere), but the
+non-response/latent-strength mechanism is at least coherent - this is
+the strongest form of the idea and gets the full test.
+
+## Round 35c results: SMT divergence does not survive its first real test
+
+(run_r35c_smt.py, results/r35c_smt.json; 14 cells + controls, all counted)
+No cell passes the bar, and the surface has the signature of noise:
+- The well-powered frames (15m, n~950 events) are null-to-negative: the
+  "held-flat" target snaps -0.5/-3.6 bps vs its own claim direction,
+  halves flip.
+- The single hopeful cell (XAU/synDXY 4H h8: event +9.8 vs control -28.2
+  bps, t +2.32) FAILS the halves check ([+,-]) on n=50, and t 2.32 is
+  within the expected max of a 14-cell null surface.
+- The daily FX frames lean AGAINST the claim with the most consistency in
+  the whole test: after EURUSD held flat through a USDCAD shock, it went
+  on to move -35 to -78 bps OPPOSITE the claimed snap (USDCAD-target
+  mirror t -1.88, halves both negative). I.e. the target's non-response
+  was not latent strength - more often it simply meant that episode's
+  driver move was not that target's driver, and the original shared drift
+  resumed.
+- XAU/WTI daily: n=16, signs disagree across horizons; XAU/synDXY daily:
+  n=4 (the full three-phase pattern is genuinely rare at daily scale).
+Combined with r35a (correlation-regime version, null) and the web check
+(zero published empirical support anywhere for SMT), the family verdict:
+the SMT divergence PATTERN exists as a description, its predictive claim
+does not replicate in either the correlation form or the user's refined
+shock/non-response form, and the teaching materials' "needs market-structure
+confirmation" clause is the unfalsifiability that keeps it alive. No
+candidate; nothing to the watch list. Deviation note: intraday driver is
+the 2-leg synthetic DXY (documented proxy); daily used the 5-leg FRED
+basket. Relation-sign detection sanity-passed (gold/DXY -, EUR/CAD -,
+gold/oil +).
