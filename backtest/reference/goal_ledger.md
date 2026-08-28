@@ -1842,3 +1842,83 @@ Findings:
    selection - not answerable from OHLC bars; noted, not promised).
 Verdict: r37's conclusion stands at futures costs. No promotion.
 3 cost levels x 48 cells counted as part of the r37 battery.
+
+## Round 38 pre-registration: HTF signal -> LTF pullback entry on the scalp families (user commission)
+
+User's spec: keep the +10-pt scalp frame but separate timeframes - read
+the signal on the higher TF, execute the entry on the lower TF (1m/5m/
+15m). Registered rationale: this is the r35d-legitimate case. r37b
+established displacement has a REAL gross edge (+0.2..+0.5 pts/trade at
+zero cost, t to +7) that dies inside one round trip of cost; a lower-TF
+pullback entry changes the ENTRY PRICE, not just timing, so it can in
+principle multiply the per-trade capture above cost. For sweeps the same
+mechanism must additionally overcome a drift that is negative even at
+zero cost. Both re-tested per the user's instruction.
+Frozen design. Signals (identical logic to r37, emitting the signal
+bar's range R): DISPLACEMENT on 15m RTH and on 1H RTH (60min resample
+anchored 09:30, last bar truncated at 16:00, documented); SWEEP-RECLAIM
+on 5m as before. Entry: after the signal bar closes at E in direction d,
+rest a limit at E - d*0.5*R (a 50% retracement of the signal bar),
+valid for 2 signal periods of LTF bars (15m sig -> 5m entry: 6 bars,
+15m -> 1m: 30, 1H -> 15m: 8, 5m -> 1m: 10); fill at the limit when an
+LTF bar trades through it (worst case: fill exactly at L); unfilled =
+no trade, fill rate reported. Bracket from the fill: TP = L + d*10,
+SL in {5, 10, 20, none} from L, SL may trigger on the fill bar (worst-
+case SL-first), TP only from the NEXT bar (conservative), session-end
+backstop. One open trade per family/instrument. LTF availability: 1m
+exists for SPX/NDX/RTY 2005-2020 only (signals outside the 1m span
+excluded from those combos); gold has no 1m.
+Combos: disp 15m->5m (4 instr), disp 15m->1m (3), disp 1H->15m (4),
+sweep 5m->1m (3) = 14 combos x 4 SLs = 56 cells, scored at micro
+best-case and zero cost (r37b levels; house shown superseded for the
+user's futures question). All counted with the r37 battery. Note: a
+resting limit also avoids crossing the spread on entry, which the micro
+cost level slightly overstates for this study - direction of bias
+documented, favors the hypothesis, acceptable for a null result only.
+Registered predictions: fill rates ~30-60%; adverse selection is the
+core risk (signals that never pull back are disproportionately the
+winners), so per-SIGNAL expectancy should fall versus r37 market
+entries even where per-FILL expectancy improves; sweeps stay negative;
+promotion bar unchanged (|t|>=3, halves same-sign, >=2/3 sibling
+instruments at the same cost level, judged against all 56 cells).
+
+## Round 38 results: pullback entries are adversely selected - and a lookahead bug nearly manufactured an edge
+
+(results/r38_mtf.json) First, the incident, on the record: the initial
+run showed sweep 5m->1m at +1.0..+2.2 pts/trade net micro cost, t to
++13.6, all 12 cells positive, halves [+,+] - a promotion-bar smash. It
+was a LOOKAHEAD BUG: 5m bar labels are bar STARTS, so `index > t` let
+1m bars INSIDE the still-forming signal bar fill a limit priced off
+that bar's close. The 80% fill rates were the tell (the reclaim bar
+itself had just visited those prices). One +5min timestamp fix and the
+edge fell to ~zero: fills 50%, micro-cost avg -0.87..-0.01, zero-cost
++0.13..+0.34 (t <= 2.4, RTY negative). Recorded as a permanent example:
+too-good MTF backtests are usually the signal bar leaking into its own
+execution window.
+
+Corrected results, all 56 cells:
+1. At micro cost, ZERO cells are positive. Closest: SPX sweep SL-none
+   -0.01. No promotion candidate; the bar never engages.
+2. ADVERSE SELECTION dominates, exactly as registered. Displacement
+   15m->5m at zero cost: SPX -0.36, NDX -1.08, RTY -0.25, GOLD -0.26
+   per filled trade - versus r37 market-entry zero-cost values of
+   +0.52/+0.42/+0.22/+0.20. The 50% retrace limit converts a genuinely
+   positive-drift event into a LOSING one even with free trading and a
+   ~0.5R better price: the signals that pull back to fill are the weak
+   continuations; the runners that pay never come back. Fill rates
+   37-44% (15m sigs), 10-15% (1H sigs, sample collapses to n 72-382).
+3. The 1H->15m frame is strictly worse than 15m->5m everywhere
+   (bigger R = deeper limit = stronger adverse selection), and
+   disp 15m->1m sits between (SPX SL5 zero-cost -0.04, best of the
+   family, still nothing).
+4. Sweep 5m->1m after the fix: the only zero-cost positives in the
+   round (SPX/NDX +0.2..+0.3, t <= 2.4), sibling RTY negative, all
+   micro-cost cells <= 0. Fails the bar on every prong; with 56 cells
+   searched this is max-stat noise.
+Verdict: NO PROMOTION. The registered adverse-selection prediction
+held in full. Standing conclusion for the scalp program: the FP5
+displacement drift is real but (a) smaller than one round trip taken
+at market, and (b) DESTROYED, not harvested, by passive retracement
+entries. What remains untestable on OHLC is the marketable-limit /
+queue-position route; everything testable is now tested. 56/56 cells
+counted with the r37 battery.
