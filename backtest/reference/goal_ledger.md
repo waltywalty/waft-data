@@ -1922,3 +1922,81 @@ at market, and (b) DESTROYED, not harvested, by passive retracement
 entries. What remains untestable on OHLC is the marketable-limit /
 queue-position route; everything testable is now tested. 56/56 cells
 counted with the r37 battery.
+
+## Round 39 pre-registration: the 4-6 rule - HTF directional bias gating LTF triggers (user commission)
+
+User's spec: the classic multi-TF hierarchy with a 4-6x ratio between
+frames. Scalping: 1H bias -> 15m/5m/1m trigger. Day trading: 4H
+structure -> 1H/15m trigger. Swing: Daily trend -> 4H execution. r38
+tested the ENTRY mechanism (pullback limit) and found adverse
+selection; r39 tests the other half of the doctrine - the DIRECTIONAL
+GATE: does taking LTF triggers only WITH the HTF bias improve them?
+Frozen definitions. HTF BIAS = sign(close - SMA20) on the last CLOSED
+HTF bar at trigger time (no partial bars). HTF frames built from the
+full 23-24h feeds (1H calendar-aligned; 4H calendar-aligned NY; Daily =
+18:00-roll trading day, bias from the PRIOR completed day). TRIGGER =
+displacement bar (r33b def, unchanged) on the trigger TF; market entry
+at trigger close (r38 showed limits de-select the edge). Instruments
+SPX/NDX/RTY/GOLD.
+Part A - event study (does alignment change the drift?): tiers
+(1H,15m) (1H,5m) (4H,1H) (4H,15m) (D,4H); intraday tiers measure
+dir x fwd 4 trigger-bars (same-session) and dir x to-EOD; swing tier
+measures dir x fwd 5 trading days. ALIGNED (trigger dir = bias) vs
+OPPOSED (dir = -bias) Welch t, halves of aligned. 5 tiers x 4 instr
+x 2 horizons = 40 cells.
+Part B - the scalp question (does the gate rescue TP+10?): exactly the
+r37 displacement scalp pipeline (15m trigger, market entry, TP +10,
+SL {5,10,20,none}, one trade at a time, micro costs) with signals
+gated by alignment at 1H, 4H, and Daily bias: 3 gates x 4 instr x
+4 SLs = 48 cells, judged head-to-head against the r37b ungated micro
+numbers.
+Total 88 cells, all counted with the r37/38 battery; promotion bar
+unchanged (|t|>=3, halves same-sign, >=2/3 siblings). Registered
+prediction: alignment shifts the drift by little and inconsistently
+(r34 found intraday direction flat across sessions; drift lives at the
+daily scale per r30, so the Daily gate is the most plausible helper);
+even a favorable gate must lift avg pnl by ~0.4-1.2 pts/trade to clear
+micro costs, which no observed gross edge suggests is available; the
+1m trigger tier is omitted in Part A (1m span 2005-2020 only, and r38
+showed the trigger TF is not the binding constraint) - documented.
+
+## Round 39c documented addition (registered before running, after seeing Part A)
+
+Part A's only recurring signal: ALIGNED 5m displacement -> EOD drift
+beats OPPOSED in all 4 instruments (t +3.8 SPX / +5.2 RTY / +2.1 GOLD /
++1.4 NDX). Caveat registered: those t's overlap same-day events and are
+NOT tradeable numbers. Addition (4 cells, counted): tradeable sim -
+FIRST 1H-aligned 5m-displacement signal of each session, market entry
+at the signal close, hold to session close, no bracket, micro costs,
+non-overlapping by construction. Metrics n/WR/PF/avg/t/halves. This is
+the honest form of the "1H bias -> 5m trigger" tier of the user's 4-6
+rule. Prediction withheld (data-peeked); judged at the full-battery bar.
+
+## Round 39 + 39c results: the 4-6 rule gates attention, not expectation
+
+(results/r39_biasgate.json, r39c_eodhold.json) 88 + 4 cells.
+Part A (aligned vs opposed drift, 40 cells): no tier shows a
+consistent alignment premium. 4H tiers even lean the WRONG way on
+SPX/NDX (opposed > aligned, t -0.2..-1.8). The lone recurring positive
+- 1H-aligned 5m displacement to EOD, aligned>opposed in 4/4 instruments,
+t +5.2/+3.8/+2.1/+1.4 - was flagged at registration time as overlap-
+inflated (same-day events share the EOD move).
+Part B (gated TP+10 scalp, 48 cells, micro costs): gating by 1H/4H/D
+bias leaves the scalp essentially where r37b found it. Best cell SPX
+gate-1H SL5 +0.15 t +1.6 vs ungated +0.17 t +2.3 - the gate removed
+~45% of trades and slightly LOWERED significance. NDX all cells deeply
+negative under every gate; RTY/GOLD all <= +0.12, t < 1. Zero
+promotion candidates.
+Part C/39c (the honest form of the Part A candidate, 4 cells): first
+1H-aligned 5m displacement per session, enter close, hold to session
+close, non-overlapping, micro costs: SPX +0.04 t +0.13; NDX +1.30
+t +1.14; RTY +0.00 t 0.00; GOLD -0.09 t -0.29; halves mixed in all
+four. The overlap-corrected effect is indistinguishable from zero.
+Verdict: NO PROMOTION anywhere in the r37-39 scalp battery (48 + 56 +
+92 = 196 cells). Registered reading of the 4-6 rule: TF hierarchies
+are an attention-management convention - they decide WHICH trades you
+take, and in our data the subset they select has the same per-trade
+expectation as the whole. A filter earns its keep only by CHANGING
+conditional expectation (deployed gold rule's correlation gate does;
+the SMA20 HTF bias gate does not). The user's pipeline remains the
+right way to test such doctrines: freeze, register, count, compare.
