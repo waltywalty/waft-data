@@ -46,6 +46,9 @@ b5on = input.bool(true, "", inline = "B5", group = grpB)
 b5c  = input.color(color.fuchsia, "", inline = "B5", group = grpB)
 b5s  = input.session("1330-1600", "NY PM", inline = "B5", group = grpB)
 
+vwapMode = input.string("Session bands", "VWAP/sigma anchor", options = ["RTH", "Session bands"], group = grpB,
+     tooltip = "RTH = one VWAP from the 09:30 open (the validated value-proxy convention). Session bands = reset and accumulate within EACH enabled band (Asia, London, NY AM...), so every session gets its own mean and sigma bands")
+
 grpD   = "Display"
 tszStr  = input.string("normal", "Table text size", options = ["small", "normal", "large"], group = grpD)
 biasPos = input.string("top right", "Bias card position", options = ["top left", "top right", "middle left", "middle right", "bottom left", "bottom right"], group = grpD)
@@ -65,11 +68,17 @@ get_pos(p) =>
      p == "bottom left" ? position.bottom_left : position.bottom_right
 
 // ========================= FP1 layer: session map =============================
-bgcolor(useBands and b1on and not na(time(timeframe.period, b1s, tz)) ? color.new(b1c, bandT) : na)
-bgcolor(useBands and b2on and not na(time(timeframe.period, b2s, tz)) ? color.new(b2c, bandT) : na)
-bgcolor(useBands and b3on and not na(time(timeframe.period, b3s, tz)) ? color.new(b3c, bandT) : na)
-bgcolor(useBands and b4on and not na(time(timeframe.period, b4s, tz)) ? color.new(b4c, bandT) : na)
-bgcolor(useBands and b5on and not na(time(timeframe.period, b5s, tz)) ? color.new(b5c, bandT) : na)
+t1 = b1on and not na(time(timeframe.period, b1s, tz))
+t2 = b2on and not na(time(timeframe.period, b2s, tz))
+t3 = b3on and not na(time(timeframe.period, b3s, tz))
+t4 = b4on and not na(time(timeframe.period, b4s, tz))
+t5 = b5on and not na(time(timeframe.period, b5s, tz))
+bandId = t1 ? 1 : t2 ? 2 : t3 ? 3 : t4 ? 4 : t5 ? 5 : 0
+bgcolor(useBands and t1 ? color.new(b1c, bandT) : na)
+bgcolor(useBands and t2 ? color.new(b2c, bandT) : na)
+bgcolor(useBands and t3 ? color.new(b3c, bandT) : na)
+bgcolor(useBands and t4 ? color.new(b4c, bandT) : na)
+bgcolor(useBands and t5 ? color.new(b5c, bandT) : na)
 bgcolor(useMap and not useBands and not inRTH ? color.new(color.blue, 96) : na)
 mark(cond, col) =>
     useMap and cond ? color.new(col, 82) : na
@@ -81,23 +90,29 @@ bgcolor(mark(not isIdx and mins == 1000, color.orange))
 bgcolor(mark(not isIdx and mins == 1330, color.maroon))
 bgcolor(mark(not isIdx and mins == 2215, color.purple))
 
+// Anchor: classic RTH-only, or per session band (each killzone gets its own
+// mean and sigma - the value-proxy resets at every band open). Same math,
+// different clock; the RTH mode remains the validated convention.
+perBand = vwapMode == "Session bands"
+inVW    = perBand ? bandId != 0 : inRTH
+vwStart = perBand ? bandId != 0 and bandId != bandId[1] : rthStart
 var float sPV = na
 var float sV = na
 var float sP2V = na
-if rthStart
+if vwStart
     sPV := 0.0
     sV := 0.0
     sP2V := 0.0
-if inRTH
+if inVW
     p = hlc3
     sPV  := nz(sPV)  + p * volume
     sV   := nz(sV)   + volume
     sP2V := nz(sP2V) + p * p * volume
 vwap = sV > 0 ? sPV / sV : na
 sig  = sV > 0 ? math.sqrt(math.max(sP2V / sV - vwap * vwap, 0)) : na
-plot(useMap and inRTH ? vwap : na,       "sVWAP", color.new(color.blue, 0),  2, plot.style_linebr, display = display.pane)
-plot(useMap and inRTH ? vwap + sig : na, "VAH~",  color.new(color.blue, 55), 1, plot.style_linebr, display = display.pane)
-plot(useMap and inRTH ? vwap - sig : na, "VAL~",  color.new(color.blue, 55), 1, plot.style_linebr, display = display.pane)
+plot(useMap and inVW ? vwap : na,       "sVWAP", color.new(color.blue, 0),  2, plot.style_linebr, display = display.pane)
+plot(useMap and inVW ? vwap + sig : na, "VAH~",  color.new(color.blue, 55), 1, plot.style_linebr, display = display.pane)
+plot(useMap and inVW ? vwap - sig : na, "VAL~",  color.new(color.blue, 55), 1, plot.style_linebr, display = display.pane)
 
 var float rthClose = na
 var float priorClose = na
