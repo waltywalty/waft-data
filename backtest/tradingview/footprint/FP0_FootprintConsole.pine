@@ -52,6 +52,11 @@ b5s  = input.session("1330-1600", "NY PM", inline = "B5", group = grpB)
 
 vwapMode = input.string("Session bands", "VWAP/sigma anchor", options = ["RTH", "Session bands"], group = grpB,
      tooltip = "RTH = one VWAP from the 09:30 open (the validated value-proxy convention). Session bands = reset and accumulate within EACH enabled band (Asia, London, NY AM...), so every session gets its own mean and sigma bands")
+useVW2 = input.bool(true, "Composite VWAP/sigma (whole day/week, amber)", group = grpB,
+     tooltip = "A second, wider value set spanning ALL sessions: the classic anchored VWAP institutional algos are benchmarked against, with +/-1 and +/-2 sigma. Amber, so it never confuses with the blue per-session set")
+vw2Anchor = input.string("Day (18:00 ET)", "Composite anchor", options = ["Day (18:00 ET)", "Day (midnight)", "Week"], group = grpB,
+     tooltip = "18:00 ET = the futures session open (CME convention). Intraday timeframes up to 60m")
+show2Sig = input.bool(true, "Composite: show +/-2 sigma too", group = grpB)
 
 grpD   = "Display"
 tszStr  = input.string("normal", "Table text size", options = ["small", "normal", "large"], group = grpD)
@@ -164,6 +169,35 @@ sig  = sV > 0 ? math.sqrt(math.max(sP2V / sV - vwap * vwap, 0)) : na
 plot(useMap and inVW ? vwap : na,       "sVWAP", color.new(color.blue, 0),  2, plot.style_linebr, display = display.pane)
 plot(useMap and inVW ? vwap + sig : na, "VAH~",  color.new(color.blue, 55), 1, plot.style_linebr, display = display.pane)
 plot(useMap and inVW ? vwap - sig : na, "VAL~",  color.new(color.blue, 55), 1, plot.style_linebr, display = display.pane)
+
+// ---- composite VWAP/sigma: one mean across ALL sessions -----------------------
+// The classic anchored VWAP (daily from the 18:00 ET futures open by default,
+// or midnight / weekly). Execution algos are benchmarked against this line, so
+// it is the most defensible "overall fair value"; +/-2 sigma marks a
+// statistically stretched excursion for the anchor period. Context, not signal.
+hrET = hour(time, tz)
+vw2Start = vw2Anchor == "Week" ? ta.change(weekofyear(time, tz)) != 0 :
+     vw2Anchor == "Day (midnight)" ? ta.change(dayofweek(time, tz)) != 0 :
+     hrET == 18 and hrET[1] != 18
+var float w2PV = na
+var float w2V = na
+var float w2P2V = na
+if useVW2 and vw2Start
+    w2PV := 0.0
+    w2V := 0.0
+    w2P2V := 0.0
+if useVW2
+    p2 = hlc3
+    w2PV  := nz(w2PV)  + p2 * volume
+    w2V   := nz(w2V)   + volume
+    w2P2V := nz(w2P2V) + p2 * p2 * volume
+vwap2 = useVW2 and w2V > 0 ? w2PV / w2V : na
+sig2  = useVW2 and w2V > 0 ? math.sqrt(math.max(w2P2V / w2V - vwap2 * vwap2, 0)) : na
+plot(vwap2, "composite VWAP", color.new(color.orange, 0), 2, plot.style_linebr, display = display.pane)
+plot(vwap2 + sig2, "comp +1s", color.new(color.orange, 55), 1, plot.style_linebr, display = display.pane)
+plot(vwap2 - sig2, "comp -1s", color.new(color.orange, 55), 1, plot.style_linebr, display = display.pane)
+plot(show2Sig ? vwap2 + 2 * sig2 : na, "comp +2s", color.new(color.orange, 75), 1, plot.style_linebr, display = display.pane)
+plot(show2Sig ? vwap2 - 2 * sig2 : na, "comp -2s", color.new(color.orange, 75), 1, plot.style_linebr, display = display.pane)
 
 var float rthClose = na
 var float priorClose = na
