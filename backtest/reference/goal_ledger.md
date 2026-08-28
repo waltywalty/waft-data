@@ -2491,3 +2491,103 @@ Program score: 0 graduates / 7 attempts (burned: ORB, late-day serial
 dependence, FP5 displacement, overnight gap, overnight-drift window
 (IS), gold clock split). Remaining queued: ALMA baseline repair;
 wider families TBD with the user.
+
+### Attempt 8 pre-registration: ALMA baseline repair (user's r31 commission)
+
+DIAGNOSIS (r31): the vendor ALMA strategy's 76% WR was MECHANICAL -
+averaging down plus a wide effective stop manufactures win rate while
+the underlying signal showed drift-null expectation (p 0.76). The
+disease is the martingale, not the moving average. REPAIR: remove the
+averaging-down entirely and test whether the naked signal - a pullback
+reclaim of a rising ALMA on 6H bars - carries ANY conditional
+expectation, with honest exits. Classes #1 (vol-regime gate), #2
+(ATR exits), #5 (no averaging). Prior lean: FAIL (r35d - if the
+event expectation is zero, no wrapper creates it); run because the
+user commissioned this baseline's repair and the grid is cheap.
+FROZEN GRID (8 variants, long-only, 6H bars resampled from the 24h 5m
+feeds, 4 instruments pooled ATR-normalized): signal = close crosses
+above ALMA(50, offset .85, sigma 6) with ALMA slope > 0 over s bars;
+s in {4, 8} x gate in {none; calm regime ATR14/ATR56 <= 1} x exit in
+{time 6 bars; 2xATR14 stop, 12-bar cap}. Entry at signal close, one
+open trade per instrument, micro costs per RT. Selection: IS t >= 2
+floor (amended protocol), min 120 pooled IS trades, neighbor-majority;
+one OOS shot at the program bar; family burns after.
+
+### Attempt 8 result: IS-FAIL - ALMA family closed
+
+(results/r42h_alma.json) All 8 variants fail the IS t>=2 floor (best
++0.11; several PF>1 cells have NEGATIVE ATR-normalized expectancy -
+their point wins cluster in high-ATR periods, a units lesson). The
+r31 diagnosis is confirmed at the signal level: the vendor ALMA
+strategy was win-rate cosmetics around a null signal. Family closed,
+holdout unopened. Program score: 0 graduates / 8 attempts.
+
+### Attempt 9 pre-registration: VIX term-structure gate on intraday dip-buying
+
+MECHANISM (external): the VIX/VIX3M ratio is a documented vol-regime
+state - CONTANGO (ratio < ~0.95) marks calm regimes where intraday
+index dips are liquidity events that revert by the close;
+BACKWARDATION (ratio >= 1) marks stress regimes where dips continue
+(crash dynamics). Dip-buying conditioned on term structure is the
+canonical "conditional gate that changes expectation" shape our own
+validated systems share. Classes #1 (regime gate, the strong form)
++ #3 + #7. Data: VIX & VIX3M daily (github, 2009-09+), PRIOR day's
+closes only (no lookahead); indices only (VIX is equity vol; gold
+excluded by mechanism).
+FROZEN GRID (6 variants, long-only): dip = open -> 12:00 return
+<= -k x ATR20(RTH), k in {0.3, 0.5}; gate in {none; contango ratio
+<= 0.95; backwardation ratio >= 1.0}. Buy 12:00 close, exit session
+close, one trade/day/instrument, micro costs, pooled ATR-normalized.
+Registered mechanism sign-check: contango cells should BEAT the
+ungated cells and backwardation cells should be NEGATIVE - a grid
+where the gate does not separate regimes refutes the mechanism
+regardless of any single cell. Selection: IS t>=2 floor, min 120
+pooled IS trades, neighbor-majority; one OOS shot at the program bar;
+family burns after.
+
+### Attempt 9 result: IS-FAIL, mechanism sign-check refuted
+
+(results/r42i_vixdip.json) All 6 variants below the IS floor; worse,
+the registered sign-check went backwards - contango dip-buying is MORE
+negative than ungated (-0.031/-0.054R vs -0.024/-0.037R) and the
+backwardation cell is the only (noise-sized) positive. The VIX term
+structure does not make noon dips buyable; afternoon continuation of
+morning weakness (the attempt-2 momentum remnant) dominates in every
+regime. Family closed at IS, holdout unopened.
+Program score: 0 graduates / 9 attempts.
+
+### Attempt 10 pre-registration: gold 08:30 macro-impulse continuation
+
+MECHANISM (external): scheduled US macro releases at 08:30 ET (CPI,
+NFP, retail sales, GDP...) are the dominant information events for
+gold; post-announcement drift - continuation of the initial impulse
+as the surprise diffuses - is documented for FX/metals (announcement-
+drift literature). Without an economic calendar the IMPULSE SIZE is
+the surprise proxy: a large 08:30 move IS the footprint of a
+surprise. Classes #1 (event-day regime) + #3 (clock window) + #7.
+DISCLOSURE: r34's atlas measured NY-session killzone behavior
+descriptively (sweeps/RVOL/displacement); this event definition
+(08:30 impulse) is new to the repo.
+FROZEN GRID (12 variants, both directions, GOLD only): impulse window
+{08:30-08:35, 08:30-08:45} x threshold |impulse| >= {0.15, 0.25} x
+ATR20(24h) x hold {30m, 60m, to 11:00}. Direction = impulse sign,
+enter at window-end close, exit at hold-end close, one trade/day,
+cost 0.35, ATR-normalized. Selection: IS t >= 2 floor, min 120 IS
+trades, neighbor-majority; one OOS shot (last 25% of sessions) at
+the program bar; family burns after.
+
+### Attempt 10 result: IS-FAIL - gold 08:30 impulse does not continue
+
+(results/r42j_goldnews.json) All 12 variants below the IS floor (best
++0.029R, t +0.61, n 88). The impulse-size proxy for macro surprises
+carries no continuation in 2020-2024 gold; if announcement drift
+exists here it needs true surprise data (consensus vs actual), not
+price-only proxies. Family closed at IS.
+Program score: 0 graduates / 10 attempts. Sitting summary: attempts
+8-10 all closed at IS with holdouts unopened - the amended IS floor
+is doing its job (three families examined, zero holdouts spent).
+Next sitting queue: (a) pre-FOMC drift with vol-detected announcement
+days (Lucca-Moench; n will be small, decay documented - honest prior
+weak), (b) fresh mechanism research pass (WebSearch) for families not
+yet touched, (c) the weekend-gap question ONLY if it can be honestly
+distinguished from the burned RTH-gap family.
