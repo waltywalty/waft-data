@@ -2265,3 +2265,54 @@ late-day serial dependence).
 Next registered candidates for attempt 4+ (not yet specified): FP5
 displacement magnitude/horizon repair (heavy prior-look disclosure
 required), gap-fill vs gap-continuation family, ALMA baseline repair.
+
+### Attempt 4 pre-registration: FP5 displacement - magnitude/horizon cost repair
+
+DIAGNOSIS (r37b): displacement continuation is real gross (+0.2..+0.5
+pts/trade across instruments at zero cost, t to +7) and dies inside one
+round trip. Repair classes #4 (cost engineering by FREQUENCY REDUCTION:
+fewer, larger-expectation trades so cost is paid less often per unit of
+edge) and #7 (HORIZON MATCHING: hold to EOD so the per-trade gross move
+is large relative to one fixed cost). Mechanism basis: larger
+displacement = larger participation imbalance = stronger continuation
+(the same size-conditioning that made r40's flips a vol marker makes
+WITH-candle displacement a flow marker); morning signals leave EOD
+runway.
+DISCLOSURE (mandatory): this family was examined on the FULL sample in
+r33b, r37/37b, r38, r39/39c - the OOS block is not pristine for the
+family, only for these exact specs. A pass therefore carries reduced
+weight and the paper/SPRT stage is doubly mandatory.
+FROZEN GRID (24 variants, IS = all but last 25% of sessions):
+signal = 15m RTH displacement bar (frozen r33b def: TR >= k x ATR14,
+body >= 0.6 x range), direction = bar direction, market entry at bar
+close. Knobs: magnitude k in {1.5, 2.0, 2.5} x signal window {before
+14:00, before 11:30} x stop {none, 1 x signal-bar range} x exit {EOD
+close, time 8 bars} . One open trade per instrument (busy-until),
+costs micro, worst-case stop-first on 15m bars, pooled ATR20d-
+normalized stats. Selection and OOS bar identical to attempts 1-2
+(min 120 pooled IS trades, neighbor-majority gradient check, one OOS
+shot at t>=2 / PF>=1.15 / cost x1.5 positive, family burns after).
+Registered prediction: k-gradient is the crux - if continuation truly
+scales with magnitude, avg_R should RISE monotonically in k in IS; a
+flat or inverted k-gradient means frequency reduction cannot beat the
+cost clock and the family dies at IS.
+
+### Attempt 4 result: FAIL at the OOS gate - displacement family burned
+
+(results/r42d_disp.json) The registered crux behaved: the magnitude
+gradient in IS was MONOTONIC and coherent - k1.5 all-negative (cost-
+dominated, consistent with r37b), k2.0 ~flat, k2.5 positive across 7/8
+variants (best t +2.47, halves [+,+] on the selected cell) - exactly
+what a real size-scaled flow effect should look like. Selected by the
+pre-stated rule: k2.5, signals before 14:00, 1x-range stop, 8-bar time
+exit (neighbors 3/5 positive). One-shot OOS (pooled n 1329): avgR
+-0.003, PF 0.95, t -0.28, halves [-,+]; only RTY positive (+0.026,
+t +1.05); cost x1.5 negative. GATE: FAIL. Family burned - and with the
+r33b/r37-39 prior-look disclosure on file, the honest reading is that
+the k-gradient was learned partly from eras the OOS no longer
+resembles: the extreme-displacement continuation visible in 2005-2020
+data does not pay 2020-2026 net of micro costs. This closes the FP5
+monetization question that has run since r33b: real gross, never net,
+in any frame we are able to trade from OHLC.
+Program score: 0 graduates / 4 attempts (burned: ORB, late-day serial
+dependence, FP5 displacement).
