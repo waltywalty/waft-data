@@ -2705,3 +2705,79 @@ closed at IS, holdout unopened.
 Program score: 0 graduates / 12 tested attempts + 1 aborted
 (calendar provenance). Sitting cadence now continuous per the user;
 the continuation trigger is being shortened from 2h to ~15min.
+
+### Attempt 14 pre-registration: conditional month-end rebalancing flow
+
+MECHANISM (external): month-end pension/target-allocation rebalancing
+(Etula, Rinne, Suominen, Vaittinen "Dash for Cash"): when equities have
+moved strongly intra-month, rebalancers trade AGAINST the move in the
+final days - selling equities into month-end after an up month-to-date,
+buying after a down one. Deterministic calendar, conditional direction.
+Classes #1 (calendar+state regime) + #3. DISCLOSURE: r15 F2 tested the
+UNCONDITIONAL TOM windows (McConnell-Xu, Etula T-3..T+2 long) on
+SPX/NDX/RTY full-sample and it was not adopted; this conditional
+opposite-direction claim is distinct but the calendar-window adjacency
+and the r15 full-sample look are on record.
+FROZEN GRID (4 cells, indices pooled ATR-normalized): MTD return
+measured 09:30-open-of-month to close of T-3 (3rd-to-last trading day
+of the month); trigger |MTD| >= thr, thr in {1.5%, 3%}; direction =
+MINUS sign(MTD); entry in {T-3 close, T-2 close}; exit month-end
+close; cost micro once per trade. Selection: IS t >= 2 floor, min 100
+pooled IS trades, neighbor-majority; one OOS shot at the program bar;
+family burns after.
+
+### Attempt 15 pre-registration: Asia-close risk tone -> US RTH session
+
+MECHANISM (external): gradual cross-market information diffusion -
+Asian cash sessions (Nikkei, HSI) close before NY opens; a concordant
+Asia move is a global risk-tone signal not yet fully priced by the US
+open (spillover/momentum literature; documented but WEAK for
+world->US, prior lean modest and registered as such). NOT the burned
+gap family: the signal is FOREIGN session returns, not the US
+instrument's own overnight move, and the trade is a session hold, not
+a gap fill/extension bracket.
+FROZEN GRID (4 cells, SPX/NDX/RTY pooled; gold excluded): signal =
+Nikkei (JP225) and HSI session returns per their own trading day
+(H1 feeds, 2016-2026), both known before 09:30 ET; trade only when
+signs AGREE, direction = the common sign; filter in {any; both
+|ret| >= 0.5 x own 20d sigma}; hold in {09:30->12:00; 09:30->close}.
+Cost micro; ATR-normalized. Selection: IS t >= 2 floor, min 120
+pooled IS trades, neighbor-majority; one OOS shot; family burns after.
+
+### Attempt 14 result: FAIL at the OOS gate - the program's strongest residue
+
+(results/r42n_monthend.json) IS: all 4 cells positive, coherent (t
++1.8..+2.8, halves [+,+], WR 55-57%, PF 1.4-1.5). Selected thr 1.5% /
+entry T-2. One-shot OOS: sign and PF SURVIVED (+0.040R, PF 1.26, WR
+52.2%, n 136) but t +0.61 - at n 136 a PF 1.26 is comfortably inside
+luck, which is what the bar is for. GATE: FAIL, family burned for
+further search. WATCH ITEM registered (passive forward accrual only,
+like NY-PM displacement): conditional month-end rebalancing fade,
+thr 1.5%, entry T-2 close, exit month-end close - the monthly routine
+may re-score it as new months accrue; no new searching permitted.
+Program score: 0 graduates / 13 tested + 1 aborted.
+
+### Attempt 15 result: IS-FAIL after a caught lookahead - the second great fake of the program
+
+(results/r42o_asiatone.json) The first run "PASSED" the OOS gate with
+absurd numbers (IS t +21.4, OOS t +12.8, PF 3.8) - flagged
+immediately by the smell test and audited before any report. Cause:
+the JP225/HK33 "H1" feeds are 24-HOUR CFD feeds; last-bar-of-UTC-date
+is ~23:00 UTC (7pm ET), AFTER the US close, so the "Asia tone" signal
+contained the very session it predicted. The registration required
+the signal known before 09:30 ET; the implementation violated it.
+With the corrected 08:00 UTC cutoff (HK cash close): all 4 cells
+flat-to-negative (best -0.008R; concordant-Asia-tone US follow-
+through does not exist net, and leans fade if anything). Family
+closed at IS; the buggy run's OOS opening is void (invalid signal),
+corrected run never opened it. PROTOCOL ADDITION (permanent): every
+cross-market or multi-feed signal must print its signal-availability
+timestamp against the entry timestamp before any grid is read; 24h
+feeds default to explicit clock cutoffs, never date-group aggregates.
+This is the program's second manufactured miracle caught by audit
+(r38 signal-bar leak; now the session-cutoff leak) - both would have
+been catastrophic live.
+Program score: 0 graduates / 14 tested + 1 aborted.
+Sitting summary: attempt 14 month-end rebalancing = FAIL but
+strongest residue (OOS sign+PF survived, watch item registered);
+attempt 15 Asia tone = lookahead caught, honest version null.
