@@ -1600,3 +1600,46 @@ candidate; nothing to the watch list. Deviation note: intraday driver is
 the 2-leg synthetic DXY (documented proxy); daily used the 5-leg FRED
 basket. Relation-sign detection sanity-passed (gold/DXY -, EUR/CAD -,
 gold/oil +).
+
+## Round 35d pre-registration: the timing objection (documented follow-up)
+
+User objection to r35c: the edge may be real but consumed between the
+lower-TF-knowable moment and our trigger-bar-close measurement anchor -
+"signal on 15m/daily, confirm and enter on 1m/15m". Testable core: no
+lower-TF confirmation can enter EARLIER than the trigger bar's open, so
+the payoff measured from the trigger bar's OPEN (proxied by the prior
+close on continuous 15m FX/gold - documented) is a strict UPPER BOUND on
+any finer-entry variant, and it deliberately INCLUDES lookahead (at the
+open the trigger is not yet known) - biased in the hypothesis's favor.
+Frozen: re-run the r35c XAU/synDXY frames (15m/1H/4H + daily) with three
+anchors per event - trigger open (lookahead ceiling), trigger close
+(original), next close (realistic) - plus the intrabar move (open->close
+of the trigger bar, i.e. what a same-bar scalper could at most have
+captured), event vs responded-control at each anchor. If the ceiling is
+null the objection is closed for the powered frames; the daily FX frames
+stay noted as unpowered regardless (4-36 events per decade+ - no entry
+refinement turns that frequency into a strategy).
+
+## Round 35d results: the timing objection is closed - there is no consumed edge
+
+(results/r35d_anchors.json) Two measurements kill the "our entry was just
+mistimed" account of the r35c null:
+1. The INTRABAR move during the trigger bar - everything a same-bar
+   lower-TF scalper could conceivably capture between the 1m-knowable
+   moment and our close anchor - is +0.9/+1.0/+1.1 bps on 15m/1H/4H.
+   There is no hidden snap being consumed inside the confirmation bar;
+   the "much bigger move" is not there at ONE basis point.
+2. The lookahead CEILING (payoff anchored at the trigger bar's open -
+   earlier than any real lower-TF entry can achieve, and before the
+   trigger is even knowable) is no better than the original anchor: 15m
+   -0.6/-2.6 bps with events UNDERPERFORMING controls at t -1.7/-2.7;
+   1H noise; 4H +15.6 t +1.88 - still the same n=50 max-of-surface cell,
+   still failing halves, and its ceiling is BELOW its close-anchor value.
+Principle, recorded for future objections of this class: refining entry
+timing multiplies an existing per-event expectation - it cannot create
+one from zero - except in the knife-edge case where the payoff is
+consumed between knowability and measurement, which is exactly what the
+intrabar and open-anchor measurements check. Checked: ~1 bp. The
+signal-TF/entry-TF separation itself is legitimate technique (our
+deployed gold rule IS one: daily-computed correlation signal, 60m entry)
+- it just cannot rescue a pattern whose event-level expectation is null.
