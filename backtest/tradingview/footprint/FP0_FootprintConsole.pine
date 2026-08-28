@@ -47,7 +47,9 @@ b5c  = input.color(color.fuchsia, "", inline = "B5", group = grpB)
 b5s  = input.session("1330-1600", "NY PM", inline = "B5", group = grpB)
 
 grpD   = "Display"
-tszStr = input.string("normal", "Table text size", options = ["small", "normal", "large"], group = grpD)
+tszStr  = input.string("normal", "Table text size", options = ["small", "normal", "large"], group = grpD)
+biasPos = input.string("top right", "Bias card position", options = ["top left", "top right", "middle left", "middle right", "bottom left", "bottom right"], group = grpD)
+lvlPos  = input.string("bottom left", "Sweep scoreboard position", options = ["top left", "top right", "middle left", "middle right", "bottom left", "bottom right"], group = grpD)
 
 inRTH    = not na(time(timeframe.period, rthSess, tz))
 rthStart = inRTH and not inRTH[1]
@@ -57,6 +59,10 @@ isIdx    = preset == "Index"
 
 tsz    = tszStr == "small" ? size.small : tszStr == "large" ? size.large : size.normal
 C_LBL  = color.rgb(42, 49, 64)          // slate cells, readable on light and dark
+get_pos(p) =>
+    p == "top left" ? position.top_left : p == "top right" ? position.top_right :
+     p == "middle left" ? position.middle_left : p == "middle right" ? position.middle_right :
+     p == "bottom left" ? position.bottom_left : position.bottom_right
 
 // ========================= FP1 layer: session map =============================
 bgcolor(useBands and b1on and not na(time(timeframe.period, b1s, tz)) ? color.new(b1c, bandT) : na)
@@ -113,7 +119,7 @@ trendUp = close > dSMA
 biasLong  = trendUp and onDrift > 0
 biasShort = not trendUp and onDrift < 0
 
-var biasTbl = table.new(position.top_right, 2, 3, border_width = 1)
+var biasTbl = table.new(get_pos(biasPos), 2, 3, border_width = 1)
 if barstate.islast and useBias
     bias = biasLong ? "LONG" : biasShort ? "SHORT" : "NEUTRAL"
     bcol = biasLong ? color.teal : biasShort ? color.maroon : color.gray
@@ -228,7 +234,7 @@ if trans(s4[1], s4)
 if anyFailUp or anyFailDn
     swFail += 1
 
-var lvlTbl = table.new(position.bottom_left, 2, 2, border_width = 1)
+var lvlTbl = table.new(get_pos(lvlPos), 2, 2, border_width = 1)
 if barstate.islast and useLvls
     table.cell(lvlTbl, 0, 0, "sweep events", text_size = tsz, text_color = color.white, bgcolor = C_LBL)
     table.cell(lvlTbl, 1, 0, str.tostring(swDone), text_size = tsz, text_color = color.white, bgcolor = C_LBL)

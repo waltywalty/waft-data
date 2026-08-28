@@ -724,7 +724,9 @@ b5c  = input.color(color.fuchsia, &quot;&quot;, inline = &quot;B5&quot;, group =
 b5s  = input.session(&quot;1330-1600&quot;, &quot;NY PM&quot;, inline = &quot;B5&quot;, group = grpB)
 
 grpD   = &quot;Display&quot;
-tszStr = input.string(&quot;normal&quot;, &quot;Table text size&quot;, options = [&quot;small&quot;, &quot;normal&quot;, &quot;large&quot;], group = grpD)
+tszStr  = input.string(&quot;normal&quot;, &quot;Table text size&quot;, options = [&quot;small&quot;, &quot;normal&quot;, &quot;large&quot;], group = grpD)
+biasPos = input.string(&quot;top right&quot;, &quot;Bias card position&quot;, options = [&quot;top left&quot;, &quot;top right&quot;, &quot;middle left&quot;, &quot;middle right&quot;, &quot;bottom left&quot;, &quot;bottom right&quot;], group = grpD)
+lvlPos  = input.string(&quot;bottom left&quot;, &quot;Sweep scoreboard position&quot;, options = [&quot;top left&quot;, &quot;top right&quot;, &quot;middle left&quot;, &quot;middle right&quot;, &quot;bottom left&quot;, &quot;bottom right&quot;], group = grpD)
 
 inRTH    = not na(time(timeframe.period, rthSess, tz))
 rthStart = inRTH and not inRTH[1]
@@ -734,6 +736,10 @@ isIdx    = preset == &quot;Index&quot;
 
 tsz    = tszStr == &quot;small&quot; ? size.small : tszStr == &quot;large&quot; ? size.large : size.normal
 C_LBL  = color.rgb(42, 49, 64)          // slate cells, readable on light and dark
+get_pos(p) =&gt;
+    p == &quot;top left&quot; ? position.top_left : p == &quot;top right&quot; ? position.top_right :
+     p == &quot;middle left&quot; ? position.middle_left : p == &quot;middle right&quot; ? position.middle_right :
+     p == &quot;bottom left&quot; ? position.bottom_left : position.bottom_right
 
 // ========================= FP1 layer: session map =============================
 bgcolor(useBands and b1on and not na(time(timeframe.period, b1s, tz)) ? color.new(b1c, bandT) : na)
@@ -790,7 +796,7 @@ trendUp = close &gt; dSMA
 biasLong  = trendUp and onDrift &gt; 0
 biasShort = not trendUp and onDrift &lt; 0
 
-var biasTbl = table.new(position.top_right, 2, 3, border_width = 1)
+var biasTbl = table.new(get_pos(biasPos), 2, 3, border_width = 1)
 if barstate.islast and useBias
     bias = biasLong ? &quot;LONG&quot; : biasShort ? &quot;SHORT&quot; : &quot;NEUTRAL&quot;
     bcol = biasLong ? color.teal : biasShort ? color.maroon : color.gray
@@ -905,7 +911,7 @@ if trans(s4[1], s4)
 if anyFailUp or anyFailDn
     swFail += 1
 
-var lvlTbl = table.new(position.bottom_left, 2, 2, border_width = 1)
+var lvlTbl = table.new(get_pos(lvlPos), 2, 2, border_width = 1)
 if barstate.islast and useLvls
     table.cell(lvlTbl, 0, 0, &quot;sweep events&quot;, text_size = tsz, text_color = color.white, bgcolor = C_LBL)
     table.cell(lvlTbl, 1, 0, str.tostring(swDone), text_size = tsz, text_color = color.white, bgcolor = C_LBL)
@@ -1242,6 +1248,8 @@ kMult  = input.float(1.5, &quot;Displacement: TR &gt;= k x ATR&quot;, step = 0.1
 bodyTh = input.float(0.6, &quot;Min body/range&quot;, step = 0.05, minval = 0.3, maxval = 0.95)
 regN   = input.int(30, &quot;Regime window (bars)&quot;, minval = 10)
 regTh  = input.int(3, &quot;Initiative if &gt;= N displacement bars in window&quot;, minval = 1)
+tblPos = input.string(&quot;bottom left&quot;, &quot;Scoreboard position&quot;, options = [&quot;top left&quot;, &quot;top right&quot;, &quot;middle left&quot;, &quot;middle right&quot;, &quot;bottom left&quot;, &quot;bottom right&quot;])
+tblSz  = input.string(&quot;small&quot;, &quot;Scoreboard text size&quot;, options = [&quot;small&quot;, &quot;normal&quot;, &quot;large&quot;])
 
 atr  = ta.atr(atrN)
 tr   = ta.tr(true)
@@ -1269,17 +1277,21 @@ if barstate.isconfirmed
     if dDn[1]
         dnN += 1
         dnF += close &lt; close[1] ? 1 : 0
-var tbl = table.new(position.bottom_right, 3, 3, border_width = 1)
+p_ = tblPos == &quot;top left&quot; ? position.top_left : tblPos == &quot;top right&quot; ? position.top_right :
+     tblPos == &quot;middle left&quot; ? position.middle_left : tblPos == &quot;middle right&quot; ? position.middle_right :
+     tblPos == &quot;bottom left&quot; ? position.bottom_left : position.bottom_right
+s_ = tblSz == &quot;small&quot; ? size.small : tblSz == &quot;large&quot; ? size.large : size.normal
+var tbl = table.new(p_, 3, 3, border_width = 1)
 if barstate.islast
-    table.cell(tbl, 0, 0, &quot;follow-through&quot;, text_size = size.normal, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
-    table.cell(tbl, 1, 0, &quot;n&quot;, text_size = size.normal, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
-    table.cell(tbl, 2, 0, &quot;next-bar same dir&quot;, text_size = size.normal, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
-    table.cell(tbl, 0, 1, &quot;after disp UP&quot;, text_size = size.normal, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
-    table.cell(tbl, 1, 1, str.tostring(upN), text_size = size.normal, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
-    table.cell(tbl, 2, 1, upN &gt; 0 ? str.tostring(100.0 * upF / upN, &quot;#.#&quot;) + &quot;%&quot; : &quot;-&quot;, text_size = size.normal, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
-    table.cell(tbl, 0, 2, &quot;after disp DOWN&quot;, text_size = size.normal, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
-    table.cell(tbl, 1, 2, str.tostring(dnN), text_size = size.normal, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
-    table.cell(tbl, 2, 2, dnN &gt; 0 ? str.tostring(100.0 * dnF / dnN, &quot;#.#&quot;) + &quot;%&quot; : &quot;-&quot;, text_size = size.normal, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
+    table.cell(tbl, 0, 0, &quot;follow-through&quot;, text_size = s_, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
+    table.cell(tbl, 1, 0, &quot;n&quot;, text_size = s_, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
+    table.cell(tbl, 2, 0, &quot;next-bar same dir&quot;, text_size = s_, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
+    table.cell(tbl, 0, 1, &quot;after disp UP&quot;, text_size = s_, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
+    table.cell(tbl, 1, 1, str.tostring(upN), text_size = s_, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
+    table.cell(tbl, 2, 1, upN &gt; 0 ? str.tostring(100.0 * upF / upN, &quot;#.#&quot;) + &quot;%&quot; : &quot;-&quot;, text_size = s_, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
+    table.cell(tbl, 0, 2, &quot;after disp DOWN&quot;, text_size = s_, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
+    table.cell(tbl, 1, 2, str.tostring(dnN), text_size = s_, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
+    table.cell(tbl, 2, 2, dnN &gt; 0 ? str.tostring(100.0 * dnF / dnN, &quot;#.#&quot;) + &quot;%&quot; : &quot;-&quot;, text_size = s_, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
 
 alertcondition(disp, &quot;Displacement bar&quot;, &quot;FP5: initiative range expansion&quot;)
 alertcondition(initiative and not initiative[1], &quot;Regime -&gt; initiative&quot;, &quot;FP5: rotation -&gt; initiative regime&quot;)
@@ -1480,6 +1492,8 @@ kMult  = input.float(1.5, &quot;Displacement: TR &gt;= k x ATR&quot;, step = 0.1
 maxAge = input.int(300, &quot;Max box age (bars)&quot;, minval = 20)
 showOB = input.bool(true, &quot;Order blocks&quot;)
 showFVG= input.bool(true, &quot;Fair value gaps&quot;)
+tblPos = input.string(&quot;middle left&quot;, &quot;Honesty table position&quot;, options = [&quot;top left&quot;, &quot;top right&quot;, &quot;middle left&quot;, &quot;middle right&quot;, &quot;bottom left&quot;, &quot;bottom right&quot;])
+tblSz  = input.string(&quot;small&quot;, &quot;Honesty table text size&quot;, options = [&quot;small&quot;, &quot;normal&quot;, &quot;large&quot;])
 
 atr  = ta.atr(atrN)
 disp = ta.tr(true) &gt;= kMult * atr
@@ -1539,14 +1553,18 @@ if array.size(obBoxes) &gt; 0
             box.set_right(bx, bar_index)
 
 // ---- the honesty table --------------------------------------------------------
-var tbl = table.new(position.top_left, 2, 3, border_width = 1)
+p_ = tblPos == &quot;top left&quot; ? position.top_left : tblPos == &quot;top right&quot; ? position.top_right :
+     tblPos == &quot;middle left&quot; ? position.middle_left : tblPos == &quot;middle right&quot; ? position.middle_right :
+     tblPos == &quot;bottom left&quot; ? position.bottom_left : position.bottom_right
+s_ = tblSz == &quot;small&quot; ? size.small : tblSz == &quot;large&quot; ? size.large : size.normal
+var tbl = table.new(p_, 2, 3, border_width = 1)
 if barstate.islast
-    table.cell(tbl, 0, 0, &quot;FVG fill rate&quot;, text_size = size.normal, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
-    table.cell(tbl, 1, 0, fvgN &gt; 0 ? str.tostring(100.0 * fvgFilled / fvgN, &quot;#.#&quot;) + &quot;% of &quot; + str.tostring(fvgN) : &quot;-&quot;, text_size = size.normal, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
-    table.cell(tbl, 0, 1, &quot;median-ish bars to fill&quot;, text_size = size.normal, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
-    table.cell(tbl, 1, 1, fvgFilled &gt; 0 ? str.tostring(fvgBars / fvgFilled, &quot;#&quot;) : &quot;-&quot;, text_size = size.normal, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
-    table.cell(tbl, 0, 2, &quot;NOTE&quot;, text_size = size.normal, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
-    table.cell(tbl, 1, 2, &quot;fill % is a BASE RATE,\nnot an edge (r27: 0/12)&quot;, text_size = size.normal, text_color = color.white, bgcolor = color.new(color.maroon, 20))
+    table.cell(tbl, 0, 0, &quot;FVG fill rate&quot;, text_size = s_, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
+    table.cell(tbl, 1, 0, fvgN &gt; 0 ? str.tostring(100.0 * fvgFilled / fvgN, &quot;#.#&quot;) + &quot;% of &quot; + str.tostring(fvgN) : &quot;-&quot;, text_size = s_, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
+    table.cell(tbl, 0, 1, &quot;median-ish bars to fill&quot;, text_size = s_, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
+    table.cell(tbl, 1, 1, fvgFilled &gt; 0 ? str.tostring(fvgBars / fvgFilled, &quot;#&quot;) : &quot;-&quot;, text_size = s_, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
+    table.cell(tbl, 0, 2, &quot;NOTE&quot;, text_size = s_, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
+    table.cell(tbl, 1, 2, &quot;fill % is a BASE RATE,\nnot an edge (r27: 0/12)&quot;, text_size = s_, text_color = color.white, bgcolor = color.new(color.maroon, 20))
 </code></pre></div>
 </section>
 

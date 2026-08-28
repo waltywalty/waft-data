@@ -17,6 +17,8 @@ kMult  = input.float(1.5, "Displacement: TR >= k x ATR", step = 0.1)
 bodyTh = input.float(0.6, "Min body/range", step = 0.05, minval = 0.3, maxval = 0.95)
 regN   = input.int(30, "Regime window (bars)", minval = 10)
 regTh  = input.int(3, "Initiative if >= N displacement bars in window", minval = 1)
+tblPos = input.string("bottom left", "Scoreboard position", options = ["top left", "top right", "middle left", "middle right", "bottom left", "bottom right"])
+tblSz  = input.string("small", "Scoreboard text size", options = ["small", "normal", "large"])
 
 atr  = ta.atr(atrN)
 tr   = ta.tr(true)
@@ -44,17 +46,21 @@ if barstate.isconfirmed
     if dDn[1]
         dnN += 1
         dnF += close < close[1] ? 1 : 0
-var tbl = table.new(position.bottom_right, 3, 3, border_width = 1)
+p_ = tblPos == "top left" ? position.top_left : tblPos == "top right" ? position.top_right :
+     tblPos == "middle left" ? position.middle_left : tblPos == "middle right" ? position.middle_right :
+     tblPos == "bottom left" ? position.bottom_left : position.bottom_right
+s_ = tblSz == "small" ? size.small : tblSz == "large" ? size.large : size.normal
+var tbl = table.new(p_, 3, 3, border_width = 1)
 if barstate.islast
-    table.cell(tbl, 0, 0, "follow-through", text_size = size.normal, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
-    table.cell(tbl, 1, 0, "n", text_size = size.normal, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
-    table.cell(tbl, 2, 0, "next-bar same dir", text_size = size.normal, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
-    table.cell(tbl, 0, 1, "after disp UP", text_size = size.normal, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
-    table.cell(tbl, 1, 1, str.tostring(upN), text_size = size.normal, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
-    table.cell(tbl, 2, 1, upN > 0 ? str.tostring(100.0 * upF / upN, "#.#") + "%" : "-", text_size = size.normal, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
-    table.cell(tbl, 0, 2, "after disp DOWN", text_size = size.normal, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
-    table.cell(tbl, 1, 2, str.tostring(dnN), text_size = size.normal, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
-    table.cell(tbl, 2, 2, dnN > 0 ? str.tostring(100.0 * dnF / dnN, "#.#") + "%" : "-", text_size = size.normal, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
+    table.cell(tbl, 0, 0, "follow-through", text_size = s_, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
+    table.cell(tbl, 1, 0, "n", text_size = s_, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
+    table.cell(tbl, 2, 0, "next-bar same dir", text_size = s_, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
+    table.cell(tbl, 0, 1, "after disp UP", text_size = s_, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
+    table.cell(tbl, 1, 1, str.tostring(upN), text_size = s_, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
+    table.cell(tbl, 2, 1, upN > 0 ? str.tostring(100.0 * upF / upN, "#.#") + "%" : "-", text_size = s_, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
+    table.cell(tbl, 0, 2, "after disp DOWN", text_size = s_, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
+    table.cell(tbl, 1, 2, str.tostring(dnN), text_size = s_, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
+    table.cell(tbl, 2, 2, dnN > 0 ? str.tostring(100.0 * dnF / dnN, "#.#") + "%" : "-", text_size = s_, text_color = color.white, bgcolor = color.rgb(42, 49, 64))
 
 alertcondition(disp, "Displacement bar", "FP5: initiative range expansion")
 alertcondition(initiative and not initiative[1], "Regime -> initiative", "FP5: rotation -> initiative regime")
