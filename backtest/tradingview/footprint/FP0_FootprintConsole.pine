@@ -10,7 +10,7 @@
 // state and no opposing "signals" (only FP3 renders a directional read at all).
 // FP2 RVOL stays separate because it needs its own pane (and real CME volume).
 // Every layer has a master toggle - turn off what you do not use.
-indicator("FP0 Footprint Console", overlay = true, max_lines_count = 500, max_labels_count = 500)
+indicator("FP0 Footprint Console", overlay = true, max_lines_count = 500, max_labels_count = 500, max_boxes_count = 100)
 
 // ================================ inputs ======================================
 tz      = input.string("America/New_York", "Timezone", group = "Session")
@@ -29,7 +29,11 @@ failK   = input.int(6, "Sweep failure window (bars)", group = "Levels")
 // VWAP, levels, and the scoreboard still key off the RTH session above.
 grpB   = "Session bands (visual only)"
 useBands = input.bool(true, "Show session bands", group = grpB)
-bandT  = input.int(90, "Band transparency", minval = 60, maxval = 98, group = grpB)
+bandStyle = input.string("Range boxes", "Band style", options = ["Range boxes", "Background"], group = grpB,
+     tooltip = "Range boxes = a box hugging each session's actual high-low range with its name inside (killzone style). Background = full-height tint")
+bandT  = input.int(85, "Band transparency", minval = 50, maxval = 98, group = grpB)
+maxSess = input.int(3, "Sessions kept per band", minval = 1, maxval = 10, group = grpB)
+showDays = input.bool(true, "Day dividers + weekday labels", group = grpB)
 b1on = input.bool(true, "", inline = "B1", group = grpB)
 b1c  = input.color(color.blue, "", inline = "B1", group = grpB)
 b1s  = input.session("2000-0000", "Asia", inline = "B1", group = grpB)
@@ -74,12 +78,59 @@ t3 = b3on and not na(time(timeframe.period, b3s, tz))
 t4 = b4on and not na(time(timeframe.period, b4s, tz))
 t5 = b5on and not na(time(timeframe.period, b5s, tz))
 bandId = t1 ? 1 : t2 ? 2 : t3 ? 3 : t4 ? 4 : t5 ? 5 : 0
-bgcolor(useBands and t1 ? color.new(b1c, bandT) : na)
-bgcolor(useBands and t2 ? color.new(b2c, bandT) : na)
-bgcolor(useBands and t3 ? color.new(b3c, bandT) : na)
-bgcolor(useBands and t4 ? color.new(b4c, bandT) : na)
-bgcolor(useBands and t5 ? color.new(b5c, bandT) : na)
+boxMode = useBands and bandStyle == "Range boxes"
+// Background style: full-height tint
+bgcolor(useBands and not boxMode and t1 ? color.new(b1c, bandT) : na)
+bgcolor(useBands and not boxMode and t2 ? color.new(b2c, bandT) : na)
+bgcolor(useBands and not boxMode and t3 ? color.new(b3c, bandT) : na)
+bgcolor(useBands and not boxMode and t4 ? color.new(b4c, bandT) : na)
+bgcolor(useBands and not boxMode and t5 ? color.new(b5c, bandT) : na)
 bgcolor(useMap and not useBands and not inRTH ? color.new(color.blue, 96) : na)
+
+// Range-box style (killzone look, after ICT Killzones [TFO]; implementation
+// ours): one box per session hugging its running high-low range, session name
+// inside, last maxSess sessions kept.
+f_band(bool active, color c, string nm, array<box> bxs) =>
+    if boxMode
+        if active and not active[1]
+            array.unshift(bxs, box.new(time, high, time, low, xloc = xloc.bar_time,
+                 border_color = color.new(c, 45), bgcolor = color.new(c, bandT),
+                 text = nm, text_color = color.new(c, 45), text_size = size.large))
+            if array.size(bxs) > maxSess
+                box.delete(array.pop(bxs))
+        if active and array.size(bxs) > 0
+            bx = array.get(bxs, 0)
+            box.set_right(bx, time)
+            box.set_top(bx, math.max(box.get_top(bx), high))
+            box.set_bottom(bx, math.min(box.get_bottom(bx), low))
+
+var bx1 = array.new_box()
+var bx2 = array.new_box()
+var bx3 = array.new_box()
+var bx4 = array.new_box()
+var bx5 = array.new_box()
+f_band(t1, b1c, "Asia", bx1)
+f_band(t2, b2c, "London", bx2)
+f_band(t3, b3c, "NY AM", bx3)
+f_band(t4, b4c, "NY Lunch", bx4)
+f_band(t5, b5c, "NY PM", bx5)
+
+// Day dividers: dotted vertical line at each new calendar day (chart timezone
+// setting tz), weekday label at the pane bottom.
+newDay = ta.change(dayofweek(time, tz)) != 0
+var dayLines = array.new_line()
+if showDays and newDay
+    array.unshift(dayLines, line.new(bar_index, high, bar_index, low, extend = extend.both,
+         color = color.new(color.gray, 70), style = line.style_dotted))
+    if array.size(dayLines) > 8
+        line.delete(array.pop(dayLines))
+dowNow = dayofweek(time, tz)
+plotchar(showDays and newDay and dowNow == 1, "Sun", "", location.bottom, text = "SUNDAY",    textcolor = color.new(color.gray, 40), size = size.tiny)
+plotchar(showDays and newDay and dowNow == 2, "Mon", "", location.bottom, text = "MONDAY",    textcolor = color.new(color.gray, 40), size = size.tiny)
+plotchar(showDays and newDay and dowNow == 3, "Tue", "", location.bottom, text = "TUESDAY",   textcolor = color.new(color.gray, 40), size = size.tiny)
+plotchar(showDays and newDay and dowNow == 4, "Wed", "", location.bottom, text = "WEDNESDAY", textcolor = color.new(color.gray, 40), size = size.tiny)
+plotchar(showDays and newDay and dowNow == 5, "Thu", "", location.bottom, text = "THURSDAY",  textcolor = color.new(color.gray, 40), size = size.tiny)
+plotchar(showDays and newDay and dowNow == 6, "Fri", "", location.bottom, text = "FRIDAY",    textcolor = color.new(color.gray, 40), size = size.tiny)
 mark(cond, col) =>
     useMap and cond ? color.new(col, 82) : na
 bgcolor(mark(isIdx     and mins == 930,  color.teal))
