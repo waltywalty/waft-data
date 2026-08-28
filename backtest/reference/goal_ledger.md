@@ -2316,3 +2316,79 @@ monetization question that has run since r33b: real gross, never net,
 in any frame we are able to trade from OHLC.
 Program score: 0 graduates / 4 attempts (burned: ORB, late-day serial
 dependence, FP5 displacement).
+
+### Attempt 5 pre-registration: overnight gap - fill vs continuation by size
+
+MECHANISM: the overnight gap is the visible imbalance between the
+overnight auction and the prior RTH close. Standard microstructure
+account, size-dependent: SMALL gaps are liquidity/overnight-noise
+overshoots that revert to the prior close (gap fill); LARGE gaps are
+informed repricings that continue (gap-and-go). Attempt 1's burned-ORB
+residue (the gap>=0.5xATR gate carried the only OOS-surviving tilt,
+direction-agnostic) motivates testing the gap DAY-TYPE directly.
+Classes #1 (regime by gap size), #2 (all distances in ATR20d units),
+#3 (open-session concentration), #7 (EOD horizon).
+FROZEN GRID (24 variants, IS = all but last 25% of sessions):
+gap g = 09:30 RTH open minus prior RTH close, normalized |g|/ATR20d;
+size bucket in {small 0.1-0.3; mid 0.3-0.7; large >=0.7} x direction
+in {FILL: side=-sign(g), target=prior close; CONT: side=+sign(g),
+target=entry+|g| extension} x entry in {09:30 open; 10:00 close, day
+skipped if the target was already touched in the first 30m} x exit in
+{target with EOD backstop; EOD close only}. Stop always on, frozen at
+0.5 x ATR20d adverse, worst-case stop-first on 5m bars. One trade per
+day per instrument, costs micro, pooled ATR20d-normalized stats.
+Selection + OOS bar identical to prior attempts; the whole gap family
+(both directions, all sizes) burns on this one OOS shot.
+Registered prediction: the size-direction interaction is the crux -
+the mechanism requires FILL to win in the small bucket and CONT in the
+large bucket IN SAMPLE with a coherent gradient across buckets; a grid
+where one direction wins everywhere (or neither) means the day-type
+story is wrong, and the family should die at IS unless a cell is
+independently strong.
+
+### Attempt 5 IS result and disclosed amendment 5b (registered before OOS opened)
+
+(results/r42e_gap.json grid) IS: small and mid buckets negative in BOTH
+directions (small-FILL least bad, -0.011..-0.023 - the fill tendency
+exists but under costs; small-CONT worst, t -8.1). LARGE-gap
+CONTINUATION positive in all 4 of its cells (+0.004..+0.036; best:
+entry 10:00, EOD exit, avgR +0.036, t +2.08, halves [+,+], PF 1.03),
+large-FILL strongly negative - the registered size-direction
+interaction, matched on the CONT half. The frozen generic neighbor-
+majority rule refused selection because cross-BUCKET neighbors are
+negative - but the registration's own crux statement predicts exactly
+that sign flip across buckets, an internal inconsistency in the
+registration. AMENDMENT (disclosed; decided after seeing IS ONLY, OOS
+untouched): for mechanisms that predict a sign change across a
+dimension, the neighbor check is scoped to the mechanism-relevant
+subspace (here: within the large bucket - 3/3 neighbors positive for
+the top cell). This resolution is adopted prospectively for future
+registrations as well. The one OOS shot is spent on large-CONT /
+entry 10:00 / EOD exit. Noted against it before opening: IS PF 1.03
+is already below the 1.15 OOS bar and IS t 2.08 is modest; prior lean
+FAIL.
+
+### Attempt 5b result: FAIL - gap family burned
+
+(results/r42e_oos.json) The one-shot OOS on large-gap continuation
+(entry 10:00, 0.5xATR stop, EOD exit): pooled n 596, avgR +0.002,
+t +0.08, PF 0.99, halves [-,+]; SPX/NDX/RTY all slightly negative,
+GOLD +0.043 (t +0.98, noise-sized); cost x1.5 negative. GATE: FAIL -
+about as exact a zero as an OOS shot can return. The 2005-2020 IS
+effect (+0.035R, t +2.0) did not exist in 2020-2026, the same era-
+decay shape as attempt 4. Gap family burned in both directions and
+all sizes. Standing residue worth keeping: small-gap fill exists as a
+TENDENCY (it lost least) but sits under costs; large-gap continuation
+was real once and is gone.
+Program score: 0 graduates / 5 attempts (burned: ORB, late-day serial
+dependence, FP5 displacement, overnight gap). Remaining queued: ALMA
+baseline repair (note: 6H Russell swing, not strictly intraday).
+Program-level observation registered for the user: all five burned
+families are RTH index-micro intraday effects - the most heavily
+arbitraged arena there is, and the two eras in our data disagree
+about every candidate found. Our own validated edges (gold rule, MHI,
+D7) all live at SESSION BOUNDARIES or cross-market interactions, not
+inside RTH chop. Recommendation on record: after ALMA, widen the
+program's search space to session-handoff and cross-market families
+(Asia/London opens on MGC, overnight-session behavior, index-gold
+interactions) before burning more RTH families.
