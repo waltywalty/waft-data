@@ -2110,3 +2110,24 @@ sits on a smooth parameter gradient. r40 already established the flip
 event has no conditional expectation to amplify (recovery LESS likely
 than control); r41 shows what "making it work" actually produces.
 240 + 11 cells counted with the battery.
+
+## Round 41b: repair taxonomy and protocol adopted (user's three proposals)
+
+User proposed three routes past the r41 lesson: (1) keep testing until
+something passes IS+OOS; (2) repair the already-failed baseline
+strategies on IS, then judge on OOS instead of presuming failure;
+(3) research online what KINDS of additions make strategies work, then
+reason from mechanism to a fix without peeking at the data. Ruling:
+all three are legitimate WITH corrections, and (3) is the strongest -
+it is hypothesis generation from mechanism, which is how the deployed
+gold rule was found. Corrections adopted as binding protocol (full text
+in reference/repair_taxonomy.md): repairs must target a written failure
+diagnosis; bounded pre-registered grids on IS only (last 25% held out);
+gradient inspection; ONE spec to OOS, judged ONCE against a pre-stated
+bar (same sign, t>=2, PF>=1.15, cost-sensitivity pass); the OOS block
+burns on use regardless of outcome; a pass graduates to paper/SPRT, not
+deployment; every attempt counted because ~2-5% of null attempts pass
+the bar by luck (the program-level max-stat problem). The taxonomy doc
+records seven repair classes with their target mechanisms and our own
+ledger evidence for/against each (vol-normalization strongest,
+confirmation-stacking weakest). No new data was touched this round.
