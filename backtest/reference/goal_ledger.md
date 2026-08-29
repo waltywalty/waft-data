@@ -2997,3 +2997,40 @@ Program score: 0 graduates / 17 tested attempts + 4 watch items.
 Data assets now held: 20yr validated CFD feeds, 12mo true CME ES,
 verified FOMC calendar 2013-2026, 3,067-event US surprise dataset
 2013-2026 (all re-fetchable; acquisition recipes in this ledger).
+
+### Attempt 18 pre-registration: gold vs CPI surprises
+
+MECHANISM (external, textbook): CPI surprises move expected real
+rates; gold prices real rates inversely - hot CPI -> gold DOWN, cool
+CPI -> gold UP. Independent of the equity good-news-bad-news regime.
+PEEK DISCLOSURE: r44's gold diagnostic pooled ALL event types under
+the equity mapping (+0.030R close-hold); the CPI-only gold subset was
+not separately examined. POWER DISCLOSURE: gold 5m data starts
+2020-08, so only ~70 CPI events join; min-n floor set to 40 IS trades
+for this registration (scarce-event family, like FOMC), IS t >= 2
+floor unchanged - underpower is the expected failure mode and a fail
+here parks the family as a watch item rather than proving absence.
+FROZEN GRID (4 cells, GOLD only): events = the four CPI variants;
+direction = MINUS sign(ratioDeviation); |dev| threshold {0.25, 0.5} x
+hold {entry+60m, to 16:00 NY close}; entry first 5m close at/after
+release+5min; cost 0.35; ATR20-normalized; one trade per event. One
+OOS shot (last 25% sessions, OOS n >= 25 given scarcity) at the
+program bar; family burns after (to watch-item status if the failure
+is pure power).
+
+### Attempt 18 result: IS-FAIL on power, as registered - watch item #5
+
+(results/r44b_goldcpi.json) Only 32-34 IS trades joined (gold data
+2020+ x ~monthly CPI). Every cell leans the mechanism's way (avgR
++0.018..+0.052, WR to 65.6% on close-holds, PF to 1.35) but t <= 0.57
+- structurally unpowered, exactly the anticipated failure mode.
+Holdout unopened. WATCH ITEM #5: gold CPI-surprise trade (minus
+sign(dev), release+5m entry, hold to close), ~12-16 events/yr accrue.
+Program score: 0 graduates / 18 tested attempts + 5 watch items
+(NY-PM displacement, month-end rebalancing fade, FOMC announcement-
+day premium, CPI-surprise equity fade, gold CPI-surprise). The watch
+list is now the program's live portfolio of underpowered leans - all
+calendar/flow effects, all accruing free forward data, several
+re-scoreable within 1-2 years. Search resumes when a genuinely new
+mechanism or data class appears; the monthly routine carries the
+watch-item re-scoring.
