@@ -3195,3 +3195,90 @@ no OOS spent. Honest read: this does NOT refute strike pinning per se -
 it refutes the round-level proxy without real open-interest data; a
 future revival requires an actual OI-by-strike feed (new data class).
 Program score: 0 graduates / 22 tested attempts + 6 watch items.
+
+## Round 46: new data class acquired - CBOE daily put/call ratios (2006-2019)
+
+2026-08-29. ACQUISITION ON RECORD: the proxy blocks cboe.com locally; via
+the Kernel cloud browser the discontinued-but-still-served CBOE archives
+downloaded cleanly:
+  data/cboe_totalpc.csv   (total P/C, 2006-10-04 .. 2019-10-04, 3256 rows)
+  data/cboe_equitypc.csv  (equity-only P/C, same span, 3256 rows)
+Columns: date, calls, puts, total volume, P/C ratio. The archive ends
+2019-10-04 (CBOE moved later data behind DataShop); extending to 2025
+would need ~1500 per-day API calls - declined for now. Study design
+follows the FOMC-family precedent: the family's own span 2006-2019,
+IS = first 75%, OOS = last 25% (~2016-06 onward), sealed as always.
+Options sentiment is a genuinely NEW DATA CLASS for this program (nothing
+prior conditioned on option-market state).
+
+### Attempt 23 registration (BEFORE running): equity put/call contrarian gate
+
+MECHANISM: the equity-only put/call ratio is a retail-heavy sentiment
+gauge; extreme fear (high P/C percentile) marks capitulation after which
+short-horizon index returns are abnormally positive (documented as a
+contrarian indicator; index P/C excluded as hedging-dominated - fixed
+ex-ante). SIGNAL AVAILABILITY: day-T ratio is published after day T's
+close; entry is day T+1 RTH open - clean by construction. Percentile is
+trailing 252 sessions through T. FROZEN GRID (4 selectable cells): LONG
+next session when equity P/C percentile >= thr, thr {80th, 90th} x hold
+{T+1 open -> T+1 close, T+1 open -> T+3 close}; one trade at a time
+(busy-until dedupe on the hold). DIAGNOSTIC (not selectable): symmetric
+greed-short at <= 10th percentile, both holds - the literature says the
+fear side is the tradeable one; a symmetric short edge of equal size
+suggests a vol artifact instead. Instruments SPX/NDX/RTY pooled at micro
+best-case costs (GOLD has no overlap with the CBOE span - excluded).
+ATR20-normalized. IS first 75% of the joined span per instrument;
+selection max IS t, pooled n >= 120, t >= 2.0 floor, neighbor majority.
+ONE OOS shot at the program bar (n >= 40). Test count +4 selectable
+(+4 diagnostics counted).
+
+### Attempt 23 result: IS-FAIL, contrarian P/C gate inverted at daily horizon
+
+(results/r46_putcall.json) The fear gate is NEGATIVE in-sample: 90th-pct
+next-day long avgR -0.085, t -2.90 (both halves negative); 80th-pct
+next-day t -1.95; 3-day holds ~zero. Greed-short diagnostic also
+negative - both directions losing = trend-continuation drag plus costs,
+not a tradeable contrarian signal. High equity P/C days sit inside
+short-term downtrends that continue. Family BURNED at IS, OOS unopened.
+The data class (options sentiment) stays on the shelf; a revival needs a
+different transformation (e.g. P/C shocks vs level percentile) argued
+from mechanism first. Program score: 0 graduates / 23 tested attempts.
+
+### Attempt 24 registration (BEFORE running): FOMC-cycle even-week pattern
+
+MECHANISM: Cieslak-Morse-Vissing-Jorgensen (2019) document that the
+equity premium concentrates in EVEN weeks of the FOMC cycle (trading days
+0-4, 10-14, 20-24 counted from the scheduled announcement day), tied to
+Fed information flow and the "Fed put". Cycle time is fully ex-ante (the
+meeting schedule is published a year ahead); we use the two-source-
+verified 2013-2026 calendar already on record in run_r42l_fomc.py.
+ADJACENCY DISCLOSED: attempt 12 (watch #3) tested the announcement-DAY
+premium; this is the biweekly CYCLE pattern across all days - different
+anchor, same event stream; not to be double-counted. FROZEN GRID
+(6 selectable cells): LONG on cycle days in scope
+  scope {week0 (days 0-4), week2 (days 10-14), even (0-4,10-14,20-24)}
+x hold {RTH open -> close (intraday), prev close -> close (24h)}
+DIAGNOSTIC (not selectable): odd-week days (5-9, 15-19), both holds -
+mechanism predicts flat-to-negative there. Instruments SPX/NDX/RTY pooled
+at micro best-case costs, GOLD diagnostic. One trade per session,
+ATR20-normalized. Span = 2013-01-01 onward (calendar coverage).
+IS first 75% of span; selection max IS t, pooled n >= 120, t >= 2.0
+floor, neighbor majority. ONE OOS shot at the program bar (n >= 40).
+Test count +6 selectable (+4 diagnostics counted).
+
+### Attempt 24 result: IS-FAIL, FOMC-cycle even-week pattern absent post-2013
+
+(results/r46b_fomccycle.json) No selectable cell near the floor: best is
+even-weeks close-to-close avgR +0.032 t +1.75, and the odd-week
+diagnostic matches it (+0.031 t +1.59) - the even/odd distinction that
+IS the mechanism does not exist in 2013+ data. week0 intraday is
+actually negative (t -2.33). The CMVJ sample ended 2013; the pattern
+reads as decayed or sample-specific. Family BURNED at IS, OOS unopened.
+Program score: 0 graduates / 24 tested attempts + 6 watch items.
+
+NEXT QUEUE (registered intent, not yet frozen): (a) probe Alpha Vantage
+INDEX_DATA for VIX9D/VIX3M to enable a vol-term-structure regime family
+(new data class); (b) Treasury auction calendar acquisition
+(TreasuryDirect API via Kernel if proxy-blocked) for an auction-day
+duration-supply family; (c) if both dead-end, next-tier mechanisms from
+the taxonomy with written diagnoses first.
