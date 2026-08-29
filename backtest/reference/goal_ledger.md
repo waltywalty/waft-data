@@ -3034,3 +3034,164 @@ calendar/flow effects, all accruing free forward data, several
 re-scoreable within 1-2 years. Search resumes when a genuinely new
 mechanism or data class appears; the monthly routine carries the
 watch-item re-scoring.
+
+## Round 45: program resumed on user directive - expiration-calendar family (attempt 19)
+
+2026-08-29. User directive: "keep hypothesizing and testing and developing,
+don't stop until one succeeds." Program resumes past the honesty checkpoint
+with the standing caveat ON THE RECORD: each OOS shot carries ~2-5% false-pass
+probability under the null, the shot counter keeps running (18 tested + 1
+aborted so far), and any eventual pass must be read against that accumulated
+multiplicity. Bar unchanged. Queue restriction unchanged: only mechanism
+families genuinely distinct from the burned list.
+
+### Attempt 19 registration (BEFORE running): options-expiration calendar
+
+MECHANISM (ex-ante, flow-based, no price conditioning): monthly index
+options expire the third Friday. Dealer delta-hedging concentrates flows
+into expiration week and unwinds after; the literature documents an
+S&P expiration-week premium (Stivers & Sun) and post-expiration Monday
+weakness. The calendar is fully knowable in advance - same class as the
+month-end/FOMC families (our strongest residues) but a DIFFERENT flow event,
+untested here. Holiday expiries (e.g. Good Friday) handled ex-ante: the
+expiry session is the last trading session on or before the third Friday.
+
+FROZEN GRID (8 cells): window/direction pairs fixed BY MECHANISM
+  W1 LONG  opex-week Monday open -> expiry Friday close
+  W2 LONG  opex-week Wednesday close -> expiry Friday close
+  W3 SHORT post-opex Monday open -> same-day close
+  W4 SHORT post-opex Monday open -> Wednesday close
+x scope {all 12 monthly expirations, quarterly witching only (Mar/Jun/Sep/Dec)}.
+Instruments SPX/NDX/RTY pooled at micro best-case costs (0.35/1.0/0.35 pts
+per RT), GOLD as diagnostic only (its own opex differs). One trade per
+window per month, entry/exit at RTH open/close prints, ATR20-normalized.
+IS = first 75% of sessions per instrument. Selection: max IS t among cells
+with pooled IS n >= 120 AND t >= 2.0 (floor per amendment after attempt 7),
+neighbor-majority within the mechanism subspace (neighbors = cells differing
+in exactly one of window/scope; long and short windows are separate
+mechanism arms so majority is computed within the same-direction arm).
+ONE OOS shot at the program bar (same sign, t >= 2, PF >= 1.15, cost x1.5
+positive, pooled n >= 40); family burns after. Test count +8 cells.
+
+### Attempt 19 result: OOS FAIL - the expiration-week premium existed and decayed
+
+(results/r45_opex.json) IS was the strongest calendar signal the program
+has produced: LONG quarterly-witching expiration week (Mon open -> Fri
+close) IS n 170, WR 63.5%, PF 2.08, avgR +0.715, t +5.93, both halves
+positive; the monthly version also strong (t +3.92). Selection rule chose
+quarterly; one OOS shot: n 56, WR 48.2%, PF 1.11, avgR +0.034, t +0.14,
+halves [-1,+1]. Sign right, magnitude gone. READ: IS window 2005-2020
+overlaps the documented Stivers-Sun sample; OOS 2020+ shows the effect
+dead - classic post-publication decay, not a power failure (n 56 with
+t 0.14 is a measured zero, unlike the scarce-event watch items). Family
+BURNED, no watch item. Side finding for the record: post-opex Monday was
+IS significantly UP (shorting it lost, t -3.73 monthly), the opposite of
+the folklore weakness. Program score: 0 graduates / 19 tested attempts.
+
+### Attempt 20 registration (BEFORE running): pre-holiday calendar premium
+
+MECHANISM (ex-ante calendar): documented abnormal positive equity returns
+the trading day before exchange holidays (Ariel 1990; Lakonishok & Smidt
+1988) - short covering and reduced institutional selling ahead of market
+closures. The NYSE holiday schedule is published in advance; in-data,
+pre-holiday sessions are identified ex-ante as sessions whose next trading
+session skips at least one weekday. Distinct from every burned family
+(different flow event; the closest relative, month-end, is a different
+calendar anchor). FROZEN GRID (6 cells): entry/hold LONG
+  {H1 open -> close, H2 12:00 -> close, H3 prior close -> close (carries
+   the overnight gap into the pre-holiday day)}
+x scope {all pre-holiday sessions, big3 (the sessions before Independence
+Day, Thanksgiving, Christmas - the strongest in the literature)}.
+Instruments SPX/NDX/RTY pooled at micro best-case costs, GOLD diagnostic.
+ATR20-normalized, one trade per pre-holiday session. IS first 75%
+sessions; selection max IS t with pooled n >= 120 (big3 cells exempt to
+n >= 60 - scarce by construction, ~3/yr), t >= 2.0 floor, neighbor
+majority within grid. ONE OOS shot at the program bar (pooled n >= 40;
+big3 n >= 25 scarce-event floor as in attempt 18). Test count +6 cells.
+
+### Attempt 20 result: IS-FAIL, family dead without spending an OOS shot
+
+(results/r45b_holiday.json) DATA CAVEAT ON THE RECORD: the CFD feeds
+trade shortened sessions on most partial US holidays, so session-gap
+detection finds only full-closure holidays (~3/yr: New Year's, Good
+Friday, Christmas cluster) - 126 pooled IS pre-holiday trades, not the
+~9/yr of the literature. On that universe the pre-holiday premium is
+absent to inverted: best cell H3 prevc->close avgR +0.010 t +0.17; the
+intraday holds are negative (H2 12:00->close t -2.22, both halves
+negative). Gold diagnostic leans positive (+0.37R on 11 trades,
+meaningless n). No cell near the t >= 2 floor; OOS never opened. Family
+BURNED at IS. Program score: 0 graduates / 20 tested attempts.
+
+### Attempt 21 registration (BEFORE running): turn-of-month premium
+
+MECHANISM (ex-ante calendar): the turn-of-month equity premium (Ariel
+1987; Lakonishok & Smidt 1988; McConnell & Xu 2008) - concentrated
+positive returns from the last trading day of the month through the first
+three of the next, attributed to payroll-cycle fund inflows and month-end
+window dressing unwind. ADJACENCY DISCLOSED: the burned month-end family
+(attempt 14, watch #2) was a CONDITIONAL FADE of large prior-month moves
+ending AT month-end close; this is the UNCONDITIONAL LONG spanning the
+month boundary - different direction, different window, different flow
+mechanism (inflows vs rebalancing), but the same calendar anchor, so a
+pass here will be read with that adjacency in mind. FROZEN GRID (6 cells):
+LONG entry/exit at RTH prints
+  {T1: last-day open -> +3rd-day close (classic McConnell-Xu window),
+   T2: last-day open -> +1st-day close (tight),
+   T3: T-1 close -> +3rd-day close (early entry variant)}
+x scope {all months, quarter-end months only (Mar/Jun/Sep/Dec - where
+rebalancing flows stack on payroll flows)}.
+Instruments SPX/NDX/RTY pooled at micro best-case costs, GOLD diagnostic.
+ATR20-normalized, one trade per month boundary. IS first 75% sessions;
+selection max IS t, pooled n >= 120 (quarter-end cells n >= 60), t >= 2.0
+floor, neighbor majority. ONE OOS shot at the program bar (n >= 40;
+quarter-end n >= 25). Test count +6 cells.
+
+### Attempt 21 result: OOS FAIL at the bar - strongest residue of the program, watch item #6
+
+(results/r45c_tom.json) IS: every cell positive; quarter-end scope all
+>= t 2 (selected T3 T-1 close -> +3rd-day close, IS n 169, WR 59.2%,
+PF 1.57, avgR +0.333, t +2.48, neighbors 3/3, both halves positive; gold
+diagnostic +0.861R). ONE OOS shot: n 55, WR 58.2%, PF 1.09, avgR +0.208,
+t +1.07, halves [+,+], ALL THREE instruments positive avgR, cost x1.5
+still +0.203R. Sign agreement is complete across IS/OOS, halves, and
+instruments - but t 1.07 < 2 and PF 1.09 < 1.15: FAIL at the bar,
+profile is power-limited (sigma ~1.4R per trade at 4 events/yr/instrument).
+Family burns per protocol; parked as WATCH ITEM #6: quarter-end
+turn-of-month long, enter T-1 close (last session before final session of
+Mar/Jun/Sep/Dec), exit close of 3rd session of the new month, indices
+pooled. ~12 pooled events/yr accrue. ADJACENCY note stands: same calendar
+anchor as watch #2 (month-end fade) - the two windows barely overlap
+(fade exits at month-end close where TOM has just entered), but they must
+never be double-counted as independent confirmations.
+Program score: 0 graduates / 21 tested attempts + 6 watch items.
+
+### Attempt 22 registration (BEFORE running): expiry-day strike pinning
+
+MECHANISM: on option expiration days, dealer delta-hedging of expiring
+open interest pins the underlying toward high-OI strikes into the close
+(Ni-Pearson-Poteshman 2005 document expiration-day clustering at strikes).
+High-OI strikes are overwhelmingly round levels; without an OI feed we
+proxy them by round price levels - the proxy is fixed ex-ante. TRADE: on
+monthly opex Friday at 15:00 NY, if price sits within thr of the nearest
+round level L, trade TOWARD L, exit at RTH close (15:55). Conditioning
+uses only information available at entry time. FROZEN GRID (4 tradeable
+cells): thr {0.1 x ATR20, 0.2 x ATR20} x round grid {G, G/2} with
+G = SPX 25, NDX 100, RTY 20 pts (GOLD 25, diagnostic). DIAGNOSTIC (not
+selectable): same cells on non-opex Fridays - mechanism predicts the
+effect concentrates on opex days; a same-size non-opex effect refutes the
+pinning read. Indices pooled, micro best-case costs, ATR20-normalized.
+IS first 75% sessions; selection max IS t among opex cells, pooled
+n >= 120, t >= 2.0 floor, neighbor majority. ONE OOS shot at the program
+bar (n >= 40). Test count +4 selectable cells (+4 diagnostics counted).
+
+### Attempt 22 result: IS-FAIL, round-level pinning proxy refuted
+
+(results/r45d_pin.json) All four opex cells flat to negative (best
++0.010R t +0.28, halves disagree; widest cell t -0.73 with both halves
+negative). The non-opex Friday diagnostic shows the same near-zero
+profile, so there is no opex-specific pinning visible through a
+round-level strike proxy at 15:00 on these feeds. Family BURNED at IS,
+no OOS spent. Honest read: this does NOT refute strike pinning per se -
+it refutes the round-level proxy without real open-interest data; a
+future revival requires an actual OI-by-strike feed (new data class).
+Program score: 0 graduates / 22 tested attempts + 6 watch items.
