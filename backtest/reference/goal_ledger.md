@@ -2849,3 +2849,50 @@ them, next fire 2026-09-01), 2 watch items (NY-PM displacement,
 month-end rebalancing fade). The 3-edge goal remains open; it resumes
 when new data or a genuinely new user hypothesis arrives. No further
 continuation triggers armed - by checkpoint rule, not fatigue.
+
+## Round 43 pre-registration: TRUE ES cross-feed validation (data acquisition via IBKR)
+
+The IBKR connector serves genuine CME ES futures bars (Globex session
+hours verified in a probe: Sun 22:00 UTC reopen, daily 21:00 UTC
+maintenance halt, real volume, delayed 10min). Expired-contract reach
+is ~1 year, so stitched front-month coverage is ~Jun 2025 - Aug 2026
+(ESU5, ESZ5, ESH6, ESM6, ESU6, hourly, outside RTH). This is too
+short for new edge searches; it is EXACTLY suited to the r42f open
+question. FROZEN DESIGN (validation study, no promotion question, no
+OOS mechanics): compute the daily 01:00-04:00 ET window return
+(hourly bars: open of first window bar -> close of last) for (a) true
+stitched ES and (b) our CFD SPX 5m feed, over the common period.
+Metrics: mean window return each feed, their daily-return correlation,
+and the mean daily DIFFERENCE. Verdicts, registered in advance:
+HIGH correlation (>0.9) + similar means => the r42f negative euro-open
+drift is REAL market behavior (post-publication inversion), CFD feeds
+exonerated; LOW correlation or a systematic offset => CFD overnight
+artifact confirmed, and every overnight-window result from the CFD
+feeds gets flagged in the ledger. Either outcome improves the data-
+provenance file. Contracts and stitching documented in the script.
+
+## Round 43 results: TRUE ES obtained via IBKR - CFD feeds exonerated
+
+(results/r43_esxfeed.json) Data acquired WITHOUT the user: the IBKR
+connector serves genuine CME ES futures history (delayed). Stitched
+front-month coverage Sep 2025 - Aug 2026 from ESZ5/ESH6/ESM6 (2h bars)
++ ESU6 (1h), saved to data/ES_*_ibkr.json (data/ is uncommitted per
+repo policy; re-fetch via IBKR get_price_history, contract ids in the
+r43 script header comments). Expired-contract reach is ~1 year, so
+this source cannot extend deep history - but it accrues FORWARD: true
+CME data for ES (and MES/MNQ/M2K/MGC equivalents) is now fetchable on
+demand for all future validation work.
+CROSS-FEED VERDICT (70 common sessions, limited by the CFD SPX feed
+ending 2025-12): euro-open window (06-08 UTC) mean TRUE ES -0.95bps
+vs CFD -0.87bps; difference -0.09bps, t -0.10 (indistinguishable);
+daily correlation 0.859 (just under the registered 0.9, attributable
+to the 2h-vs-5m bar construction mismatch; the means test is the
+decisive prong and it is exactly null). VERDICT: the CFD overnight
+feeds carry NO clock-anchored artifact in this window - attempt 6's
+inverted/absent overnight drift was REAL market behavior (post-
+publication decay/inversion), and the r42f data-provenance flag is
+RESOLVED in favor of the feeds. This retroactively strengthens every
+r42 overnight-window conclusion.
+Calendar front: Equibles' economic calendar has no historical
+releases and no FOMC dates (verified empirically); the FOMC family
+stays shelved pending a verified calendar (user-suppliable).
