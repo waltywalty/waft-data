@@ -2896,3 +2896,39 @@ r42 overnight-window conclusion.
 Calendar front: Equibles' economic calendar has no historical
 releases and no FOMC dates (verified empirically); the FOMC family
 stays shelved pending a verified calendar (user-suppliable).
+
+### Attempt 12 REVIVAL (r43b): the FOMC calendar is now two-source verified
+
+The registered revival condition ("a verified ex-ante calendar") is
+met without the user: WebSearch snippets from the Fed's own press
+releases, minutes URLs, FRASER, MNI, ABA and others yielded the full
+2013-2026 scheduled meeting list year by year, and it matches the
+assistant-knowledge calendar in run_r42l_fomc.py EXACTLY - including
+the one disputed date (Sep 2013: fed minutes URL fomcminutes20130918
+confirms the Sep 17-18 meeting, statement Sep 18; an earlier snippet
+saying 18-19 was a summarizer error) and the 2020 COVID exception
+(scheduled Mar 17-18 superseded by the Mar 15 emergency action -
+excluded as registered). Two independent sources agreeing (memory +
+web) is the verification; the 14:00 vol signature is downgraded to a
+DIAGNOSTIC (60% of true statement days spike vs 14% base - many
+meetings are simply fully priced), and the prior abort is superseded
+by this stronger provenance, not overridden by taste. The frozen
+3-cell grid, IS t>=2 floor, and one-shot OOS bar are UNCHANGED from
+the original attempt-12 registration.
+
+### Attempt 12 result (revived, r43b): IS-FAIL at the floor - watch item registered
+
+(results/r42l_fomc.json) 190 pooled FOMC events, 2013-2026, verified
+calendar. The Lucca-Moench 24h pre-drift is positive but underpowered
+(+0.051R, t +1.27, PF 2.29, halves [+,+]); the full announcement day
+(prev close -> close) is the strongest cell: +0.114R, t +1.82, PF
+1.72, halves [+,+] - UNDER the t>=2 floor; the intraday-only harvest
+(09:30->13:55) is significantly NEGATIVE (-0.101R, t -3.29): whatever
+premium exists accrues overnight/around the event, not in the RTH
+morning. Family closed at IS, holdout unopened - at 8 events/yr the
+test is structurally underpowered and re-running grids will not
+change that. WATCH ITEM registered (third): FOMC announcement-day
+long (prev 15:55 close -> statement-day 15:55 close, indices), 8 new
+events/yr accrue passively; the monthly routine may re-score; no new
+searching. Program watch items now: NY-PM displacement, month-end
+rebalancing fade, FOMC announcement-day premium.
