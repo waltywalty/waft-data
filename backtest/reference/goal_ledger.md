@@ -3463,3 +3463,80 @@ euro-open window family, needs a diagnosis distinguishing the full
 overnight hold; (b) VIX-shock (1-day change z) reversal - adjacent to
 burned VIX-level dip-buy; (c) CBOE implied-correlation (COR*) extremes
 if history depth suffices.
+
+## Round 49: next-tier mechanisms with adjacency diagnoses (attempts 29-30)
+
+### Attempt 29 ADJACENCY DIAGNOSIS + registration (BEFORE running):
+### full overnight close-to-open premium
+
+DIAGNOSIS vs burned family r42f (euro-open window drift): r42f tested a
+fixed 2-3h EURO-OPEN window inside the overnight session and found it
+significantly NEGATIVE (IS t -17; r43 confirmed on true CME ES that the
+inversion is real market behavior). The overnight-premium literature
+(Cooper-Cliff-Gulen and successors) makes a DIFFERENT claim: the entire
+16:00->09:30 hold is positive - concentrated in the post-close hours and
+the pre-open ramp, segments r42f never touched. A negative euro-open
+subset and a positive aggregate are mutually consistent; testing the
+aggregate is therefore a distinct claim, not a repair of the burned
+window. SELF-REFUTATION DIAGNOSTIC: the same-session DAY hold
+(09:30->close) - the literature's claim is specifically that night
+carries the premium and day does not; day ~ night refutes the family as
+generic drift (attempt-25 lesson).
+FROZEN GRID (2 selectable cells): LONG prev RTH close (15:55 print) ->
+next RTH open (09:30 print), scope {all sessions, adjacent-only
+(sessions whose previous session is exactly 1 calendar day back -
+excludes weekend/holiday holds)}. DIAGNOSTIC (not selectable): DAY long
+09:30->close, same scopes. Instruments SPX/NDX/RTY pooled at micro
+best-case costs, GOLD diagnostic. ATR20-normalized. IS first 75%
+sessions; selection max IS t of the 2 cells, t >= 2.0 floor, the other
+cell must be positive (neighbor rule); PLUS the day-diagnostic
+self-refutation: family dies at IS if day avgR >= night avgR. ONE OOS
+shot at the program bar (n >= 40). Test count +2 selectable (+2 diag).
+
+### Attempt 30 ADJACENCY DIAGNOSIS + registration (BEFORE running):
+### VIX-shock reversal
+
+DIAGNOSIS vs burned attempt 9 (VIX-level dip-buy): that family gated on
+the VIX LEVEL (high absolute fear regime) and its sign-check refuted it.
+This family conditions on the 1-day VIX SHOCK - z of the daily log
+change vs its trailing 63d std - a different object: a shock fires at
+any level (a 15->20 jump triggers; a flat 30 does not). MECHANISM: vol
+shocks overshoot (the vol risk premium spikes with demand for immediate
+hedges) and normalize within days; as vol mean-reverts, equity retraces
+part of the shock day's fall. Prediction is one-sided: abnormal POSITIVE
+equity returns after UPWARD vol shocks only. SELF-REFUTATION DIAGNOSTIC:
+vol-CRUSH days (z <= -1.5) long, both holds - the mechanism predicts
+nothing there; crush ~ shock refutes the family as drift.
+FROZEN GRID (4 selectable cells): LONG next session after a close with
+z >= thr, thr {1.5, 2.0} x hold {entry T+1 RTH open -> T+1 close,
+-> T+3 close}, one position at a time (busy-until). z uses log-changes
+of the CBOE VIX close series (data/VIX_history_cboe.csv), known at T
+close, entry T+1 open - no lookahead. Instruments SPX/NDX/RTY pooled at
+micro best-case costs, GOLD diagnostic. ATR20-normalized. IS first 75%
+sessions; selection max IS t, pooled n >= 120, t >= 2.0 floor, neighbor
+majority. ONE OOS shot at the program bar (n >= 40).
+Test count +4 selectable (+2 diag).
+
+### Attempt 29 result: IS-FAIL - the overnight premium is real but cost-dominated
+
+(results/r49_overnight.json) Night-minus-day differential is +0.018R/day
+in the documented direction (night > day; day cells t -2.9/-2.5 net),
+but a daily RT cost of ~0.02R leaves the night hold at net -0.002R
+(t -0.38). Same death as the late-day family (r42c): the anomaly exists
+gross and is smaller than one round trip per day. No cell near the
+floor; family BURNED at IS, OOS unopened.
+
+### Attempt 30 result: OOS FAIL at the bar - watch item #7
+
+(results/r49b_vixshock.json) IS: all four shock cells positive (selected
+z>=1.5, 3-day hold: n 651, WR 58.8%, avgR +0.169, t +2.51, neighbors
+2/2, halves [+,+]); crush diagnostic negative next-day (t -1.69) - the
+one-sidedness the mechanism predicts. ONE OOS shot: n 205, WR 53.2%,
+PF 1.28 (clears 1.15), avgR +0.141, t +1.26, halves [+,+], cost x1.5
++0.136. Only the t >= 2 leg fails; RTY is flat (-0.011) while SPX/NDX
+carry it. Power-limited profile -> family burns per protocol, parked as
+WATCH ITEM #7: VIX-shock reversal - after a VIX close with 1-day log
+change z >= 1.5 (63d std), long index at next RTH open, exit close of
+3rd session, one position at a time, indices pooled. ~50 pooled
+events/yr accrue. Program score: 0 graduates / 30 tested attempts +
+7 watch items.
