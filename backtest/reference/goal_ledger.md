@@ -3282,3 +3282,109 @@ INDEX_DATA for VIX9D/VIX3M to enable a vol-term-structure regime family
 (TreasuryDirect API via Kernel if proxy-blocked) for an auction-day
 duration-supply family; (c) if both dead-end, next-tier mechanisms from
 the taxonomy with written diagnoses first.
+
+## Round 47: vol term-structure data class acquired (CBOE index histories)
+
+2026-08-29. Alpha Vantage INDEX_DATA is not entitled on this key; the CBOE
+public index-history CSVs downloaded cleanly via the Kernel browser
+(cdn.cboe.com blocked by the local proxy, as before):
+  data/VIX_history_cboe.csv    (VIX OHLC daily, 1990-01-02 .. 2026-08-28, 9262 rows)
+  data/VIX9D_history_cboe.csv  (VIX9D, 2011-01-04 .. 2026-08-28, 3937 rows)
+  data/VIX3M_history_cboe.csv  (VIX3M, 2009-09-18 .. 2026-08-28, 4263 rows)
+Provenance note: these are the exchange's own published index values -
+first-party, no cross-feed check needed; spot values eyeballed against
+known history (VIX ~14.4 on 2026-08-28; 2011 VIX9D ~16; plausible).
+Vol TERM STRUCTURE is a genuinely new conditioning class for this
+program: nothing prior conditioned on the implied-vol curve's slope.
+(The burned VIX family, attempt 9, used the VIX LEVEL as a dip-buy
+trigger - different object; adjacency disclosed.)
+
+### Attempt 25 registration (BEFORE running): vol term-structure regime gate
+
+MECHANISM: the VIX term structure's slope prices near-term risk vs
+baseline. BACKWARDATION (VIX9D > VIX, short-end inverted) marks acute
+stress; the literature on the vol risk premium implies equity forward
+returns after inversion are abnormally positive once the acute repricing
+settles, while CONTANGO (VIX < VIX3M) is the calm-carry norm with
+ordinary returns. The tradeable claim frozen here: LONG equities while
+the short end is inverted (VIX9D/VIX >= 1), entered next session open
+after the signal close, held while inverted, exit at close of the first
+session after the ratio re-crosses below 1 (signal always evaluated at
+prior close - no lookahead; one position at a time). Grid varies only
+the inversion threshold and the structural leg:
+FROZEN GRID (4 selectable cells): leg {VIX9D/VIX, VIX/VIX3M} x threshold
+{>= 1.0, >= 1.05}, all LONG-in-inversion, entry/exit as above at RTH
+prints. DIAGNOSTIC (not selectable): same cells with steep-CONTANGO long
+(ratio <= 0.9) - the mechanism says calm-carry periods carry no abnormal
+premium; a matching contango edge means we are just long the index.
+Instruments SPX/NDX/RTY pooled at micro best-case costs, GOLD diagnostic.
+ATR20-normalized per-episode returns booked daily (close-to-close while
+held) so t reflects daily observations. Span: 2011+ (VIX9D coverage).
+IS first 75% of span; selection max IS t, pooled n >= 120 daily obs,
+t >= 2.0 floor, neighbor majority. ONE OOS shot at the program bar
+(n >= 40). Test count +4 selectable (+2 diagnostics counted).
+
+### Attempt 25 result: OOS FAIL - "inversion premium" was mostly just being long
+
+(results/r47_vixts.json) IS: long-while-inverted (VIX9D/VIX >= 1.0)
+n 2623 daily obs, avgR +0.067/day, t +3.22, halves [+,+], neighbors 2/2 -
+passed the floor. BUT the pre-registered contango diagnostics also came
+back positive and significant (9d leg t +2.14, 30d/3m leg t +3.25,
+~+0.03R/day): the market drifts up in all vol regimes, and the
+inversion cells only doubled the baseline drift IS. ONE OOS shot
+(auto-run per protocol): n 866, avgR +0.018, t +0.55, PF 1.11, RTY
+negative (-0.069). No distinguishable regime premium out of sample.
+Family BURNED. Data asset (VIX/VIX9D/VIX3M 1990/2011/2009-2026) stays.
+Program score: 0 graduates / 25 tested attempts + 6 watch items.
+
+## Round 48: Treasury auction calendar acquired (TreasuryDirect API)
+
+2026-08-29. ACQUISITION ON RECORD: api.fiscaldata.treasury.gov rejects
+datacenter IPs (WAF "Attack ID" block) and the local proxy blocks both
+hosts; www.treasurydirect.gov/TA_WS/securities/search served the full
+histories through the Kernel browser:
+  data/treasury_note_auctions.json  (1965 Note auctions 1979-2026:
+    auction_date, term, bid-to-cover, high yield, reopening flag)
+  data/treasury_bond_auctions.json  (392 Bond auctions 1979-2026)
+10-Year: 169 originals + ~185 reopenings (9-Year-10/11-Month terms);
+30-Year: 121 originals + ~159 reopenings. Duration-supply auctions
+(10Y/30Y) run ~monthly each, results at 13:00 ET. Auction DATES are
+published weeks ahead - fully ex-ante.
+
+### Attempt 26 registration (BEFORE running): Treasury duration-auction day
+
+MECHANISM: 10Y/30Y auctions inject duration supply; primary dealers
+pre-position (concession = risk-off into the auction) and unwind after a
+clean takedown (relief = risk-on after 13:00 ET). The equity-index
+reflection of this flow: weakness into the 13:00 result on auction days,
+strength after. Both windows are ex-ante (the calendar and the 13:00
+result time are known in advance; we do NOT condition on the auction's
+outcome - no tail/bid-to-cover conditioning, which would be a different,
+outcome-dependent family). FROZEN GRID (6 selectable cells): on 10Y and
+30Y auction days (originals + reopenings pooled - the flow is the
+supply, not the CUSIP novelty):
+  W1 SHORT 09:30 open -> 13:00 (concession window)
+  W2 LONG  13:00 -> RTH close (relief window)
+  W3 LONG  13:00 -> close of NEXT session (relief continuation)
+x term {10Y days, 30Y days}. DIAGNOSTIC (not selectable): same three
+windows on 2Y-auction days - short-duration supply carries far less
+duration risk; the mechanism predicts materially weaker effects there.
+Instruments SPX/NDX/RTY pooled at micro best-case costs, GOLD diagnostic
+(gold competes with bonds for the duration bid - direction ambiguous, so
+diagnostic only). ATR20-normalized. Span 2005+ (price data). IS first
+75% of sessions; selection max IS t, pooled n >= 120, t >= 2.0 floor,
+neighbor majority within same-direction arm. ONE OOS shot at the program
+bar (n >= 40). Test count +6 selectable (+3 diagnostics counted).
+
+### Attempt 26 result: IS-FAIL, duration-supply mechanism refuted
+
+(results/r48_auction.json) Both mechanism arms significantly WRONG-WAY
+in-sample: concession-short 09:30->13:00 on 10Y days avgR -0.065 t -2.63
+(30Y t -2.48), relief-long 13:00->close t -2.41. Auction days actually
+rallied into 13:00 and faded after. The 2Y diagnostic shows the same PM
+fade (t -2.59), so the pattern is not duration-specific - the
+duration-supply read is refuted, and the mirror image is not tradeable
+either without a fresh mechanism (mirror spec-mining is what the
+protocol forbids). Family BURNED at IS, OOS unopened. Auction dataset
+(incl. bid-to-cover and yields, unused here) stays on the shelf.
+Program score: 0 graduates / 26 tested attempts + 6 watch items.
