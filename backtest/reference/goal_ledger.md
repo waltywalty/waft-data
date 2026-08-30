@@ -3772,3 +3772,39 @@ GRID: 6 selectable cells, everything else frozen verbatim from the original spec
 DIAGNOSTICS: 3 non-selectable self-refutation cells (attempt 25/28/29 pattern): the identical convergence rule, entry, cost, and busy-until dedupe applied to SUB-THRESHOLD days — 0 < |s_yesterday| < 0.5*sigma_prior — at each H in {1, 3, 5}. The flow-overshoot mechanism predicts nothing after ordinary small divergences; only outsized dislocations carry the idiosyncratic-flow overshoot that dealers/RV desks rebalance. Pre-stated refutation rule (the attempt-29 'day >= night' formulation): at the IS-selected (k, H) — or at the best-t cell if nothing passes floors — if the sub-threshold diagnostic at the same H shows avg GROSS bps >= the selected cell's avg gross bps, the family self-refutes at IS as generic spread anti-persistence / drift (an AR artifact present at all divergence scales, not an overshoot effect), regardless of the selected cell's t. Diagnostic cells can never be selected and are counted in the test ledger.
 
 FLOORS: IS pooled n >= 120 per selectable cell (normal family, not scarce-event: ~250 pair sessions/yr, k=1.0 gave 254 IS events at H=1; busy-until dedupe shrinks n at H=3/5 and any cell falling below 120 is non-selectable). IS t >= 2.0 on NET, sigma_prior*sqrt(H)-normalized returns. Neighbor-majority: among cells differing in exactly one knob (k or H) with n >= 30, at least half must have positive net avg_bps; a spiky winner whose neighbors disagree is discarded as noise. Plus the self-refutation gate above. IS = first 75% of pair sessions, identical cut construction to the original. If IS passes, ONE sealed OOS shot (last 25%) at the program bar: n >= 40, same sign, t >= 2, PF >= 1.15, cost x1.5 sensitivity positive; the OOS block burns permanently pass or fail.
+
+### Attempt 34 result (FOMC horizon-match repair): IS PASS on all gates, OOS FAIL at the bar - WATCH ITEM #10
+
+(results/r53_fomc_repair_is.json, results/r53_fomc_repair_oos.json)
+IS: C1_ON (prev 15:55 close -> statement-day 09:30 open, LONG) n 190,
+WR 62.1%, PF 3.22, avgR +0.124, t +4.34, halves [+,+]; every registered
+gate passed - neighbors positive, placebo ON +0.033 vs FOMC ON +0.124
+with the differential positive in both halves (generic overnight drift
+REJECTED as the explanation), morning-drag anchor still negative
+(decomposition intact). ONE OOS shot (family burns now): n 64, WR 57.8%,
+PF 1.40, avgR +0.056, t +1.20, halves [+,+], ALL THREE instruments
+positive (RTY PF 4.98), cost x1.5 +0.052. Only the t >= 2 leg fails;
+the effect halved from IS (+0.124 -> +0.056), consistent with recorded
+Lucca-Moench decay but clearly not gone. WATCH ITEM #10: FOMC-night long
+- prev-session 15:55 close -> statement-day 09:30 open, SPX/NDX/RTY
+pooled, ~8 events/yr each. SUPERSEDES watch #3 (the full-day version of
+the same event stream): the monthly re-score scores #10 as the primary
+FOMC item and #3 is retired as subsumed - the two are one stream and
+were never independent. FOMC family's holdout is now SPENT; no further
+repairs, forward accrual only.
+
+### Attempt 35 result (gold/silver RV cost-amortization repair): IS-FAIL
+
+(results/r53_gsrv_repair_is.json) The amortization arithmetic did not
+materialize: H=3 gross ~ +3.8bps (flat vs H=1), H=5 noisy and
+sub-threshold diagnostics comparable - convergence does not accumulate
+across sessions. No cell near the floor. Family dies at IS with its one
+registered repair exhausted; holdout stays sealed and unreachable
+(protocol: one repair per family).
+
+ROUND 53 CLOSED. Proposal-2 sweep totals: 33 families audited, 8
+diagnosed, 6 refused from mechanism, 2 specs run, 1 IS pass, 0 OOS
+passes, 1 new lead watch item. Program score: 0 graduates / 35 tested
+attempts; active watch items #1,#2,#4-#10 (nine; #3 retired-subsumed),
+composite #9 accruing forward, 4 paper streams. The 2026-09-01 monthly
+re-score picks all of this up.
