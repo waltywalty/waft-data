@@ -3540,3 +3540,61 @@ change z >= 1.5 (63d std), long index at next RTH open, exit close of
 3rd session, one position at a time, indices pooled. ~50 pooled
 events/yr accrue. Program score: 0 graduates / 30 tested attempts +
 7 watch items.
+
+## Round 50: implied-correlation data class acquired (attempt 31)
+
+2026-08-30. data/COR1M_history_cboe.csv and data/COR3M_history_cboe.csv
+(CBOE 1M/3M implied correlation, daily OHLC, 2006-01-03 .. 2026-08-28,
+~5190 rows each) via one Kernel browser session, public-archive recipe.
+
+### Attempt 31 ADJACENCY DIAGNOSIS + registration (BEFORE running):
+### implied-correlation spike reversal
+
+DIAGNOSIS vs the burned vol families: COR1M is the market-implied
+average pairwise correlation among SPX constituents, backed out from
+index vol vs constituent vols. It is a CROSS-SECTIONAL object, not a vol
+measure: correlation can spike while vol is moderate (macro repricing
+moves everything together) and stay low in single-name-driven vol
+regimes. Attempt 9 gated on the VIX level, attempt 25 on the vol curve
+slope, attempt 30 on the vol shock - none conditioned on cross-sectional
+structure. OVERLAP DISCLOSED: correlation spikes co-occur with vol
+shocks often enough that this family's events overlap watch #7's; they
+must never be counted as independent confirmations of each other.
+MECHANISM: correlation spikes mark indiscriminate index-level hedging
+(dispersion desks step away, index puts get bought regardless of name);
+the overshoot normalizes within days as dispersion re-engages, and the
+index retraces part of the correlated selloff. Claim: LONG after
+high-correlation closes. SELF-REFUTATION DIAGNOSTIC: low-correlation
+cells (<= 20th pct) long - mechanism predicts nothing; matching returns
+= drift, family dies at IS.
+FROZEN GRID (4 selectable cells): LONG next session when COR1M trailing-
+252d percentile >= thr, thr {80th, 90th} x hold {T+1 open -> T+1 close,
+-> T+3 close}, one position at a time (busy-until). Signal known at T
+close; entry T+1 RTH open. Instruments SPX/NDX/RTY pooled at micro
+best-case costs, GOLD diagnostic. ATR20-normalized. IS first 75% of
+sessions; selection max IS t, pooled n >= 120, t >= 2.0 floor, neighbor
+majority; drift self-refutation check before OOS. ONE OOS shot at the
+program bar (n >= 40). Test count +4 selectable (+2 diagnostics).
+
+### Attempt 31 result: OOS FAIL at the bar - watch item #8
+
+(results/r50_corr.json) IS: selected high 80th-pct, 3-day hold - n 870,
+WR 56.9%, avgR +0.136, t +2.72, neighbors 2/2, halves [+,+]; all four
+spike cells positive; low-corr next-day diagnostic negative (t -2.81) -
+mechanism-consistent asymmetry. ONE OOS shot: n 270, WR 57.0%, PF 1.32,
+avgR +0.145, t +1.12, halves [+,+], cost x1.5 +0.141. Only the t leg
+fails; RTY flat (-0.013) while SPX/NDX carry - the same shape as watch
+items #6/#7. Family burns per protocol; WATCH ITEM #8: implied-
+correlation spike reversal - after COR1M close >= 80th trailing-252d
+percentile, long index next RTH open, exit close of 3rd session, one
+position at a time, indices pooled. OVERLAP with watch #7 is on record:
+the two must never be cited as independent confirmations; a combined
+"stress-reversal composite" spec MAY be pre-registered at a future
+monthly re-score, not retroactively.
+Program score: 0 graduates / 31 tested attempts + 8 watch items.
+An emerging pattern worth naming: three residues (#6 quarter-end TOM,
+#7 VIX-shock, #8 corr-spike) all show full sign agreement, all are
+flow/stress-rebound longs, all are carried by SPX/NDX with RTY flat,
+and all fail only on power. The program's output is converging on a
+single economic claim: large-cap index rebounds after forced-flow
+events, too small per event to clear t >= 2 on any single family yet.
