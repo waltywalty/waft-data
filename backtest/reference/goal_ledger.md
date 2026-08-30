@@ -3859,3 +3859,80 @@ forward data; expectations lowered on the record. Side benefit: the
 extended gold m15 history (2012+) is now a standing data asset for any
 future gold family. The GVZ family stays dead (its IS refutation-shaped
 fail is not reopened by more data absent a new mechanism argument).
+
+## Round 55: London PM fix family on gold (attempt 36) - user directive: more different tests
+
+### Attempt 36 registration (BEFORE running): gold London PM fix window
+
+MECHANISM (ex-ante clock anchor, genuinely new to this program): the
+London gold PM fix (15:00 London = 10:00 ET under aligned DST) is the
+benchmark print for institutional gold business; documented order-flow
+concentration produces selling pressure INTO the fix and a rebound
+AFTER it (Caminschi-Heaney 2014 and successors; the 2015 LBMA reform
+changed intensity but the flow anchor persists). Nothing prior in this
+repo conditioned on the fix clock. Enabled by the Round 54 acquisition:
+gold m15 2012-2022 + 5m 2020+ spliced at 2020-08-21 (marks are bar
+CLOSES at/after the window edges - granularity disclosed).
+FROZEN GRID (4 selectable cells, directions fixed by mechanism):
+  S1 SHORT 09:00 -> 10:00 ET (hour into the fix)
+  S2 SHORT 09:30 -> 10:00 ET (half-hour into the fix)
+  L1 LONG  10:00 -> 10:30 ET (post-fix rebound, tight)
+  L2 LONG  10:00 -> 11:00 ET (post-fix rebound, wide)
+DIAGNOSTIC (non-selectable, drift self-refutation): the same four
+window shapes shifted -2h (07:00->08:00 / 07:30->08:00 shorts,
+08:00->08:30 / 08:00->09:00 longs) - no fix there; matching profiles
+refute the fix read. DST-misalignment weeks (UK/US offset ~2wk/yr) are
+accepted as noise, disclosed. GOLD only, cost 0.35/RT, ATR20(daily
+range)-normalized, one trade per day per cell. Span 2012-05 onward.
+IS first 75% of sessions; selection max IS t, pooled n >= 120, t >= 2.0
+floor, neighbor rule = the same-direction sibling must be IS-positive.
+ONE OOS shot at the program bar (n >= 40). Test count +4 selectable
+(+4 diagnostics).
+
+### Attempt 36 result: IS-FAIL, no fix-window flow survives costs post-2012
+
+(results/r55_fix.json) All 8 cells (selectable AND shifted diagnostics)
+cluster at avgR -0.024..-0.033 with t -4.4..-9.9 - the flat-cost
+signature: gross drift ~0 in every 30-60min window, both directions,
+fix-anchored or not. The documented pre-fix selling is absent from
+2012+ data (consistent with the 2015 LBMA reform reading, or with the
+effect predating this sample). Family BURNED at IS, OOS unopened. Useful
+calibration on record: on gold at 0.35/RT, any sub-hour window family
+needs |gross| > ~0.025R/day - a bar almost nothing structural clears.
+Program score: 0 graduates / 36 tested attempts.
+
+### Attempt 37 registration (BEFORE running): gold margin-cascade continuation
+
+MECHANISM (new to this program; direction OPPOSITE the stress-reversal
+class): outsized daily moves in metals trigger exchange margin hikes and
+forced de-leveraging; liquidation pressure CONTINUES the move over the
+next session(s) before exhausting (the documented metals margin-spiral
+dynamic, e.g. silver 2011). Distinct from GVZ-shock (implied-vol
+trigger, rebound claim - refuted) and from gold clock families: trigger
+is the REALIZED daily move, claim is CONTINUATION. FROZEN GRID
+(4 selectable cells): after a session close-to-close |ret| >= thr x
+sigma63 (trailing 63d daily-ret std, shifted), trade IN THE MOVE'S
+DIRECTION from next session's first bar close after 09:30 ET, thr
+{2.0, 3.0} x hold {exit next session close (16:00 ET mark), exit 2nd
+session close}; one position at a time. DIAGNOSTIC: sub-threshold days
+(0.5 <= |ret|/sigma < 1.0), same rule, both holds - ordinary moves carry
+no margin pressure; matching continuation = generic momentum artifact,
+family self-refutes. GOLD only, extended 2012+ series, cost 0.35/RT,
+ATR20-normalized. IS first 75% of sessions; max IS t, n >= 40 (scarce:
+~12-15 2-sigma events/yr), t >= 2.0 floor, same-thr sibling positive.
+ONE OOS shot at the program bar (n >= 25 scarce floor). Test count
++4 selectable (+4 diagnostics).
+
+### Attempt 37 result: IS-FAIL on the t floor; lean is mechanism-shaped
+
+(results/r55b_margin.json) All four selectable cells positive (2.0/2d:
+n 133, WR 57.1%, PF 1.51, avgR +0.143, t +1.51; 3.0/1d: n 33, WR 60.6%,
+PF 2.03, avgR +0.150, t +1.21), sub-threshold diagnostics NEGATIVE
+(-0.02R) - the continuation asymmetry the margin mechanism predicts.
+But no cell reaches t >= 2 at these ns; family dies at IS per its own
+registration. HOLDOUT REMAINS SEALED: one taxonomy repair remains
+available to this family in the future (more data or a sharpened
+trigger, e.g. actual CME margin-change dates - a new data class - would
+be the honest revival route). Not parked as a watch item (registration
+did not provide for it). Program score: 0 graduates / 37 tested
+attempts + 9 active watch items.
