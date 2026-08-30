@@ -3388,3 +3388,78 @@ either without a fresh mechanism (mirror spec-mining is what the
 protocol forbids). Family BURNED at IS, OOS unopened. Auction dataset
 (incl. bid-to-cover and yields, unused here) stays on the shelf.
 Program score: 0 graduates / 26 tested attempts + 6 watch items.
+
+### Attempt 27 registration (BEFORE running): auction-outcome direction
+
+MECHANISM: the previous family (attempt 26) tested UNCONDITIONAL auction-
+day windows and died; this one conditions on the auction's RESULT, which
+is a different claim: a strong takedown (bid-to-cover well above its own
+trailing norm) signals ample duration demand -> risk-on into the close;
+a weak one signals demand strain -> risk-off. Direction = sign of the
+bid-to-cover surprise. SIGNAL AVAILABILITY (mandatory check): results
+cross the wire ~13:01-13:03 ET; entry is the first 5m bar opening at or
+after 13:05 ET, so the signal strictly precedes entry. Surprise
+z = (btc - mean of prior 8 same-bucket auctions) / their std, buckets
+{10Y incl. reopenings, 30Y incl. reopenings} - only PRIOR auctions, no
+lookahead. FROZEN GRID (4 selectable cells): |z| threshold {0 (any),
+0.5} x hold {13:05 -> RTH close, 13:05 -> next session close}, 10Y+30Y
+events pooled, direction always sign(z). DIAGNOSTIC (not selectable):
+same cells on 2Y auctions (mechanism predicts weaker). Instruments
+SPX/NDX/RTY pooled at micro best-case costs, GOLD diagnostic (duration
+relief cuts both ways for gold). ATR20-normalized, one trade per
+instrument-day (same-day 10Y+30Y collisions: use the later auction only,
+decided ex-ante). IS first 75% sessions; selection max IS t, pooled
+n >= 120, t >= 2.0 floor, neighbor majority. ONE OOS shot at the
+program bar (n >= 40). Test count +4 selectable (+4 diagnostics).
+
+### Attempt 27 result: IS-FAIL, outcome-following direction negative
+
+(results/r48b_btc.json) Trading in the direction of the bid-to-cover
+surprise LOST in-sample: widest cell (any |z|, hold to close) avgR
+-0.039, t -2.52, both halves negative; tighter cells also negative. The
+2Y diagnostic is flat-to-mildly-positive, refuting any duration-specific
+outcome signal. The mirror (fading the result) is untouchable without a
+fresh mechanism per protocol. Family BURNED at IS, OOS unopened.
+Program score: 0 graduates / 27 tested attempts + 6 watch items.
+
+## Round 48c: SKEW tail-risk data class acquired
+
+2026-08-30. data/SKEW_history_cboe.csv (CBOE SKEW daily closes,
+1990-01-02 .. 2026-08-28, 9217 rows) via the Kernel browser, same
+public-archive recipe as the VIX files. SKEW prices 30-day SPX tail risk
+from deep-OTM put skew - a conditioning object no prior attempt used
+(distinct from VIX level [attempt 9] and term-structure slope [25]).
+
+### Attempt 28 registration (BEFORE running): tail-risk premium harvest
+
+MECHANISM: high SKEW = crash insurance is expensive = a tail-risk
+premium is being PAID; absent the crash, the premium accrues to sellers,
+i.e. expected short-horizon equity returns are positive-shifted while
+insurance is rich. Frozen claim: LONG equities after high-SKEW closes.
+SIGNAL AVAILABILITY: SKEW close known end of day T; entry T+1 RTH open.
+Percentile = trailing 252 SKEW closes through T. FROZEN GRID
+(4 selectable cells): LONG when percentile >= thr, thr {80th, 90th} x
+hold {T+1 open -> T+1 close, T+1 open -> T+5 close}; one position at a
+time (busy-until dedupe). DIAGNOSTIC (not selectable): low-SKEW long
+(<= 20th pct), both holds - the premium story predicts materially weaker
+returns there; equal returns = generic drift, family self-refutes (the
+attempt-25 lesson institutionalized). Instruments SPX/NDX/RTY pooled at
+micro best-case costs, GOLD diagnostic. ATR20-normalized. Span 2005+.
+IS first 75% of sessions; selection max IS t, pooled n >= 120, t >= 2.0
+floor, neighbor majority. ONE OOS shot at the program bar (n >= 40).
+Test count +4 selectable (+2 diagnostics).
+
+### Attempt 28 result: IS-FAIL, no harvestable tail-risk premium in SKEW
+
+(results/r48c_skew.json) High-SKEW next-day long is NEGATIVE IS
+(80th pct: avgR -0.040, t -2.97, both halves negative). The only
+positive cell (90th pct, 5-day hold: +0.126, t +1.77) misses the t >= 2
+floor and the low-SKEW diagnostic (+0.093, t +1.29) sits right behind
+it - drift, not premium. Family BURNED at IS, OOS unopened. SKEW data
+asset stays. Program score: 0 graduates / 28 tested attempts + 6 watch
+items. Next-tier queue (adjacency diagnoses REQUIRED in writing before
+registration): (a) overnight close-to-open premium - adjacent to burned
+euro-open window family, needs a diagnosis distinguishing the full
+overnight hold; (b) VIX-shock (1-day change z) reversal - adjacent to
+burned VIX-level dip-buy; (c) CBOE implied-correlation (COR*) extremes
+if history depth suffices.
