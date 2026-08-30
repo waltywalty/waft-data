@@ -3808,3 +3808,54 @@ passes, 1 new lead watch item. Program score: 0 graduates / 35 tested
 attempts; active watch items #1,#2,#4-#10 (nine; #3 retired-subsumed),
 composite #9 accruing forward, 4 paper streams. The 2026-09-01 monthly
 re-score picks all of this up.
+
+## Round 54: gold intraday history extended to 2012 - watch #5 re-score
+
+2026-08-30. ACQUISITION ON RECORD: ejtraderLabs/historical-data (public
+GitHub, cloned via session git proxy) ships XAUUSD m15 2012-05-15 ..
+2022-03-04 (230,400 bars, prices x100). PROVENANCE (house rules):
+(a) timezone established from the data itself - mean |ret| by feed clock
+peaks exactly at 15:30 = the 08:30 ET macro-release slot under the MT4
+GMT+2/+3-DST convention (ET = feed - 7h, constant); weekend structure
+confirms (no Sunday bars, Friday ends 23:45 = 16:45 ET, Monday starts
+00:00 = Sunday 17:00 ET). (b) prices cross-checked against our existing
+5m feed on the 2020-09..2022-02 overlap: corr 0.9995, mean ratio
+1.00003, mean |diff| 6.8 bps (different brokers). (c) known-history spot
+checks pass (Dec-2015 low ~1051, Aug-2020 range 1913-2063). File:
+data/XAUUSD_m15_ejtrader.csv (uncommitted, data/ gitignored).
+
+### Watch #5 re-score registration (BEFORE running)
+
+Watch #5 spec FROZEN as registered at attempt 18: gold vs CPI surprise,
+direction = MINUS sign(ratioDeviation), the four CPI variants from
+data/econ_events_us_high_fxs.json, |dev| thr {0.25, 0.5} x hold
+{entry+60m, to 16:00 ET close}, cost 0.35, ATR20-normalized, one trade
+per release. Extended scoring span 2013-01 .. data end, gold marks from
+the m15 feed before 2020-08-21 and the 5m feed after. DISCLOSED
+DEVIATIONS (granularity only, decided before running): on the m15
+segment, entry = first m15 close at/after release+5min (up to 10 min
+later than the 5m spec) and the +60m exit = first bar close >= entry
++60m; same-timestamp CPI variants collapse to one trade keeping the
+largest |dev|. PRIMARY CELL fixed ex-ante = |dev| >= 0.25, hold to
+close (the higher-n cell matching the watch text); the other three
+reported alongside. Bar = the program bar (n >= 40, avgR > 0, t >= 2,
+PF >= 1.15, cost x1.5 positive, mechanism sign). A pass goes to the
+user for sign-off; it does not auto-graduate.
+
+### Watch #5 re-score result: DOWNGRADED - the lean is era-specific
+
+(results/r54_goldcpi_rescore.json) With the span extended 2013-2026
+(n 112 vs the original 32-34; release clock verified 08:30 ET on 124
+events), the primary cell (|dev| >= 0.25, hold to close) scores
+avgR +0.051, WR 52.7%, PF 1.34, t +0.70 - and halves [-,+]: the
+2013-2019 segment is NEGATIVE. The all-positive profile that created
+watch #5 exists only in the post-2020 era (the 2021+ inflation regime,
+consistent with the r44 lesson that the inflation mapping is regime-
+poisoned). The +60m holds are negative across the board. Verdict:
+watch #5 STAYS a watch item but is DOWNGRADED - the mechanism now
+requires the post-2020 regime to hold, which is a conditional claim the
+frozen spec does not make. It remains scored at monthly re-scores on
+forward data; expectations lowered on the record. Side benefit: the
+extended gold m15 history (2012+) is now a standing data asset for any
+future gold family. The GVZ family stays dead (its IS refutation-shaped
+fail is not reopened by more data absent a new mechanism argument).
