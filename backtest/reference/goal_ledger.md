@@ -3936,3 +3936,49 @@ trigger, e.g. actual CME margin-change dates - a new data class - would
 be the honest revival route). Not parked as a watch item (registration
 did not provide for it). Program score: 0 graduates / 37 tested
 attempts + 9 active watch items.
+
+## Round 56: attempt 38 (silver margin-cascade); two candidates closed without running
+
+(a) CME margin-change dates: bulk history is paywalled (CME DataMine);
+the free margins pages carry only current levels. DEAD END recorded;
+the attempt-37 repair stays parked until an open margin-history source
+appears. (b) Gold Asia-session premium on 2012+ data: REFUSED at the
+diagnosis stage - r42g (Asia/London clock split) SPENT its one-shot OOS
+on effectively this window claim; extending the sample does not reopen a
+spent family (rule-shopping). Refusal is the outcome.
+
+### Attempt 38 registration (BEFORE running): silver margin-cascade continuation
+
+MECHANISM: identical to attempt 37 (forced de-leveraging continues
+outsized moves) applied to SILVER - the asset where the margin-spiral
+dynamic is best documented (2011 episodes; silver margins are hiked
+more aggressively than gold's on the same vol). Registered as its OWN
+family (instrument extension = new information, the attempt-33
+convention); never citable as confirmation of attempt 37's gold lean.
+FROZEN GRID (4 selectable cells): after a 16:00-ET close-to-close
+|ret| >= thr x sigma63 (shifted), trade IN THE MOVE'S DIRECTION from
+next session's first H1 close at/after 09:30 ET, thr {2.0, 3.0} x hold
+{next session 16:00 close, 2nd session 16:00 close}; one position at a
+time. DIAGNOSTIC: sub-threshold days (0.5 <= |z| < 1.0), both holds -
+matching continuation self-refutes as generic momentum. Data
+data/XAGUSD_H1.csv 2016-04..2026-08 (timezone UTC per its own header,
+established in r42p). Cost $0.02/oz RT (micro SIL best-case: 1-2 ticks
++ commission), ATR20(daily range)-normalized. IS first 75% of sessions;
+max IS t, scarce floors n >= 40 IS / n >= 25 OOS, t >= 2.0, same-thr
+sibling positive, diagnostic-below check. ONE OOS shot at the program
+bar. Test count +4 selectable (+2 diagnostics).
+
+### Attempt 38 result: IS-FAIL; the cross-metal echo goes on record
+
+(results/r56_silver_margin.json) Silver replicates gold's shape exactly:
+2-sigma cells flat-to-negative, 3-sigma cells positive (3.0/1d: n 33,
+WR 51.5%, PF 2.41, avgR +0.130, t +1.33) but far under floors, and the
+sub-threshold diagnostic strongly negative (t -3.56). Family dies at IS,
+holdout sealed, one future repair available. DESCRIPTIVE NOTE (not a
+confirmation claim): gold (attempt 37) and silver (38) independently
+show continuation ONLY at extreme thresholds with anti-continuation
+below - the margin-spiral mechanism's predicted asymmetry, twice. This
+elevates the CME margin-dates data class (currently paywalled) to the
+top of the acquisition wishlist: an ex-ante margin-hike trigger would
+concentrate these ns onto true event days. Program score: 0 graduates /
+38 tested attempts + 9 active watch items.
