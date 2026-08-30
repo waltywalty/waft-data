@@ -4028,3 +4028,46 @@ funding-rate history (Binance public API) - a true flow/positioning
 data class (crowded-leverage extremes) unavailable in any family so far;
 requires Kernel fetch if the proxy blocks the exchange API.
 Program score: 0 graduates / 39 tested attempts + 9 active watch items.
+
+## Round 58: funding-rate data class acquired (attempt 40)
+
+2026-08-30. Binance live API geo-blocks US IPs (451), but the public
+archive CDN (data.binance.vision) serves monthly fundingRate zips; all
+84 months batch-downloaded in one browser-VM shell loop:
+data/BTC_funding_binance.csv (BTCUSDT perp funding, 2020-01-01 ..
+2026-07-31, 7212 records). PROVENANCE: cadence exactly 8h for 7211/7211
+intervals; mean +0.0108%/8h vs the 0.01% design baseline; p1/p99
+-0.017%/+0.106% - sane. Funding is the first direct POSITIONING price
+in the program (what crowded longs pay), a genuinely new data class.
+
+### Attempt 40 registration (BEFORE running): crowded-leverage reversion
+
+MECHANISM: extreme positive funding = longs crowded and paying heavily
+= fragile positioning that unwinds (liquidation-prone) -> BTC weakness
+ahead; extreme negative funding = crowded shorts -> strength. Directions
+FIXED by mechanism. SIGNAL AVAILABILITY: day-T signal = sum of T's three
+funding prints (00/08/16 UTC), all known by 16:00 UTC; entry at T's
+daily close (00:00 UTC T+1) - 8h after the last component, clean.
+Percentile = trailing 252d of daily funding sums, shifted. FROZEN GRID
+(4 selectable cells): {>= 90th pct -> SHORT, <= 10th pct -> LONG} x
+hold {1 day, 3 days} to daily closes; one position at a time.
+DIAGNOSTIC (non-selectable): moderate bands with the same directions
+(60-80th short, 20-40th long), both holds - the mechanism predicts
+extremes only; moderate cells matching extreme cells self-refute the
+family as a monotone carry artifact. Prices data/BTCUSD_daily_av.csv;
+cost 5 bps RT; returns in bps normalized by sigma63*sqrt(hold). IS
+first 75% of days; max IS t, n >= 40 per extreme cell, t >= 2.0 floor,
+same-side sibling positive. ONE OOS shot at the program bar (n >= 25).
+Test count +4 selectable (+4 diagnostics).
+
+### Attempt 40 result: OOS FAIL - funding extremes split and then die
+
+(results/r58_funding.json) IS decomposition: HIGH-funding short is
+significantly WRONG-WAY (-57bps/day, t -2.08: high funding is
+carry/momentum, crowded longs keep winning - that arm of the mechanism
+is refuted in-sample). LOW-funding long passed everything IS (n 108,
+WR 59.3%, PF 1.98, +76.7bps/day, t +2.29, halves [+,+], moderate-band
+diagnostic well below at +14bps). ONE OOS shot on lo_long/1d: n 51,
++1.9bps, t -0.08, halves [+,-] - flat; the 2025+ OOS era did not carry
+the effect. Family BURNED. Funding data asset (2020-2026, 8h) stays.
+Program score: 0 graduates / 40 tested attempts + 9 active watch items.
