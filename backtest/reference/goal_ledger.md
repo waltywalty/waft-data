@@ -3666,3 +3666,51 @@ once. Activation as a paper/SPRT stream requires explicit user sign-off.
    index GVZ shock-reversal - extends the converging claim to a new
    instrument, not a new spec on the same one); no more forced batches
    of marginal calendar residues.
+
+## Round 52: gold vol index acquired - attempt 33 (final forced single-family batch)
+
+2026-08-30. data/GVZ_history_cboe.csv (CBOE Gold ETF Volatility Index,
+daily closes, 2009-09-18 .. 2026-08-28, 4261 rows) via one Kernel
+browser session, public-archive recipe.
+
+### Attempt 33 DIAGNOSIS + registration (BEFORE running): gold vol-shock reversal
+
+DIAGNOSIS: this is the stress-reversal mechanism of watch #7 applied to
+a NEW INSTRUMENT, not a new spec on equities: GVZ is gold's own implied
+vol; the claim is that gold's forced-flow events (vol shock = margin-
+driven liquidation in gold) are followed by a gold rebound. It tests
+whether the converging claim generalizes across asset classes - a
+genuine new bit of information either way. It is NOT independent
+evidence for the equity watch items and will never be cited as such.
+POWER DISCLOSURE: gold 5m data starts 2020-08 (~1275 sessions); at
+~30-40 shock events/yr expect the scarce-event profile; min-n floors per
+the attempt-18 precedent: IS n >= 40, OOS n >= 25.
+FROZEN GRID (4 selectable cells): after a GVZ close with 1-day log
+change z >= thr (63d std), LONG GOLD at next RTH open, thr {1.5, 2.0} x
+hold {exit T+1 close, exit T+3 close}, one position at a time.
+DIAGNOSTIC: GVZ crush (z <= -1.5), both holds - mechanism predicts
+nothing there. GOLD only, micro best-case cost 0.35, ATR20-normalized.
+IS first 75% of sessions; selection max IS t with n >= 40, t >= 2.0
+floor, neighbor majority. ONE OOS shot: same sign, t >= 2, PF >= 1.15,
+cost x1.5 positive, n >= 25. A pure power-fail parks it as a watch
+item. Test count +4 selectable (+2 diagnostics).
+
+### Attempt 33 result: IS-FAIL - stress-reversal does NOT generalize to gold
+
+(results/r52_gvz.json) Gold vol-shock next-day is negative (z>=1.5:
+avgR -0.126, t -1.34); the only mechanism-consistent lean (z>=2, 3-day:
++0.382, WR 70%) is n 30, under the scarce-event floor; and the CRUSH
+diagnostic is POSITIVE (t +1.92) - the opposite asymmetry from equities:
+gold gains follow calm, not stress. Signs are mixed against the
+mechanism, so this is a refutation-shaped fail, not a power-park.
+Family BURNED at IS, OOS unopened. INFORMATIVE NEGATIVE ON RECORD: the
+converging watch-item claim (#6-#9) is equity-specific - consistent
+with an index-level dealer/flow phenomenon rather than a universal
+post-stress rebound. Program score: 0 graduates / 33 tested attempts +
+9 watch items (8 single + 1 composite).
+
+THE FORCED SINGLE-FAMILY ERA CLOSES HERE per the program-state
+assessment: further single families only on genuinely new mechanisms or
+data classes. The program's active surface is now the watch list
+(monthly re-scores; composite #9 accruing forward from 2026-08-31) and
+the 4 paper streams.
