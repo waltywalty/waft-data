@@ -3982,3 +3982,49 @@ elevates the CME margin-dates data class (currently paywalled) to the
 top of the acquisition wishlist: an ex-ante margin-hike trigger would
 concentrate these ns onto true event days. Program score: 0 graduates /
 38 tested attempts + 9 active watch items.
+
+## Round 57: crypto asset class opened - BTC daily 2010-2026 acquired (attempt 39)
+
+2026-08-30. data/BTCUSD_daily_av.csv (Alpha Vantage DIGITAL_CURRENCY_DAILY,
+BTC/USD, 2010-07-17 .. 2026-08-30, 5889 UTC-midnight daily bars).
+CRYPTO_INTRADAY is premium-gated on this key (verified) - daily designs
+only. Crypto is a NEW ASSET CLASS for this program, tradeable for the
+user via CME micro Bitcoin futures (MBT, listed 2021; CME BTC futures
+since 2017-12).
+
+### Attempt 39 registration (BEFORE running): BTC weekend-move reversion
+
+MECHANISM: BTC spot trades 24/7 but deep/institutional liquidity (and
+the CME venue) is Mon-Fri; weekend moves print on thin books and
+partially REVERT when full liquidity returns Monday - the same
+thin-liquidity-overshoot logic as this repo's flow families, applied to
+the one asset with a true weekly liquidity cycle. Direction FIXED =
+against the weekend move. SPAN: 2015-01-01 onward, chosen ex-ante on
+mechanism (pre-2015 Mt.Gox-era microstructure is not relevant to the
+MBT-tradeable claim); UTC daily bars, weekend move = Friday UTC close ->
+Sunday UTC close, entry at Sunday UTC close (approximates the CME Sunday
+18:00 ET reopen; disclosed), exits at Monday or Tuesday UTC close.
+FROZEN GRID (4 selectable cells): |weekend move| filter {any nonzero,
+>= 1.0 x sigma63 (trailing 63d daily-ret std, shifted)} x hold {Mon
+close, Tue close}. DIAGNOSTIC (non-selectable): the same reversion rule
+applied to midweek single-day moves (Tue close -> Wed close move, enter
+Wed close, same filters/holds collapsed to 2 cells) - reversion there
+means generic daily mean-reversion, not a weekend-liquidity effect;
+diagnostic avgR >= selected avgR self-refutes the family at IS.
+Cost 5 bps RT (MBT best-case), returns in bps normalized by
+sigma63*sqrt(hold-days). IS first 75% of weekends; max IS t, n >= 120
+(any-filter cells; >= 40 for the sigma-filtered), t >= 2.0 floor,
+same-filter sibling positive. ONE OOS shot at the program bar (n >= 40 /
+25 scarce). Test count +4 selectable (+2 diagnostics).
+
+### Attempt 39 result: IS-FAIL, no weekend-liquidity reversion in BTC
+
+(results/r57_btcweekend.json) All four selectable cells flat-to-negative
+(any/1d -10.6bps t -0.54; sigma-filtered worse), midweek diagnostic
+equally null - no reversion structure at daily resolution in 2015+.
+Family BURNED at IS, OOS unopened. BTC daily data asset stays. Next
+crypto-native candidate named for the acquisition queue: perpetual
+funding-rate history (Binance public API) - a true flow/positioning
+data class (crowded-leverage extremes) unavailable in any family so far;
+requires Kernel fetch if the proxy blocks the exchange API.
+Program score: 0 graduates / 39 tested attempts + 9 active watch items.
