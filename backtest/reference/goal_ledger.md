@@ -3598,3 +3598,71 @@ flow/stress-rebound longs, all are carried by SPX/NDX with RTY flat,
 and all fail only on power. The program's output is converging on a
 single economic claim: large-cap index rebounds after forced-flow
 events, too small per event to clear t >= 2 on any single family yet.
+
+## Round 51: day-of-week seasonality (attempt 32)
+
+### Attempt 32 CLASS DIAGNOSIS + registration (BEFORE running)
+
+DIAGNOSIS: the weekday anchor is distinct from every burned calendar
+family (opex third-Friday cycle, month boundary, holiday adjacency, FOMC
+cycle, auction dates): it conditions on nothing but the day of week.
+Classic documented forms (French 1980; Gibbons-Hess): NEGATIVE Monday
+(weekend-risk resolution + settlement conventions) and positive Friday
+(pre-weekend). Largely reported decayed post-1990s in large caps -
+finding nothing would itself be informative given this repo's pattern of
+decayed classics (attempt 19/24). FROZEN GRID (4 selectable cells):
+  {Monday SHORT, Friday LONG} x hold {day session open->close,
+   close-to-close (prior session close -> that day's close)}
+DIAGNOSTIC (not selectable): Tue+Wed+Thu pooled LONG, both holds - the
+baseline drift the selectable cells must beat in magnitude.
+Instruments SPX/NDX/RTY pooled at micro best-case costs, GOLD
+diagnostic. ATR20-normalized. IS first 75% of sessions; selection max
+IS t, pooled n >= 120, t >= 2.0 floor, neighbor majority (same-day arm).
+ONE OOS shot at the program bar (n >= 40). Test count +4 selectable
+(+2 diagnostics).
+
+### Attempt 32 result: IS-FAIL, both weekday classics dead or inverted
+
+(results/r51_weekday.json) Monday-short lost (cc t -2.12: Mondays now
+drift UP); Friday-long was the worst cell in the grid (oc avgR -0.059,
+t -4.05: Fridays are now systematically weak intraday). Midweek cc
+baseline +0.021/day (t +2.05) is ordinary drift. Both classic weekday
+effects are gone or sign-flipped, consistent with the decayed-classic
+pattern (attempts 19, 24). Family BURNED at IS, OOS unopened.
+Program score: 0 graduates / 32 tested attempts + 8 watch items.
+
+## PROGRAM-STATE ASSESSMENT (2026-08-30, after 32 attempts)
+
+1. The searchable well is nearly dry. 32 mechanism families across
+   calendar, flow, sentiment, vol-structure, cross-market, and
+   microstructure classes; every major public data class we can reach is
+   acquired and tested. Remaining unregistered candidates are weaker
+   variants of burned classes; each additional family now mostly accrues
+   multiplicity (the ~2-5%/shot false-pass budget) rather than
+   information.
+2. The program HAS converged on something: watch items #6/#7/#8 agree in
+   sign everywhere and describe one economic claim - large-cap index
+   rebound after forced-flow events - individually underpowered.
+3. Consequence: the highest-probability path to "one succeeds" is no
+   longer new single families; it is (a) the forward accrual + monthly
+   re-scoring of the watch list, and (b) a pre-registered composite of
+   the converging residues, scored on FORWARD data only.
+
+### WATCH ITEM #9 (composite, pre-registered 2026-08-30, forward-only):
+STRESS-REVERSAL COMPOSITE. Trigger: any session close with (VIX 1-day
+log-change z >= 1.5 per watch #7) OR (COR1M >= 80th trailing-252d
+percentile per watch #8). Action: LONG at next RTH open, exit close of
+3rd session, one position at a time. Two tracked variants, both frozen
+now: (a) SPX+NDX+RTY pooled; (b) SPX+NDX only (motivated by the RTY
+flatness across #6-#8; recorded as a pre-registered variant, not a
+post-hoc exclusion). Costs micro best-case, ATR20-normalized. SCORING:
+forward data from 2026-08-31 only - the historical sample already spent
+its evidence in #7/#8 and is never re-counted. Bar for graduation:
+pooled forward n >= 40, avg_R > 0, t >= 2, PF >= 1.15, cost x1.5
+positive, evaluated at monthly re-scores. Overlapping-trigger days count
+once. Activation as a paper/SPRT stream requires explicit user sign-off.
+4. Search posture going forward: single-family attempts continue ONLY
+   for genuinely new mechanisms or data classes (next queued: gold vol
+   index GVZ shock-reversal - extends the converging claim to a new
+   instrument, not a new spec on the same one); no more forced batches
+   of marginal calendar residues.
