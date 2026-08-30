@@ -3714,3 +3714,22 @@ assessment: further single families only on genuinely new mechanisms or
 data classes. The program's active surface is now the watch list
 (monthly re-scores; composite #9 accruing forward from 2026-08-31) and
 the 4 paper streams.
+
+## Round 53: proposal-2 repair sweep (user directive 2026-08-30)
+
+User: in addition to the standing program, retry the closer strategies
+with altered parameters (proposal 2). BINDING SCOPE RULE, stated before
+any spec exists: families whose one-shot OOS was already spent
+(expiration week #19, TOM #21, VIX term structure #25, VIX-shock #30,
+corr-spike #31, and the r42-era spent shots) are NOT retryable on the
+same holdout - their honest retry is the forward accrual already running
+as watch items. Repair candidates are ONLY families whose holdout is
+still sealed (IS-fail, winner=null). Process per r41b: multi-agent audit
+extracts IS-only summaries (agents hard-blocked from reading sealed OOS
+fields); one diagnosis agent per candidate writes a taxonomy-grounded
+repair spec (mechanism reasoning, no data-peeking) with fixed
+directions, <= 12 cells, self-refutation diagnostics, and floors; specs
+are REGISTERED HERE before any IS run; IS-only exploration follows; each
+IS-passer gets ONE fresh OOS shot at the program bar, counted against
+the program's multiplicity budget. A viable=false verdict from diagnosis
+is a recorded outcome, not a failure of the process.
