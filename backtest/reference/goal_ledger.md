@@ -4071,3 +4071,45 @@ diagnostic well below at +14bps). ONE OOS shot on lo_long/1d: n 51,
 +1.9bps, t -0.08, halves [+,-] - flat; the 2025+ OOS era did not carry
 the effect. Family BURNED. Funding data asset (2020-2026, 8h) stays.
 Program score: 0 graduates / 40 tested attempts + 9 active watch items.
+
+## Round 59: crypto implied-vol data class acquired (attempt 41)
+
+2026-08-31. data/BTC_DVOL_deribit.csv (Deribit DVOL daily OHLC,
+2021-03-24 .. 2026-08-31, 1987 rows) via the public API from the
+browser VM (no geo-block; python-urllib proxy quirk worked around with
+curl). PROVENANCE: 1986/1986 one-day gaps, range 32-156 vs known BTC IV
+history, spot values sane. Options-implied CRYPTO vol is new-in-class.
+
+### Attempt 41 registration (BEFORE running): BTC DVOL-shock reversal
+
+MECHANISM: the vol-shock overshoot claim of watch #7, tested on a THIRD
+asset class. ADJACENCY DISCLOSED: equities (attempt 30, watch #7)
+support it under power limits; gold (attempt 33) REFUTED it; BTC decides
+generalization breadth. Never citable as confirmation of #7. Trigger:
+1-day log change of DVOL close, z vs trailing 63d std (shifted).
+SIGNAL/ENTRY CLOCK: DVOL and the BTC daily feed share UTC-midnight
+closes; entry at the same close the signal forms on (24/7 market,
+executable seconds later - disclosed as concurrent-close entry).
+FROZEN GRID (4 selectable cells): LONG BTC after z >= thr, thr
+{1.5, 2.0} x hold {1, 3} daily closes, one position at a time.
+DIAGNOSTIC: DVOL crush (z <= -1.5), both holds - mechanism predicts
+nothing there. Cost 5 bps RT, returns bps normalized by
+sigma63*sqrt(hold). IS first 75% of days; max IS t, scarce floors
+n >= 40 IS, t >= 2.0, same-thr sibling positive, crush-below check.
+ONE OOS shot at the program bar (n >= 25). Test count +4 selectable
+(+2 diagnostics).
+
+### Attempt 41 result: IS-FAIL, and the vol-shock breadth question closes
+
+(results/r59_dvolshock.json) z>=1.5/3d leans positive (+116bps, t +1.86,
+crush diagnostic below) but misses the floor, and the z>=2.0 cells are
+NEGATIVE - the k-gradient runs the wrong way (spike, not slope; the
+house gradient-over-peak rule reads this as noise). Family BURNED at IS,
+OOS unopened. GENERALIZATION VERDICT across three asset classes: vol-
+shock reversal = equities lean (watch #7), gold refuted (33), BTC null
+with broken gradient (41). The mechanism, if real, is an equity-index
+dealer/flow phenomenon - which sharpens watch #7's prior rather than
+diluting it (recorded as interpretation, never as added evidence).
+Program score: 0 graduates / 41 tested attempts + 9 active watch items.
+Search cadence per the standing plan: slows to new-data-class-only while
+the watch list accrues; the Sep 1 re-score check-in is the next event.
