@@ -4113,3 +4113,55 @@ diluting it (recorded as interpretation, never as added evidence).
 Program score: 0 graduates / 41 tested attempts + 9 active watch items.
 Search cadence per the standing plan: slows to new-data-class-only while
 the watch list accrues; the Sep 1 re-score check-in is the next event.
+
+## Round 60: CFTC index-futures positioning acquired (attempt 42)
+
+2026-08-31. data/cftc_tff_indices.csv - CFTC Traders-in-Financial-Futures
+weekly reports for the equity index futures, 2010-07-20 .. 2026-08-25,
+6861 rows, harvested from the official annual archives (17 zips) in one
+browser-VM loop (cftc.gov proxy-blocked locally). PROVENANCE: weekly
+cadence exact (233/237 seven-day gaps, rest holiday shifts); ES
+leveraged-money net deeply short (median -344k) matching the known
+structural basis-trade positioning. ERA SPLICE MAP (frozen): ES =
+"E-MINI S&P 500 STOCK INDEX" then "E-MINI S&P 500" (2022-02+); NQ =
+"NASDAQ-100 STOCK INDEX (MINI)" then "NASDAQ MINI" (2022-02+); RTY =
+"RUSSELL 2000 MINI INDEX FUTURE" (ICE, to 2017) then "E-MINI RUSSELL
+2000 INDEX" then "RUSSELL E-MINI" (2022-02+). Index-futures POSITIONING
+is new-in-class for this program (COT was only ever used on gold, r24).
+
+### Attempt 42 registration (BEFORE running): leveraged-money positioning extremes
+
+MECHANISM: leveraged funds' net position in index futures is dominated
+by structural shorts (basis trades); its EXTREMES mark crowding -
+extreme net-short = squeeze-prone (index strength follows), extreme
+net-long-side = stretched speculative length (weakness follows). The
+contrarian-at-extremes reading, fixed ex-ante (the same Williams-style
+read used on gold COT in r24, new instrument class). SIGNAL: lev-money
+net / open interest (contract-size-era neutral), trailing 156-week
+percentile, shifted. AVAILABILITY: report date is Tuesday, released
+Friday 15:30 ET; entry at the RTH open of the first session >= 6
+calendar days after the report date (the Monday after release) - no
+lookahead. FROZEN GRID (4 selectable cells): {<= 10th pct -> LONG,
+>= 90th pct -> SHORT} x hold {5 sessions, 20 sessions} to RTH closes;
+one position per instrument at a time. DIAGNOSTIC (non-selectable):
+mid-band cells (40-60th pct, both directions' entry rule applied as
+LONG) - extremes-only mechanism predicts nothing there. Instruments
+SPX/NDX/RTY pooled at micro best-case costs, ATR20-normalized. IS first
+75% of report weeks; max IS t, n >= 40 per cell, t >= 2.0 floor,
+same-side sibling positive, mid-band-below check. ONE OOS shot at the
+program bar (n >= 25). Test count +4 selectable (+2 diagnostics).
+
+### Attempt 42 result: OOS FAIL on power - watch item #11 (low-confidence)
+
+(results/r60_tff.json) IS: lo_long/5-session (extreme lev-money
+net-short -> long index) n 116, WR 66.4%, PF 1.80, avgR +0.478,
+t +2.63, halves [+,+]; mid-band diagnostic far below; the hi_short arm
+null (squeeze asymmetry as predicted). ONE OOS shot: only 19 extreme
+weeks existed in the OOS era (< the 25 floor - power-fail by
+construction): WR 73.7%, avgR +0.236, but PF 0.91 (one large loser)
+and halves [+,-], t +0.59. Family burns; parked as WATCH ITEM #11:
+extreme lev-money net-short (<=10th pct of net/OI, 156w) -> long index
+at next Monday RTH open, exit 5th session close, SPX/NDX/RTY pooled.
+LOW-CONFIDENCE flag on record: mixed OOS halves and sub-1 PF make this
+the weakest watch item; ~8-12 extreme weeks/yr accrue. Program score:
+0 graduates / 42 tested attempts + 10 active watch items.
