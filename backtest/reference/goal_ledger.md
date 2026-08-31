@@ -4165,3 +4165,40 @@ at next Monday RTH open, exit 5th session close, SPX/NDX/RTY pooled.
 LOW-CONFIDENCE flag on record: mixed OOS halves and sub-1 PF make this
 the weakest watch item; ~8-12 extreme weeks/yr accrue. Program score:
 0 graduates / 42 tested attempts + 10 active watch items.
+
+### Attempt 43 ADJACENCY DIAGNOSIS + registration (BEFORE running):
+### asset-manager positioning extremes
+
+DIAGNOSIS: same data class as attempt 42, DIFFERENT trader population
+with a different mechanism - asset managers are unlevered real money;
+their net length is an allocation/sentiment state, not a basis trade.
+Extreme AM length = allocations maxed (complacency; marginal buyer
+exhausted) -> weakness ahead; extreme AM shortness/underweight =
+capitulation -> strength. Directions fixed ex-ante (mirror-image of the
+lev-money squeeze read BY MECHANISM, not by search). DEALER extremes
+are REFUSED ex-ante: the three groups roughly sum against each other,
+so dealer net is close to the negative of lev+AM and would not be an
+independent test (recorded so it is never mined later). MULTIPLICITY
+NOTE: this is the second and LAST family from the TFF class; the class
+closes after this attempt regardless of outcome.
+FROZEN GRID (4 selectable cells): signal = AM net/OI, trailing 156w
+percentile, shifted; {>= 90th pct -> SHORT, <= 10th pct -> LONG} x hold
+{5, 20 sessions}; entry first RTH open >= 6 calendar days after report
+date; one position per instrument. DIAGNOSTIC: mid-band (40-60th, LONG)
+both holds. SPX/NDX/RTY pooled, micro costs, ATR20-normalized. IS first
+75% of report weeks; floors n >= 40 IS / 25 OOS, t >= 2.0, same-side
+sibling positive, mid-band-below. ONE OOS shot at the program bar.
+Test count +4 selectable (+2 diagnostics).
+
+### Attempt 43 result: IS-FAIL; the TFF positioning class closes
+
+(results/r60b_am.json) No AM cell near the floor (best t +1.06), and
+the mid-band diagnostic OUTPERFORMS both extremes (t +1.89/+1.94 vs
+extremes' +0.4..+1.1) - the return structure around AM positioning is
+drift, not an extremes signal. Family BURNED at IS, OOS unopened. Per
+the registration, the TFF class is now CLOSED (lev tested->watch #11,
+AM tested->dead, dealer refused as non-independent).
+Program score: 0 graduates / 43 tested attempts + 10 active watch items.
+The free-data-class frontier is, as of this attempt, exhausted to the
+best of this program's knowledge. The live program = the watch list's
+forward accrual (monthly re-scores) + opportunistic new classes.
