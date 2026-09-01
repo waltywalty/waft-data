@@ -4202,3 +4202,34 @@ Program score: 0 graduates / 43 tested attempts + 10 active watch items.
 The free-data-class frontier is, as of this attempt, exhausted to the
 best of this program's knowledge. The live program = the watch list's
 forward accrual (monthly re-scores) + opportunistic new classes.
+
+## Monthly forward-test review - 2026-09-01
+
+JOURNAL STATE: the paper journal (artifact af9114c9) holds ZERO rows
+across all four streams as of this review.
+- XAU (deployed gold rule): 0 trades. Within drought norms (mean red
+  streak 12 trading days, p90 28, max 61); the zero is the filter
+  working IF signals genuinely did not fire. VERDICT: on track,
+  contingent on the logging question below.
+- XAUAUD (upgrade #1 half-leg): 0 trades, rides XAU signals. On track.
+- MHI (HSI pre-open fade, 80-trade re-test bar): 0 of 80 accrued. This
+  stream should produce rows more regularly than XAU; a month of zero
+  is plausible-but-notable. Progress 0/80, no verdict (bar untouched).
+- D7 (Double Seven, ~1 signal/month expected): 0 logged - one missed
+  month is unremarkable. SPRT LLR unchanged at 0.00 (no W/L fed;
+  boundaries +/-2.20 untouched).
+- XAU kill criteria: not triggerable on n=0. No execution-mismatch
+  evidence exists either way.
+ACTION FOR THE USER (the one thing this review cannot verify): confirm
+whether the empty journal means "no signals fired" or "signals fired
+but were not logged." If any signal fired unlogged, the forward test's
+clock has not actually started - the record only counts if the rows go
+in. Nothing else is actionable at n=0.
+GOAL ADVANCEMENT: HSI live feeds re-pulled (H1/M15/M5 refreshed
+2026-09-01); SGE AM-fix re-score is yearly, not due. No new
+mechanism-first battery this cycle - rounds 45-60 (attempts 19-43)
+already ran the search to data-frontier exhaustion this week and are
+recorded above; grinding another battery now would be multiplicity, not
+research. WATCH-ITEM NOTE: the new items #6-#11 registered 2026-08-29..
+08-31 have essentially no forward days yet; their first meaningful
+re-score is 2026-10-01. Composite #9's forward clock started 08-31.
