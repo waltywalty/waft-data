@@ -4293,3 +4293,55 @@ months), not an intraday scalp. FAMILY BURNED (shot spent). NEXT STEP
 PER PROTOCOL: graduation to a paper/tracking stream requires explicit
 user sign-off - put to the user 2026-09-01. Program score: 1 OOS PASS
 (pending sign-off) / 44 tested attempts + 10 active watch items.
+
+## Round 62: business-cycle regime class, attempt 45 - generalization test
+
+### Registration-stage kills (BEFORE any returns were computed), 2026-09-01
+
+SERVICES-ISM VARIANT: KILLED AT REGISTRATION. Signal-side counts only
+(no returns touched): ISM Services PMI has 6 sub-50 releases in 105
+(2014-2026), producing 185 regime days of which 180 (97%) sit inside
+the mfg-PMI < 50 regime attempt 44 already spent. Zero independent
+evidence possible at any n floor - running it would only re-test
+attempt 44's claim on its own days. Recorded as adjacency-subsumed;
+no grid built, no test counted.
+CONSUMER CONFIDENCE (CB) VARIANT: KILLED AT REGISTRATION. Feed carries
+19 releases - below any floor. No grid built.
+
+### Attempt 45 registration (BEFORE running): consumer-pessimism regime
+### (Michigan sentiment) - different-gauge generalization of attempt 44
+
+PURPOSE (fixed ex-ante): attempt 44's economic claim is "equity risk
+premium concentrates while the last macro print signals a weak cycle".
+If real, it should generalize to a DIFFERENT gauge of the cycle; if it
+is a manufacturing-PMI artifact it should not. This family tests the
+same claim on the consumer side. It is registered as a NEW family
+(different signal series) but adjacency to attempt 44 is declared, and
+an INDEPENDENCE GATE (below) decides whether any result counts as new
+evidence or as subsumed.
+SIGNAL: 'a' of "Michigan Consumer Sentiment Index" events in
+data/econ_events_us_high_fxs.json (105 releases 2013-01..2026-08,
+09:55 ET). Regime = last release strictly before the session date
+(active from first session after release - same no-lookahead rule as
+attempt 44). Thresholds fixed from public history, not our returns:
+pessimism < 65 (recession-era prints; 35 releases, ~21% of days) and
+< 70 (48 releases, ~29% of days). Direction fixed: LONG while
+pessimism regime active, flat otherwise. Daily close-to-close
+bookings, ATR20-normalized, cost MICRO/20 per booking (regime
+amortization, same as attempt 44).
+FROZEN GRID (4 selectable cells): {thr 65, thr 70} x {indices pooled,
+RTY alone}. DIAGNOSTICS (non-selectable): (a) optimism regime
+(sentiment >= 85) long, same bookings - matching returns = generic
+drift, self-refutes (diag_below gate); (b) INDEPENDENCE GATE: the
+winner's IS avgR restricted to sessions OUTSIDE the mfg-PMI < 50
+regime must be positive - signal-side overlap is 54-59%, so the
+mich-only subset (~475-595 days) has power; if the non-overlap subset
+is not positive the family is declared SUBSUMED by attempt 44 and the
+OOS seal is NOT opened (no shot spent, no independent evidence
+claimed). POWER DISCLOSURE: episode-level effective n is small
+(~4-6 pessimism episodes); episode signs reported; single-episode
+spikes treated as noise. IS first 75% of sessions; floors n >= 120,
+t >= 2.0, sibling-positive. ONE OOS shot at the program bar (n >= 40,
+avgR > 0, t >= 2, PF >= 1.15, cost x1.5 positive). If opened it is the
+12th shot (multiplicity ledger updated either way). Test count +4
+selectable (+2 diagnostics).
