@@ -4233,3 +4233,63 @@ recorded above; grinding another battery now would be multiplicity, not
 research. WATCH-ITEM NOTE: the new items #6-#11 registered 2026-08-29..
 08-31 have essentially no forward days yet; their first meaningful
 re-score is 2026-10-01. Composite #9's forward clock started 08-31.
+
+## Round 61: business-cycle regime class (attempt 44) - search reopened on user directive
+
+### Attempt 44 registration (BEFORE running): PMI-contraction risk premium
+
+MECHANISM (new-in-class): no prior family conditioned on the BUSINESS
+CYCLE STATE - the macro families (11/17/18) used release-day SURPRISES,
+never the level. The documented claim (tactical-allocation literature):
+equity risk premium concentrates in CONTRACTION regimes - forward
+returns are higher while the last-released ISM Manufacturing PMI sits
+below 50 (risk compensation when the cycle is weak), ordinary in
+expansion. Direction fixed ex-ante: LONG during contraction regimes.
+SIGNAL: the 'a' (actual) value of "ISM Manufacturing PMI" events in
+data/econ_events_us_high_fxs.json; regime = last release's level,
+active from the first session AFTER the release (10:00 ET publication;
+regime flips next session open - no lookahead). FROZEN GRID
+(4 selectable cells): LONG daily close-to-close bookings while regime
+active, regime {PMI < 50, PMI < 47 (deep contraction)} x instrument
+grouping {indices pooled, RTY alone (small caps most cycle-sensitive -
+a mechanism-implied sub-cell, fixed ex-ante)}. DIAGNOSTIC
+(non-selectable): expansion regime (PMI >= 52) long, same bookings -
+the premium claim predicts materially less there; matching returns =
+generic drift, self-refutes. POWER DISCLOSURE: contraction episodes are
+few (~4-5 in 2013-2026) - daily n is large but episode-level effective
+n is small; halves and episode signs will be reported and a spiky
+single-episode result treated as noise. Costs: one RT per regime entry/
+exit (micro best-case), daily bookings ATR20-normalized. Span 2013+.
+IS first 75% of sessions; max IS t, n >= 120 daily obs, t >= 2.0 floor,
+sibling-positive, diagnostic-below. ONE OOS shot at the program bar
+(n >= 40). Test count +4 selectable (+2 diagnostics).
+
+### Attempt 44 result: FIRST OOS PASS OF THE PROGRAM - pending user sign-off
+
+(results/r61_pmi.json) IS: contraction-long (PMI < 50, indices pooled)
+n 691 daily bookings, WR 60.6%, PF 1.53, avgR +0.096, t +2.87, halves
+[+,+]. ONE OOS shot: n 1597, WR 56.9%, PF 1.33, avgR +0.087, t +4.13
+(nominal), halves [+,+], cost x1.5 unchanged. ALL registered gates pass.
+SKEPTICISM CLAUSES, checked per the registration before reporting:
+(a) DRIFT REFUTED OOS: expansion-regime days (PMI >= 52) were NEGATIVE
+out of sample (-0.024, t -0.48; RTY -0.029) while contraction carried
++0.087 - the regime split genuinely separates returns, this is not
+"always long". Deep contraction (<47) even stronger OOS (+0.129,
+t +2.98). (b) EPISODE STRUCTURE (the real effective n): IS 5 episodes,
+4 positive (2013, 2016a, 2019-20, 2020; 2016b negative); OOS THREE
+separate episodes, ALL positive and consistent (2022-12..2024-04
++0.086, 2024-05..2025-02 +0.071, 2025-04..2025-12 +0.093). 7 of 8
+episodes positive (sign-test p ~ 0.035). NOT a single-episode spike.
+HONEST CAVEATS ON RECORD: (1) the nominal t 4.13 treats daily bookings
+as independent; at episode level the evidence is good-not-overwhelming
+(effective n ~ 8 blocks); (2) program multiplicity: this is the 11th
+OOS shot - at 2-5%/shot the chance of >= 1 false pass somewhere is
+~20-40%, though a false pass this decisive is much less likely than the
+marginal kind; (3) contraction covered ~80% of the OOS window - the
+discriminating evidence is the expansion-negative side, which held;
+(4) this is a REGIME strategy (long MES/MNQ/M2K while last-released ISM
+Mfg PMI < 50, flat otherwise; ~monthly regime checks, holds for
+months), not an intraday scalp. FAMILY BURNED (shot spent). NEXT STEP
+PER PROTOCOL: graduation to a paper/tracking stream requires explicit
+user sign-off - put to the user 2026-09-01. Program score: 1 OOS PASS
+(pending sign-off) / 44 tested attempts + 10 active watch items.
