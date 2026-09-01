@@ -4345,3 +4345,64 @@ t >= 2.0, sibling-positive. ONE OOS shot at the program bar (n >= 40,
 avgR > 0, t >= 2, PF >= 1.15, cost x1.5 positive). If opened it is the
 12th shot (multiplicity ledger updated either way). Test count +4
 selectable (+2 diagnostics).
+
+### Attempt 45 result: IS FAIL - claim does NOT generalize to consumer gauge
+
+(results/r62_mich.json) Pessimism regime is NEGATIVE in sample: thr 65
+pooled n 332 avgR -0.027 t -0.61 halves [-,-]; thr 70 n 452 avgR
+-0.070 t -1.69 halves [-,-]. Optimism diagnostic (>= 85) POSITIVE
+(+0.043, t +2.94) - i.e. the exact OPPOSITE pattern of attempt 44. No
+cell reaches the floor; OOS seal never opened, no shot spent. RTY had
+no pessimism days in its span (sub-65 prints are 2022+; RTY 5m frame
+ends earlier) - pooled cells carried the test. INDEPENDENCE NOTE: 331
+of 332 IS pessimism days sat OUTSIDE the mfg-PMI < 50 regime (Michigan
+bottomed mid-2022 while ISM mfg was still > 50), so this was a clean
+independent test of the weak-cycle-premium claim on a different gauge,
+and it FAILED. INTERPRETATION ON RECORD: attempt 44's premium is
+gauge-specific (manufacturing PMI), not a universal "bad news = paid
+to be long" effect. This BOUNDS attempt 44 rather than refuting it
+(its own OOS episodes stand), but it removes the strongest
+generalization story and should weigh in the sign-off decision.
+Program score: 1 OOS pass (pending sign-off) / 45 attempts. Test count
++4 selectable +2 diagnostics.
+
+## Round 63: business-cycle regime class, attempt 46 - hard-data gauge
+
+### Attempt 46 registration (BEFORE running): labor-deterioration regime
+### (Sahm-style unemployment gap) - third gauge of the triangulation
+
+PURPOSE (fixed ex-ante): triangulate attempt 44's weak-cycle-premium
+claim across gauge types. Soft-manufacturing survey PASSED OOS
+(attempt 44); soft-consumer survey FAILED at IS with opposite pattern
+(attempt 45). This attempt tests a HARD-DATA gauge: the unemployment
+rate's Sahm-style deterioration gap. If it also fails, the pass is
+gauge-specific; if it holds, the class has a second leg.
+SIGNAL: monthly U-3 unemployment (data/UNRATE_av.csv, Alpha Vantage
+UNRATE, 2003+ subset stored; 2025-10 print never published - shutdown -
+linearly interpolated for moving-average computation only, declared
+here). gap_M = 3-month MA of the rate through month M minus the
+minimum of that 3m MA over the prior 12 months. PUBLICATION LAG
+(no-lookahead, deterministic): month-M value treated as known from the
+8th calendar day of month M+1 (jobs report lands the first Friday,
+i.e. by the 7th); regime for a session uses the last KNOWN month.
+Direction fixed: LONG indices while deterioration regime active, flat
+otherwise. Daily close-to-close bookings, ATR20-normalized, cost
+MICRO/20 per booking. Span 2005+ (SPX/NDX/RTY 5m start) - this gauge
+is not limited by the 2013+ event feed, so 2008-09 and 2020 are in
+sample.
+FROZEN GRID (4 selectable cells): {gap >= 0.50 (classic Sahm
+threshold), gap >= 0.30 (milder deterioration)} x {indices pooled, RTY
+alone}. DIAGNOSTICS (non-selectable): (a) improving-labor regime
+(gap <= 0.05, 3m MA at its 12m min) long, same bookings - matching
+returns = generic drift, self-refutes (diag_below); (b) INDEPENDENCE
+GATE vs attempt 44: winner's IS avgR restricted to sessions outside
+the mfg-PMI < 50 regime must be positive, evaluated ONLY on sessions
+where the mfg regime is defined (feed starts 2013; pre-2013 sessions
+excluded from this gate, not from the family). If non-overlap subset
+is not positive: SUBSUMED, seal not opened, no shot spent. POWER
+DISCLOSURE: deterioration episodes ~3-5 in 2005-2026 (2008-10, 2020,
+2024-25); episode signs reported, single-episode spikes = noise. IS
+first 75% of sessions; floors n >= 120, t >= 2.0, sibling-positive.
+ONE OOS shot at the program bar (n >= 40, avgR > 0, t >= 2,
+PF >= 1.15, cost x1.5 positive). Would be the 12th shot. Test count
++4 selectable (+2 diagnostics).
