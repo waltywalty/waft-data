@@ -4406,3 +4406,33 @@ first 75% of sessions; floors n >= 120, t >= 2.0, sibling-positive.
 ONE OOS shot at the program bar (n >= 40, avgR > 0, t >= 2,
 PF >= 1.15, cost x1.5 positive). Would be the 12th shot. Test count
 +4 selectable (+2 diagnostics).
+
+### Attempt 46 result: IS FAIL - hard-data gauge does not carry the premium
+
+(results/r63_sahm.json) Deterioration regime is FLAT in sample: gap
+>= 0.5 pooled n 1905 avgR +0.014 t +0.73 halves [-,+] (2008-09
+deterioration - the first half - was NEGATIVE: crash days, not premium
+days); gap >= 0.3 the same (+0.010, t +0.55). Improving-labor
+diagnostic is the STRONG side (+0.036, t +3.68) - the drift lives in
+good-labor regimes, opposite of the claim. No cell near the floor; OOS
+seal never opened, no shot spent.
+
+### CLASS VERDICT on business-cycle regimes (attempts 44-46), on record
+
+Three gauges of the same economic claim ("long the weak-cycle
+regime"): soft-manufacturing (ISM mfg PMI) PASSED its OOS shot; soft-
+consumer (Michigan) FAILED at IS with the OPPOSITE pattern; hard-labor
+(Sahm gap) FAILED at IS flat with halves split. The claim is GAUGE-
+SPECIFIC, not a universal bad-news premium. Two readings, both on
+record: (a) ISM mfg is the one gauge with genuine tactical-allocation
+literature behind it and its pass had discriminating structure
+(expansion-negative OOS, 7/8 episodes); (b) skeptically, two failed
+generalizations RAISE the probability that attempt 44's pass is a
+regime-timing coincidence (PMI < 50 happening to bracket the 2022-25
+recovery) rather than a causal premium - the 2008-09 evidence from the
+Sahm family shows weak-cycle regimes can sit squarely on crash periods.
+NET EFFECT: attempt 44 stands (its registered gates all passed) but
+graduates, if signed off, with this class context attached; the paper
+stream is the arbiter. Class closed - no further cycle-gauge variants
+without new data types. Program score: 1 OOS pass (pending sign-off) /
+46 attempts, 11 shots spent. Test count +4 selectable +2 diagnostics.
