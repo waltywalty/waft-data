@@ -1,15 +1,19 @@
 {
   "permissions": {
+    "defaultMode": "dontAsk",
     "allow": [
       "Read", "Edit", "Write", "Glob", "Grep", "Agent",
-      "WebFetch", "WebSearch",
-      "Bash(python3:*)", "Bash(python:*)",
+      "WebFetch", "WebSearch", "Artifact", "ToolSearch",
+      "ReadNotifications", "SendUserFile", "Skill", "Workflow",
+      "TaskCreate", "TaskUpdate", "TaskList",
+      "Bash(python3:*)", "Bash(python:*)", "Bash(bash:*)",
       "Bash(git status:*)", "Bash(git diff:*)", "Bash(git log:*)",
       "Bash(git add:*)", "Bash(git commit:*)", "Bash(git push:*)",
-      "Bash(git fetch:*)", "Bash(git pull:*)", "Bash(git checkout:*)", "Bash(git branch:*)",
+      "Bash(git fetch:*)", "Bash(git pull:*)", "Bash(git checkout:*)",
+      "Bash(git branch:*)", "Bash(git clone:*)",
       "Bash(cat:*)", "Bash(head:*)", "Bash(tail:*)", "Bash(wc:*)",
       "Bash(ls:*)", "Bash(grep:*)", "Bash(mkdir:*)", "Bash(cp:*)", "Bash(mv:*)",
-      "Bash(cd:*)", "Bash(printf:*)", "Bash(sed:*)",
+      "Bash(cd:*)", "Bash(printf:*)", "Bash(sed:*)", "Bash(curl:*)", "Bash(seq:*)",
       "mcp__8e34bead-f68c-47ac-a950-6bb859d661c9",
       "mcp__cc629130-b6b3-4041-ab50-199b2584859c",
       "mcp__8894b275-96d2-423e-b6e3-768bc38b6a4a",
@@ -18,7 +22,9 @@
       "mcp__Kernel",
       "mcp__Equibles",
       "mcp__Alpha_Vantage_MCP_Server",
-      "mcp__Interactive_Brokers_IBKR"
+      "mcp__Interactive_Brokers_IBKR",
+      "mcp__Claude_Code_Remote",
+      "mcp__github"
     ]
   }
 }
