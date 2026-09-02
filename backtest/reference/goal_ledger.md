@@ -4436,3 +4436,47 @@ graduates, if signed off, with this class context attached; the paper
 stream is the arbiter. Class closed - no further cycle-gauge variants
 without new data types. Program score: 1 OOS pass (pending sign-off) /
 46 attempts, 11 shots spent. Test count +4 selectable +2 diagnostics.
+
+## 2026-09-02: user sign-off received - PMI-contraction regime graduates to paper
+
+USER DECISION (2026-09-02): "first thing is yes" - graduate attempt 44 to a
+paper/tracking stream. Also: the user cannot journal by hand, so the four
+gold-era streams AND this one move to AUTOMATIC journaling computed by the
+main session at each scheduled check-in (contract: backtest/forward/
+CONTRACT.md; code: backtest/forward/leg_*.py; rows land in journal artifact
+af9114c9 tagged src="auto"). The user reports no observed signals so far;
+the empty journal is therefore "not logged", not "no signals" - the auto-
+journal will back-fill from the data (gold 5m via IBKR is only available
+~1 week back at 5m resolution, so the XAU/XAUAUD back-fill starts from the
+first weekly pull; HK33 and daily index data allow a full back-fill).
+
+### PMI stream tracking spec (frozen)
+
+Signal: last-released ISM Manufacturing PMI headline (source: ISM press
+release via web search each first-business-day; stored in
+data/forward/ism_pmi.json). Regime LONG from the first session strictly
+after a release < 50 until the first session after a release >= 50; flat
+otherwise. Legs: SPX / NDX / RUT cash indices standing in for MES/MNQ/M2K,
+daily close-to-close bookings, cost MICRO/20 per booking applied at review
+time. Journal rows: one per leg per calendar month with active sessions.
+STATE AT REGISTRATION: August 2026 print 54.6 (July 55.6) - regime
+INACTIVE; the stream starts flat and books nothing until a sub-50 print.
+GRADUATION BAR (forward only): >= 250 pooled forward regime-day bookings
+with avgR > 0, t >= 2 (daily bookings, serial correlation caveat noted) AND
+at least two separate forward contraction episodes both positive AND the
+expansion-day control (computed at review from the same data) not above the
+contraction days. KILL: after 250 forward regime days avgR <= 0, or pooled
+forward drawdown exceeding 3x the backtest's worst episode drawdown, or any
+forward episode with avgR < -0.15 R/day over >= 40 days. Bound on record:
+the premium is gauge-specific (attempts 45/46 failed) - the forward stream
+is the arbiter of readings (a) vs (b) in the class verdict above.
+
+### Declared substitutions for the automated gold streams
+
+XAU corr gate uses IBKR daily gold (22:00 UTC boundary) and IBKR AUD.USD
+daily closes instead of Athens-day gold and FRED noon AUD; gold prices are
+IBKR London Gold midpoint (no spread) instead of the backtest CFD feed; the
+fixed 0.30 $/oz cost and 0.30 stop slippage are applied at review, not in
+the journal rows. Each leg must reproduce the archived backtest trades on
+the archived data before its forward output is trusted (verification
+results recorded when the build completes).
