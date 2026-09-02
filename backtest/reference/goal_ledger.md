@@ -4480,3 +4480,38 @@ fixed 0.30 $/oz cost and 0.30 stop slippage are applied at review, not in
 the journal rows. Each leg must reproduce the archived backtest trades on
 the archived data before its forward output is trusted (verification
 results recorded when the build completes).
+
+### 2026-09-02: auto-journal built and verified; journal switched to automatic
+
+BUILD (backtest/forward/): leg_xau.py (XAU + XAUAUD), leg_mhi.py, leg_d7.py,
+leg_pmi.py, integrator autojournal.py; each leg carries a reproduction test
+(test_leg_*.py) plus reviewer stress tests (stress_leg_*.py). VERIFICATION
+ON THE ARCHIVED DATA, all re-run by the main session: XAU 652/652 deployable
+trades reproduced (entry, exit, stop, exit reason all exact; corr-gate day-
+boundary substitution measured as a no-op: 0 flips on 1,079 breakout days
+because the gold feed has no prints in the 21:00-22:00Z summer hour); D7
+253/253 archived SPX trades reproduced (every r28b scalar to 1e-9); MHI
+trade-for-trade identical to run_hsi.py's own code on the HK33 span (n 18,
+PF 1.977 = the archived cell's second half); PMI 47/47 synthetic checks
+(regime start/end sessions, month rows, month-to-date status). Adversarial
+reviews (8 agents, two lenses per leg) found two real defects, both fixed:
+(1) the XAU corr gate was forward-filled past the last joint daily bar -
+now a session beyond the daily data is DEFERRED (NaN -> no trade, exactly
+deployable.py line 23) and listed in status(); (2) closed trades inside
+the backtest window reached the journal as "forward" rows - now every
+stream has a start date in autojournal.STREAM_START and earlier rows are
+ignored: XAU/XAUAUD 2026-08-27 (journal era; the 5m pull cannot reach
+further back anyway), MHI 2026-09-01 (HK33 archive ends 2026-08-31), D7
+2026-08-27 (round 28b decision), PMI 2026-09-02 (sign-off).
+FIRST AUTOMATED ROWS (journal af9114c9 v4, src=auto): XAU 2026-08-27
+SHORT 4617.39 -> 4609.42 time exit, +7.97 $/oz gross (+7.67 net);
+XAUAUD 6428.00 -> 6405.75, +22.25 A$/oz; MHI 2026-09-01 LONG 25322.60
+stopped 25259.35, -63.25 pts (-73.25 net). 08-31 and 09-01 gold breakouts
+were gated out (corr 0.556 / 0.569 > 0.5); gate 0.641 CLOSED on 09-02.
+D7: OPEN since 2026-09-01 at 7631.47 (SMA200 7126.82), exit at the first
+close >= 7730.99. PMI: INACTIVE (Aug print 54.6). SPRT: XAU/XAUAUD LLR
++0.17, MHI -0.49, all "continue".
+CADENCE: weekly trigger (Mondays 03:25 UTC) refreshes data, runs the
+integrator, republishes the journal, notes one line here; monthly
+routine (1st, 02:00 UTC) scores all five streams + the Round-42 watch
+list. The user never journals by hand again.

@@ -18,6 +18,11 @@ sys.path.insert(0, HERE)
 os.chdir(BT)
 
 LEGS = ["leg_xau", "leg_mhi", "leg_d7", "leg_pmi"]
+# Forward evidence starts the day AFTER each stream's registration / archived data end.
+# Rows dated earlier are backtest-window trades and are never journalled (see ledger,
+# 2026-09-02 auto-journal protocol).
+STREAM_START = {"XAU": "2026-08-27", "XAUAUD": "2026-08-27", "MHI": "2026-09-01",
+                "D7": "2026-08-27", "PMI": "2026-09-02"}
 STATE_RE = re.compile(r'(<script id="state" type="application/json">)(.*?)(</script>)', re.S)
 
 
@@ -85,11 +90,18 @@ def main():
     before = len(state["trades"])
 
     rows, status, errors = collect(a.data)
+    pre = [r for r in rows if r["date"] < STREAM_START.get(r["instr"], "0000")]
+    rows = [r for r in rows if r["date"] >= STREAM_START.get(r["instr"], "0000")]
     added = merge(state, rows)
 
     per = {}
     for r in added:
         per[r["instr"]] = per.get(r["instr"], 0) + 1
+    pre_per = {}
+    for r in pre:
+        pre_per[r["instr"]] = pre_per.get(r["instr"], 0) + 1
+    print(f"pre-stream rows ignored: {len(pre)} "
+          f"({', '.join(f'{k} {v}' for k, v in sorted(pre_per.items())) or 'none'})")
     print(f"legs: {len(rows)} candidate rows, {len(added)} new "
           f"({', '.join(f'{k} +{v}' for k, v in sorted(per.items())) or 'none'}); "
           f"journal {before} -> {len(state['trades'])} rows")
