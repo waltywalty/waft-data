@@ -4951,3 +4951,41 @@ notes.txt): META valid from 2022-06-15 (pre-rename rows dropped), RTX
 from 2020-04-15, GEV/PLTR/SNDK from listing, ~15 merger/exchange-offer
 level jumps in individual series - the registered 'wrong population'
 risk. Nothing else in the registration changes.
+
+### Attempt 48 result: IS FAIL - the registered direction is the wrong side of the drift
+
+(results/r65_shortint_is.json, run_r65_shortint.py; IS-only under the
+firewall, --unseal never invoked; 2 adversarial reviewers, 0 fatal.)
+Signal-side checks reproduced the frozen registration exactly (119
+defined-and-tradable settlements, IS 89 / sealed 30, 916 IS rows per
+instrument, availability asserted for every settlement; basket 80
+series, membership rollback 7/80 non-members at 2021-01-15 = 8.8% <
+20% cap; coverage 70-79 reporters, floor 60 never breached). IS GRID
+(daily 15:55 close-to-close, long only, ATR20-normalised, net of
+MICRO/20 + toggle costs; IS sessions 2021-02-02..2024-10-14):
+LOW50 pooled n 800 avgR -0.043 t -1.41 halves [-,-]; LOW25 pooled n 380
+-0.015 t -0.35 [-,+]; LOW50 NDX n 400 -0.031 t -0.73 [-,+]; LOW25 NDX
+n 190 -0.002 t -0.03 [-,+]. Every selectable cell negative; no cell near
+the t floor; sibling rule fails everywhere. CONTROLS all POSITIVE: MID
+pooled +0.134 t +3.38, HIGH pooled +0.100 t +3.00, TREND (> 200-SMA)
++0.066 t +2.85; the r16-B random-regime null (smoke run, 100 draws) puts
+the best LOW cell at p 0.99; outside the PMI < 50 regime LOW -0.115 vs
+HIGH +0.058 (would have been SUBSUMED). OOS seal NOT opened, no shot
+spent (11 remain spent). Regime structure: LOW50 7 episodes, LOW25 4.
+VERDICT: the RRZ aggregate-short-interest signal, in the mega-cap
+hedging-short proxy this data can build, has the WRONG SIGN on 2021-24:
+returns were higher when aggregate short interest was HIGH - consistent
+with the registration's own 'wrong population' risk (mega-cap short
+interest is arbitrage/hedging inventory, and rises with the market).
+Family closed. CLASS OBSERVATION on record: attempts 45, 46 and 48 -
+three different gauges, three different data classes - all put the
+equity drift in the GOOD state (optimism, improving labor, high short
+interest = active hedged longs); attempt 44 (PMI < 50) remains the one
+gauge that paid on the weak side, and it is on paper precisely so the
+forward data can say whether that is a mechanism or a 2022-25 accident.
+Program score: 1 OOS pass (on paper) / 48 attempts + 10 registration-
+stage kills; 11 shots spent. Round 64 sweep CLOSED: 12 proposed, 10
+killed at registration, 2 run, 2 IS-fail. The on-disk and reachable
+data frontier is exhausted for the mechanism classes tried; the next
+sweep must begin with data-availability probes of genuinely new
+classes (Equibles currently down).
