@@ -4515,3 +4515,365 @@ CADENCE: weekly trigger (Mondays 03:25 UTC) refreshes data, runs the
 integrator, republishes the journal, notes one line here; monthly
 routine (1st, 02:00 UTC) scores all five streams + the Round-42 watch
 list. The user never journals by hand again.
+
+## Round 64: multi-agent hypothesis sweep (2026-09-02/03) - registrations
+
+PROCESS: 6 proposer agents on distinct untouched angles (index
+microstructure, cross-asset lead-lag, options/short-side data, index-
+rebalance and settlement calendars, Hang Seng/Asia structures,
+positioning velocity), 2 proposals each, under the IS-only firewall (no
+returns computed; signal-side counts only); every proposal attacked by
+2 adversarial critics (burned-adjacency lens; mechanism/data/lookahead
+lens; default kill when uncertain); a ranker wrote the ledger text for
+survivors incorporating critics' fixes. 12 proposed, 10 KILLED AT
+REGISTRATION (no grid built, no test counted beyond this record), 2
+registered below.
+REGISTRATION-STAGE KILLS (one line each, reasons from the critics):
+ 1 Closing-auction imbalance fade (post-16:00 reversal) - exit-B cells
+   are burned attempt 29's window; post-close prices in the OOS block
+   are synthetic in the CFD feed.
+ 2 Megacap after-hours earnings -> MNQ continuation - sub-cell of the
+   spent overnight-gap family (attempt 5); no uninformed counterparty.
+ 3 Small-cap overnight residual fade (M2K-vs-MES) - sub-cell of attempt
+   5's day set; cost-dominated for a spread of two micro legs.
+ 4 Closing-auction pressure spread reversal (M2K-vs-MES) - no forced
+   counterparty at the index level; cost-dominated.
+ 5 VIX settlement-auction hedging reversal - half the grid re-
+   parameterizes burned attempt 19; the hedging footprint sits in deep-
+   OTM puts, not in ES delta.
+ 6 Buyback-blackout calendar regime (OPEN-window long) - long-only
+   regime over ~25% of sessions = index drift; the diagnostics cannot
+   separate the corporate bid from being long (attempt 45/46 pattern).
+ 7 Index rebalance-day closing-flow reversal - horizon re-parameteriza-
+   tion of attempt 19; rebalance flow nets to ~zero at index level.
+ 8 HKMA convertibility-undertaking liquidity regime on HSI - the forced
+   counterparty exists only in USDHKD spot, not in HSI.
+ 9 HK index-rebalance closing-auction reversal - reconstitutions are
+   cross-sectional; no directional index-level flow.
+10 ETF short-interest surge -> index long - the anchor citation's sign
+   was inverted; settlement-calendar confound the diagnostics cannot
+   separate.
+SIDE NOTE ON RECORD (from the attempt-47 critics): the '+6 calendar
+days' CFTC release convention used by attempts 42/43 and inherited by
+watch #11 is wrong for ~23% of report weeks (holiday-delayed and
+shutdown releases print later); watch #11's forward accrual adopts the
+corrected release rule below (Friday 15:30 ET, or the following Monday
+when a federal holiday falls in the report week; shutdown weeks
+non-tradable). Attempts 42/43 themselves are spent and are not re-run.
+
+### Attempt 47 ADJACENCY DIAGNOSIS + registration (BEFORE running):
+### gold speculator-flow liquidity premium (fade the weekly COT spec flow) - MGC
+
+DIAGNOSIS vs r24 Spec B (Williams COT Index on gold, ledger 318-345 /
+391-410, NEGATIVE, max-stat p 0.76, pre-protocol full-sample test
+2012-06..2026-08 with halves at 2019-01-01): r24 conditioned on the
+LEVEL of commercial (and, as a category check, large-spec) net
+position via 13/26/52/156-week stochastics at 70/30-90/10 thresholds
+and held Monday->Monday. This family conditions on the one-week CHANGE
+in large-spec net position scaled by open interest - the first
+difference of r24's willco_s series (net_s / OI; run_r24_cot.py lines
+74-77) - and predicts reversal of that flow's price impact. The
+attempt-30-vs-9 precedent (VIX SHOCK vs VIX LEVEL, ledger 3496-3518)
+applies, but the following is ON RECORD so the family is never cited as
+independent of r24: (i) the signal series is a transform of r24's; (ii)
+the Monday-after-release entry and 5-session hold are r24's own
+convention (ledger 322-325); (iii) the sealed OOS window (report weeks
+2022-08-30..2026-01-20) lies entirely inside r24's already-reported
+second half, where the large-spec LEVEL fade read flat (+1.04 / -0.06,
+ledger 398-400); the OOS is therefore sealed only with respect to the
+FLOW transform, not the data class; (iv) r24's spec-fade result is this
+family's prior on the LEVEL read - a pass here would BOUND r24 (flow
+carries what level did not), never confirm it; (v) legacy commercials
+~ -(noncomm + nonrept), so a commercial-flow mirror cell is NOT
+independent and is REFUSED ex-ante (recorded so it is never mined).
+SIGNAL-SIDE OVERLAP (computed, no returns): 46-53% of flow events sit
+in an r24 26w-spec extreme (>= 80 or <= 20) in the same report week;
+the subset with ALL r24 gauges (26w stochastic of willco_s, 13w
+stochastic of net_c, 13w stochastic of willco_c) inside the 20-80
+mid-band is 58 events at thr 1.0 x hold 5 (IS 45 / OOS 13), 41 (IS 31)
+at thr 1.0 x hold 10, 26 (IS 21) at thr 1.5 x hold 5, 22 (IS 18) at
+thr 1.5 x hold 10. Overlap shares are re-printed before any grid is read.
+DIAGNOSIS vs attempt 37 (gold margin-cascade CONTINUATION, IS-fail,
+holdout SEALED, ledger 3904-3938): different trigger (positioning flow,
+not the realized daily move) and OPPOSITE predicted sign; but corr(z,
+same-week gold return) ~ 0.65 with 91% sign agreement is disclosed, so
+the price-move partition below is IS-ONLY and the OOS shot reports the
+selected cell alone - attempt 37's sealed holdout is not read through a
+mirrored big-move partition. Attempt 33 (GVZ shock) conditions on
+implied vol - distinct. Attempts 42/43 (TFF index positioning, class
+CLOSED) and watch #11 are index-only and level-based - no index leg
+here; silver is a future instrument-extension family (attempt-33/38
+convention), not pooled. Gold COT is NOT a new data class (ledger 4130);
+the family is admitted on mechanism distinctness plus the gate below.
+
+MECHANISM (Kang, Rouwenhorst & Tang JF 2020; Marechal JFM 2023
+replication; Cheng-Kirilenko-Xiong RoF 2015): commodity futures returns
+carry a slow hedging premium (levels) and a short-horizon LIQUIDITY
+premium: speculators (largely signal-driven CTAs) demand immediacy, their
+weekly position CHANGES push price, and the commercials who accommodate
+the flow earn a premium as the impact reverts over the next 1-2 weeks.
+The uninformed counterparty is the liquidity-demanding spec flow itself;
+the information lag is structural (the CFTC print is the only public
+record of WHO moved the market and arrives ~3 days late). Registered
+weakness: KRT returns are Tuesday-to-Tuesday (pre-publication); a
+Monday entry starts 4 sessions into a reversal the paper calls
+short-lived - the late-entry placebo tests exactly this decay.
+Direction fixed ex-ante: position = MINUS sign(z) (fade the flow). No
+mirror if the sign comes out wrong. Honest prior: MODERATE - KRT's
+headline is cross-sectional across 26 commodities; the single-commodity
+time-series version on the most financialized metal, post-2015, is the
+weaker cousin; publication decay is the principal risk.
+
+DATA: data/COT_gold_github.csv (legacy futures-only 088691, weekly,
+2006-01-03..2026-01-20, 1047 rows, no duplicates; report dates 1033
+Tuesday / 13 Monday / 1 Wednesday). Prices: the r24-verified spliced
+gold series (XAUUSD_m15_ejtrader.csv 2012-05..2022-03 Europe/Athens,
+/100 scaling; XAUUSD_H1_collector.csv 2016-04..2026-08 UTC; XAUUSD_5m
+2020-08+ for intrabar marks; loader = run_r24_cot.py lines 37-67 with
+its cross-check asserts). Span FROZEN at report weeks 2012-06-05..
+2026-01-20 (712 weeks); the 2026-01..08 COT tail is NOT added to the
+family (adding data after registration would be rule-shopping, ledger
+3944-3948) - it may accrue as forward tracking only.
+SIGNAL: NCnet_t = noncomm_long_all - noncomm_short_all; flow_t =
+(NCnet_t - NCnet_{t-1}) / OI_{t-1}; z_t = flow_t / std(flow_{t-52..t-1})
+(trailing 52 weeks, shifted, current week excluded). Event: |z_t| >= thr.
+AVAILABILITY - corrected CFTC release rule (the r60 '+6 calendar days'
+convention is WRONG for ~23% of weeks, see side note): release_ts =
+report_date + 3d 15:30 ET (Friday); if any US federal holiday (incl.
+Juneteenth from 2021) falls Mon..Fri of the report week, release_ts =
+the following Monday 15:30 ET (conservative: covers the confirmed
+Thu/Fri rule and the disputed Monday-holiday case; 143 of 712 weeks).
+The main session may replace this with the exact per-year cftc.gov
+release tables if reachable, hard-coded and frozen BEFORE any return is
+computed. NON-TRADABLE (dropped, not modeled as late entries - their
+catch-up prints were bunched 2-3 per week): shutdown report weeks
+2013-10-01..2013-11-05, 2018-12-24..2019-03-05, 2025-09-30..2025-12-16
+(29 weeks; includes the four Oct-2025 events z -1.28/-1.74/-1.65/+1.71
+of gold's parabolic top - dropped on record, not selectable). ENTRY =
+first bar close at/after 09:30 ET on the first gold session STRICTLY
+AFTER release_ts (Monday for normal weeks, Tuesday for holiday-delayed
+weeks; entry - report_date distribution 6d 548 / 7d 130 / 8d 5 weeks).
+Loader asserts release_ts < entry_ts for every event and prints that
+distribution before any grid is read. EXIT at the 16:00 ET mark of the
+hold-th session, entry session = session 1 (hold 5 = Friday of the
+entry week for a Monday entry; hold 10 = the following Friday); one
+position at a time (busy-until dedupe); no stop (weekly-horizon claim).
+Returns ATR20(daily range)-normalized. IS = first 75% of the 712 report
+weeks on the ORIGINAL index (534 weeks, to 2022-08-23); OOS sealed =
+178 weeks (2022-08-30..2026-01-20) - split not re-chosen after drops.
+
+FROZEN GRID (4 selectable cells): thr {1.0, 1.5} x hold {5, 10}
+sessions. Normal-floor cell: thr 1.0 x hold 5 only (IS 147, OOS 48).
+SCARCE-EVENT cells declared now: thr 1.0 x hold 10 (IS 114, OOS 37 -
+above the 25 scarce floor), thr 1.5 x hold 5 (IS 76, OOS 20), thr 1.5
+x hold 10 (IS 66, OOS 17) - the thr-1.5 cells are under the 25 OOS
+scarce floor BY CONSTRUCTION: if selected, the OOS shot can reach only
+watch-item status on a power fail, never a pass.
+DIAGNOSTICS (non-selectable, IS-ONLY except where stated):
+(a) SUB-THRESHOLD BAND: same fade rule on weeks with 0.25 <= |z| < 0.5
+(132 tradable weeks, IS 107), both holds; sub-band avgR >= the selected
+cell's avgR = generic weekly mean reversion at all flow scales, family
+self-refutes at IS.
+(b) LATE-ENTRY PLACEBO: identical event set (by construction), entry on
+the first session strictly after release_ts + 7d; a liquidity premium
+must decay - late avgR >= on-time avgR at the selected cell = slow
+drift, family dies.
+(c) CONCURRENT PRICE-MOVE PARTITION (IS-ONLY): events split by the
+positioning week's own move |ret_week| / (sigma63 * sqrt 5) < 1 vs >= 1
+(recomputed on the frozen event set); the small-move partition must be
+positive at the selected cell; an effect confined to the big-move
+partition = reading attempt 37's object mirrored, family dies (no
+re-specification).
+(d) INDEPENDENCE GATE vs r24 (attempt-45 form): the selected cell's IS
+avgR restricted to events with all three r24 gauges (26w willco_s, 13w
+net_c, 13w willco_c) in the 20-80 mid-band must be positive with n >= 40
+for the normal-floor cell, n >= 25 for scarce cells (IS subset sizes
+45 / 31 / 21 / 18); if the subset is not positive or under its floor,
+the family is declared SUBSUMED by r24, the OOS seal is NOT opened, no
+shot spent - thr 1.5 x hold 10 (18) is auto-SUBSUMED on selection,
+declared now.
+(e) COMMERCIAL-FLOW MIRROR REFUSED (see diagnosis).
+(f) Both IS halves same sign; neighbor rule = the other hold at the
+same thr must be IS-positive; long and short legs each reported (97 /
+98 events at thr 1.0 x hold 5 - a one-legged result is reported as such,
+not re-specified); cost x1.5 positive; t >= 2.0 floor.
+OOS SHOT: the selected cell ALONE (no partitions, no placebos printed on
+OOS - protects attempt 37's sealed holdout). Program bar: n >= 40 (25
+scarce), avgR > 0, t >= 2, PF >= 1.15, cost x1.5 positive. Would be the
+12th shot.
+COSTS: MGC 0.35 pt per RT, sensitivity x1.5 (0.525); at a 5-10 session
+hold with ATR20 ~30-80 pt one RT is ~0.005-0.01 R - the family is not
+cost-dominated; the risk is signal. Entry slippage = the 09:30 ET bar
+close, not the open.
+EXPECTED N (frozen, signal-side, scratchpad/reg/cot_flow_counts_v2.py):
+712 report weeks, IS 534 / OOS 178; tradable after drops 683. thr 1.0:
+hold 5 = 195 events (IS 147 / OOS 48; 97 long / 98 short), hold 10
+(busy-until) = 151 (IS 114 / OOS 37); thr 1.5: hold 5 = 96 (IS 76 /
+OOS 20; 45 long / 51 short), hold 10 = 83 (IS 66 / OOS 17); thr 2.0
+(not in grid) 35. Events/yr at thr 1.0 stationary: 9-19 every year
+2012-2025. Holiday-delayed events at thr 1.0 x hold 5: 34 (entered
+Tuesday under the corrected rule). Under the OLD +6d rule 46 of 220 raw
+thr-1.0 event weeks (IS 36) would have been traded before the print
+existed - the attempt-15 lookahead pattern (ledger 2760-2780), avoided.
+SIDE NOTE ON RECORD for the parent: the '+6 calendar days, no
+lookahead' r60 convention used by attempts 42/43 (ledger 4141-4144,
+4185) and inherited by watch #11 carries the same defect (Monday 09:30
+entries on holiday-delayed and shutdown weeks precede the release);
+watch #11's forward accrual should adopt the corrected rule. Test count
++4 selectable (+6 diagnostics).
+
+### Attempt 48 ADJACENCY DIAGNOSIS + registration (BEFORE running):
+### aggregate short-interest information-lag regime (RRZ) - SPX/NDX
+
+DATA CLASS: NEW (ledger grep for short interest / FINRA / Rapach /
+Ringgenberg / RRZ: 0 hits) - admitted under the class verdict's 'no
+further cycle-gauge variants without new data types' (ledger 4436-4437)
+WITH the independence gate registered. VERIFIED DEPTH (signal side,
+2026-09-03): Equibles GetShortInterest serves FINRA bi-monthly
+settlements from 2020-01-15 (AAPL, XOM checked; no rows 2005-2019) -
+160 settlements to 2026-08-28. The 2008/2010-depth design and its
+120-report windows are VOID; this registration is re-derived for the
+verified depth ex-ante and frozen. ADJACENCY: attempts 42/43 (TFF
+index-futures positioning, contrarian at LEVEL extremes, class CLOSED;
+watch #11 = extreme lev-money net-SHORT -> long, the opposite read on the
+shorts axis) - different population (equity cross-section vs futures
+hedgers/basis traders), different mechanism (informed-short
+underreaction vs crowding), different horizon (regime vs 5/20-session).
+Attempt 23 (equity P/C, retail options sentiment, next-day contrarian,
+IS-fail) - different data and horizon. Attempt 44 (PMI-contraction
+regime, OOS PASS, shot spent) shares the regime-long daily-booking
+CHASSIS and the 'just being long' risk; attempts 45/46 recorded that
+the drift lives in GOOD regimes (optimism diag t +2.94, ledger
+4353-4354; improving-labor diag t +3.68, 4415-4417) - and this family's
+direction (long while informed-bearish positioning is LOW) is a
+good-state read on the very 2021-2025 span where that drift was
+recorded. DISCLOSED NOW: the sealed OOS window (2024-10-15..2025-12-31)
+sits 87% inside the mfg-PMI < 50 regime attempt 44 spent its shot on
+(the 2025-04..2025-12 episode, ledger 4281/4288); only 40 OOS sessions
+per instrument lie outside it. The HIGH-regime control and the
+trend-state drift control are therefore the family's load-bearing
+refutation instruments, and the OOS qualifier below decides whether a
+pass can mean anything but a re-read of attempt 44.
+
+MECHANISM (Rapach, Ringgenberg & Zhou 2016 JFE): short sellers are
+informed in aggregate; the aggregate of short positions predicts market
+returns at 1-12 month horizons, absorbed slowly because it is published
+with a lag, per stock, noisily, and rarely aggregated (information-lag
+underreaction). Uninformed counterparty: the index investor trading
+without the aggregated signal. Direction fixed ex-ante: LONG indices
+while aggregate short interest is LOW (little informed bearish
+positioning), flat otherwise; no shorts. Honest prior: RRZ is strong
+in-sample 1973-2014 with internal OOS, but (a) post-2014 decay is the
+registered principal risk; (b) this proxy departs from RRZ (100-name
+mega-cap basket, 1-year trailing percentile instead of a 5-year
+detrend, raw split-restated share counts) - the informed-short
+population lives in small/hard-to-borrow names while mega-cap short
+interest (~1% of float) is dominated by hedging/arbitrage shorts, so the
+proxy may measure the wrong population (registered risk #2, not
+repairable inside the call budget: full S&P 500 = 500 calls); (c) RRZ
+predictability is monthly-horizon and concentrated in bad-return
+periods, so long-in-low-SI must beat the HIGH control to count as
+anything but drift.
+
+BASKET (frozen, survivorship disclosed): the 100 heaviest current S&P
+500 constituents (Equibles GetIndexComposition 'S&P 500', maxResults
+100). Point-in-time membership: roll the list back through
+GetIndexChanges('S&P 500', maxResults 500); a ticker not a member at
+settlement t is excluded at t (one-directional: departed members are
+NOT added - disclosed). If GetIndexChanges does not reach 2021-01, or
+if > 20% of the basket were non-members at 2021-01-15, the family is
+CAPPED at watch-item status ex-ante (cannot graduate whatever the OOS
+prints). Survivorship acts on the LEVEL of short interest; the
+within-series trailing percentile below is level-free, which bounds the
+bias but does not remove it (declared).
+SIGNAL: per ticker s_i,t = log(split-restated short position) at each
+FINRA settlement t (15th and last business day). A_t = mean_i s_i,t over
+tickers reporting and member at t; require >= 60, else the settlement is
+skipped and the prior regime carries. Buyback drift in share counts over
+a 1-year window (~2-3%) is small vs the series' variability (~20-30%
+swings) and is left in, declared. ONE window only: p_t = percentile rank
+of A_t within the trailing 24 settlements INCLUDING t (~1 year) -
+defined from the 25th settlement, 2021-01-15 (the 24-report burn-in
+replaces RRZ's full-sample linear detrend, which would be lookahead).
+Regimes: LOW50 = p_t <= 50th, LOW25 = p_t <= 25th; HIGH (control) = p_t
+>= 75th; MID = 50-75th (gradient band). AVAILABILITY (no lookahead): the
+settlement-t report is treated as known at the close of the 10th
+trading day after t (FINRA disseminates ~7-9 business days after
+settlement; verified against FINRA's dissemination schedule before the
+run if reachable, else +10 stands as conservative); the regime applies
+from the NEXT session; re-evaluated only at availability dates
+(bi-monthly). Bookings: daily close-to-close at the 15:55 ET print, NY
+dates, ATR20-normalized. INSTRUMENTS: MES/MNQ via SPX_5m / NDX_5m
+(frames end 2025-12-31). RTY DROPPED: RTY_5m ends 2020-05-14 - no RTY
+session has a defined signal; MGC excluded (no mechanism).
+SPLIT (FOMC/P-C precedent, ledger 3209-3210: the family's own span):
+settlements with a defined signal AND a tradable session = 119
+(2021-01-15..2025-12-15); IS = first 89 settlements (2021-01-15..
+2024-09-13; regime sessions 2021-02-02..2024-10-14, 916 per
+instrument); OOS sealed = 30 settlements (2024-09-30..2025-12-15;
+sessions 2024-10-15..2025-12-31, 298 SPX / 299 NDX).
+
+FROZEN GRID (4 selectable cells): {LOW50, LOW25} x {SPX+NDX pooled, NDX
+alone}. NDX alone is the mechanism-implied sub-cell fixed ex-ante: the
+measured basket's weight is dominated by Nasdaq-100 mega-caps, so NDX is
+the index whose constituents' short interest is actually observed.
+DIAGNOSTICS (non-selectable):
+(a) HIGH-REGIME LONG (p_t >= 75th), same bookings: reported as the
+difference LOW - HIGH with its t, not a sign; HIGH avgR >= the selected
+LOW avgR = generic drift, family dies at IS (attempt-25/44 pattern).
+(b) GRADIENT BAND: avgR must be monotone non-increasing LOW25 -> LOW50
+-> MID (50-75) -> HIGH (>= 75); a non-monotone winner is a spike.
+(c) TREND-STATE DRIFT CONTROL (replaces the delay placebo, which has no
+power at a 24-report window and a bi-monthly regime - dropped, declared):
+(i) the same bookings on sessions where the index close > its 200-day
+SMA (trend-long null); the selected LOW cell must beat it by a t >= 2
+DIFFERENCE; (ii) the r16-B randomly-timed-regime max-stat null: 1000
+random regimes with matched coverage share and matched mean episode
+length per cell, max over the 4 cells; the selected cell's IS avgR must
+sit above the 95th percentile of that null. Failing either = the LOW
+regime is a bull-state proxy, family dies at IS.
+(d) INDEPENDENCE GATE vs attempt 44 (attempt-45 form, strengthened per
+the class verdict): within IS sessions OUTSIDE the mfg-PMI < 50 regime
+(473 per instrument), the selected cell's LOW avgR must be positive with
+n >= 120 AND must exceed the HIGH-regime avgR on the same non-overlap
+sessions; otherwise SUBSUMED, seal NOT opened, no shot spent. Expected
+non-overlap n: LOW50 pooled ~472, LOW25 pooled ~236, NDX-alone LOW50
+~236, NDX-alone LOW25 ~118 - the last is at the floor by construction:
+if it wins with non-overlap n < 120 the family is SUBSUMED, declared now.
+(e) OOS QUALIFIER (non-selectable, printed on the shot): the OOS window
+is 87% attempt-44 contraction sessions. On the shot the HIGH-regime
+control is printed on OOS alongside the selected cell; if OOS HIGH avgR
+>= OOS LOW avgR, an OOS pass is recorded as PASS-CONFOUNDED (drift /
+attempt-44 re-read) and the family caps at watch-item status - it
+cannot graduate on this span. Only LOW > HIGH on OOS with the program
+bar met counts as a pass.
+(f) SIGNAL-SIDE PRE-RUN CHECKS (no returns): per-settlement reporting
+coverage (>= 60 of 100) printed; membership-rollback coverage printed;
+LOW50/LOW25 session shares and regime-episode counts printed (expected
+dozens of bi-monthly re-evaluations vs the ~5 episodes of the PMI
+family); availability-vs-entry timestamps asserted.
+(g) Both IS halves same sign; sibling-positive (the other threshold in
+the same instrument grouping); regime-episode signs reported (effective
+n); cost x1.5 positive; t >= 2.0 floor; n >= 120 bookings.
+OOS SHOT: program bar (n >= 40, avgR > 0, t >= 2, PF >= 1.15, cost x1.5
+positive) plus qualifier (e). Would be the 12th shot.
+COSTS: MICRO/20 per daily booking (attempt 44-46 regime-amortization
+convention) plus one full micro RT (SPX 0.35, NDX 1.0) per regime
+toggle - bi-monthly re-evaluation allows up to 24 toggles/yr worst case;
+1.5x sensitivity mandatory.
+EXPECTED N (frozen, signal-side, scratchpad/reg/si_calendar_v2.py):
+160 Equibles-depth settlements; 119 with a defined signal and a
+tradable session; IS 89 / OOS 30 settlements. Sessions per instrument:
+IS 916 (2021-02-02..2024-10-14), OOS 298/299 (2024-10-15..2025-12-31).
+Regime shares ~50% / ~25% by construction for a stationary series ->
+IS bookings pooled ~916 (LOW50) / ~458 (LOW25), NDX alone ~458 / ~229;
+non-overlap (outside PMI < 50) IS sessions 473 per instrument, OOS 40.
+Actual shares are printed pre-run; a trending A_t inflates LOW share -
+that is what control (c) is for.
+DATA NEEDED: Equibles GetIndexComposition('S&P 500', maxResults 100);
+GetIndexChanges('S&P 500', maxResults 500); GetShortInterest(ticker,
+startDate 2020-01-01, endDate 2025-12-31, maxResults 500) x 100 (~102
+calls; 'estimate' rows below the table stripped). On disk: SPX_5m /
+NDX_5m 15:55 closes; econ_events_us_high_fxs.json (ISM Manufacturing
+PMI 'a' values, regime = last release strictly before the session) for
+gate (d) and qualifier (e). Test count +4 selectable (+6 diagnostics).
