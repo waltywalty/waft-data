@@ -4877,3 +4877,36 @@ calls; 'estimate' rows below the table stripped). On disk: SPX_5m /
 NDX_5m 15:55 closes; econ_events_us_high_fxs.json (ISM Manufacturing
 PMI 'a' values, regime = last release strictly before the session) for
 gate (d) and qualifier (e). Test count +4 selectable (+6 diagnostics).
+
+### Attempt 47 result: IS FAIL (fails the t floor; independence gate negative; sub-band self-refutes)
+
+(results/r64_cotflow_is.json, run_r64_cotflow.py; built and reviewed
+under the OOS firewall - OOS rows dropped at frame build, --unseal never
+invoked; 2 adversarial reviewers, 0 fatal findings.) Event counts
+reproduce the frozen registration exactly (IS 147/114/76/66; r24
+mid-band subsets 45/31/21/18; sub-band 107). IS GRID (fade the flow,
+MGC 0.35/RT, ATR20-normalised, IS report weeks 2012-06-05..2022-08-23):
+thr 1.0 x hold 5 n 146 PF 0.98 avgR -0.000 t -0.00 halves [+,-];
+thr 1.0 x hold 10 n 113 PF 0.75 avgR -0.268 t -1.36 [-,-];
+thr 1.5 x hold 5 n 76 PF 0.95 avgR +0.033 t +0.23 [-,+];
+thr 1.5 x hold 10 n 66 PF 0.64 avgR -0.455 t -1.68 [-,-].
+No cell approaches t >= 2; the family fails at IS; OOS seal NOT opened,
+no shot spent (program shots remain 11). DIAGNOSTICS, for the record:
+(a) sub-threshold band POSITIVE at both holds (+0.103 / +0.169) - above
+every selectable cell, i.e. whatever weekly mean reversion exists is not
+a flow-scale effect (self-refutation would have fired); (b) late-entry
+placebo more negative than on-time in every cell (the one diagnostic in
+the family's favour); (c) small-move vs big-move partition flat in both;
+(d) INDEPENDENCE subset (all r24 gauges mid-band) NEGATIVE in every cell
+(t -1.42 / -2.26 / -1.47 / -1.76) - had any cell cleared the floor the
+family would have been declared SUBSUMED by r24. ONE-LEGGED PATTERN,
+reported not re-specified per the registration: fading spec SELLING
+(long leg) is positive in all four cells (thr 1.5 x hold 5 long n 37
+avgR +0.417 t +2.13), fading spec BUYING (short leg) negative in all
+four (t down to -2.35) - a long-only sub-cell would be a post-hoc
+re-specification and is refused; noted as the residue of a gold
+up-drift over the span. VERDICT: the KRT liquidity premium does not
+survive as a single-commodity time-series rule on gold at a Monday
+entry; the flow transform carries nothing the r24 level read did not.
+Family closed. Program score: 1 OOS pass (on paper) / 47 attempts + 10
+registration-stage kills; 11 shots spent.
