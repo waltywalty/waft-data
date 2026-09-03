@@ -4910,3 +4910,17 @@ survive as a single-commodity time-series rule on gold at a Monday
 entry; the flow transform carries nothing the r24 level read did not.
 Family closed. Program score: 1 OOS pass (on paper) / 47 attempts + 10
 registration-stage kills; 11 shots spent.
+TEST-COUNT DISCLOSURE (from the reviewers, on record): the builder's
+first full IS run used an off-by-one busy-until dedupe (event set
+119/100/69/59, best cell t +0.04) before the count mismatch against the
+registration was diagnosed and corrected; the 4 selectable cells and
+all diagnostics were therefore read twice on nested event sets, both
+reads failing at IS. Counted: +4 selectable reads. Minor review notes,
+none outcome-changing: the holiday-delayed release rule is not
+re-applied when the following Monday is itself a federal holiday
+(2 IS weeks, both non-events at the traded thresholds); the ejtrader
+15m feed follows US rather than Athens DST in the mismatch weeks (entry
+marks up to 1h early on ~2% of sessions, both feeds cross-checked in
+r24); Inauguration Day absent from the holiday calendar (non-events);
+one boundary trade per thr-1.0 cell exits after the first sealed week
+(30 minutes after that release) - IS-only exposure, no OOS read.
