@@ -4924,3 +4924,30 @@ marks up to 1h early on ~2% of sessions, both feeds cross-checked in
 r24); Inauguration Day absent from the holiday calendar (non-events);
 one boundary trade per thr-1.0 cell exits after the first sealed week
 (30 minutes after that release) - IS-only exposure, no OOS read.
+
+### Attempt 48 pre-run data declaration (2026-09-03, BEFORE any return is computed)
+
+Equibles GetShortInterest served 81 of the 100 registered basket
+tickers (80 with FINRA rows; GOOG has no series and GOOGL is NOT
+substituted) before a server-wide outage stopped the pull; the 19
+missing tickers (TJX NOW VRTX BMY SPGI PLD COF NEM ISRG DHR PGR CVS
+DELL CB SBUX PH MDT MO ADBE) are a fixed set determined by fetch order
+and the outage, not by any return, and are DECLARED EXCLUDED for this
+run (basket = the 80 series on disk, data/shortint/). Per-settlement
+coverage of the 80: min 75 / median 78 / max 80 across 144 settlements
+2020-01-15..2025-12-31 - above the registered >= 60 floor everywhere.
+Point-in-time membership: GetIndexChanges reaches 2020-03 (through 2025
+changes are dated only to a calendar quarter; conservative rule fixed
+now: a ticker added in a quarter window is treated as a non-member for
+every settlement before that window's END date); basket names added
+inside the span are PANW, UBER, CRWD, GEV, PLTR, DELL(missing anyway),
+SNDK - far under the 20% cap, so the family is NOT capped on
+survivorship grounds. FINRA dissemination lag verified from FINRA's
+schedule (settlement -> publication = 7th business day, e.g. 2025-11-14
+-> 2025-11-25, 2025-12-15 -> 2025-12-24; time of day not established),
+so the registered '+10 trading days' availability rule is conservative
+and stands unchanged. Provenance flags on record (data/shortint/
+notes.txt): META valid from 2022-06-15 (pre-rename rows dropped), RTX
+from 2020-04-15, GEV/PLTR/SNDK from listing, ~15 merger/exchange-offer
+level jumps in individual series - the registered 'wrong population'
+risk. Nothing else in the registration changes.
