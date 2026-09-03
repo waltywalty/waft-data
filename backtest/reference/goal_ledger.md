@@ -4989,3 +4989,31 @@ killed at registration, 2 run, 2 IS-fail. The on-disk and reachable
 data frontier is exhausted for the mechanism classes tried; the next
 sweep must begin with data-availability probes of genuinely new
 classes (Equibles currently down).
+
+### 2026-09-03: data-frontier probe (reference/data_frontier_2026-09-03.md) - verdict
+
+Probed for genuinely NEW data classes before any further sweep (no
+returns computed). REACHABLE WITH DEPTH: Alpha Vantage daily 2y yield
+(1976+), effective fed funds (1954+), Brent/WTI (1987+/1986+), CPI and
+copper monthly only - all slow rates/oil regimes, adjacent to the
+CLOSED business-cycle class (the claim needs a new mechanism, not a new
+gauge). REACHABLE BUT SHALLOW: COMEX gold term structure - the 5-year
+Dec-contract histories are settlement marks on deferred months with
+ZERO volume until the final months, and IBKR only serves contracts
+expired within ~12 months, so genuine front-month basis history (where
+the 2025 EFP/physical-squeeze signal lives) is ~18 months: forward
+material, not a backtestable family; VIX futures basis ~18 months and
+adjacent to burned attempt 25 (cash term structure); HSI futures pre-
+open bar 6-12 months (forward material for the MHI stream at most).
+BLOCKED: every Equibles class (fails-to-deliver, daily short volume,
+insider/congressional aggregates, IPO/earnings calendars) - server
+protocol bug, not transient; Deribit and CBOE unreachable from the VM
+(Kernel browser only). VERDICT: no new class with adequate depth is
+reachable today; per the house rule (never grind cells, no
+manufactured findings) NO sweep is launched on the slow-macro classes.
+STANDING ORDER for the weekly routine: probe Equibles; when it serves
+GetFailsToDeliver / GetShortVolume with >= 5 years of depth, pull SPY/
+QQQ/IWM (and the 80-name basket's short volume) and open a Round 66
+sweep restricted to those classes (Reg SHO close-out flow is a genuine
+forced counterparty). Program score unchanged: 1 OOS pass (on paper) /
+48 attempts + 10 registration kills, 11 shots.
