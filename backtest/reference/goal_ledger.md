@@ -5017,3 +5017,23 @@ QQQ/IWM (and the 80-name basket's short volume) and open a Round 66
 sweep restricted to those classes (Reg SHO close-out flow is a genuine
 forced counterparty). Program score unchanged: 1 OOS pass (on paper) /
 48 attempts + 10 registration kills, 11 shots.
+
+### 2026-09-03: registration-stage kill - Treasury coupon SETTLEMENT-day funding drain
+
+Candidate (on-disk data, never proposed by the sweep): primary dealers
+must fund their auction takedown on the ISSUE date (settlement), a
+reserve drain with a forced counterparty, distinct from the burned
+auction-DAY family (attempt 26, wrong-way both arms; attempt 27,
+outcome-following negative) which traded the 13:00 ET result. Signal-
+side check only (data/treasury_{note,bond}_auctions.json, field
+issue_date; 1,445 auctions 2005-2025, 497 distinct issue dates, issue -
+auction lag 1-10 days): 201 issue dates fall on the 14th-16th, 179 on
+the last business day of the month, 60 on the first business day - 88%
+of settlement days ARE the mid-month / month-turn calendar that watch #2
+(month-end fade), watch #6 (quarter-end TOM) and the burned opex-week
+family (attempt 19) already occupy, and 414 of 497 days settle >= 3
+securities at once, so there is no within-family size gradient (the
+file carries no offering amounts) that could separate a funding drain
+from the calendar date. Any result would be a re-read of the month-turn
+residues. KILLED AT REGISTRATION; no grid built, no test counted beyond
+this record. (11th registration-stage kill on record.)
