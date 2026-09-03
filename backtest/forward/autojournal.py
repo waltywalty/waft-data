@@ -17,12 +17,12 @@ sys.path.insert(0, BT)
 sys.path.insert(0, HERE)
 os.chdir(BT)
 
-LEGS = ["leg_xau", "leg_mhi", "leg_d7", "leg_pmi"]
+LEGS = ["leg_xau", "leg_mhi", "leg_mhi_fut", "leg_d7", "leg_pmi"]
 # Forward evidence starts the day AFTER each stream's registration / archived data end.
 # Rows dated earlier are backtest-window trades and are never journalled (see ledger,
 # 2026-09-02 auto-journal protocol).
 STREAM_START = {"XAU": "2026-08-27", "XAUAUD": "2026-08-27", "MHI": "2026-09-01",
-                "D7": "2026-08-27", "PMI": "2026-09-02"}
+                "MHIF": "2026-08-19", "D7": "2026-08-27", "PMI": "2026-09-02"}
 STATE_RE = re.compile(r'(<script id="state" type="application/json">)(.*?)(</script>)', re.S)
 
 
@@ -63,12 +63,13 @@ def sprt_lines(state):
     except Exception:
         return []
     out = []
-    for ins in ("XAU", "XAUAUD", "MHI", "D7"):
+    for ins in ("XAU", "XAUAUD", "MHI", "MHIF", "D7"):
         seq = ["W" if (1 if r["side"] == "L" else -1) * (r["exit"] - r["entry"]) > 0 else "L"
                for r in state["trades"] if r["instr"] == ins]
-        if not seq or ins not in sprt.STREAMS:
+        params = "MHI" if ins == "MHIF" else ins      # MHIF shares the MHI backtest priors
+        if not seq or params not in sprt.STREAMS:
             continue
-        llr, st = sprt.score(ins, seq)
+        llr, st = sprt.score(params, seq)
         out.append(f"{ins}: n {len(seq)}, W {seq.count('W')}, LLR {llr:+.2f} -> {st} "
                    f"(promote >= {sprt.A:+.2f}, kill <= {sprt.B:+.2f})")
     return out

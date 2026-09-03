@@ -5037,3 +5037,35 @@ file carries no offering amounts) that could separate a funding drain
 from the calendar date. Any result would be a re-read of the month-turn
 residues. KILLED AT REGISTRATION; no grid built, no test counted beyond
 this record. (11th registration-stage kill on record.)
+
+### 2026-09-03: MHI stream - futures fidelity check (reference/mhi_futures_fidelity_2026-09-03.md) and the MHIF twin
+
+FINDING (real HSI front-month futures 15m via IBKR vs the HK33 CFD, 11
+liquid sessions 2026-08-19..09-02, structural cause established): the
+CFD has NO pre-open auction print - it stops at 18:45Z and reopens with
+a synthetic 01:15Z bar - so its 09:15-09:30 HKT push is ~0.72x the
+futures push (mean |push|/ATR14 0.148 vs 0.249; push corr 0.87, sign
+agreement 9/11, median |push diff| 0.14 ATR = half the frozen 0.3
+threshold). At the frozen threshold the two feeds triggered on DISJOINT
+sessions (CFD 1, futures 4, both 0; 33 sessions incl. thin: 1/5/0).
+Entry (01:30Z open) and exit (last close < 08:00Z) marks are faithful
+(median 19-20 pts = a basis that cancels within the session; entry-to-
+exit move differs by 3 pts median), short stops faithful (21 pts), long
+stops ~50 pts too wide on the CFD. CONSEQUENCES: (1) the MHI paper
+stream on the CFD journals a different set of days from what a futures
+account would trade; (2) the archived 43-trade backtest (round 15b) was
+computed on the same synthetic pre-open bar, so its evidence for the
+MECHANISM (fading the auction push) is weaker than recorded - it
+measured the CFD's synthetic open, not the auction; provenance rule #1
+applies. NOT a stop of the stream: the rule is frozen, the CFD stream
+continues as a PROXY for comparison, and a twin stream MHIF (forward/
+leg_mhi_fut.py) now evaluates the identical rule on futures bars
+(weekly IBKR pull of the front month; roll = later file wins; note
+carries the contract). MHIF is the promotion evidence for the MHI rule;
+the 80-trade bar and the CFD's PF >= 1.4 both-halves criterion apply to
+MHIF. STREAM_START MHIF = 2026-08-19 (first liquid front-contract
+session; the rule was frozen in round 15b and no futures bar was used in
+any selection). First MHIF rows (back-filled from the probe pull):
+2026-08-21 S stopped (-117.5), 2026-08-24 L stopped (-99.5), 2026-08-27
+S time (+224.0), 2026-09-02 S time (+4.0) - versus the CFD's single
+trigger 2026-09-01 (L, stopped). Weekly trigger now pulls the futures.

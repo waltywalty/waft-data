@@ -21,6 +21,7 @@ must concatenate all files matching the glob, sort by time, drop duplicate times
 | audusd_daily_*.json | same, daily (21:15 UTC bar start) | 1d | 3 months |
 | spx_daily_*.json / ndx_daily_*.json / rut_daily_*.json | IBKR IND 416904 CBOE / 416843 NASDAQ / 416888 RUSSELL, last, RTH | 1d (13:30 UTC bar start = cash open) | 1 year |
 | hk33_m15.csv | re-curl of raw.githubusercontent.com/user1-2-3-4/oanda-data-collector/main/data/indices/HK33_M15.csv (same format as data/HK33_M15.csv; UTC; first bar of day 01:15 UTC) | 15m | full history, live-updated |
+| hsi_fut_15m_*.json | IBKR HKFE HSI FRONT-MONTH FUTURE (FUT), FIFTEEN_MINS, outside_rth true, one file per weekly pull, top-level key "contract" (e.g. HSIU6); at a roll the later file's bars win on overlapping timestamps | 15m | one week per file |
 | ism_pmi.json | list of {"release": "YYYY-MM-DD", "month": "YYYY-MM", "value": float} maintained by the main session from the ISM press release (via web search) | monthly | all releases since 2026-08 |
 
 Declared substitutions vs the backtests (recorded in the ledger): the XAU corr gate uses
@@ -54,6 +55,11 @@ close-open; ATR14 = mean of prior 14 daily ranges (shift 1); when |push|/ATR14 >
 enter at the 01:30 UTC bar open AGAINST the push; stop = pre_hi + 0.5*pre_rng (short)
 or pre_lo - 0.5*pre_rng (long), checked on 15m highs/lows through 08:00 UTC; else exit
 at the last close before 08:00 UTC. date = HKT date; note = "fade|" + ("stop"|"time").
+MHIF: the MHI rule above, unchanged, evaluated on the futures files instead of the CFD
+(leg_mhi_fut imports leg_mhi's rule; note = "fade|stop|<contract>" or "fade|time|<contract>").
+Added 2026-09-03 after the futures fidelity check: the CFD has no pre-open auction print,
+so MHI (CFD) and MHIF (futures) trigger on different sessions; MHIF is the promotion
+evidence, MHI continues for comparison.
 D7: run_r28b_d7.py d7_trades on SPX daily closes: enter at the close when close > SMA200
 and close <= 7-day rolling closing low; exit at the first close >= 7-day rolling closing
 high; long only, no stop (stop = entry in the row). Emit a row only when a trade CLOSES
