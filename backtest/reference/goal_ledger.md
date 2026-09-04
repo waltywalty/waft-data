@@ -5086,3 +5086,25 @@ index fear with a mandatory independence gate against watch #7/#8/#9;
 Fed liquidity plumbing with the calendar-confound warning), Reg SHO to
 follow when its pull lands; every proposal goes to two adversarial
 critics before any registration; signal-side counts only until then.
+
+### Round 66 registration-stage kill #12: Fed liquidity plumbing on index futures (class closed)
+
+Proposer returned ZERO proposals on signal-side evidence (no returns
+touched). (1) ON RRP daily take-up: three facility-rate regimes, not a
+stationary gauge; 72% of its large daily moves fall on month/quarter
+turns (quarter-end last day lift 13x, first day after 15x) - the exact
+windows of watch #2/#6; the counterparty is a money-market fund moving
+between RRP and bills, never index futures. (2) TGA weekly: 70 of 75
+large weekly changes are tax-receipt weeks, month turns or debt-ceiling
+episodes, all known from the calendar before the FRED print arrives -
+the 2026-09-03 settlement-day kill already covers this. (3) "Net
+liquidity" (WALCL - TGA - RRP) rising/falling: 5 expansion eras vs 2
+contraction eras, SPX above its 200-SMA 63-100% of sessions in every
+era - the attempt 45/46/48 drift chassis with no independent
+counterparty. (4) Post-debt-ceiling TGA rebuilds: 8 episodes / 64 weeks,
+under every floor, and the flow is in bills. (5) Quarter-end dealer
+balance-sheet squeeze in the ES basis is the one plumbing effect with a
+counterparty in the instrument, but only ~18 months of basis history
+exist and its timing is watch #6's calendar. CLASS CLOSED: no Fed-
+plumbing / "liquidity regime" family is to be proposed again under any
+gauge. Test count consumed: 0.
