@@ -5255,3 +5255,36 @@ Rounds 64-66 (no forced counterparty in the instrument traded; long-
 only regime chassis = drift; every stress gauge = the spent rebound
 claim) is itself the finding: the remaining edge candidates on this
 data are the forward streams and watch items, not new backtests.
+
+## 2026-09-04: decision timeline for the six forward streams (no new test; program management)
+
+Computed from sprt.py's own boundaries (alpha = beta = 0.10, promote LLR
+>= +2.20, kill <= -2.20) by simulation, and from the ISM regime base
+rate. Median / p90 trades to ANY decision, and the calendar time that
+implies at each stream's backtested signal rate:
+  XAU     140 trades/yr | edge 159 / 405 trades -> 1.1 yr median
+                        | no edge 165 / 414     -> 1.2 yr
+  XAUAUD  140 trades/yr | same as XAU (same signal days)
+  MHI      10 trades/yr | edge  30 /  71        -> 3.0 yr median
+                        | no edge 28 /  70      -> 2.8 yr
+  MHIF     10 trades/yr | shares MHI's priors; started 2026-08-19
+  D7       13 trades/yr | edge  25 /  57        -> 1.9 yr median
+                        | no edge 22 /  54      -> 1.7 yr
+  PMI: not an SPRT stream. Its bar is 250 pooled regime-day bookings =
+  83 regime SESSIONS across the 3 index legs. ISM history 2013-2026:
+  1,067 contraction business days in 3,544 = 30% of the span = ~79
+  regime days per calendar year, so ~1.1 years of REGIME-ACTIVE time.
+  But the regime is INACTIVE (Aug 2026 print 54.6) and nothing accrues
+  until a sub-50 print: 8 episodes since 2013, expansion gaps between
+  them 31 to 1,066 days (median 154).
+HONEST READ: the gold rule and its AUD half-leg are the only streams
+that can return a verdict inside ~1 year; D7 needs ~2 years, the Hang
+Seng fade ~3 years (its futures twin restarts that clock from
+2026-08-19), and the PMI stream is gated on a macro event that may not
+arrive for months. The MHI boundaries remain advisory below n = 80 per
+the original registration. This is the cost of the house rule that
+forward evidence is never mixed with the backtest sample - it is the
+correct cost, but it should be stated: the program's next real verdict
+is a 2027 event, not a 2026 one, unless a new registrable family
+appears. Recorded so the monthly review reports progress against these
+timelines rather than against an unstated expectation.
