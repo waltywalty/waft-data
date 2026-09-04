@@ -5108,3 +5108,43 @@ counterparty in the instrument, but only ~18 months of basis history
 exist and its timing is watch #6's calendar. CLASS CLOSED: no Fed-
 plumbing / "liquidity regime" family is to be proposed again under any
 gauge. Test count consumed: 0.
+
+### Round 66 registration-stage kill #13: real-yield shock continuation in gold (DFII10 z-shock -> MGC)
+
+Proposed (gold macro-driver class, first use of the FRED real-yield
+data): |z| >= {1.5, 2.0} shocks in the 10y TIPS yield -> next-session
+gold position = -sign(z), holds 1/3, with gradient bands, late-entry
+and matched-count placebos, and independence gates vs attempt 37 and
+the announcement-day families. KILLED by both critics before any
+return was computed. Mechanism lens (FATAL): no forced or slow
+counterparty in gold at a 1-3 session horizon - the TIPS yield is live-
+observable all day and gold is a 24h market reading the same screen;
+the named slow participants either act on gold's OWN move (CTA signals,
+ETF return-chasing flows - exactly the days the family's own gate (d)
+removes) or de-lever unsigned (vol-target / risk-parity books cut the
+whole book after a shock in either direction), so mechanism and gate
+are mutually exclusive; what remains is cross-asset momentum spillover
+that the gradient test cannot separate from the claim; GLD-class
+creations (~1-2% of daily gold turnover) cannot push a multi-session
+move. Adjacency lens (fixable, moot): the family is attempt 37's
+chassis (same spliced series, sigma63 z trigger, next-session entry,
+16:00 ET exit, continuation direction) with a proxy trigger that
+agrees with gold's own z on 80% of shock days; attempt 37's sealed
+holdout starts 2022-04-13 (run_r55b_margin.py cut), NOT the 2023-02-27
+the proposer assumed, so the proposal's IS would have contained 216
+sealed sessions and its 'IS-only' partition 13 of attempt 37's 52
+sealed trigger days - the taxonomy repair reserved for attempt 37 is
+the CME margin-date route, not a proxy trigger; 54-63% of events sit
+on high-impact release days (attempt 10/17/18 re-read). The other
+macro-driver candidates were rejected by the proposer itself on
+signal-side evidence: breakevens (no contemporaneous relation to
+lag: sign agreement 0.39-0.46 on pure-breakeven days), broad dollar
+(7-day publication lag; a regime chassis), monthly real-yield flow
+(47 events, under the floor). Data provenance from the critics, on
+record: fred_DFII10.csv 6175 rows 2003-01-02..2026-09-02, 253 holiday
+blanks, no holes; by-year corr(gold, dDFII10) -0.52 (2023) -> -0.30
+(2024) -> -0.03 (2025): the driver relation weakened to ~0 in the
+central-bank-bid era. CLASS NOTE: a real-yield -> gold family needs a
+NEW data class identifying a signed, dated, sized flow in gold itself
+(daily ETF share-count / tonnage flows; CME margin-change dates) - not
+the TIPS fixing. Test count consumed: 0; attempt 37's seal intact.
