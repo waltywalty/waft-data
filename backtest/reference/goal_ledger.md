@@ -5069,3 +5069,20 @@ any selection). First MHIF rows (back-filled from the probe pull):
 2026-08-21 S stopped (-117.5), 2026-08-24 L stopped (-99.5), 2026-08-27
 S time (+224.0), 2026-09-02 S time (+4.0) - versus the CFD's single
 trigger 2026-09-01 (L, stopped). Weekly trigger now pulls the futures.
+
+## Round 66 (2026-09-04): new data classes acquired; sweep opened on user directive
+
+Equibles recovered 2026-09-04 (standing order fires: Reg SHO pull in
+progress - fails-to-deliver, daily short volume, off-exchange volume for
+SPY/QQQ/IWM and the 80-name basket; depth probes on insider,
+congressional, IPO and ETF-flow data). Via the Kernel browser
+(reference/acquisition_2026-09-04.md): FRED DFII10/DFII5/T10YIE/T5YIE/
+DGS10/DGS2 (2003+), DTWEXBGS (2006+, ~1-week publication lag), RRPONTSYD
+(daily), WALCL/WTREGEN (weekly), HY OAS (capped at 2023-09 at the source
+- unusable); CBOE VVIX (2006+), VXN/RVX/OVX (2009+), VIX6M (2008+), VIX1Y
+(2007+), VXTLT (2004+), VIX1D (2022+). Proposer agents opened on three
+classes with data on disk (gold macro drivers; vol-of-vol and cross-
+index fear with a mandatory independence gate against watch #7/#8/#9;
+Fed liquidity plumbing with the calendar-confound warning), Reg SHO to
+follow when its pull lands; every proposal goes to two adversarial
+critics before any registration; signal-side counts only until then.
