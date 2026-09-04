@@ -5148,3 +5148,65 @@ central-bank-bid era. CLASS NOTE: a real-yield -> gold family needs a
 NEW data class identifying a signed, dated, sized flow in gold itself
 (daily ETF share-count / tonnage flows; CME margin-change dates) - not
 the TIPS fixing. Test count consumed: 0; attempt 37's seal intact.
+
+### Round 66 registration-stage kills #14-#15: the vol-of-vol / cross-index fear class
+
+Proposer (new CBOE data: VVIX, VXN, RVX, VXTLT, OVX, VIX6M/1Y, VIX1D)
+rejected absolute VVIX and VXN shocks itself (corr 0.81 / 0.91 with the
+VIX shock = watch #7 re-parameterised), VVIX/VIX convexity (a VIX-crush
+object whose hedging footprint sits in VIX futures, not ES), any
+VIX6M/VIX1Y slope (attempt 25's object) and VIX1D (2022+). Two families
+were proposed; both KILLED by two critics each, no return computed.
+KILL #14 - bond-vol contagion (VXTLT z-shock without an equity-vol
+shock -> SHORT MES/MNQ/M2K 3-5 sessions; risk-parity deleveraging):
+mechanism lens FATAL - the gated event set is not bond-led: of 143
+non-#7 signal days 66% had VIX up and 62% SPX down (median VIX z
++0.42), i.e. the sub-threshold band of watch #7's own object with the
+sign flipped - the mirror of the program's converging post-stress
+rebound (watch #7 IS t +2.51 on those days); the documented risk-
+parity deleveraging episodes (Feb-2018, Mar-2020) are VIX-shock days
+inside the excluded subset; residual flow is well under 1% of daily ES
+notional; the crush control (82% VIX-down days) and OVX placebo (67%
+VIX-up days) compare stress subsets with each other and never touch
+the shocked asset; honest n = distinct signal days (the three legs
+trade the same day): IS 163 at thr 1.5, <= 109 in the gate subset, <=
+90 at thr 2.0 - under the floor. Adjacency lens (fixable, moot): 130/
+433 pooled events are #7 trigger days, 205/433 are composite-#9 days
+whose evidence is spent and never re-counted; a disjoint form (VIX z <
+0.5 AND COR1M below its 80th pct) leaves 149 pooled events (IS 121) at
+thr 1.5 only, testing the mechanism's weak tail at scarce power;
+hold-window leakage over FOMC/CPI/NFP/auction days undisclosed; the
+2004-2012 CBOE back-fill is reconstructed and uncitable. Data itself
+verified clean (VXTLT 5,692 closes, no gaps, live/back-fill std
+0.060/0.059; NDX 5m hole 2020-05-13..2021-01-04 disclosed here).
+KILL #15 - index-specific fear impulse (VXN/VIX ratio z >= 1.5 with VXN
+up -> LONG NDX, RTY via RVX pooled): adjacency lens FATAL - watch #7's
+registration with the gauge swapped (same z construction, T+1 open,
+holds 1/3, busy-until, crush diagnostic) and #7's mechanism verbatim;
+true overlap with OPEN #7/#8 positions is 27/93 events (33% of IS),
+not the 5/93 trigger-day count; 60% of events are VIX-DOWN days (the
+normalisation tail of #7's own episodes); only 18 events (IS 14) are
+VXN shocks without a VIX shock; 35% of event days NDX closes UP, so
+there is no shock-day weakness to unwind; the pooled 'OOS 37' is 17
+NDX events plus 20 RTY events dated INSIDE NDX's in-sample window;
+event rate decays 7-11/yr (2010-18) to 1-6/yr (2019-25). The vol-shock
+breadth question was closed at attempt 41 and single-family attempts
+in this class are admitted only for new instruments or data classes.
+CLASS VERDICT: no new mechanism exists in the CBOE vol family beyond
+the converging rebound claim already held by watch #7/#8/#9; the class
+is closed to historical families. Test count consumed: 0.
+
+### Watch #9 composite: trigger variant (c) pre-registered, forward-only from 2026-09-04
+
+Per the critics' one constructive route (and the ledger's own rule that
+composite variants are pre-registered at review time, never read
+historically): variant (c) = index-specific fear - at the CBOE close,
+z of dlog(VXN/VIX) vs its trailing 63-close std (shifted) >= 1.5 AND
+dlog(VXN) > 0 -> long NDX at the next RTH open, exit at the close of
+the 3rd session, busy-until; days that also trigger (a) VIX-shock or
+(b) COR1M-spike are counted ONCE under the composite. Scored on data
+from 2026-09-04 forward only at the monthly re-score, same graduation
+bar as the composite (n >= 40, avgR > 0, t >= 2, PF >= 1.15, cost x1.5
+positive), never citable as independent of #7. No shot, no test count.
+Data: VXN_history_cboe.csv and VIX_history_cboe.csv (re-pull the CBOE
+archives at each monthly review via the Kernel recipe).
