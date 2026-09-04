@@ -5223,3 +5223,35 @@ additionally requires NDX's RTH close < open on the signal day. Still
 forward-only from 2026-09-04, no history read. Also on record from the
 same critic: VIX_history_cboe.csv carries 32 holiday rows (2022+) absent
 from VXN - align the two calendars before computing the ratio.
+
+### Round 66 closed (2026-09-04): Reg SHO class blocked on depth; sweep verdict
+
+Reg SHO acquisition (reference/regsho_acquisition_2026-09-04.md): SEC
+fails-to-deliver via Equibles reaches back only to 2026-03 (six months;
+the class's forced buy-in mechanism cannot be tested); IWM is mis-mapped
+server-side to AAXJ; daily FINRA short volume exists for SPY/QQQ from
+2020-01 (6.7 y, TRF-only volumes, 40-50% baseline = market-maker
+liquidity provision) but the 80-name basket cannot be persisted (every
+response inline, ~60K tokens per ticker); off-exchange ATS volume weekly
+from 2021-12; insider transactions transaction-level from ~2019-12 (not
+pulled); congressional (12 months), IPO (8 months) and ETF flows
+(snapshot only) have no history. VERDICT: no Reg SHO family is
+registrable - the only usable series is a 2020+ span whose 75/25 holdout
+would sit inside attempt 44's spent 2025 contraction episode (the
+attempt-48 confound) on a series that measures inventory, not informed
+flow. Class PARKED, not closed: it reopens only with FTD depth (a
+licensed SEC-file mirror) or a persistable basket route. The weekly
+routine's Equibles standing order is retired (nothing to accrue).
+ROUND 66 SUMMARY: four new data classes acquired (FRED rates/breakevens/
+dollar/plumbing, CBOE vol-of-vol and cross-index vol, Equibles Reg SHO,
+plus the earlier FINRA short interest); four proposers, six adversarial
+critics, five proposals; FIVE registration-stage kills (#12 Fed
+plumbing, #13 gold real-yield, #14 bond-vol contagion, #15 index-
+specific fear, Reg SHO on depth) and ONE forward-only gain (watch #9
+variant (c)). No test count consumed, no shot spent, no seal touched.
+Program score unchanged: 1 OOS pass (on paper) / 48 attempts + 15
+registration-stage kills; 11 shots. The consistent kill pattern across
+Rounds 64-66 (no forced counterparty in the instrument traded; long-
+only regime chassis = drift; every stress gauge = the spent rebound
+claim) is itself the finding: the remaining edge candidates on this
+data are the forward streams and watch items, not new backtests.
