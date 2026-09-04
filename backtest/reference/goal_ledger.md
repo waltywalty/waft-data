@@ -5210,3 +5210,16 @@ bar as the composite (n >= 40, avgR > 0, t >= 2, PF >= 1.15, cost x1.5
 positive), never citable as independent of #7. No shot, no test count.
 Data: VXN_history_cboe.csv and VIX_history_cboe.csv (re-pull the CBOE
 archives at each monthly review via the Kernel recipe).
+
+### Amendment to watch #9 variant (c) (2026-09-04, before any forward scoring)
+
+The mechanism-lens critic on kill #15 found that 15% of VXN/VIX ratio
+shocks fire on the first session after monthly options expiry (3.2x the
+base rate; the VXN near-term-expiry roll, era-dependent in intensity)
+and that on a third of event days NDX did not fall. Variant (c) is
+therefore amended ex-ante: (i) the first trading session after the
+third-Friday expiry is EXCLUDED from the trigger set; (ii) the trigger
+additionally requires NDX's RTH close < open on the signal day. Still
+forward-only from 2026-09-04, no history read. Also on record from the
+same critic: VIX_history_cboe.csv carries 32 holiday rows (2022+) absent
+from VXN - align the two calendars before computing the ratio.
