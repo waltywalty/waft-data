@@ -1,20 +1,21 @@
 {
  "meta": {
-  "futures_age_s": 841,
+  "futures_age_s": 722,
   "note": "US index futures are exchange-delayed ~15min. Overnight ranges and levels are unaffected by the delay; the last tick is.",
   "sources": {
    "rates": "treasury.gov",
    "us_index": "yahoo_delayed",
    "vix": "cnbc"
   },
-  "took_s": 6.4
+  "took_s": 5.4
  },
  "quotes": {
   "CRUDE": {
-   "age_s": 614,
+   "age_s": 722,
    "bars": 205,
    "chg": 0.0,
    "chg_pct": 0.0,
+   "cnbc_px": 91.93,
    "d1_high": 91.48,
    "d1_low": 91.48,
    "on_high": 91.48,
@@ -23,30 +24,29 @@
    "on_pos": null,
    "on_range": 0.0,
    "prev_close": 91.48,
-   "px": 91.92,
-   "src": "cnbc",
-   "ts": 1788745427,
-   "yahoo_px": 91.48
+   "px": 91.48,
+   "src": "yahoo",
+   "ts": 1788745500
   },
   "DXY": {
-   "age_s": 841,
-   "bars": 249,
-   "chg": -0.012,
-   "chg_pct": -0.012,
+   "age_s": 722,
+   "bars": 250,
+   "chg": -0.017,
+   "chg_pct": -0.017,
    "d1_high": 99.178,
    "d1_low": 99.077,
    "on_high": 99.178,
    "on_low": 99.077,
    "on_open": 99.17,
-   "on_pos": 0.703,
+   "on_pos": 0.653,
    "on_range": 0.101,
    "prev_close": 99.16,
-   "px": 99.148,
+   "px": 99.143,
    "src": "yahoo",
-   "ts": 1788745200
+   "ts": 1788745500
   },
   "ES": {
-   "age_s": 841,
+   "age_s": 722,
    "bars": 204,
    "chg": 0.0,
    "chg_pct": 0.0,
@@ -60,10 +60,10 @@
    "prev_close": 7722.0,
    "px": 7722.0,
    "src": "yahoo",
-   "ts": 1788745200
+   "ts": 1788745500
   },
   "GOLD": {
-   "age_s": 841,
+   "age_s": 722,
    "bars": 205,
    "chg": 46.8003,
    "chg_pct": 1.056,
@@ -77,28 +77,28 @@
    "prev_close": 4429.7998,
    "px": 4476.6001,
    "src": "yahoo",
-   "ts": 1788745200
+   "ts": 1788745500
   },
   "HSI": {
-   "age_s": 907,
-   "bars": 72,
-   "chg": -68.2793,
-   "chg_pct": -0.266,
+   "age_s": 1022,
+   "bars": 73,
+   "chg": -145.209,
+   "chg_pct": -0.566,
+   "cnbc_px": 25505.19,
    "d1_high": 25664.9805,
-   "d1_low": 25526.4395,
+   "d1_low": 25504.0605,
    "on_high": 25664.9805,
-   "on_low": 25526.4395,
+   "on_low": 25504.0605,
    "on_open": 25652.9707,
-   "on_pos": 0.405,
-   "on_range": 138.541,
+   "on_pos": 0.01,
+   "on_range": 160.92,
    "prev_close": 25650.8691,
-   "px": 25578.6,
-   "src": "cnbc",
-   "ts": 1788745134,
-   "yahoo_px": 25582.5898
+   "px": 25505.6602,
+   "src": "yahoo",
+   "ts": 1788745200
   },
   "NDX": {
-   "age_s": 194341,
+   "age_s": 194522,
    "bars": 156,
    "chg": 60.3281,
    "chg_pct": 0.205,
@@ -108,7 +108,7 @@
    "ts": 1788551700
   },
   "NQ": {
-   "age_s": 841,
+   "age_s": 722,
    "bars": 204,
    "chg": 0.0,
    "chg_pct": 0.0,
@@ -122,10 +122,10 @@
    "prev_close": 29565.25,
    "px": 29565.25,
    "src": "yahoo",
-   "ts": 1788745200
+   "ts": 1788745500
   },
   "RTY": {
-   "age_s": 841,
+   "age_s": 722,
    "bars": 204,
    "chg": 0.0,
    "chg_pct": 0.0,
@@ -139,10 +139,10 @@
    "prev_close": 2976.6001,
    "px": 2976.6001,
    "src": "yahoo",
-   "ts": 1788745200
+   "ts": 1788745500
   },
   "RUT": {
-   "age_s": 194341,
+   "age_s": 194522,
    "bars": 156,
    "chg": 7.0513,
    "chg_pct": 0.238,
@@ -153,7 +153,7 @@
    "ts": 1788551700
   },
   "SPX": {
-   "age_s": 194341,
+   "age_s": 194522,
    "bars": 156,
    "chg": -29.8999,
    "chg_pct": -0.386,
@@ -164,7 +164,7 @@
    "ts": 1788551700
   },
   "US10Y": {
-   "age_s": 197941,
+   "age_s": 198122,
    "bars": 160,
    "chg": 0.022,
    "chg_pct": 0.462,
@@ -174,7 +174,7 @@
    "ts": 1788548100
   },
   "VIX": {
-   "age_s": 193441,
+   "age_s": 193622,
    "bars": 312,
    "chg": 0.2,
    "chg_pct": 1.397,
@@ -185,7 +185,7 @@
    "ts": 1788552600
   },
   "YM": {
-   "age_s": 841,
+   "age_s": 722,
    "bars": 205,
    "chg": 0.0,
    "chg_pct": 0.0,
@@ -199,7 +199,7 @@
    "prev_close": 53440.0,
    "px": 53440.0,
    "src": "yahoo",
-   "ts": 1788745200
+   "ts": 1788745500
   }
  },
  "rates": {
@@ -215,6 +215,6 @@
   "src": "treasury.gov",
   "ts": 1788480000
  },
- "ts": "2026-09-07T01:54:08Z",
- "ts_epoch": 1788746041
+ "ts": "2026-09-07T01:57:07Z",
+ "ts_epoch": 1788746222
 }
