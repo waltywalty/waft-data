@@ -5288,3 +5288,29 @@ correct cost, but it should be stated: the program's next real verdict
 is a 2027 event, not a 2026 one, unless a new registrable family
 appears. Recorded so the monthly review reports progress against these
 timelines rather than against an unstated expectation.
+
+### 2026-09-07 weekly auto-journal: PARTIAL - IBKR connector disconnected
+
+Ran the weekly routine. HK33 CFD refreshed from GitHub through 2026-09-04.
+ISM file current (Aug print 54.6, released 09-01; next release 10-01).
+FAILURE: the Interactive Brokers MCP connector is DISCONNECTED and needs
+re-authorization, so none of the IBKR pulls ran - gold 5m, AUDUSD 5m,
+gold/AUD daily, SPX/NDX/RUT daily, HSI front-month futures 15m. Per the
+trigger's own instruction, reported to the user rather than substituted:
+no other feed is used, because mixing feeds mid-stream is exactly the
+provenance error the 2026-09-03 MHI fidelity check exposed.
+JOURNAL: 0 rows added (7 total unchanged). MHI found no trigger on the
+new CFD sessions 09-02..09-04 (last push +0.25 ATR14). MHIF, XAU,
+XAUAUD, D7 and PMI could not see past their stale frames. SPRT: XAU
++0.17, XAUAUD +0.17, MHI -0.49, MHIF -0.53 - all "continue", no
+boundary crossed. PMI regime INACTIVE. D7 still open from 09-01 at
+7631.47.
+DATA-LOSS DEADLINE (the operational point): IBKR intraday history is a
+ONE_WEEK window, so unobserved sessions age out permanently. Gold/AUD 5m
+last bar 09-02 -> sessions from 09-03 are recoverable only until about
+09-10; HSI futures 15m last bar 09-03 -> sessions from 09-04 recoverable
+until about 09-11. Daily series (ONE_YEAR/TWO_YEARS pulls) are not at
+risk. If the connector is restored within that window the auto-journal
+back-fills automatically, because the leg loaders concatenate every
+weekly file and recompute all rows from scratch; after it, those gold
+and HSI-futures sessions are a permanent hole in the forward record.
