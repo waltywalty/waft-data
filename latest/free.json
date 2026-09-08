@@ -1,86 +1,86 @@
 {
  "meta": {
-  "futures_age_s": 722,
+  "futures_age_s": 902,
   "note": "US index futures are exchange-delayed ~15min. Overnight ranges and levels are unaffected by the delay; the last tick is.",
   "sources": {
    "rates": "treasury.gov",
    "us_index": "yahoo_delayed",
    "vix": "cnbc"
   },
-  "took_s": 5.5
+  "took_s": 6.1
  },
  "quotes": {
   "CRUDE": {
-   "age_s": 601,
-   "bars": 7,
-   "chg": 1.53,
-   "chg_pct": 1.672,
+   "age_s": 602,
+   "bars": 8,
+   "chg": 1.55,
+   "chg_pct": 1.694,
+   "cnbc_px": 93.03,
    "d1_high": 93.06,
    "d1_low": 92.86,
    "on_high": 93.06,
    "on_low": 92.86,
    "on_open": 92.89,
-   "on_pos": 0.75,
+   "on_pos": 0.85,
    "on_range": 0.2,
    "prev_close": 91.48,
-   "px": 93.01,
-   "src": "cnbc",
-   "ts": 1788841921,
-   "yahoo_px": 93.01
+   "px": 93.03,
+   "src": "yahoo",
+   "ts": 1788842100
   },
   "DXY": {
-   "age_s": 722,
-   "bars": 79,
-   "chg": -0.321,
-   "chg_pct": -0.324,
+   "age_s": 602,
+   "bars": 80,
+   "chg": -0.32,
+   "chg_pct": -0.323,
    "d1_high": 99.176,
    "d1_low": 98.807,
    "on_high": 99.176,
    "on_low": 98.807,
    "on_open": 99.176,
-   "on_pos": 0.087,
+   "on_pos": 0.089,
    "on_range": 0.369,
    "prev_close": 99.16,
-   "px": 98.839,
+   "px": 98.84,
    "src": "yahoo",
-   "ts": 1788841800
+   "ts": 1788842100
   },
   "ES": {
-   "age_s": 722,
+   "age_s": 902,
    "bars": 7,
-   "chg": 1.5,
-   "chg_pct": 0.019,
+   "chg": 1.0,
+   "chg_pct": 0.013,
    "d1_high": 7725.0,
    "d1_low": 7721.25,
    "on_high": 7725.0,
    "on_low": 7721.25,
    "on_open": 7722.5,
-   "on_pos": 0.6,
+   "on_pos": 0.467,
    "on_range": 3.75,
    "prev_close": 7722.0,
-   "px": 7723.5,
+   "px": 7723.0,
    "src": "yahoo",
    "ts": 1788841800
   },
   "GOLD": {
-   "age_s": 722,
+   "age_s": 902,
    "bars": 7,
-   "chg": 48.6001,
-   "chg_pct": 1.097,
+   "chg": 49.6001,
+   "chg_pct": 1.12,
    "d1_high": 4488.7998,
    "d1_low": 4477.0,
    "on_high": 4488.7998,
    "on_low": 4477.0,
    "on_open": 4483.5,
-   "on_pos": 0.119,
+   "on_pos": 0.203,
    "on_range": 11.7998,
    "prev_close": 4429.7998,
-   "px": 4478.3999,
+   "px": 4479.3999,
    "src": "yahoo",
    "ts": 1788841800
   },
   "HSI": {
-   "age_s": 2222,
+   "age_s": 2402,
    "bars": 102,
    "chg": -67.5488,
    "chg_pct": -0.266,
@@ -98,7 +98,7 @@
    "ts": 1788840300
   },
   "NDX": {
-   "age_s": 290822,
+   "age_s": 291002,
    "bars": 156,
    "chg": 60.3281,
    "chg_pct": 0.205,
@@ -108,24 +108,24 @@
    "ts": 1788551700
   },
   "NQ": {
-   "age_s": 722,
-   "bars": 7,
-   "chg": 182.5,
-   "chg_pct": 0.617,
+   "age_s": 602,
+   "bars": 8,
+   "chg": 172.25,
+   "chg_pct": 0.583,
    "d1_high": 29752.0,
    "d1_low": 29730.5,
    "on_high": 29752.0,
    "on_low": 29730.5,
    "on_open": 29742.75,
-   "on_pos": 0.802,
+   "on_pos": 0.326,
    "on_range": 21.5,
    "prev_close": 29565.25,
-   "px": 29747.75,
+   "px": 29737.5,
    "src": "yahoo",
-   "ts": 1788841800
+   "ts": 1788842100
   },
   "RTY": {
-   "age_s": 722,
+   "age_s": 902,
    "bars": 7,
    "chg": -4.0,
    "chg_pct": -0.134,
@@ -142,7 +142,7 @@
    "ts": 1788841800
   },
   "RUT": {
-   "age_s": 290822,
+   "age_s": 291002,
    "bars": 156,
    "chg": 7.0513,
    "chg_pct": 0.238,
@@ -153,7 +153,7 @@
    "ts": 1788551700
   },
   "SPX": {
-   "age_s": 290822,
+   "age_s": 291002,
    "bars": 156,
    "chg": -29.8999,
    "chg_pct": -0.386,
@@ -164,7 +164,7 @@
    "ts": 1788551700
   },
   "US10Y": {
-   "age_s": 294422,
+   "age_s": 294602,
    "bars": 160,
    "chg": 0.022,
    "chg_pct": 0.462,
@@ -174,7 +174,7 @@
    "ts": 1788548100
   },
   "VIX": {
-   "age_s": 47522,
+   "age_s": 47702,
    "bars": 256,
    "chg": 0.77,
    "chg_pct": 5.299,
@@ -187,7 +187,7 @@
    "ts": 1788795000
   },
   "YM": {
-   "age_s": 722,
+   "age_s": 902,
    "bars": 7,
    "chg": -311.0,
    "chg_pct": -0.582,
@@ -217,6 +217,6 @@
   "src": "treasury.gov",
   "ts": 1788480000
  },
- "ts": "2026-09-08T04:42:07Z",
- "ts_epoch": 1788842522
+ "ts": "2026-09-08T04:45:08Z",
+ "ts_epoch": 1788842702
 }
