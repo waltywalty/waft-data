@@ -5380,3 +5380,18 @@ not 2012+; FTD depth is 2012+. CME historical margins: 403 (Akamai)
 from the VM and a proxy stream error through the browser stack - the
 margin-date class stays unreachable. Bootstrap script and parser kept
 in data/regsho/ (vm_bootstrap.sh, parse_primary.py; data gitignored).
+ACQUISITION RESULT (same day): both series landed and verified -
+SEC FTD 2012-01-03..2026-08-14, 349/349 files, 198,810 basket rows, 96
+symbols, SPY/QQQ 107/107 dates identical to the Equibles copy on
+quantity and price; FINRA daily short volume 2019-01-02..2026-09-04,
+1,930 sessions with zero non-holiday gaps, 178,812 rows, 95 symbols
+(BRK/B spelling missed), SPY/QQQ 1,673/1,673 dates identical to
+Equibles, NVDA identical after the 2024 split and exactly 40x before
+it (primary = unadjusted shares). Publication lag pinned from the SEC
+archive's Last-Modified headers: first-half file on the last business
+day of the same month, second-half on the 15th of the next - 15-30
+days, i.e. Rule 204 close-outs are over before the data is public.
+Full detail: reference/primary_acquisition_2026-09-09.md. Data assets
+now 18. Round 67 proposer opened on the signal side with brief_r67
+(publication lag, normalisation, the attempt-48 confound, and the
+watch #7/#8/#9 independence gate all binding).

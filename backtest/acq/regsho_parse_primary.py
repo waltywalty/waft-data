@@ -4,8 +4,8 @@ Inputs (this directory, written by the VM loops in vm_bootstrap.sh):
   ftd_all.csv  SEC fails-to-deliver, basket-filtered: settlement_date(YYYYMMDD),cusip,symbol,quantity,price
                (SEC half-month files cnsfailsYYYYMM[ab].zip; QUANTITY = outstanding fail balance on the
                settlement date; PRICE = prior close as published; rows only exist where a fail exists)
-  shv_all.csv  FINRA daily Reg SHO short-volume, basket-filtered: date(YYYYMMDD),symbol,short,exempt,total,market
-               (one row per symbol per reporting facility; market codes B/Q/N/D... are summed here)
+  shv_all.csv  FINRA daily Reg SHO short-volume, basket-filtered: date(YYYYMMDD),symbol,short,exempt,total,market-list
+               (one row per symbol per date; the Market field is a comma list such as B,Q,N, so it spills into extra CSV columns)
 Outputs:
   ftd/<SYMBOL>.csv   settlement_date,quantity,price            (one row per settlement date with a fail)
   shv/<SYMBOL>.csv   date,short_volume,short_exempt_volume,total_volume,short_pct   (facilities summed)
@@ -69,11 +69,11 @@ def parse_shv():
                 continue
             d, sym = p[0], norm_sym(p[1])
             date = f"{d[:4]}-{d[4:6]}-{d[6:8]}"
-            try:
-                s, e, t = int(p[2]), int(p[3]), int(p[4])
+            try:   # 2026 files carry fractional share volumes (FINRA's own file does); keep as float
+                s, e, t = float(p[2]), float(p[3]), float(p[4])
             except ValueError:
                 continue
-            a = agg[sym][date]; a[0] += s; a[1] += e; a[2] += t
+            a = agg[sym][date]; a[0] += s; a[1] += e; a[2] += t   # one row per date/symbol; Market is a list (B,Q,N)
             n += 1
     os.makedirs(os.path.join(HERE, "shv"), exist_ok=True)
     for sym, d in agg.items():
@@ -81,7 +81,7 @@ def parse_shv():
             w = csv.writer(f); w.writerow(["date", "short_volume", "short_exempt_volume", "total_volume", "short_pct"])
             for date in sorted(d):
                 s, e, t = d[date]
-                w.writerow([date, s, e, t, round(100.0 * s / t, 2) if t else ""])
+                w.writerow([date, round(s, 3), round(e, 3), round(t, 3), round(100.0 * s / t, 2) if t else ""])
     return n
 
 
