@@ -109,9 +109,14 @@ def run_cell(cell, unseal=False, cost_mult=1.0):
         if days is not None:
             if callable(days):
                 # the callable sees ONLY bars that closed before the entry clock (no lookahead by
-                # construction; the attempt-15 / r38 rule) - for a wrapped window that is the prior
-                # evening's bars up to the entry, i.e. everything with hm >= ehm is hidden as well
-                r = days(day[day.hm < ehm] if ehm <= xhm else day[(day.hm < ehm) & (day.hm >= xhm)], key)
+                # construction; the attempt-15 / r38 rule). For a wrapped window (entry >= 18:00 the
+                # evening before, exit next morning) the session key's bars run prior-evening 16:00
+                # -> next-day 15:55, so the only pre-entry bars in THIS key are the prior evening's
+                # 16:00..entry; morning bars with hm < ehm would be the FUTURE and are hidden
+                # (defect found by critic A, Round 70B). Prior-session context must be looked up by
+                # the caller from its own precomputed date map, never from this frame.
+                pre = day[day.hm < ehm] if ehm <= xhm else day[(day.hm >= 1600) & (day.hm < ehm)]
+                r = days(pre, key)
                 if r is None or r is False:
                     continue
                 if r in (1, -1):

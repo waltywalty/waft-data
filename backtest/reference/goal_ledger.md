@@ -5768,3 +5768,67 @@ evening-window family may be judged on the 2020+ CFD frames - forward-only on tr
 (3) the IS block here (2013-2020, Oanda feed) is unaffected. Recorded as data limit #7 in
 the intraday inventory's terms. Test count: +4 selectable, +12 read-only.
 Program score: 1 OOS pass (on paper) / 50 attempts + 22 registration-stage kills; 11 shots.
+
+## Round 70B (2026-09-09): intraday proposals B (gold / Asia clocks) - one staged registration, three kills
+
+Proposer B examined the gold, HK and JP clocks: no registrable spec for gold 03:00 London
+open, 08:20 pit-legacy open, option-expiry day, first-notice/last-trade, weekday Globex
+reset, 12:00 ET (no LBMA object), other 08:30 releases (attempt-18 chassis); HK 09:20
+auction beyond MHI (no 5m futures bars), lunch, CAS-push (cost-dominated), 17:15 after-
+hours (no signed flow); JP225 08:45 (dead), lunch (refuted mechanism), 15:15 (structure
+gone since 2024-11-05); cross-asset ES/gold clocks (no forced counterparty). Four
+proposals; critics A and B read them; integrator decisions:
+KILL #23 - COMEX 13:29-13:30 ET settlement-window push fade. Direction = -sign of a
+  15-minute push (price-derived; kill-#22 logic); the settlement participants (TAS
+  counterparties, index rolls, hedger marks) are real but unsignable ex ante; the
+  proposer's own gross at theta 0.08 sits AT the 2-RT bar and theta 0.15 is r8's spike
+  tail; the design is a search for a residual over a known spread-sized reversion.
+KILL #24 - HSI leveraged/inverse-product close rebalancing (sign of the day's return
+  into 16:00-16:30 HKT). Attempt 2's construct on another instrument (brief rule); the
+  AUM channel quantifies to 3-5% of last-45-minute volume, not 5-20%; Ivanov-Lenkey (JFM
+  2018) found the US analogue offset by contrarian flows at 10x the AUM; the CFD cannot
+  print the 16:15-16:30 window the mechanism occupies (fidelity fatal on its own).
+KILL #25 - gold Sunday 18:00 ET reopen gap fade. Critic A's own gross decomposition
+  (~60% fills capturing half the gap, ~40% continuations of the same size) gives $0.3-0.4/oz
+  against the $0.70 two-round-trip bar: the intraday standard says a spec whose plausible
+  gross is below two round trips is unregistrable. Route back: forward-only descriptive log
+  of the first-bar gap vs the 03:00 ET print on true GC via IBKR; no cells.
+ENGINE DEFECT (critic A, A13) fixed before any further wrapped spec: the conditioning
+callable for a midnight-wrapped window was handed the next morning's bars (future); it now
+sees only the prior evening's 16:00..entry bars. Attempt 50 used no callable - unaffected.
+
+### Attempt 51 registration (BEFORE running): month-end WM/Reuters 4pm-London fix flow -> gold, staged behind a USD gate
+
+Mechanism (external): month-end hedge rebalancing at the WMR 16:00-London fix (Melvin &
+Prins, "Equity hedging and exchange rates at the London 4pm fix", J. Financial Markets 22,
+2015; Evans, JBF 2018 / Evans, O'Neill, Rime & Saakvitne, JIMF 2018 on pre-fix drift and
+post-fix reversal, unchanged by the 2015 five-minute-window reform). Hedged foreign holders
+of US equities are under-hedged after a US up-month and SELL USD into the fix; NETTING
+ASSUMPTION stated: foreign hedged holdings of US equity dominate US hedged holdings of
+foreign equity, so sign(SPX month-to-date) proxies the paper's relative-performance
+variable (critic A A1). Gold has NO participant in this flow; it inherits the USD leg
+through its intraday beta (kill-#13 logic) - therefore:
+STAGE 1 (USD GATE, counted as one test, read first): the identical rule on the r35
+synthetic-DXY 15m frame, IS month-ends 2012-2022 (~118 events), window 10:30->11:00 ET
+(11:30->12:00 on DST-mismatch month-ends, per-event map), D = -sign(SPX MTD) applied to
+USD (USD sold after a US up-month): the USD move must be in the mechanism direction with
+t >= 2 at IS. If not, the gold family DIES UNRUN (no gold cell is read) - that is the only
+way the gold direction becomes "fixed by mechanism".
+STAGE 2 (gold, only if stage 1 passes): frozen cells on the spliced gold frame (m15 2012-
+2022 ejtrader + 5m 2020-25, the attempt-36 splice; the ejtrader feed follows the EU clock -
+the 10 EU/US mismatch month-ends are mapped per event in UTC, never by a fixed offset):
+C1 10:30->11:00 ET, direction D = sign(SPX MTD measured prior month-end 16:00 close ->
+10:00 ET print, availability stamp printed); C2 10:00->11:00; C3 11:00->11:30 with -D
+(Evans's reversal; selectable only if C1 or C2 is IS-positive, never a standalone winner);
+C4 = C1 restricted to |SPX MTD| >= 2% (dose check, read-only). Selection by max IS t over
+C1/C2 only, n >= 40 dates, t >= 2, halves [+,+], positive at 2x cost (MGC 0.35/RT); one OOS
+shot (75% cut ~2022-04, 119 IS / 40 OOS dates). Diagnostics: placebo clocks (09:30-10:00,
+10:00-10:30, 11:30-12:00, 12:00-12:30 same D), opposite direction, control days T-6/T-3/T+3
+with the same D, quarter-end and first-notice splits (every FND is a month-end session),
+Stage-1 DXY move printed beside each gold cell. Disclosed adjacency: same conditioning
+variable (MTD sign) as watch #2 / attempt 14 on a different instrument and sign convention;
+month-end calendar is burned index territory (attempts 14/21, kill #11); attempt 36's L2
+window (10:00-11:00 unconditional, gross ~0) contains C2. Cost: two RT = $0.70/oz = 0.02-
+0.03R of the RTH ATR20; plausible gross 0.02-0.06R - marginal in the IS era, registered as
+such. Fidelity: weekly MGC 5m vs CFD on month-ends, mean-difference form. Test count:
+stage 1 +1; stage 2 +4 selectable (2 effective) + ~10 read-only.
