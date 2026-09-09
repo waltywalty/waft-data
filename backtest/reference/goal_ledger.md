@@ -5538,3 +5538,17 @@ ROUND 67 SUMMARY: 2 data assets acquired from primary sources and cross-checked 
 row; 1 proposal registered as attempt 49 under 19 critic amendments, subsumed by
 construction; 2 registration-stage kills (#16, #17); 0 shots spent. Program score: 1 OOS
 pass (on paper) / 49 attempts + 17 registration-stage kills; 11 shots spent.
+
+## Round 68 opened (2026-09-09): corporate-calendar class acquired from EDGAR
+
+Alpha Vantage's free key caps at 25 EARNINGS calls/day (3 names landed, kept as the
+cross-check), so the class was pulled from the primary source: EDGAR submissions indexes for
+the 93-name basket plus nine predecessor registrants (reference/edgar_acquisition_2026-09-09.md).
+Result: 8,167 earnings releases (8-K Item 2.02) 2004-10..2026-08 with EDGAR acceptance
+timestamps (pre-open 3,963 / post-close 3,480 / intraday 724), plus every 10-Q/10-K date;
+AAPL/ABT 88/91 and AMAT 85/91 exact vs Alpha Vantage. Data assets now 19. This is a data
+class the program has never held: the issuers' own calendar (buyback blackout windows,
+earnings-season density, pre/post-market release clustering). Proposer brief brief_r68 with
+the mandatory adjacency gates (quarter-end TOM #2/#6 sits INSIDE the supposed blackout window
+and is positive; opex; settlement days; burned overnight/late-day families). Proposer -> two
+critics -> registration; no returns before then.
