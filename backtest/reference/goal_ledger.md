@@ -5552,3 +5552,43 @@ earnings-season density, pre/post-market release clustering). Proposer brief bri
 the mandatory adjacency gates (quarter-end TOM #2/#6 sits INSIDE the supposed blackout window
 and is positive; opex; settlement days; burned overnight/late-day families). Proposer -> two
 critics -> registration; no returns before then.
+
+### Round 68 closed (2026-09-09): corporate-calendar class - four registration-stage kills, 0 returns read
+
+Proposer prop_r68 + critics A (REFUSE) and B (REGISTER WITH AMENDMENTS, fidelity lens).
+Integrator verdict on the one candidate the proposer ranked registrable:
+KILL #18 - leading-announcement-session long (Chan & Marsh JFE 2022 / Savor-Wilson JF 2016;
+  first m in {3,5} sessions per season with >= 3 timed announcers, LONG one session). Refused
+  at registration on three independent grounds: (a) SUBSUMED BY CONSTRUCTION - re-labelled by
+  days from the third Friday, 217/252 (m=3) and 332/420 (m=5) LEAD sessions sit inside attempt
+  19's REGISTERED calendar (opex week W1/W2 plus post-opex Mon-Wed W3/W4, both read long-
+  positive on this same IS block: t +3.92 / short lost t -3.73) because the banks that fill 52%
+  of LEAD slots report on days 12-17 of Jan/Apr/Jul/Oct; the unread residual is IS 22 (m=3) /
+  57 (m=5) sessions, under every floor; (b) POWER - at the published ~14 bp per LEAD day
+  (~0.09R net, sd 0.87R) IS t is 1.42 / 1.84 (NW-deflated 1.3 / 1.7), below the floor even if
+  the effect is fully real, and the proposer's G1 Welch gate would need 2.4x the paper
+  (attempt-42/48 precedent: a family that cannot reach the floor is not registrable); (c) the
+  cited papers report a cross-sectional beta slope on influence-weighted leading days, and
+  announcer-vs-non-announcer returns - the INDEX-LONG direction is implied, not reported, so
+  the direction is not mechanism-fixed by citation. Critic B's fidelity amendments (acceptance-
+  date keying, pre/post dedup, -5 placebo offset, 09:30-bar-close entry, H_FULL report-only)
+  are adopted into the data asset, not into a registration.
+KILL #19 - buyback-blackout share as a regime (the class's headline mechanism): the share is
+  a square wave of the fiscal calendar (R^2 0.987 on quarter x day-of-quarter cell means,
+  residual sd 0.04), so the brief's matched-calendar control has no support by construction;
+  its 85 episodes are the 84 fiscal quarters; the SHORT the mechanism implies contains 100% of
+  watch #6's sessions (which are POSITIVE inside the supposed no-bid window) and 97% of
+  quarter-end 'b' sessions (kill #11); the open-window LONG is Round 64 kill #6 verbatim.
+KILL #20 - earnings-season density regime: the cited premium lives on leading days, not the
+  season; a season-long regime is the kill-#6 / attempts 45-48 drift chassis, a season-short
+  is attempt 31's low-correlation control re-read.
+KILL #21 - pre-open vs post-close release clustering: no cited direction; post-close ->
+  overnight is kill #2 / attempts 5 and 29; the pre-open RTH arm is 12.7% FOMC days on a
+  burned negative cell.
+Test count consumed: 0. Multiplicity record (signal side, counts only): k 1..10 announcer
+thresholds, m {3,5}, three date mappings, blackout thresholds 0.5-0.7.
+CLASS VERDICT: the corporate calendar is, on this basket, the opex/quarter-end calendar seen
+from the issuers' side - every candidate collapses into a burned or spent calendar family or
+into a regime chassis the program has already refuted. Class closed; the calendar (8,167
+releases with timings, ~97% complete) stays banked as a calendar-labelling asset for gates.
+Program score: 1 OOS pass (on paper) / 49 attempts + 21 registration-stage kills; 11 shots.

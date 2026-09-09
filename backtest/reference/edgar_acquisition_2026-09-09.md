@@ -41,3 +41,14 @@ domicile). ORCL/BLK/AVGO start 2006/2006/2009 under the CIKs available.
 For each ticker: GET submissions/CIK{cik}.json; blocks = [filings.recent] + each
 filings.files[i].name; keep rows whose form is in the set above; sleep 0.12 s between requests.
 Predecessor pass: same, over the fixed (ticker, CIK) list above.
+
+## Round 68 critic findings folded into the asset (2026-09-09)
+
+- EDGAR's `filingDate` rolls acceptances after 17:30 ET to the next business day (188 post-close
+  rows in the basket: DHR 82, PEP, NEM, COST ...). `earnings_dates.csv` now keys `release_date` on
+  the ACCEPTANCE date in ET and keeps `filing_date` beside it.
+- A "results release" dedup that takes the earliest Item-2.02 8-K >= 8 days after the period end
+  keeps timing-unknown intraday 8-Ks in 57 quarters (AAPL's January Macworld-week filings erase
+  three Q1 releases); dedup over pre/post candidates only. Off-cycle fiscal calendars (ORCL, COST,
+  AAPL, MSFT, MU, ADI, AMAT, DE, HD, WMT, NVDA, CRM, AVGO) are handled correctly by period end.
+- Two AMAT quarters are furnished under Item 7.01, not 2.02: the calendar is ~97-98% complete.

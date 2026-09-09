@@ -6,7 +6,9 @@ An earnings release is an 8-K whose Items include 2.02 ("Results of Operations a
 Condition"; item required since 2003-03-28). Output data/earnings/earnings_dates.csv:
 ticker, release_date (filingDate of the 8-K), accepted_utc (EDGAR acceptance timestamp), session
 (pre = accepted before 09:30 ET on a trading day, post = after 16:00 ET, intra otherwise),
-period (reportDate = fiscal period end when EDGAR carries it). Signal side only.
+period (reportDate = fiscal period end when EDGAR carries it). release_date is the ACCEPTANCE date in
+ET; filing_date is EDGAR's own (rolls past 17:30 ET). Any "results release" dedup should prefer pre/post
+candidates over intra ones (critic B, Round 68). Signal side only.
 Cross-check: the three Alpha Vantage EARNINGS files (AAPL/ABT/AMAT) give reportedDate/reportTime.
 """
 import csv, json, os, datetime as dt
@@ -24,16 +26,18 @@ def parse():
         items = r["items"] or ""
         if "2.02" not in [x.strip() for x in items.split(",")]: continue
         acc = r["acceptanceDateTime"]
-        sess = ""
+        sess = ""; rel = r["filingDate"]
         try:
             t = dt.datetime.strptime(acc, "%Y-%m-%dT%H:%M:%S.%fZ").replace(tzinfo=dt.timezone.utc).astimezone(ET)
             hm = t.hour * 100 + t.minute
             sess = "pre" if hm < 930 else ("post" if hm >= 1600 else "intra")
             acc_local = t.strftime("%Y-%m-%d %H:%M ET")
+            rel = t.strftime("%Y-%m-%d")   # release date = ACCEPTANCE date in ET (EDGAR's filingDate rolls
+                                            # acceptances after 17:30 ET to the next business day - critic B, R68)
         except Exception:
             acc_local = acc
-        out.append(dict(ticker=r["ticker"], release_date=r["filingDate"], accepted=acc_local, session=sess,
-                        period=r["reportDate"], accession=r["accession"]))
+        out.append(dict(ticker=r["ticker"], release_date=rel, filing_date=r["filingDate"], accepted=acc_local,
+                        session=sess, period=r["reportDate"], accession=r["accession"]))
     out.sort(key=lambda x: (x["ticker"], x["release_date"]))
     with open(os.path.join(HERE, "earnings_dates.csv"), "w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=list(out[0].keys())); w.writeheader(); w.writerows(out)
