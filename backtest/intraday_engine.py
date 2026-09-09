@@ -108,7 +108,10 @@ def run_cell(cell, unseal=False, cost_mult=1.0):
         direction = cell.get("direction", 0)
         if days is not None:
             if callable(days):
-                r = days(day, key)
+                # the callable sees ONLY bars that closed before the entry clock (no lookahead by
+                # construction; the attempt-15 / r38 rule) - for a wrapped window that is the prior
+                # evening's bars up to the entry, i.e. everything with hm >= ehm is hidden as well
+                r = days(day[day.hm < ehm] if ehm <= xhm else day[(day.hm < ehm) & (day.hm >= xhm)], key)
                 if r is None or r is False:
                     continue
                 if r in (1, -1):
@@ -120,8 +123,10 @@ def run_cell(cell, unseal=False, cost_mult=1.0):
         eb = _bar_at(day, ehm)
         if eb is None:
             continue
-        # exit bar = the last bar whose start < exit clock (its close is the exit print)
-        path = day[(day.hm >= ehm) & (day.hm < xhm)]
+        # exit bar = the last bar whose start < exit clock (its close is the exit print);
+        # a window that crosses midnight (entry >= 18:00, exit next morning) lives inside one
+        # session key because skey = (ts + 8h).date, and the frame is chronological
+        path = day[(day.hm >= ehm) & (day.hm < xhm)] if ehm <= xhm else day[(day.hm >= ehm) | (day.hm < xhm)]
         if len(path) < 2:
             continue
         entry = float(eb.open)
