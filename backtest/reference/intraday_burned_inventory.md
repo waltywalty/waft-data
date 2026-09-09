@@ -992,3 +992,9 @@ Event / calendar / conditioning data:
   CBOE; other-country FXStreet calendars; Deribit funding since 2018-08 (Kernel only). Blocked:
   CME historical margins (paywalled), NYSE MOC imbalances, any DOM/order-flow product, FTD before
   2012, daily short volume before 2019.
+
+- **Round 71 (2026-09-09) - true ES / GC 5m forward pulls** (`data/forward/es_5m_*.json`, `gc_5m_*.json`,
+  weekly ONE_WEEK, front/active month, Globex 18:00-17:00 ET incl. the Sunday reopen): the feed for the
+  five forward-only specs F1-F5 (expiry-morning gap fade, MOC drift, 16:00-16:15, GC Sunday reopen, HSI
+  16:15-16:30) scored descriptively by `forward/leg_intraday.py` -> `results/forward_intraday.json`.
+  Untested clocks 4, 6, 7 and kills #22/#24/#25's route-backs are now IN THE LOG, not open.

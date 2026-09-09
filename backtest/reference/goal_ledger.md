@@ -5866,3 +5866,69 @@ The clock-mechanism list on OHLC-only data is now exhausted by two proposers and
 critics: what remains (expiry-morning fade, MOC drift, 16:00-16:15, gold Sunday reopen, HK
 16:15-16:30) is forward-only on true futures. Program score: 1 OOS pass (on paper) / 51
 attempts + 25 registration-stage kills; 11 shots.
+
+## Round 71 (2026-09-09): forward-only intraday accrual on TRUE futures - five specs registered, no backtest
+
+Why forward-only: the five clocks left on the intraday list after Rounds 70/70B (kill #22's
+route back, kill #24's futures-window objection, kill #25's route back, inventory items 4,
+6, 7) all live where the CFD frames cannot testify - auction prints, the 16:00-16:15
+settlement, the Sunday reopen, HK 16:15-16:30 - and the Round-70 provenance finding shows
+the MT5-era CFD overnight path is not the futures' path. So they are logged on true
+futures from IBKR, descriptively, with the bar fixed before the first event was read.
+DATA (new assets #20/#21): ES front-month 5m (CME, underlying 11004968; ESU6 649180671 to
+2026-09-18 then ESZ6 515416632) and GC active-month 5m (COMEX, underlying 17340718; GCZ6
+462941472), weekly ONE_WEEK pulls, outside_rth, source Last, delayed 600 s; first pull
+2026-09-02 18:00 -> 2026-09-09 06:50 ET (1,211 / 1,229 bars; full Globex days 18:00-17:00,
+the Sunday 18:00 reopen and the 16:00-17:00 post-close block present; no 16:15-16:30 halt
+in the feed; Labor Day Monday 09-07 traded to 13:00). The ONE_WEEK window is a data-loss
+deadline. HSI uses the existing MHIF futures files. Files data/forward/es_5m_*.json,
+gc_5m_*.json (gitignored), keys "contract"/"contract_id"; both contracts are pulled in a
+roll week and the specs never combine prints from two contracts (a roll voids the event).
+SPECS (frozen; clocks NY unless HKT; forward/leg_intraday.py; events from 2026-09-03):
+ F1 ES expiry-morning gap fade: third Friday of every month (AM-settled SPX options,
+    quarterly SOQ), gap = 09:30 open - prior session's 15:55-bar close, direction -sign(gap),
+    09:30 open -> 10:00 print. Kill #22's route back; Stoll-Whaley open reversal restricted
+    to settlement mornings. ~12 events/yr: n >= 40 takes >3 years - stated, not hidden.
+ F2 ES MOC drift: every session, direction sign(15:50 open - 09:30 open), 15:50 open ->
+    16:00 print. Mechanism: leveraged/inverse ETF rebalancing and MOC imbalances on the side
+    of the day's move (Cheng & Madhavan 2009); Ivanov-Lenkey's contrarian offset is the
+    stated risk; attempt 2/2b's 15:30 -> 16:00 unconditional cell (+0.008R gross) is the
+    burned neighbour - this cell is the last 10 minutes, signed.
+ F3 ES cash-close -> settlement: every session, direction -sign(16:00 print - 15:50 open),
+    16:00 open -> 16:15 print. Mechanism: reversal of the closing-auction price pressure
+    once the cash imbalance is filled (Bogousslavsky & Muravyev 2023 "Who trades at the
+    close?"); kill #1 refused the CFD version because its post-close prints are synthetic;
+    true ES removes that objection, nothing else.
+ F4 GC Sunday reopen gap fade: gap = Sunday 18:00 open - Friday 16:55-bar close, direction
+    -sign(gap), 18:05 open -> 03:00 print Monday. Kill #25's route back verbatim (its own
+    gross decomposition put the plausible edge at $0.3-0.4/oz vs a $0.70 two-RT bar - the
+    prior is NEGATIVE and the log is there to measure it, not to hope).
+ F5 HSI futures L&I close flow: every session, direction sign(16:15 HKT open - 09:15 HKT
+    open), 16:15 HKT open -> 16:30 print (the 08:15Z 15m bar). Kill #24's mechanism on the
+    only feed that prints the window; the AUM channel was sized at 3-5% of last-45-minute
+    volume, so the prior is small.
+COSTS per RT: ES 0.35 pt (MES), GC 0.35 $/oz (MGC), HSI 10 pt (MHI, the house number);
+R = (pnl - cost)/ATR, ATR = mean of the prior 20 sessions' 09:30-16:00 range (min 5,
+atr_n recorded) or leg_mhi's ATR14. BAR (registered): n >= 40 events, avg R > 0, t >= 2,
+halves [+,+], positive at 2x cost. A spec meeting the bar is REPORTED for sign-off - the
+routines never promote, journal or re-specify; n >= 40 with mean R < 0 at 1x = forward kill
+candidate. The leg is NOT in autojournal.LEGS: no journal rows, no paper P&L. Placebo and
+opposite-direction reads are not run on the forward log (they would double the read count
+on a sample that cannot bear it); they are the first thing a sign-off review would add.
+Weekly trigger trig_01MQnmLG9nRdyTtZ6LrGpg5W and monthly trig_01MD84ghFVabnMYNKBBMmCLJ
+updated 2026-09-09 (pull list, contract roll rule, leg run, reporting conditions).
+FIRST READ (2026-09-03..09-08, results/forward_intraday.json, 11 events - nothing to
+conclude, printed because the program prints everything): F1 none (next 2026-09-18 on
+ESZ6); F2 n 3 mean +0.83 pt (-1.75, -0.50, +4.75); F3 n 3 mean +0.08 pt (-2.75, +5.25,
+-2.25); F4 n 1: 09-07 gap -10.70 $/oz, long from 4468.80 to 4438.50 = -30.30 (the Labor-Day
+Sunday, a continuation); F5 n 4 mean +9.0 pt, R -0.003 at 1x, -0.031 at 2x.
+READ-ONLY PRE-REGISTRATION READ (counted, +1): the F5 rule on the HSIU6 files already on
+disk (37 sessions 2026-07-20..09-08, the contract's pre-front weeks included): +1.46 pt
+per event, WR 35% (13 flat-bar zeros), t +0.51; in R (24 events with ATR14) -0.022 at 1x,
+-0.051 at 2x. A 1.5-pt gross against a 10-pt round trip: the mechanism's footprint on this
+feed is an order of magnitude inside cost, which is what kill #24's sizing said. F5 stays
+in the log (the registration precedes this read's disclosure only by minutes; the read
+is recorded so it cannot be quietly forgotten), with that prior stated.
+Test count: +1 read-only; 0 selectable, 0 shots. Program score unchanged: 1 OOS pass (on
+paper) / 51 attempts + 25 registration-stage kills; 11 shots; 21 data assets; forward
+log opened for 5 specs.

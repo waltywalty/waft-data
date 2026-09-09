@@ -22,6 +22,8 @@ must concatenate all files matching the glob, sort by time, drop duplicate times
 | spx_daily_*.json / ndx_daily_*.json / rut_daily_*.json | IBKR IND 416904 CBOE / 416843 NASDAQ / 416888 RUSSELL, last, RTH | 1d (13:30 UTC bar start = cash open) | 1 year |
 | hk33_m15.csv | re-curl of raw.githubusercontent.com/user1-2-3-4/oanda-data-collector/main/data/indices/HK33_M15.csv (same format as data/HK33_M15.csv; UTC; first bar of day 01:15 UTC) | 15m | full history, live-updated |
 | hsi_fut_15m_*.json | IBKR HKFE HSI FRONT-MONTH FUTURE (FUT), FIFTEEN_MINS, outside_rth true, one file per weekly pull, top-level key "contract" (e.g. HSIU6); at a roll the later file's bars win on overlapping timestamps | 15m | one week per file |
+| es_5m_*.json | IBKR CME E-mini S&P 500 FRONT-MONTH FUTURE (FUT; underlying 11004968; ESU6 649180671 to 2026-09-18, ESZ6 515416632 next), FIVE_MINS, ONE_WEEK, outside_rth true, keys "contract"/"contract_id"; pull the most-liquid contract (roll on the Thursday before the third Friday) and BOTH contracts in roll week | 5m | one week per file, Globex 18:00-17:00 ET |
+| gc_5m_*.json | IBKR COMEX Gold FRONT-MONTH FUTURE (FUT; underlying 17340718; GCZ6 462941472 = the active December contract; from 2026-11-20 pull GCG7 765079322 as well), FIVE_MINS, ONE_WEEK, outside_rth true, keys "contract"/"contract_id" | 5m | one week per file, Globex 18:00-17:00 ET |
 | ism_pmi.json | list of {"release": "YYYY-MM-DD", "month": "YYYY-MM", "value": float} maintained by the main session from the ISM press release (via web search) | monthly | all releases since 2026-08 |
 
 Declared substitutions vs the backtests (recorded in the ledger): the XAU corr gate uses
@@ -69,3 +71,14 @@ first session after a release >= 50. For each calendar month with any active ses
 one row per leg (SPX, NDX, RUT): entry = the close of the last session BEFORE the first
 active session of that month, exit = close of the last active session of the month,
 side L, stop = entry, note = "<leg>|<n> sessions". date = last active session date.
+
+## Round 71 descriptive leg (NOT a journal stream)
+
+`forward/leg_intraday.py` scores the five forward-only intraday specs F1-F5 (ledger, Round 71,
+2026-09-09) on the ES / GC 5m files and the HSI futures 15m files and writes
+`results/forward_intraday.json`. It is deliberately absent from `autojournal.LEGS`: it emits no
+journal rows and no paper P&L, only per-event descriptive rows and the per-spec score against the
+registered bar (n >= 40, avg R > 0, t >= 2, halves [+,+], positive at 2x micro cost). Run from
+backtest/ at each weekly check-in (`python3 forward/leg_intraday.py`) after the pulls; events dated
+before 2026-09-03 are excluded by the default `--start`. Promotion to a journal stream needs the
+user's sign-off and a fresh ledger registration; the leg itself never changes a spec.
