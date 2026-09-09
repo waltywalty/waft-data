@@ -56,3 +56,15 @@ is persisted for 7.7 years (2019+; its 75/25 split puts the OOS at 2024-11..2026
 the attempt-48 confound - any SHV spec must address that by construction). IWM is now real
 in both series. Registration goes through the proposer -> two adversarial critics -> ledger
 path; nothing on the return side has been computed.
+
+## Post-proposal fix (same day): two half-months were missing from the first pull
+
+The proposer's signal-side coverage check found 2019-10a with a single settlement date and
+2023-08b with none. Cause: the SEC index links those two files under non-standard names,
+`cnsfails201910a_0.zip` and `cnsfails202308b_0.zip` (re-uploads), which the strict
+`cnsfails20YYMM[ab].zip` pattern in the first URL harvest excluded; every other half-month
+2012-01..2026-08 has a standard name. Both were fetched (HTTP 200; the 2023-08b zip's inner
+text file is mislabeled `cnsfails202309a.txt` but holds settlement dates 2023-08-15..31),
+filtered, and appended: 1,100 basket rows (411 + 689), md5-verified. FTD is now 199,910 rows,
+and every one of the 351 half-months has >= 6 dated rows for each of SPY, QQQ and IWM. The
+bootstrap script's pattern now accepts the `_0` suffix.

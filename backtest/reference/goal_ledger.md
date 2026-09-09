@@ -5395,3 +5395,15 @@ Full detail: reference/primary_acquisition_2026-09-09.md. Data assets
 now 18. Round 67 proposer opened on the signal side with brief_r67
 (publication lag, normalisation, the attempt-48 confound, and the
 watch #7/#8/#9 independence gate all binding).
+PROPOSER OUTPUT (Round 67, signal side): one registrable candidate -
+ETF operational-shorting persistence -> SHORT the mapped index (SPY/
+QQQ/IWM fails in the last published half-month, trailing-252-date 90th
+percentile day-counts, 15-30 day publication lag applied, quarter-end
+'b' halves excluded, 4-cell grid kmin {2,3} x hold {5 sessions, to next
+posting}); basket fails breadth and daily short volume both returned
+"no registrable spec" (wrong population / calendar object / T+1 break
+in the OOS; unsigned inventory / attempt-48 confound). Two adversarial
+critics running before any registration. The proposer's coverage check
+also caught two missing half-months in the FTD pull (SEC re-upload
+names with an _0 suffix); fixed and re-verified (351/351 half-months
+complete), recorded in the provenance note.

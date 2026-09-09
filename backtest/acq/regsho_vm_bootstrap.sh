@@ -7,7 +7,7 @@ mkdir -p /tmp/work && cd /tmp/work
 printf '%s\n' SPY QQQ IWM AAPL ABBV ABT ADI AMAT AMD AMGN AMZN ANET APH AVGO AXP BA BAC BKNG BLK BMY BRKB 'BRK.B' 'BRK B' 'BRK-B' C CAT COF COP COST CRM CRWD CSCO CVS CVX DE DHR DIS ETN GE GEV GILD GOOG GOOGL GS HD IBM INTC ISRG JNJ JPM KLAC KO LIN LLY LRCX MA MCD META MRK MRVL MS MSFT MU NEE NEM NFLX NOW NVDA ORCL PANW PEP PFE PG PGR PLD PLTR PM QCOM RTX SCHW SNDK SPGI STX T TJX TMO TSLA TXN UBER UNH UNP V VRTX VZ WDC WELL WFC WMT XOM > syms.txt
 UA='waft-data research (rogerlgk@gmail.com)'
 curl -sS -A "$UA" --max-time 60 https://www.sec.gov/data-research/sec-markets-data/fails-deliver-data -o ftdpage.html
-grep -o 'href="[^"]*cnsfails20[0-9][0-9][0-9][0-9][ab]\.zip"' ftdpage.html | sed 's#href="##; s#"$##; s#^#https://www.sec.gov#' \
+grep -o 'href="[^"]*cnsfails20[0-9][0-9][0-9][0-9][ab][^"]*\.zip"' ftdpage.html   # accepts the SEC's _0 re-upload names | sed 's#href="##; s#"$##; s#^#https://www.sec.gov#' \
  | awk '{n=match($0,/cnsfails[0-9]+/); y=substr($0,n+8,4); if (y>=2012) print}' | sort -u -t/ -k7 > sec_urls.txt
 cat > ftd2.sh <<'EOT'
 #!/bin/bash
