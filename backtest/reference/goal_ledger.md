@@ -5314,3 +5314,32 @@ risk. If the connector is restored within that window the auto-journal
 back-fills automatically, because the leg loaders concatenate every
 weekly file and recompute all rows from scratch; after it, those gold
 and HSI-futures sessions are a permanent hole in the forward record.
+
+### 2026-09-09 weekly auto-journal: RECOVERED - IBKR reconnected inside the data-loss window
+
+User re-authorized the Interactive Brokers connector on 09-09, one day
+before the gold 5m window would have closed. All eight pulls succeeded
+on the first attempt: gold 5m 1,158 bars (09-02 22:00Z -> 09-09
+05:10Z), AUDUSD 5m 1,236 bars, gold/AUD daily ONE_YEAR, SPX/NDX/RUT
+daily through 09-08, HSI front-month HSIU6 15m 312 bars (09-02 09:00Z
+-> 09-09 05:00Z; HSIV6 not pulled, expiry 09-29 is 20 days out), HK33
+CFD CSV through 09-08 18:45Z. The rolling windows reached back to
+09-02, so the disconnected week is recovered WITH overlap and the
+loaders' concatenate/dedup join it: no hole in the forward record.
+JOURNAL: 3 rows added (7 -> 10).
+  MHIF 09-04 S 25554 -> stopped 25660   -106.0
+  MHIF 09-07 L 25605 -> stopped 25484   -121.0
+  D7   09-03 L 7631.47 -> 7747.71       +116.24 (entry 09-01, 2 bars)
+XAU/XAUAUD: 5 raw breakouts in the frame, corr gate CLOSED throughout
+(0.757 on 09-09) -> 0 new rows; 09-09 session incomplete, deferred.
+MHI (CFD): no trigger 09-05..09-08 (last push -0.06 ATR14). PMI regime
+INACTIVE (54.6). D7 flat again after the close.
+SPRT: XAU +0.17, XAUAUD +0.17, MHI -0.49, MHIF -1.50 (n 6, W 2), D7
++0.23 - all "continue". MHIF is 0.70 LLR from the kill line after four
+stops in six trades. Advisory below n = 80 per the registration, but
+it is the first stream trending toward a verdict and it is trending the
+wrong way. The CFD/futures disagreement the 2026-09-03 fidelity check
+predicted is now visible in the journal: the CFD stream triggered once
+(09-01) where the futures did not; the futures triggered 09-02, 09-04
+and 09-07 where the CFD did not. Same rule, two feeds, disjoint trade
+lists - the reason MHIF and not MHI is the promotion evidence.
