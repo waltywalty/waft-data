@@ -5832,3 +5832,37 @@ window (10:00-11:00 unconditional, gross ~0) contains C2. Cost: two RT = $0.70/o
 0.03R of the RTH ATR20; plausible gross 0.02-0.06R - marginal in the IS era, registered as
 such. Fidelity: weekly MGC 5m vs CFD on month-ends, mean-difference form. Test count:
 stage 1 +1; stage 2 +4 selectable (2 effective) + ~10 read-only.
+
+### Attempt 51 result: STAGE-1 USD GATE FAIL - the gold family dies unrun
+
+(run_r70b_fixflow.py --stage1; results/r70b_fixflow_stage1.json; event map
+results/r70b_monthend_map.csv.) Clock provenance first: the ejtrader m15 feeds' 08:30-ET
+release spike sits at feed slot 15:30 in BOTH seasons (EURUSD 1.32x/1.37x winter/summer,
+gold 1.22x/1.31x, USDJPY 1.32x/1.40x vs the prior slot), so ET = feed - 7h holds all year
+(the r54 convention stands; critic B's EU-clock reading is not what the data show). Month-
+end map: 167 events 2012-01..2025-10, fix at 11:00 ET on 151 and 12:00 ET on the 16 DST-
+mismatch month-ends (every October plus 2013-03-28, 2019-03-29, 2024-03-28); SPX MTD sign
+at the 10:00 print: 117 up / 50 down, 105 with |MTD| >= 2%.
+STAGE 1 on the synthetic DXY (112 IS month-ends 2012-11..2022-03), USD signed by
+-sign(SPX MTD), window fix-30 -> fix: mean -0.29 bp, WR 51.8%, t -0.20, halves [-,-].
+GATE FAIL: the pre-fix USD flow the mechanism predicts is absent on this frame at this
+horizon (fix-60 -> fix +0.24 bp, t +0.14). Per the registration no gold cell is read; the
+family is closed at stage 1. Test count: +1 (the gate) + 6 read-only.
+Read-only residue, reported not re-specified (attempt-47 rule): the post-fix 30 minutes
+(fix -> fix+30) move in the OPPOSITE of the registered direction - USD UP after a US
+up-month - prints +2.74 bp, WR 61.6%, t +3.49, halves [+,+] on the same 112 events, while
+the fix-90..-60 placebo is +1.34 bp (t +1.57), T-3/T+3 controls +0.18 bp (t +0.33). One of
+seven diagnostic reads; a post-hoc direction on a non-registered window is exactly what the
+program refuses to promote. It is logged as a WATCH HYPOTHESIS (post-fix USD move signed
+by the month's equity return; gold would carry it SHORT after up-months, 11:00->11:30 ET),
+promotable only through a fresh registration on an independent sample - the 2022-03+
+ejtrader-free era via the IBKR FX feeds forward - never by re-reading this one.
+ROUND 70 SUMMARY (first intraday round): 2 attempts (50 IS-fail on the watch-#6 calendar
++ cost; 51 dead at its own USD gate), 4 registration-stage kills (#22 SOQ push fade, #23
+COMEX settlement fade, #24 HSI L&I close, #25 gold Sunday reopen fade), 0 shots spent, one
+provenance finding that binds the whole program (the MT5-era CFD overnight path is not the
+futures' path: +0.8 bp vs +12.6 bp per night on 124 overlap nights), one watch hypothesis.
+The clock-mechanism list on OHLC-only data is now exhausted by two proposers and four
+critics: what remains (expiry-morning fade, MOC drift, 16:00-16:15, gold Sunday reopen, HK
+16:15-16:30) is forward-only on true futures. Program score: 1 OOS pass (on paper) / 51
+attempts + 25 registration-stage kills; 11 shots.
