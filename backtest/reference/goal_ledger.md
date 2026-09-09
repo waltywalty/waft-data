@@ -5634,3 +5634,95 @@ reference/intraday_burned_inventory.md (~99 families in 14 classes with every sc
 2006-2026 for the basket, 463k rows; AAII weekly sentiment 1987-2026) are BANKED, not
 proposed on, per the directive. Proposer runs (index clocks; gold/Asia clocks) were cut off
 by the session rate limit and are re-launched when it resets.
+
+## Round 70 (2026-09-09): intraday proposals A - one registration, one registration-stage kill
+
+Proposer A (index clocks) examined twelve clocks: 10 "no registrable spec" (03:00 London
+open = attempt-6 drift/mirror; 05:00-08:30 = attempt-29 sub-window; 10:00 releases =
+attempt-17 sub-grid and ISM is TOM-inseparable, 183/258 prints on calendar day <= 3; 11:30
+European close = no signed ES flow; 13:00-13:30 auctions = attempt-26/27 mirrors; MOC 15:50
+= ~0.5-1 bp unconditional, below cost; 16:00-16:15 runs into the ES settlement; Globex reset,
+half-days, rebalance closes, earnings clusters = kills #18/#21 or no signed flow), two
+proposals; critics A and B both read them.
+KILL #22 - expiry-morning SOQ push fade (fade the 09:15-09:30 pre-open push on AM-
+  settlement Fridays 09:30-10:00). Critic A REFUSE, adopted: the direction is -sign of a
+  15-minute price push, i.e. price-derived, not a signed participant (kill-#1 logic); the
+  documented Stoll-Whaley object is the cash open-print reversal conditional on the gap
+  (attempt 5 / r15 F5, dead) not this push; plausible gross 3-10 bp against a 3-5 bp 2x-cost
+  bar in the IS era ("gross real, net marginal" = the attempt-2/2b/4/29 signature the
+  intraday standard names as unregistrable); 510 "legs" are ~190 same-morning dates and
+  40-100 after the trigger; its read-only VIX-Wednesday cell would have run killed family
+  #5. Route back only as forward-only ES 5m accrual on expiry Fridays with a gap-sign or
+  imbalance-sign condition; no backtest.
+
+### Attempt 50 registration (BEFORE running): pre-announcement night LONG before NFP and GDP
+
+Mechanism (external, cited, abstract-verified): Hu, Pan, Wang & Zhu, "Premium for
+heightened uncertainty: explaining pre-announcement market returns", JFE 145(3) 2022 -
+S&P 500 futures earn the pre-announcement premium from the prior close to five minutes
+before scheduled macro releases (NFP +10.1 bp, ISM +9.1 bp, GDP +7.5 bp, 1994-2018,
+"realised mostly overnight", no abnormal variance): holders who cut exposure into the
+release pay whoever carries the position through the night. In-house: watch #10 (attempt
+34) is the same mechanism on the FOMC calendar. STATUS: this is attempt 11's ONE permitted
+repair (class #7 horizon match; attempt 11 read NFP whole-day +0.029R with both RTH arms
+negative, i.e. whatever NFP carries sits before the open); attempt 12's note "the NFP arm is
+not re-tested" and the Round 53 refusal (r42k_macro: none) are REOPENED on the HPWZ
+citation, which was not in attempt 11's registration. NFP|GDP is ONE family; its holdout is
+SPENT after this run, pass or fail. Watch #10 stays disjoint: FOMC statement days and the
+session after are excluded from every cell.
+FROZEN CONSTRUCTION. Calendar = FXStreet events "Nonfarm Payrolls" and "Gross Domestic
+Product Annualized" at 08:30 ET (union 311 dates 2013-01..2026-08; 285 after the FOMC
+exclusion; ACTUAL dates incl. 3 shutdown-delayed NFPs, never "fixed" to first Fridays).
+Session = the engine's skey (the release date; its evening bars from 18:00 the previous
+day belong to it by construction). ENTRY = OPEN of the first 5m bar at or after 18:00 ET
+and before 19:00 ET (the MT5-era feed has no 18:00-18:55 bars in US summer - fixed 22:00-
+23:00 UTC break - so the fill clock is reported per trade; no bar in that hour = no trade;
+never a print before 18:00, which in the MT5 era is a synthetic post-close print). EXIT =
+CLOSE of the 08:20 bar (08:25 ET, HPWZ's five-minutes-before cutoff). No stop, no target.
+LONG only. Instruments SPX and NDX pooled (MES/MNQ); RTY EXCLUDED from the selectable
+cells (its frame has no evening bars 2009-2017: 0 of 69 IS release nights) and printed
+read-only where bars exist. Costs micro SPX 0.35 / NDX 1.0 per RT at 1x, 1.5x, 2x, PLUS a
+carry line: an ES overnight return equals the cash-like CFD path minus (r - d)/252 x price
+per night (fed funds proxy = FRED DGS2 on disk, d = 1.8%); the 2x-cost test is reported
+with and without carry. R in ATR20 units (RTH daily range mean, shift 1).
+GRID (4 selectable cells, pooled SPX+NDX): C1 entry [18:00,19:00) -> 08:25 on NFP|GDP
+nights; C2 entry 02:00 -> 08:25; C3 entry 05:00 -> 08:25; C4 = C1 on NFP nights only.
+SELECTION: max pooled-by-leg IS t among cells with n >= 40 dates, t >= 2, halves [+,+],
+avgR > 0 at 2x cost, and C1-C3 all positive (NO ordering requirement; C2 contains attempt
+6's significantly negative euro-open hour and is expected weaker); by-date t printed beside
+the pooled t (two legs share a night). ONE OOS shot at the program bar plus the intraday
+2x-cost condition; the seal is opened only by the integrator.
+HARD-DEATH CONTROLS (attempt-34 rule, load-bearing): (a) the IDENTICAL window on all
+non-release, non-FOMC nights (not attempt 29's 15:55->09:30 number) - if the control's
+avgR >= the selected cell's avgR at IS, the family dies; (b) the event-minus-control
+differential must be [+,+] in both IS halves; (c) trading-day-of-month-MATCHED control for
+all release nights (NFP: 50/163 on trading day 1-3, inside attempt 21 / watch #6's window;
+GDP: 93/148 in the last three trading days, attempt 14 / watch #2 territory) - the
+differential vs the matched control must be positive; read-only split NFP td<=3 vs td>=4:
+an effect living only in td<=3 is watch #6 in a costume and the family dies.
+DIAGNOSTICS (non-selectable, counted): placebo clocks = the 08:35->09:25 "after" segment
+(HPWZ and attempt 11 predict ~0/negative) and the same window 7 calendar days earlier when
+it is a session; same-weekday non-release nights as the control by weekday; horizon checks
+(exits 07:55 and 07:25, nested sub-windows, relabelled from "placebo"); read-only 15:55->
+08:25 anchor (HPWZ's own window; the 16:00-18:00 segment is otherwise dropped); read-only
+ISM-Mfg night 18:00->09:55 (TOM-inseparable, never selectable); C1 with a 1.0 x ATR20 stop
+(slippage sensitivity); short C1 printed, not gated (arithmetic mirror); per-instrument
+signs; per-year avgR; fill-clock distribution.
+PRE-CHECKS printed BEFORE any grid is read: bar availability per era (done, timestamps
+only: Oanda era 65% of sessions have an 18:00 bar - the rest are Mondays and holidays -
+MT5 era 27-31% = winter only); roll-gap assertion: count of event nights with |entry - prior
+16:00 close| > 0.5 x ATR20 (must be ~0; any such night is excluded and listed); IS/OOS
+counts by cell.
+FIDELITY (registered, non-gating): true ES 2h bars (2025-07..2026-08) give an 18:00->08:00
+window (the 08:00-10:00 bar spans the release): (a) CFD-vs-ES mean difference and
+correlation on ALL overlap nights 2025-09-19..2025-12-31 (~60), the r43 device; (b) ES-only
+mean on its ~16 release nights vs ~230 non-release nights, a forward mini-replication.
+Forward accrual continues via the weekly ES pulls if the family survives.
+IS/OOS: stored cuts (SPX 2020-09-25, NDX 2020-04-06); the NDX OOS carries the 2020-05..
+2021-01 hole and the MT5-era winter-only evenings, so the OOS n will be thinner than the
+calendar implies (disclosed now). Test count: +4 selectable, +12 read-only. Multiplicity
+record: entry print (15:55 vs 18:00) and the three entry clocks were the proposer's only
+choices; no other cell was screened.
+PRIOR: honest gross expectation 0.04-0.08R per night (attempt 11 / watch #10 magnitudes)
+against a 2x-cost bar of ~0.035R in 2013-16 falling to ~0.012R by 2024: the test is whether
+HPWZ's magnitude survived; modal outcome is "gross positive, marginal at 2x in the IS era".
