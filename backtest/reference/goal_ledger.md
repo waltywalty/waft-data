@@ -5611,3 +5611,26 @@ release, session hand-off, expiry) with a fixed direction, not a price pattern -
 pattern families (sweeps, CISD, FVG, bands, pullbacks, footprints, flips, scalps) are all
 burned; (4) fidelity checks against the true CME ES sample and the HSI futures where a
 family is index- or HK-side. Frozen-grid / IS-OOS / one-shot rules unchanged.
+
+## Intraday program opened (2026-09-09, user directive): the next ~20 attempts are lower-timeframe
+
+USER DIRECTIVE: after reading the near-miss dossier, the next ~20 strategies should be
+intraday, lower-timeframe, about 0-2 (at most 0-4) trades per day. Adopted as the program's
+direction for Rounds 70+. Standards ADDED for intraday rounds, on top of the house bar:
+(1) one clock-anchored window per session per spec, at most two live specs per instrument
+(0-2 trades/day by construction); (2) COST is the binding gate - a family must be positive
+at 2x micro round-trip costs, because every real intraday gross edge this program has found
+was smaller than one round trip (attempts 2/2b +0.008R vs 0.02R; attempt 4 +0.2-0.5 pt vs
+0.35-2.0 pt; attempt 29 +0.018R/day vs 0.02R); (3) the placebo clock (same window shifted
++/-30 and +/-60 min) and an opposite-direction cell are mandatory diagnostics - an effect
+that survives on the shifted clock is session drift; (4) mechanism, not pattern: a proposal
+names the clock event, its participants and the rule/paper that fixes the flow's sign;
+(5) futures-side events are checked on the true ES / HSI-futures samples (the CFD frames
+carry no auction prints). Infrastructure: intraday_engine.py (clock-window cells, worst-
+case stops, 1x/1.5x/2x costs, OOS dropped at build unless the integrator unseals; stored
+cuts SPX 2020-09-25, NDX 2020-04-06, RTY 2016-07-11, GOLD 2024-05-08) and
+reference/intraday_burned_inventory.md (~99 families in 14 classes with every scanned cell,
+25 untested clocks, data limits). Two side classes acquired today (SEC insider transactions
+2006-2026 for the basket, 463k rows; AAII weekly sentiment 1987-2026) are BANKED, not
+proposed on, per the directive. Proposer runs (index clocks; gold/Asia clocks) were cut off
+by the session rate limit and are re-launched when it resets.
