@@ -5407,3 +5407,134 @@ critics running before any registration. The proposer's coverage check
 also caught two missing half-months in the FTD pull (SEC re-upload
 names with an _0 suffix); fixed and re-verified (351/351 half-months
 complete), recorded in the provenance note.
+
+### Attempt 49 registration (BEFORE running): ETF fails-to-deliver persistence -> SHORT (Round 67, Reg SHO on primary depth)
+
+Provenance: reference/primary_acquisition_2026-09-09.md. Proposer prop_r67 (scratchpad),
+critics A and B both REGISTER WITH AMENDMENTS; every amendment below is adopted and frozen
+before any return is read. Signal-side facts were measured (counts only, no returns).
+
+MECHANISM (external, by analogy - stated as such): an ETF fail is a SELLER's fail, and for
+SPY/QQQ/IWM the modal failing seller is the AP/market maker that sold not-yet-created shares
+to meet excess BUY demand (operational shorting under the Rule 204 bona-fide-market-making
+exemption; Evans, Moussawi, Pagano & Sedunov, JFE 2026). A half-month with many high-
+percentile fail days is therefore the settlement footprint of persistent non-fundamental
+ETF demand, and non-fundamental ETF/fund demand reverses at monthly horizons (Brown, Davies
+& Ringgenberg RoF 2021 on creation flows; Ben-Rephael, Kandel & Wohl JFE 2012 on fund
+exchanges). NO CITED PAPER TESTS THIS TRADE: [E] documents short-term reversals and higher
+price efficiency (a liquidity result), [B] is cross-sectional on flows, [BKW] is aggregate
+fund exchanges at 4-10 months. The claim at the traded horizon is an extrapolation and the
+stale placebo is its decay test. The buy-in itself is closed out (Rule 204, T+1/T+6) before
+the file is public and is NOT the claim; the claim is the regime read the brief allows.
+SIGN RISKS registered: (i) a recalled/unavailable-borrow short seller also fails (short
+demand -> squeeze -> opposite sign); (ii) dividend-arbitrage, assignment and rebalance fails
+are sign-neutral; (iii) roughly half of flagged days sit on post-opex-settlement and days
+1-6 dates (settlement mechanics, flag rate 1.5-1.75x). The AP channel is claimed to dominate
+all three ETFs (borrow on SPY/QQQ/IWM is general collateral; creation supplies shares); IWM
+is KEPT pooled under that claim, reported separately, with the borrow-recall reading as its
+registered risk; a one-legged result is reported, never re-specified (attempt-47 rule).
+DIRECTION FIXED: SHORT the mapped index (SPY->SPX, QQQ->NDX, IWM->RTY). No longs anywhere.
+
+TRANSFORM (frozen). C = union settlement calendar of the 96 FTD files (NYSE sessions minus
+Columbus/Veterans Day). Missing (symbol, date) = 0 fails (no reporting floor). pct_e(d) =
+share of the 252 C-dates before d with a smaller balance, +1/2 for ties. F_e(d) =
+1[pct_e(d) >= 0.90]. Half-month H = days 1-15 ('a') / 16-EOM ('b'). k_e(H) = sum of F_e(d)
+over H. H is UNDEFINED (no trigger, no control, still feeds windows) if < 7 C-dates, before
+2013-01-01, an _0 re-upload (2019-10a, 2023-08b), or a T+1 transition half (2024-05b,
+2024-06a). EXCLUDED BY CONSTRUCTION: 'b' halves of Mar/Jun/Sep/Dec (ex-dividend and index-
+rebalance settlements). TRIGGER: k_e(H) >= 2 (kmin frozen at 2; k >= 3 is the top band of
+the D1 gradient, NOT selectable - its OOS is under the 25-date floor by construction).
+POSTING DATE P(H) on the SEC business calendar (US federal holidays): 'a' -> last SEC
+business day of the month (if the last weekday is a federal holiday, the NEXT SEC business
+day); 'b' -> first SEC business day >= the 15th of the next month. Schedule proven by
+Last-Modified stamps for 2023-2026 only; 2012-2020 postings are an assumption from the SEC's
+own schedule text (the Dec-2020 re-stamp voids those stamps). ENTRY, uniform for all years
+(critic A A8(b)): RTH open of the SECOND NYSE session strictly after P (P+2) - conservative
+by one session against any late post. Availability (P close) vs entry timestamps are printed
+for every trigger BEFORE any grid is read (attempt-15 rule). One position per instrument,
+busy-until. Trigger TABLE (ETF, H, k, P, entry session) is frozen at registration by the
+signal-side print.
+GRID (2 selectable cells): hold {H5: exit close of the 5th session from entry;
+HNP: exit close of the session before P(H+1)+2, i.e. to the next posting}. R = (entry -
+exit)/ATR20 net of micro costs SPX 0.35 / NDX 1.0 / RTY 0.35 pts per RT. n CONVENTION =
+DISTINCT POSTING DATES (kill-#14 convention): legs triggered on the same P are averaged into
+one pooled R for that date; floors and t are on dates; a Newey-West (lag 2) t is reported
+beside the plain t because triggers chain (P(trig|prev) 0.39-0.46 vs base 0.22-0.24).
+IS = postings P <= 2022-11-30; OOS = P >= 2022-12-15 (a DATE, not a fraction). Registered
+counts on the fixed data (critic B reproduction): kmin 2 legs 190 (IS 148 / OOS 42), dates
+132 (98 / 34); minus the two transition halves. IS n >= 40 met; OOS 34 >= 25 scarce floor.
+SELECTION: max IS t among the 2 cells with n >= 40 dates, t >= 2, halves [+,+], the other
+cell positive (neighbour), AND all gates: D1 monotone, D2 both placebos below the live cell
+and themselves < 2, D3 t_diff >= 2, D4 non-stress positive and above control. ONE OOS shot
+at the program bar (n >= 25, avgR > 0, t >= 2, PF >= 1.15, halves [+,+], cost x1.5 > 0);
+the seal is opened only by the integrator (UNSEAL_OK=1); the family burns after.
+DIAGNOSTICS (all non-selectable, all counted):
+ D1 gradient: k = 1 band, k = 2 (live), k >= 3 band - must be monotone in k.
+ D2 placebos: seasonal (same half-month one year earlier, same rule) and stale (act one
+    posting late); a placebo matching the live cell = calendar/regime, family dies.
+ D3 opposite state / calendar control: k = 0 half-months on the SAME universe (2013+, qe-b
+    excluded, defined halves: SPY 138 / k=1 76 / k=2 28 per critic B), same holds; two-sample
+    t on live minus control, t_diff >= 2 required. D3 is the LOAD-BEARING calendar control:
+    61% of 'a' entries would sit at the month turn and 64/74 'b' five-session holds contain
+    the third Friday, so the calendar is held fixed by the control, not by exclusion.
+ D4 stress gate vs watch #7/#8/#9 (re-specified, critic A A5): a trigger is "stress" if any
+    session in [first C-date of H, P] is a #7 trigger day (VIX 1-day log-change z >= 1.5 on
+    a 63d std) or the FIRST session of a #8 episode (COR1M crosses its 80th trailing-252-
+    session percentile from below) - not any top-quintile day. The expected non-stress
+    fraction is printed BEFORE any return is read; the IS non-stress subset must have n >= 25
+    dates, else SUBSUMED by construction (declared now); it must be positive on its own and
+    above the D3 control, else SUBSUMED and the seal is not opened. Non-selectable "pure-
+    demand" subset: basket fails breadth below its trailing-24-half-month 80th percentile.
+ D5 calendar disclosure: (i) selected cell on trigger dates whose hold overlaps neither the
+    TOM window (last session of the month .. 3rd session of the next) nor opex week, where
+    non-empty; (ii) quarter-end 'a' legs (Mar/Jun/Sep/Dec 'a', ~25% of legs) reported
+    separately - a result carried by them is watch #6's sign-flipped mirror, not a pass;
+    (iii) FOMC statement days inside holds listed.
+ Era disclosure: IS split T+3 (<= 2017-09-01) / T+2; the OOS shot, if opened, is printed
+    split at 2024-05-28 (T+1) - halves criterion applies. Leave-one-year-out sign of the
+    selected cell (2014-15 are 24% of IS legs). k counted on non-mechanical days only
+    (excluding the 4 C-dates after the third Friday and days 1-6) as a reported band.
+    Per-instrument signs, IWM separately.
+MULTIPLICITY RECORD (signal side, counts only, zero returns read): the proposer screened
+P in {0.85, 0.90, 0.95} x kmin {2..6}, three level-percentile transforms and six breadth
+variants, and added kmin 2 because kmin 3's OOS was under the floor; P = 0.90 / kmin 2 are
+frozen here with that history on record. Test count: +2 selectable cells, +12 diagnostic
+reads (D1 x2, D2 x2, D3, D4 x2, D5 x3, era x2); any re-run after a count mismatch is counted
+(attempt-47 precedent). OOS FIREWALL: the runner drops all OOS rows at frame build; no agent
+reads OOS keys; --unseal only by the integrator.
+PRIOR: modal outcome is a clean IS null (a 2013-22 short fights the drift and [E]'s reversal
+is over before the file posts); a registrable negative.
+Candidates 2 (basket fails breadth) and 3 (daily short volume) are REGISTRATION-STAGE KILLS
+#16 and #17: wrong population + calendar object + T+1 break inside the OOS; unsigned
+inventory + attempt-48 confound by construction. Both critics concur.
+
+### Attempt 49 result: SUBSUMED BY CONSTRUCTION at the D4 gate - zero returns read, no shot spent
+
+(run_r67_ftd.py --signal-only; results/r67_ftd_is.json.) The frozen trigger set reproduces
+the registered counts exactly: 190 legs (IS 148 / OOS 42), 98 IS posting dates, 31 OOS
+dates readable on the archived frames (they end 2025-12-31; the 2026 postings are beyond
+the frame). Availability (P 16:00 ET) vs entry (P+2 09:30 ET) printed for every IS trigger;
+no lookahead. THE REGISTERED D4 TEST DECIDED THE FAMILY BEFORE THE GRID: with stress
+labelled verbatim from the ledger (#7: VIX 1-day log-change z >= 1.5 on a 63d std, 242
+sessions since 1990; #8: first session of a COR1M >= 80th trailing-252 percentile
+episode, 117 since 2006) over the window [first C-date of H, P], 85 of the 98 IS posting
+dates are stress-labelled and only 13 are not - under the 25-date floor the registration
+set for the non-stress subset. Under independence the window (20-33 sessions at ~12 stress
+sessions/yr) would leave ~30% non-stress; the observed 13% says elevated ETF fails CLUSTER
+WITH vol shocks and correlation spikes, i.e. on this data the fails object is mostly a
+stress footprint (APs failing while hedging demand surges), not an independent demand
+read. Per the registration the family is SUBSUMED by the stress-rebound claim already held
+by watch #7/#8/#9 (its mirror, sign-flipped 15-30 days later), and the grid was NOT read.
+Test count: +0 selectable reads, +0 diagnostic reads (signal-side counts only). Holdout
+never built. Family closed.
+CLASS VERDICT (Reg SHO, on 14.6 years of primary FTD depth and 7.7 years of daily short
+volume): CLOSED, not parked. The only registrable family collapses into the stress
+calendar at construction; basket fails breadth is a settlement-calendar object with the
+T+1 break inside its OOS (kill #16); daily short volume is unsigned market-maker inventory
+whose holdout sits inside the attempt-44 episode (kill #17). The data stays banked (a
+forward-only fails confirmation for the stress composite may be pre-registered at a
+monthly review; never read historically).
+ROUND 67 SUMMARY: 2 data assets acquired from primary sources and cross-checked to the
+row; 1 proposal registered as attempt 49 under 19 critic amendments, subsumed by
+construction; 2 registration-stage kills (#16, #17); 0 shots spent. Program score: 1 OOS
+pass (on paper) / 49 attempts + 17 registration-stage kills; 11 shots spent.
