@@ -5592,3 +5592,22 @@ from the issuers' side - every candidate collapses into a burned or spent calend
 into a regime chassis the program has already refuted. Class closed; the calendar (8,167
 releases with timings, ~97% complete) stays banked as a calendar-labelling asset for gates.
 Program score: 1 OOS pass (on paper) / 49 attempts + 21 registration-stage kills; 11 shots.
+
+### 2026-09-09: two more classes banked, then the program redirected to INTRADAY (user directive)
+
+SEC insider transactions for the basket (2006q1-2026q2, 463k rows, 4.6k open-market
+purchases - a sell-side object on mega-caps) and the AAII weekly sentiment survey
+(1987-2026, 2,039 weeks) were acquired from primary sources and cross-documented
+(reference/insider_sentiment_acquisition_2026-09-09.md). Data assets now 21. Neither has
+been proposed on: after reading the near-miss dossier the user redirected the next ~20
+attempts to an INTRADAY, lower-timeframe perspective at roughly 0-2 (at most 0-4) trades
+per day per instrument. Program response: (1) an inventory of every intraday family
+already burned (rounds 1-14, 24-41, attempts 1-8/15/29/32/36 and the r42a ORB), so no
+proposal can re-parameterise one; (2) an intraday bar ADDED to the standard bar for these
+rounds - the family must stay positive at 2x micro costs (attempts 2/2b/4/29 died inside
+one round trip; 0-2 trades/day is 250-500 trades/yr, so power is never the binding
+constraint, cost is); (3) proposals must name a CLOCK MECHANISM (auction, settlement,
+release, session hand-off, expiry) with a fixed direction, not a price pattern - the
+pattern families (sweeps, CISD, FVG, bands, pullbacks, footprints, flips, scalps) are all
+burned; (4) fidelity checks against the true CME ES sample and the HSI futures where a
+family is index- or HK-side. Frozen-grid / IS-OOS / one-shot rules unchanged.
