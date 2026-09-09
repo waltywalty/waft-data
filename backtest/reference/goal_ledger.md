@@ -5726,3 +5726,45 @@ choices; no other cell was screened.
 PRIOR: honest gross expectation 0.04-0.08R per night (attempt 11 / watch #10 magnitudes)
 against a 2x-cost bar of ~0.035R in 2013-16 falling to ~0.012R by 2024: the test is whether
 HPWZ's magnitude survived; modal outcome is "gross positive, marginal at 2x in the IS era".
+
+### Attempt 50 result: IS FAIL - a faint pre-release lean that is watch #6's calendar and dies at cost
+
+(run_r70_prenight.py, results/r70_prenight_is.json; pre-checks in results/r70_prenight_pre.json.)
+Pre-checks as registered: SPX 159/160 IS release nights have an 18:00 entry (all fills at
+18:00), NDX 152/152, RTY 0/68 (read-only, n 0); roll-gap > 0.5 ATR nights excluded and
+listed (SPX 1: 2018-10-26; NDX 8, incl. 2016-07-29, 2017-10-27, 2018-02-02, 2018-04-27).
+IS GRID (SPX+NDX pooled by leg, 2013-01 .. stored cuts, LONG, ATR20 units):
+  C1 [18:00,19:00) -> 08:25 NFP|GDP: n 302 legs / 159 dates, WR 59.6%, PF 1.15, avgR
+     +0.020 (t +0.92, halves [+,+]) at 1x cost; +0.010 at 1.5x; -0.001 at 2x (halves
+     [-,-]); +0.002 at 2x with the ES-carry line; by-date t +0.63. SPX +0.019 / NDX +0.021.
+     Per-year: 2013 +0.15, 2014 +0.03, 2015 -0.04, 2016 +0.01, 2017 +0.05, 2018 -0.01,
+     2019 +0.10, 2020 -0.30.
+  C2 02:00 -> 08:25: +0.006 (t +0.36); -0.014 at 2x.   C3 05:00 -> 08:25: +0.001 (t +0.07);
+     -0.020 at 2x.   C4 NFP only: +0.009 (t +0.31), halves [-,+]; -0.012 at 2x.
+No cell approaches t >= 2; none is positive at 2x cost. FAMILY FAILS AT IS; OOS never
+built; attempt 11's one repair is now SPENT and the NFP|GDP night family is closed.
+CONTROLS, for the record: the identical window on 5,511 non-release, non-FOMC nights
+returns +0.006R (t +1.13) at 1x - the release-night premium over the unconditional night is
++0.014R, i.e. under one micro round trip; the trading-day-matched differential is +0.009
+(t +0.43); event-minus-control halves [+,-]. The NFP split is the telling diagnostic: td<=3
+nights +0.072R (n 55, WR 67%, PF 1.65, t +1.39) vs td>=4 nights -0.019R (n 122) - whatever
+lean exists sits on the first three trading days of the month, i.e. inside attempt 21 /
+watch #6's turn-of-month window: watch #6 in a pre-announcement costume, exactly the
+registered kill condition. Placebos behave (08:35->09:25 -0.011; 7-days-earlier -0.035;
+short mirror -0.055). Horizon checks: exit 07:55 +0.023, 07:25 +0.029 (nested). The
+read-only 15:55->08:25 anchor - HPWZ's own window, including the 16:00-18:00 segment the
+engine drops - is the strongest print in the family: +0.045R, t +1.85, PF 1.33, WR 61%
+(n 311), still under the floor and worth ~+0.01R at 2x cost; the pre-release premium is
+real-but-small on this data and its extra mass sits in the first two post-close hours.
+ISM night read-only +0.044 (t +0.61, n 74; TOM-inseparable by construction).
+FIDELITY FINDING (registered check, non-gating, PROVENANCE-GRADE): over the 124 overlap
+nights 2025-07..2025-12 the true ES 2h path from ~18:00 to ~07/08:00 NY averages +12.6 bp
+per night while the MT5-era CFD frame's same window averages +0.8 bp (mean difference
++11.9 bp, t +1.97, correlation only 0.48; ES release nights +8.4 bp vs non-release +12.9).
+The MT5-era CFD overnight path is NOT the futures' overnight path: its evening prints are
+stale/synthetic (kill #1's objection, now measured). Consequences: (1) no overnight or
+evening-window family may be judged on the 2020+ CFD frames - forward-only on true ES;
+(2) attempt 29's cost-death verdict (Oanda era) stands, but its 2020+ magnitude is unknown;
+(3) the IS block here (2013-2020, Oanda feed) is unaffected. Recorded as data limit #7 in
+the intraday inventory's terms. Test count: +4 selectable, +12 read-only.
+Program score: 1 OOS pass (on paper) / 50 attempts + 22 registration-stage kills; 11 shots.
