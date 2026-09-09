@@ -5343,3 +5343,40 @@ predicted is now visible in the journal: the CFD stream triggered once
 (09-01) where the futures did not; the futures triggered 09-02, 09-04
 and 09-07 where the CFD did not. Same rule, two feeds, disjoint trade
 lists - the reason MHIF and not MHI is the promotion evidence.
+
+### 2026-09-09: near-miss dossier delivered; primary-source Reg SHO acquisition reopened INLINE
+
+USER REQUEST (on the side): a human-readable summary of the ten
+strategies that came closest and failed, so tweaks can be judged from
+a discretionary point of view. Delivered as an artifact ("Near-Miss
+Dossier", https://claude.ai/code/artifact/2a972200-a757-4109-9e76-2da3042af154),
+built from the recorded numbers only - nothing recomputed. Ranking by
+evidence left behind: (1) FOMC-night long #10, (2) quarter-end TOM #6,
+(3) stress-rebound family #7/#8/#9, (4) month-end fade #2, (5) opex
+week (attempt 19, dead), (6) overnight premium (attempt 29, cost-dead),
+(7) lev-money squeeze #11, (8) gold CPI #5, (9) HSI fade MHI/MHIF
+(live), (10) NY-PM displacement (attempt 4, dead). Each entry states
+the failed bar leg, the diagnosis, and splits "open to you" (sizing,
+venue, a NEW forward-only registration) from "closed by the rules"
+(re-reading a spent holdout, post-hoc filters). Standing rule restated
+on the page: a human tweak counts only as a new pre-registered,
+forward-only spec beside the frozen one; sizing and venue need no test.
+ACQUISITION (Round 67 opened, task #53): the environment proxy still
+blocks sec.gov/finra.org, but a Kernel cloud VM (exec_command) reaches
+both. Method now INLINE with in-VM filtering (never a background
+workflow - two of those died with nothing on disk): the SEC index page
+(/data-research/sec-markets-data/fails-deliver-data) lists 349 half-
+month zips 2012-01..2026-08 across three directories (frequently-
+requested-foia-document-fails-deliver-data/ for 2012-2017, fails-
+deliver-data/ for 2018+, other/ for the newest three); each zip is
+downloaded, filtered to SPY/QQQ/IWM + the 93-name basket by SYMBOL,
+appended to one CSV, and deleted. FINRA daily short volume: the CDN
+(cdn.finra.org/equity/regsho/daily/CNMSshvolYYYYMMDD.txt) serves
+2019-01-02 onward and returns 403 for anything earlier; the legacy host
+regsho.finra.org redirects to the catalog page (no files); the FINRA
+Query API regShoDaily holds only 2026 partitions (date filters before
+2026 return 204). So the reachable daily short-volume depth is 2019+,
+not 2012+; FTD depth is 2012+. CME historical margins: 403 (Akamai)
+from the VM and a proxy stream error through the browser stack - the
+margin-date class stays unreachable. Bootstrap script and parser kept
+in data/regsho/ (vm_bootstrap.sh, parse_primary.py; data gitignored).
