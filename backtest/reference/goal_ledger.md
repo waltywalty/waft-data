@@ -5932,3 +5932,61 @@ is recorded so it cannot be quietly forgotten), with that prior stated.
 Test count: +1 read-only; 0 selectable, 0 shots. Program score unchanged: 1 OOS pass (on
 paper) / 51 attempts + 25 registration-stage kills; 11 shots; 21 data assets; forward
 log opened for 5 specs.
+
+## Round 72A (2026-09-12): INVERSION AUDIT - registered BEFORE any reversed cell is scored
+
+USER PROPOSAL (2026-09-12): if a tested family is unprofitable, test its reverse - maybe
+the signal is the opposite of what was expected. Adopted as a systematic, pre-registered
+audit rather than a rummage. What already exists: every registration since attempt 2b
+carried an opposite-direction cell as a mandatory diagnostic, so the reversed read is on
+record for most families; about nine came out sign-inverted at IS. What has never been
+done: scoring those reversals with the same discipline as a fresh family (control, cost,
+halves, gradient, mechanism), and deciding which, if any, deserve a sealed shot.
+WHY MOST REVERSALS CANNOT WORK, stated up front so the outcome is not a surprise: (1)
+costs are symmetric - a family that lost to costs on gross +0.008R loses more reversed;
+only a family whose registered-direction read was significantly NEGATIVE is a candidate;
+(2) a reversed regime filter usually collapses into the unconditional drift ("be long on
+the good days" is beta with a label) - so the reversed cell must beat the unconditional
+control for its window, not just zero; (3) a sign flipped after seeing the data is the
+post-hoc direction the program refuses (attempt-47 rule) unless a mechanism for the
+reversed sign is argued and survives critique.
+RULES (frozen):
+ Step 1 - extraction, no returns computed: for every attempt 1-51 (incl. 2b, 5b, the
+   attempt-12 revival, 34, 35), read from the ledger and the results JSON: instrument,
+   window/rule, registered direction, IS gross and net avg R and t in the registered
+   direction, the opposite-direction cell where reported, control, OOS status (unopened /
+   spent / gate-closed), runner script and results file.
+ Step 2 - candidate criterion (fixed now): registered-direction IS t <= -2 (net at 1x
+   cost where reported, else gross), OR a ledger verdict that names the effect as
+   "inverted" / "wrong side". Power failures (|t| < 2) are NOT candidates: reversing
+   noise yields noise. Expected list from memory, to be checked not assumed: attempts 2,
+   6, 9, 23, 26, 27, 28, 32, 33, 45, 48 (+ any the extraction finds).
+ Step 3 - reversed scoring at IS ONLY: cell = -1 x registered direction, same window,
+   same rule, same cut; costs 1x / 1.5x / 2x subtracted; the unconditional control for
+   the same window and instrument (always-long / always-short, whichever the reversal
+   implies) at the same cost; halves; gradient over the family's own parameter grid,
+   reversed; the family's placebo, reversed. Survivor bar: reversed NET t >= 2 at 1x,
+   positive at 2x, halves [+,+], gradient not a spike, AND reversed avgR minus control
+   avgR > 0 with t >= 2 on the difference (the beta test). Where the mirror was already
+   reported with these numbers the read is free (counted when first read); a re-run
+   costs +1 test per family and every re-run is counted. OOS FIREWALL: no agent sets
+   UNSEAL_OK or passes --unseal, opens any *oos* result file, or computes on sessions
+   after the family's own IS cut. Agents report IS only.
+ Step 4 - mechanism gate: each step-3 survivor goes to three independent adversarial
+   critics; the reversed SIGN needs a named participant, flow, or documented effect -
+   "the data say so" is not a mechanism; two of three refutations = dead at registration.
+   Independence gate against watch #6-#10 calendars and the burned calendars applies.
+ Step 5 - OOS, integrator only, after step 4: a family whose holdout was never opened
+   may take ONE sealed shot in the reversed direction at the house OOS bar (n >= 40,
+   avg R > 0, t >= 2, PF >= 1.15, survives 1.5x cost; positive at 2x for intraday
+   windows). A family whose shot was SPENT cannot be un-burned by flipping its sign: its
+   reversed OOS is -1 x the reported OOS, known by construction, reported descriptively,
+   no shot, no promotion.
+EXPECTATION (registered): one or two survivors of step 3, most likely the Treasury-
+   auction and put/call families; zero to one survivor of step 4; the reversed regime
+   families (45, 48, 33, 28) to fail the beta test. If a reversal clears step 5 it enters
+   the watch list as a new item, never the journal, pending sign-off.
+Test count: steps 1-2 and 4 zero; step 3 +1 per re-run (counted in the result entry);
+step 5 +1 shot per survivor. Execution: a multi-agent workflow (extract -> reverse-score
+-> critique -> synthesize) with the OOS firewall in every agent's instructions; the
+integrator reads results/r72a_inversion_audit.md and decides step 5.
