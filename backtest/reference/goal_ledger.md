@@ -6107,3 +6107,33 @@ against ~0.9 bp cost - marginal at 2x, registered as such; a pass at 2x needs > 
 Test count: +1 selectable (the shot) + 10 read-only (+1 more if stage 2 is read). Runner:
 run_r72b_postfix.py -> results/r72b_postfix.json. Intraday band: one 30-minute trade per
 month, inside the user's 0-2 trades/day directive.
+
+### Attempt 52 result: SHOT FAIL - the post-fix USD residue does not replicate; family burned, watch hypothesis closed
+
+(run_r72b_postfix.py; results/r72b_postfix.json; 53 month-ends 2022-04-29..2026-08-31.)
+P1 EURUSD short-after-up-month, fix -> fix+30: GROSS +0.64 bp per event, WR 58%, PF 1.22,
+t +0.55, halves [+,+]; NET at 1 pip -0.28 bp (t -0.24, halves [-,+]), at 1.5x -0.74, at 2x
+-1.20 bp. Per-year net: 2022 -2.7, 2023 -2.6, 2024 +3.8, 2025 -0.4, 2026 -0.0. Bar: n 53
+ok; mean net > 0 FAIL; t >= 2 FAIL; PF FAIL; halves FAIL. The basket (B1, the residue's
+own construction) prints +0.68 bp, t +0.62 - against the 2012-2022 read of +2.74 bp,
+t +3.49: the effect on the fresh sample is a quarter of the size and indistinguishable
+from zero. The diagnostics say the same thing from every side: the T-3/T+3 control days
+with the same D print +0.79 bp (t +0.81, n 92) - the same as the event cell, so whatever
+lean exists is not month-end-specific; the pre-fix placebo (the attempt-51 gate window) is
+-1.60 bp, fix-60..-30 is +1.48 and fix+60..+90 is +0.90 - all inside noise, no clock
+structure; the dose split goes the right way (|MTD| >= 2% +0.79 bp vs < 2% -2.99 bp) but
+at t +0.66; quarter-ends +1.29 bp (n 17, t +0.68) vs other month-ends -1.02 bp. Stage 2
+(gold) NOT READ, per the registration.
+Inference: the +2.74 bp / t +3.49 read was one of seven post-hoc diagnostic windows on the
+2012-2022 sample, and on the untouched 2022-2026 sample it is +0.68 bp, t +0.62. This is
+the max-statistic problem in its plainest form - a t of 3.5 selected from seven reads on
+one sample is not a t of 3.5 - and it is exactly why the program refuses to promote post-
+hoc directions without a fresh sample. The watch hypothesis from attempt 51 is CLOSED.
+Fix-flow family (attempts 36, 51, 52) is exhausted on this data: pre-fix null, post-fix
+null on a clean sample, gold never read on its own.
+Test count: +1 shot (the 12th) + 10 read-only. Program score: 1 OOS pass (on paper) / 52
+attempts + 25 registration-stage kills; 12 shots; 22 data assets.
+ROUND 72 SUMMARY (2026-09-12): 72A inversion audit - 22 reversed families, 0 survive, +22
+tests, no shot; 72B attempt 52 - one sealed shot on a new data class, FAIL; one record
+correction (attempt 6), one firewall fix (sealed blocks moved out of IS JSONs), one new
+asset (Dukascopy 1m FX/gold 2022-2026). Round 71's forward log continues on schedule.
