@@ -6165,3 +6165,69 @@ files and the 5m forward week):
  the sealed OOS), each with its own registration. FAIL on any -> record, keep the frame
  banked, and data limit #7 stands. This is a data check: no strategy return is read, test
  count +0.
+
+### Round 73 result: the CHECK FAILS ON ITS LETTER, and the REFERENCE it was run against is found corrupt - Round 70's provenance finding is WITHDRAWN
+
+(check_idx_provenance.py; results/r73_idx_provenance.json; Dukascopy USA500IDXUSD 1m
+2025-07-07..2026-09-11, 405,251 active bars, plus USATECHIDXUSD; asset #23.)
+FIRST PASS, as registered (all ES 2h/1h bars): A corr 0.635, ES +10.3 vs CFD +4.8 bp per
+night (n 295) - a FAIL that would have confirmed Round 70. But the 5m overlap week gave
+corr 0.989 with a 3.0 bp mean error, so the two comparisons could not both be right.
+Night-by-night inspection found the cause in the REFERENCE: the "true ES 2h" files
+(ES_Z5/H6/M6_2h_ibkr.json, pulled 2025-07-07 onward for contracts that were BACK-MONTHS
+for most of that span) are clean only inside each contract's front-month window (99-100%
+of bars with volume >= 1,000 and real prints) and 7-12% clean outside it (median 12-46
+contracts per 2-hour bar, flat round-number phantom prints such as 6800.00 with volume
+0-2 interleaved with real bars). The ten worst nights each straddle a phantom print. THE
+ROUND-70 OVERLAP WINDOW (2025-07..12, 124 nights) USED BARS THAT WERE 26% FRONT-MONTH AND
+30% CLEAN. Its finding - "MT5-era CFD overnight +0.8 bp vs true ES +12.6 bp, corr 0.48,
+the CFD overnight path is stale/synthetic" - is an artifact of the reference and is
+WITHDRAWN. (The ES_U6 1h file, pulled inside U6's front window, is 100% clean; the 5m
+forward files are clean: 0 flat bars, median 800 contracts per 5m bar.)
+SECOND PASS, front-month bars only (the valid reference; 242 nights across four contracts):
+ ES vs Dukascopy CFD, 18:00 -> 07/08:00 NY: corr 0.974, ES +6.2 vs CFD +4.4 bp per night,
+   difference +1.78 bp (t +2.61), mean |error| 3.9 bp; per contract corr 0.946 / 0.962 /
+   0.980 / 0.997 (Z5 / H6 / M6 / U6), differences +2.6 / +0.9 / +3.0 / +0.4 bp.
+ ES vs MT5 CFD (71 front-month nights in the 2025 overlap): corr 0.885, ES +2.5 vs CFD
+   -1.7 bp, difference +4.3 bp (t +2.29), mean |error| 8.6 bp.
+ Dukascopy vs MT5 directly (126 nights, both dense): corr 0.957 night / 0.964 evening /
+   0.919 early morning / 0.966 RTH; mean |error| 4-6 bp overnight, 10.8 bp RTH; night
+   difference +1.6 bp (t +1.8). The two independent CFD feeds carry the same evening and
+   overnight path.
+RULING ON THE REGISTERED CRITERIA: A fails on the |t| < 2 clause alone (n 242 >= 200,
+corr 0.974 >= 0.90, |diff| 1.78 <= 2 bp pass; t +2.61); B passes on the night (corr
+0.989) and fails on the one Sunday reopen gap observed (ES +0.6 vs CFD -4.1 bp, n = 1); C
+fails (RTH corr 0.966 < 0.99, mean |error| 10.8 bp). Per the registration a FAIL on any
+clause means: no automatic full-history pull-and-register path; the frame is BANKED. The
+criteria are not revised after the fact.
+WHAT CHANGES IN THE RECORD (a correction, independent of the check's letter):
+ 1. Round 70's fidelity finding is withdrawn; the sentence "the MT5-era CFD overnight path
+    is NOT the futures' overnight path" is false as stated. Attempt 50's note (2) and the
+    Round 70 summary's "one provenance finding that binds the whole program" are void.
+ 2. Data limit #7 is REVISED from "CFD overnight prints are stale/synthetic, evening and
+    overnight windows forward-only on true ES" to a QUANTIFIED BIAS: on a clean reference
+    both CFD feeds track the ES overnight PATH (corr 0.89 MT5 / 0.97 Dukascopy) but
+    under-print the ES overnight RETURN by +1.8 (Dukascopy) to +4.3 (MT5) bp per night,
+    statistically nonzero. Consequence: conditional / event windows on the CFD frames
+    (which difference out the drift) are readable; unconditional overnight-drift claims
+    carry a disclosed 2-4 bp/night shortfall against the futures. Round 71's forward log
+    on true futures stays the sealed OOS for any such family; the intraday standard (5)
+    ("futures-side events on true ES") stands for auction-print events (09:30 open, SOQ),
+    which the CFDs still do not carry.
+ 3. Kill #1's stated objection (post-close CFD prints synthetic) is refuted in the same
+    breath: the two CFD feeds agree on the 16:00-18:00 evening block at corr 0.964, and
+    the Dukascopy evening block agrees with ES 5m on the overlap week. Kill #1 was a
+    registration-stage kill - the family was never run and is not spent. A fresh
+    registration of the post-close reversal (the Round-71 F3 mechanism) as an IS backtest
+    on the CFD frames, with the Round-71 forward log as its sealed OOS, is now admissible
+    and is the next candidate (attempt 53), subject to adjacency review against attempts
+    2/2b (15:00 / 15:30 -> close, signed by the day's return - a different window and
+    predictor) before registration.
+ 4. Reference hygiene rule ADDED: an IBKR futures history file is a valid reference only
+    inside the contract's front-month window; every future pull records the window and
+    the clean-bar share; the Round-70 fidelity code path must never again be fed mixed
+    files. The ES_Z5/H6/M6 2h files are marked reference-invalid outside their windows.
+Acquisition note: the full-history pull (USA500IDXUSD and USATECHIDXUSD 2012-2025, XAUUSD
+2003-2022) was launched before this ruling on the expectation of a pass; it continues as
+an asset acquisition (a second, independent 1-minute index feed to 2026 and a 19-year
+gold frame), not as a license for anything above. Test count: +0 (data checks only).

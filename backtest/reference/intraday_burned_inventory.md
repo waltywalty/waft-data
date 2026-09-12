@@ -998,3 +998,13 @@ Event / calendar / conditioning data:
   five forward-only specs F1-F5 (expiry-morning gap fade, MOC drift, 16:00-16:15, GC Sunday reopen, HSI
   16:15-16:30) scored descriptively by `forward/leg_intraday.py` -> `results/forward_intraday.json`.
   Untested clocks 4, 6, 7 and kills #22/#24/#25's route-backs are now IN THE LOG, not open.
+
+- **Round 73 (2026-09-12) - data limit #7 REVISED, Round-70 fidelity finding WITHDRAWN.** The "true ES 2h"
+  reference files were clean only inside each contract's front-month window (7-12% clean outside; the
+  Round-70 overlap used 26% front-month bars). On a clean reference the CFD feeds track the ES overnight
+  PATH (corr 0.89 MT5 / 0.97 Dukascopy, 242 nights) with a +1.8 to +4.3 bp/night RETURN shortfall against
+  ES. Evening/overnight event windows on the CFD frames are readable with that bias disclosed; auction-print
+  events (09:30 open, SOQ) still need true futures. Kill #1's "synthetic post-close prints" objection is
+  refuted (two independent CFD feeds agree at corr 0.964 on 16:00-18:00). New asset: Dukascopy 1m index
+  CFDs (USA500/USATECH, overlap 2025-07..2026-09 on disk; 2012-2025 history being pulled) with a fixed
+  16:15-18:00 ET break and a Sunday 18:00 ET open.

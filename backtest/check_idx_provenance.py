@@ -73,7 +73,7 @@ rows_b, rows_d = [], []
 for k, g in e5.groupby("skey"):
     d0 = pd.Timestamp(k, tz=NY)
     for name, (t0, t1) in dict(night=(d0 - pd.Timedelta(hours=6), d0 + pd.Timedelta(hours=9, minutes=25)),
-                              postclose=(d0 - pd.Timedelta(hours=8), d0 - pd.Timedelta(hours=7)),
+                              postclose=(d0 - pd.Timedelta(hours=8), d0 - pd.Timedelta(hours=7, minutes=45)),
                               rth=(d0 + pd.Timedelta(hours=9, minutes=30), d0 + pd.Timedelta(hours=16))).items():
         a, b = mv(e5, t0, t1), mv(cfd, t0, t1)
         if not (np.isnan(a) or np.isnan(b)):
