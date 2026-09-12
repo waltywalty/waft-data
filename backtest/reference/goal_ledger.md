@@ -6137,3 +6137,31 @@ ROUND 72 SUMMARY (2026-09-12): 72A inversion audit - 22 reversed families, 0 sur
 tests, no shot; 72B attempt 52 - one sealed shot on a new data class, FAIL; one record
 correction (attempt 6), one firewall fix (sealed blocks moved out of IS JSONs), one new
 asset (Dukascopy 1m FX/gold 2022-2026). Round 71's forward log continues on schedule.
+
+## Round 73 (2026-09-12): can a second 24h index frame lift data limit #7? - provenance check registered BEFORE the data lands
+
+Lane check first: the new FX frames' obvious clock family, the Tokyo 09:55 fix on USDJPY
+(gotobi days, Ito-Yamada), is BURNED - Round 16 battery H (USDJPY H1 2016-2026: relative
+effect real, absolute trade loses, decayed post-2021); a 09:30->09:55 sub-window on
+2022-2026 would be a re-parameterisation of a spent family. Not proposed.
+What the program actually lacks is a 24-hour index frame whose overnight path is the
+futures' path: data limit #7 (Round 70) bars every evening / overnight / settlement family
+from the 2020+ MT5 CFD, and IBKR cannot backfill true ES intraday (3,500 bars per call,
+anchored to now; expired contracts return nothing - checked 2026-09-12). The Dukascopy feed
+serves index CFDs (USA500IDXUSD etc.) at 1 minute, possibly back to ~2013; a CFD priced
+continuously off the futures may track ES overnight where the MT5 feed did not.
+CHECK (criteria fixed now, before any bar is read; check_idx_provenance.py ->
+results/r73_idx_provenance.json; overlap 2025-07-07..2026-09-11 against the true ES 2h/1h
+files and the 5m forward week):
+ A. per-night 18:00 -> 07:00 NY move, CFD vs ES: PASS needs n >= 200 nights, corr >= 0.90,
+    |mean difference| <= 2 bp with |t| < 2 (the MT5 feed scored corr 0.48, diff -11.9 bp).
+ B. the 5m overlap week: night corr >= 0.95, and the 16:00-18:00 post-close block and the
+    Sunday 18:00 reopen present with gaps within 3 bp of ES.
+ C. RTH 09:30 -> 16:00 vs the MT5 CFD: corr >= 0.99 (sanity; both should track cash).
+ E. hours profile: active bars through the US evening (18:00-24:00 NY) on weekdays.
+ PASS on A, B and C -> pull the full history, register the data-killed families' re-tests
+ as NEW attempts (the "data-killed not mechanism-killed" lens: attempt 29's 2020+ magnitude,
+ kill #1's post-close reversal, Round 71's F2/F3/F4 as IS backtests with the forward log as
+ the sealed OOS), each with its own registration. FAIL on any -> record, keep the frame
+ banked, and data limit #7 stands. This is a data check: no strategy return is read, test
+ count +0.
