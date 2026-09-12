@@ -5990,3 +5990,54 @@ Test count: steps 1-2 and 4 zero; step 3 +1 per re-run (counted in the result en
 step 5 +1 shot per survivor. Execution: a multi-agent workflow (extract -> reverse-score
 -> critique -> synthesize) with the OOS firewall in every agent's instructions; the
 integrator reads results/r72a_inversion_audit.md and decides step 5.
+
+### Round 72A result: INVERSION AUDIT - 0 of 22 reversed candidates survive the bar; no shot spent
+
+(workflow of 32 agents: 7 extractors, 1 completeness critic, 22 reversed-scorers, 1 report
+writer; results/r72a_inversion_audit.md; scripts preserved in audit/r72a/.) Extraction
+covered 53 attempt records (1-51 incl. 2b, 5b, the attempt-12 revival, 34, 35; "attempt 3"
+is 2b under its artifact label). The step-2 criterion admitted 22 candidates, more than the
+11 the registration expected, because the completeness critic applied the verdict-text prong
+("inverted / wrong side / opposite") literally: 2, 2b, 5, 6, 9, 11, 12-revival, 13, 15, 17,
+19, 20, 23, 24, 26, 27, 28, 32, 36, 40, 45, 48. Attempt 33 (on the expected list) was
+excluded by the critic: headline t -1.34, no selectable cell at -2.
+STEP 3 (reversed cell at IS vs the unconditional same-window control, 1x/1.5x/2x costs,
+halves, reversed ladder, reversed placebo): ZERO survivors. Failing clauses per family are
+in the report's table; the pattern is the one the registration named first - in 18 of 22
+the registered-direction "t <= -2" was the micro round trip on a near-zero gross read, so
+the reversal pays the cost again: reversed net t ranges -24.5 (attempt 6) to +2.09 (12-
+revival). The registered expectation (auction and put/call families as likely survivors)
+was WRONG: 26 reversed +0.0146R t +0.59, negative at 2x, beta t +1.45; 23 reversed
++0.0435R t +1.48, a spike at exactly the 90th percentile (>=85th -0.005, [80,90) band
+-0.061 the other way). The regime reversals (45, 48) "pass" the beta test only because
+always-short over a bull decade is itself significantly negative; both are the 2022 bear
+year with a label (45: all 452 days in one Nov-2021..Dec-2022 episode; a 21-session
+LOOKAHEAD placebo beats the signal, +0.114 t +2.49). The nearest miss is the FOMC
+statement-day morning SHORT (12-revival reversed: +0.063R, t +2.09, halves [+,+], beta t
++2.96) which fails the gradient clause (the only positive window of six; neighbours t -2.2
+and -2.4), has 2013 + 2017 supplying 118% of its total (leave-two-out negative), is the
+"morning drag" segment attempt 34 excised to build watch #10, and sits in a family whose
+shot is SPENT - it can never take a shot. STEP 4 never convened; STEP 5 nothing eligible.
+CORRECTION TO THE RECORD (attempt 6, ledger lines 2429-2446): the quoted "gross after cost
+~ -0.016R" is not reproducible from the data on disk; the rebuild pins the IS long gross at
++0.0044R (t +3.56, the PUBLISHED sign) and the registered t -17.4 as a pure cost artifact.
+The verdict text "sign inverted vs the published effect" is withdrawn; the family stays
+dead (cost). The "inverted" language in attempts 2 (already retracted by 2b), 20, 23 and 32
+describes net-of-cost prints whose gross is ~0 or sub-cost - net inversion, not signal.
+FIREWALL FINDING: 44 IS result JSONs written by the r42-r63 runners embed an "OOS_sealed"
+block per cell (the runner computed both and the integrator read OOS only at the gate).
+Four scoring agents (2, 2b, 11, 12-revival) report those fields scrolled past during file
+inspection and were not used; the audit is clean, but the exposure is real for any agent-
+driven read. ACTION (same commit): every "OOS_sealed*" block is moved out of results/*.json
+into results/sealed/<name>.sealed.json by seal_results.py, leaving a marker string in place;
+no script in the repo reads the embedded blocks (checked). Agent prompts must add
+results/sealed/ to the firewall list. The blocks remain in git history - this is a
+working-tree hygiene fix, not a re-sealing.
+ANSWER TO THE USER'S PROPOSAL: reversing failed strategies produced no candidate here
+because the program's failures are cost failures and beta, not sign errors; the four
+"inverted" ledger verdicts were all net-of-cost artifacts. The idea is now tested and
+closed for attempts 1-51; a future family whose GROSS registered read is significantly
+negative would be the only kind worth reversing, and the registration diagnostics already
+catch that at first read.
+Test count: +22 (one re-run per candidate family; each counted). Shots: 0. Program score
+unchanged: 1 OOS pass (on paper) / 51 attempts + 25 registration-stage kills; 11 shots.
