@@ -6041,3 +6041,69 @@ negative would be the only kind worth reversing, and the registration diagnostic
 catch that at first read.
 Test count: +22 (one re-run per candidate family; each counted). Shots: 0. Program score
 unchanged: 1 OOS pass (on paper) / 51 attempts + 25 registration-stage kills; 11 shots.
+
+## Round 72B (2026-09-12): new data class - Dukascopy 1-minute FX/gold 2022-03..2026-09 (asset #22)
+
+Acquired from the free Dukascopy datafeed via the cloud VM (the container proxy blocks the
+host): EURUSD (from 2022-03-01), USDJPY and XAUUSD (from 2022-04-01) to 2026-09-11, BID
+1-minute candles, 4,906/4,906 day files, 0 decode failures; data/fx/dukascopy/ (gitignored),
+MANIFEST.md carries md5s and every check. Provenance established empirically, per the house
+rule: (1) record layout 24 bytes big-endian (offset, open, close, low, high, float volume),
+prices /1e5 EURUSD, /1e3 USDJPY and XAUUSD - the first probe's "20-byte" reading was wrong
+and is corrected; (2) CLOCK = UTC, pinned by the NFP spike: the 12:30Z bar carries a ~13x
+(EURUSD) / ~9x (gold) range spike on summer first-Fridays and the 13:30Z bar an ~8-9x spike
+on winter ones (35/37 and 16/18 first-Fridays for EURUSD; the misses are known non-release
+days); (3) overlap with the ejtrader m15 feed on 2022-03-01..04 (384 bars): corr 0.999994 at
+ejtrader minus 2h, i.e. ejtrader = UTC+2 in winter, consistent with the standing ET = feed
+- 7h convention; (4) XAUUSD 5m vs IBKR midpoint 2026-09-02..09: 1158/1158 bars, corr
+0.999987, mean mid - bid +$0.37/oz (the half-spread). Closed-market minutes are delivered
+as flat volume-0 bars and are filtered on volume > 0. First use: attempt 52 below; the
+frames also extend the r35 synthetic-DXY chassis and the gold intraday frame to 2026.
+
+### Attempt 52 registration (BEFORE running): post-fix USD move signed by the month's equity return - ONE SEALED SHOT on 2022-04..2026-08
+
+Origin and independence: attempt 51's stage-1 gate (pre-fix USD flow, 2012-11..2022-03 on
+the ejtrader frames) failed; among its seven read-only diagnostics the post-fix window
+(fix -> fix+30) printed USD UP after a US up-month, +2.74 bp, t +3.49, halves [+,+], n 112.
+It was logged as a WATCH HYPOTHESIS promotable only through a fresh registration on an
+independent sample. This is that registration. The sample is every month-end from
+2022-04-29 to 2026-08-31 on the Dukascopy frames - no event overlaps the attempt-51 read
+(the ejtrader frame ended 2022-03-04). Structure: the 2012-2022 residue is the hypothesis-
+generating read; this run is the family's ONE SEALED OOS SHOT - no in-sample search, no
+parameter grid, one selectable cell, direction fixed now. It burns after this run.
+Mechanism (external, cited): Melvin & Prins (J. Financial Markets 2015) fix the SIGN of the
+month-end fix flow - hedged foreign holders of US equity are under-hedged after a US
+up-month and SELL USD at the fix (netting assumption as in attempt 51); Evans (JBF 2018) and
+Evans, O'Neill, Rime & Saakvitne (JIMF 2018) document that fix-window price pressure
+REVERSES after the fix. Prediction: the dealers who absorbed the hedgers' USD selling inside
+the five-minute fix window unwind afterwards, so the USD moves UP in the half hour after an
+up-month's fix and DOWN after a down-month's. That the pre-fix drift was null on the 2012-
+2022 read while the post-fix reversal printed is consistent with the post-2015 five-minute
+window absorbing the flow at the fix itself.
+Event map (results/r72b_monthend_map.csv, built before this file): month-end = last weekday
+of the calendar month with active FX bars around the fix; fix = 16:00 Europe/London
+converted per event (11:00 NY on 48 events, 12:00 NY on 5 DST-mismatch events: 2022-10-31,
+2023-10-31, 2024-03-29, 2024-10-31, 2025-10-31); D = sign of the SPX log return from the
+prior month-end close to the T-1 close (known before the session; IBKR official closes
+2024-09+, CFD 15:55 closes before, overlap corr 0.9995, no event within 0.2% of zero).
+53 events: 33 up / 20 down; |MTD| >= 2% on 38; 17 quarter-ends.
+FROZEN CELL (the only selectable one) P1: EURUSD, direction -D (short EURUSD after a US up-
+month, long after a down-month), enter at the open of the 1m bar at the fix, exit at the
+close of the bar ending fix+30; cost 1.0 pip per round trip (retail micro lot, ~0.9 bp),
+sensitivities 1.5x / 2x. BAR (house OOS bar): n >= 40, mean net > 0, t >= 2, PF >= 1.15,
+halves [+,+], positive at 1.5x and 2x cost. Pass -> watch-list candidate reported for sign-
+off (never the journal); fail -> family burned, watch hypothesis closed.
+Read-only diagnostics (counted): B1 synthetic-DXY basket over the same window (comparability
+with the 2012-2022 residue's +2.74 bp); placebo clocks fix-30->fix (the attempt-51 gate
+window), fix+30->+60, fix+60->+90, fix-60->-30; control days T-3 / T+3 with the same D;
+dose split |MTD| >= 2% vs < 2%; quarter-end vs other; per-year signs; DST-mismatch events.
+STAGE 2 (gold, read ONLY if P1 passes): G1 = XAUUSD, direction -D (short gold after an
+up-month), same window, cost 0.35 $/oz RT - gold inherits the USD leg through its intraday
+beta (kill-#13 / attempt-51 logic), so it is never read on its own.
+Adjacency disclosed: same conditioning variable family as watch #2 / attempt 14 (month-end
+rebalancing, index side) and attempt 51; a different instrument, a different window (post-
+fix, not pre-fix), and an untouched sample. Expected magnitude if real: 2-3 bp per event
+against ~0.9 bp cost - marginal at 2x, registered as such; a pass at 2x needs > 1.8 bp net.
+Test count: +1 selectable (the shot) + 10 read-only (+1 more if stage 2 is read). Runner:
+run_r72b_postfix.py -> results/r72b_postfix.json. Intraday band: one 30-minute trade per
+month, inside the user's 0-2 trades/day directive.
