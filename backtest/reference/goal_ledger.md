@@ -6231,3 +6231,50 @@ Acquisition note: the full-history pull (USA500IDXUSD and USATECHIDXUSD 2012-202
 2003-2022) was launched before this ruling on the expectation of a pass; it continues as
 an asset acquisition (a second, independent 1-minute index feed to 2026 and a 19-year
 gold frame), not as a license for anything above. Test count: +0 (data checks only).
+
+### Attempt 53 registration (BEFORE running): post-close reversal of the closing-auction push, 16:00 -> 16:15 ET (kill #1 revived on the refuted objection)
+
+Origin: Round 64 registration-stage kill #1 ("closing-auction imbalance fade, post-16:00
+reversal") died on two objections: (a) its exit-B cells (hold to the next open) sat inside
+burned attempt 29's window; (b) post-close CFD prints were assumed synthetic. Round 73
+refuted (b) - two independent CFD feeds agree on the 16:00-18:00 block at corr 0.964 and
+the Dukascopy feed matches true ES on the overlap - and (a) is met by exiting INSIDE the
+post-close block. The family was never run and is not spent. It is also Round 71's F3,
+whose forward log on true ES becomes this attempt's second, descriptive OOS.
+Mechanism (external, cited): Bogousslavsky & Muravyev, "Who trades at the close?
+Implications for price discovery and liquidity" (J. Financial Markets 2023): closing-
+auction order imbalances move the closing price away from the pre-close price and that
+deviation REVERTS afterwards; the counterparties who absorb the MOC imbalance (market
+makers, index-arbitrage desks) hedge in the futures into the close and unwind after the
+cash close. Prediction: the futures move in the 15 minutes after 16:00 is opposite in sign
+to the 15:50 -> 16:00 push. Direction fixed: -sign(push).
+FROZEN CELL (the only selectable one) C1: SPX / NDX / RTY CFD 5m frames pooled
+(intraday_engine cells; RTY to 2020), entry at the open of the 16:00 bar, exit at the
+16:15 print (close of the 16:10 bar), direction -sign(close of the 15:55 bar minus open of
+the 15:50 bar); push == 0 -> no trade; missing bar -> no trade. R = (pnl - cost)/ATR20,
+costs MICRO (SPX 0.35 / NDX 1.0 / RTY 0.35 pts per RT), sensitivities 1.5x / 2x.
+IS = the engine's stored cuts (SPX 2020-09-25, NDX 2020-04-06, RTY 2016-07-11), i.e. the
+Oanda-era frames; OOS = the sealed MT5-era block (unsealed only by the integrator with
+UNSEAL_OK=1 if IS passes). IS bar (house intraday bar): n >= 40, avg R > 0, t >= 2,
+PF >= 1.15, halves [+,+], positive at 2x cost. One OOS shot; then the family burns; the
+Round-71 F3 forward log continues descriptively either way.
+Read-only diagnostics (counted): unconditional control 16:00 -> 16:15 (always-long and
+always-short, differences out any post-close drift - attempt 29's territory); opposite
+direction (the mirror); placebo clocks 15:30 -> 15:45 signed by -(15:20 -> 15:30 push) and
+16:30 -> 16:45 signed by -(16:20 -> 16:30 push) (thin on the MT5 frame; n reported);
+dose terciles of |push|/ATR20 (the mechanism predicts a rising response); per-instrument
+and per-year signs; the same cell on true ES 5m (forward week, descriptive). Cross-feed
+read on the Dukascopy 1m frame when its history lands (read-only).
+Adjacency disclosed: attempts 2/2b (15:00 / 15:30 -> close, predictor first-30m / day
+return) - different window and predictor; attempt 29 (16:00 -> 09:30 unconditional night
+hold) - this cell is the first 15 minutes of that window, conditional on the push; the
+unconditional control is the separation. Data bias disclosed (Round 73): the CFD frames
+under-print the futures' overnight return by 2-4 bp per NIGHT; over 15 minutes that is
+< 0.1 bp and irrelevant, and the cell is conditional. The MT5 era carries 3 post-close
+bars per day in every year 2005-2025 (16:00 / 16:05 / 16:10).
+Expected magnitude if real: the MOC push is typically 5-15 bp; documented reversal
+fractions are 10-30% -> 1-3 bp = 0.01-0.04R against a 0.02-0.03R round trip: marginal at
+2x, registered as such. Test count: +1 selectable + 8 read-only. Runner
+run_r73_postclose.py -> results/r73_postclose_is.json. Intraday band: one 15-minute trade
+per session per instrument (pooled = up to three, inside the user's 0-4 ceiling; a live
+version would run one instrument).
