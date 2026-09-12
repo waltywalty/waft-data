@@ -6278,3 +6278,33 @@ fractions are 10-30% -> 1-3 bp = 0.01-0.04R against a 0.02-0.03R round trip: mar
 run_r73_postclose.py -> results/r73_postclose_is.json. Intraday band: one 15-minute trade
 per session per instrument (pooled = up to three, inside the user's 0-4 ceiling; a live
 version would run one instrument).
+
+### Attempt 53 result: IS FAIL - the post-close window has no reversal; the push continues slightly, and both directions die at cost
+
+(run_r73_postclose.py; results/r73_postclose_is.json; IS = Oanda-era frames, 7,977 pooled
+sessions SPX/NDX/RTY 2005-2020.)
+C1 (reversal, -sign of the 15:50 -> 16:00 push): net -0.0312R at 1x, WR 37.6%, PF 0.48,
+t -23.2, halves [-,-], negative in 15 of 16 years; -0.0577R at 2x. Per instrument SPX
+-0.029 / NDX -0.031 / RTY -0.034. Mirror (+sign, continuation): -0.0218R (t -16.3).
+Unconditional controls: always-long -0.0199R, always-short -0.0335R - the two controls
+straddle the cost, i.e. the 16:00 -> 16:15 window carries a small unconditional LONG drift
+of ~+0.007R gross (attempt 29's post-close mass, exactly as disclosed) and nothing else.
+Decomposition: C1 gross ~ -0.005R, mirror gross ~ +0.005R: the closing push CONTINUES
+slightly into 16:15 rather than reversing; the registered direction is on the wrong side
+of a signal an order of magnitude inside cost. Dose terciles flat (-0.030 / -0.029 /
+-0.036): no response to push size, so the mechanism's fingerprint is absent. Placebos:
+15:30 -> 15:45 on the 15:20 -> 15:30 push -0.0279R (indistinguishable from the cell);
+16:30 -> 16:45 -0.0281R (n 1,391). True ES 5m forward week: 3 events, -2.75 / +5.25 /
+-2.25 pts. VERDICT: fails every clause; OOS not opened; family BURNED (kill #1's mechanism
+now tested and dead, on the data that Round 73 showed to be honest for this window).
+Round 71's F3 forward log continues descriptively as registered.
+Bogousslavsky & Muravyev's reversal is documented on the CASH close-to-next-open horizon;
+this run says it does not show up in the futures' first 15 post-close minutes on CFD
+prints. The 16:00-16:15 clock joins the burned list. Test count: +1 selectable + 8
+read-only. Program score: 1 OOS pass (on paper) / 53 attempts + 25 registration-stage
+kills; 12 shots; 23 data assets.
+ROUND 73 SUMMARY (2026-09-12): one data check that failed on its letter and overturned
+the reference it was run against (Round 70's provenance finding withdrawn; data limit #7
+revised to a quantified 2-4 bp/night bias); one revived family (attempt 53) tested and
+killed at IS; one new asset (Dukascopy 1m index CFDs), with the 2012-2025 index history
+and the 2003-2022 gold history being pulled in the background as banked assets.
