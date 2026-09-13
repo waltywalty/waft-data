@@ -14,7 +14,10 @@ import pandas as pd
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import intraday_engine as E  # noqa: E402
 
-UNSEAL = "--unseal" in sys.argv and os.environ.get("UNSEAL_OK") == "1"
+UNSEAL = "--unseal" in sys.argv
+if UNSEAL:
+    raise SystemExit("R77 holdout = the 2026 Dukascopy 1m->5m block; this runner has no loader for it - write run_r77_unseal.py for the single cleared cell")
+HERE = os.path.dirname(os.path.abspath(__file__))
 RNG = np.random.default_rng(77)
 VOL_START = pd.Timestamp("2010-01-01")
 NY = "America/New_York"
@@ -34,7 +37,7 @@ def stats(x):
 def cell_stats(g):
     g = g.sort_values("date")
     return dict(x0_gross=stats(g.R0), x1=stats(g.R), x15=stats(g.R15), x2=stats(g.R20), r5_net=stats(g.r5),
-                how=g.how.value_counts().to_dict() if "how" in g else {}, n_days=int(g.date.nunique()), long_share=float((g.side > 0).mean()),
+                how={k: int(v) for k, v in g.how.value_counts().items()} if "how" in g else {}, n_days=int(g.date.nunique()), long_share=float((g.side > 0).mean()),
                 per_year_sign={int(y): float(np.sign(gg.R.mean())) for y, gg in g.groupby(pd.to_datetime(g.date).dt.year)},
                 per_instr={i: stats(gg.R) for i, gg in g.groupby("instr")})
 
@@ -69,14 +72,18 @@ def judge(cells, T, floor, label):
 
 
 def scan(path, side, entry, stop, tgt):
-    """Worst-case stop-first walk over path bars; returns (exit_px, how)."""
-    exit_px, how = float(path.close.iloc[-1]), "time"
-    for _, bar in path.iterrows():
-        if stop is not None and ((side == 1 and bar.low <= stop) or (side == -1 and bar.high >= stop)):
-            return stop, "stop"
-        if tgt is not None and ((side == 1 and bar.high >= tgt) or (side == -1 and bar.low <= tgt)):
-            return tgt, "target"
-    return exit_px, how
+    """Worst-case walk over path bars: the first bar touching the stop (<= / >=) fills at the stop; a target touch
+    fills at the target only if no earlier-or-same bar touched the stop (stop wins ties); else time exit."""
+    lo, hi = path.low.values, path.high.values; n = len(lo)
+    s_hit = ((lo <= stop) if side == 1 else (hi >= stop)) if stop is not None else np.zeros(n, bool)
+    t_hit = ((hi >= tgt) if side == 1 else (lo <= tgt)) if tgt is not None else np.zeros(n, bool)
+    i_s = int(np.argmax(s_hit)) if s_hit.any() else n
+    i_t = int(np.argmax(t_hit)) if t_hit.any() else n
+    if i_s < n and i_s <= i_t:
+        return float(stop), "stop"
+    if i_t < n:
+        return float(tgt), "target"
+    return float(path.close.iloc[-1]), "time"
 
 
 def row(date, instr, side, entry, exit_px, how, cost, atr_d, atr5, extra=None):
@@ -89,18 +96,16 @@ def row(date, instr, side, entry, exit_px, how, cost, atr_d, atr5, extra=None):
 
 def prep(idx):
     """5m 24h frame with session key, hm, ATR14 (5m, shifted), same-slot RVOL (trailing 20 sessions), session ATR20-daily."""
-    d, b, cut = E.sessions(idx, unseal=UNSEAL)
+    d, b, cut = E.sessions(idx)                                        # IS only; OOS rows never enter b
     b = b.copy()
     tr = np.maximum(b.high - b.low, np.maximum((b.high - b.close.shift(1)).abs(), (b.low - b.close.shift(1)).abs()))
     b["atr14"] = tr.rolling(14).mean().shift(1)                       # ATR of the 14 bars BEFORE this bar
     b["rng"] = b.high - b.low
-    # same-slot trailing-20-session mean volume (exclude the current session): pivot sessions x slot
     if "volume" in b.columns:
-        pv = b.pivot_table(index="skey", columns="hm", values="volume", aggfunc="sum")
+        # same-slot trailing-20-SESSION mean volume, excluding the current session (pivot over session rows only)
+        pv = b[b.skey.isin(d.index)].pivot_table(index="skey", columns="hm", values="volume", aggfunc="sum")
         base = pv.rolling(20, min_periods=10).mean().shift(1)
-        base_long = base.stack().rename("vbase").reset_index()
-        b = b.reset_index().merge(base_long, on=["skey", "hm"], how="left").set_index("index" if "index" in b.reset_index().columns else "time")
-        b.index.name = None
+        b = b.join(base.stack().rename("vbase"), on=["skey", "hm"])
         b["rvol"] = b.volume / b.vbase
     b["atr_d"] = b.skey.map(d.atr20)
     return d, b, cut
@@ -127,7 +132,8 @@ def battery_A(idx):
         fwd6 = b.iloc[i + 1:i + 7]
         # session-end path: bars until the session key changes
         sess = b.iloc[i + 1:i + 1 + 300]; sess = sess[sess.skey == e.skey]
-        if len(fwd6) < 6 or len(sess) < 2: continue
+        if len(fwd6) < 6 or len(sess) < 2 or (fwd6.skey != e.skey).any() or (fwd6.index[-1] - ts) != pd.Timedelta(minutes=30):
+            continue                                                  # the "next 30 minutes" must be 6 contiguous bars in-session
         big = bool(e.rng >= 2 * atr5); rv3 = bool(e.rvol >= 3)
         clock = "peak" if e.peak else ("offpeak" if e.offpeak else ("overnight" if e.overnight else "other"))
         meas.append(dict(date=str(e.skey), instr=idx, rv3=rv3, big=big, clock=clock, onhour=bool(e.onhour),
@@ -146,8 +152,9 @@ def battery_A(idx):
         i = pos[ts]
         if i + 7 >= len(keys): continue
         fwd6 = b.iloc[i + 1:i + 7]; side = int(np.sign(e.close - e.open))
-        cm.append(side * (float(fwd6.close.iloc[-1]) - float(b.iloc[i + 1].open)) / float(e.atr14))
-    return pd.DataFrame(rows), pd.DataFrame(meas), np.array(cm)
+        if len(fwd6) < 6 or (fwd6.skey != e.skey).any() or (fwd6.index[-1] - ts) != pd.Timedelta(minutes=30): continue
+        cm.append(dict(date=str(e.skey), v=side * (float(fwd6.close.iloc[-1]) - float(b.iloc[i + 1].open)) / float(e.atr14)))
+    return pd.DataFrame(rows), pd.DataFrame(meas), pd.DataFrame(cm)
 
 
 # ------------------------------------------------------------------ B. compression -> expansion
@@ -201,7 +208,7 @@ def battery_E(idx):
     rth["nbar"] = g.cumcount()
     for k, day in rth.groupby("skey"):
         day = day.reset_index()
-        atr_d = float(day.atr_d.iloc[0]); atr5 = float(day.atr14.iloc[0]) if np.isfinite(day.atr14.iloc[0]) else 0.0
+        atr_d = float(day.atr_d.iloc[0])
         for ks in (2.0, 2.5, 3.0):
             for side_ev in (1, -1):        # +1: price above VWAP (fade = short); -1: below (fade = long)
                 cand = day[(day.nbar >= 12) & (day.sig > 0) & (side_ev * (day.close - day.vwap) >= ks * day.sig)]
@@ -209,6 +216,7 @@ def battery_E(idx):
                 i = int(cand.index[0])
                 if i + 2 >= len(day): continue
                 e = day.iloc[i]; entry = float(day.iloc[i + 1].open); side = -side_ev
+                atr5 = float(e.atr14) if np.isfinite(e.atr14) and e.atr14 > 0 else 0.0
                 vw, sg = float(e.vwap), float(e.sig)
                 stop = vw + side_ev * (ks + 1) * sg
                 path = day.iloc[i + 1:]
@@ -227,28 +235,32 @@ def battery_E(idx):
 def momentum_component(idx):
     d, b, cut = prep(idx); cost = E.MICRO[idx]; rows = []
     for k, day in b.groupby("skey"):
-        o = day[day.hm == 930]; t10 = day[day.hm == 1000]; x = day[day.hm == 1555]
-        if len(o) != 1 or len(t10) != 1 or len(x) != 1 or not np.isfinite(day.atr_d.iloc[0]): continue
-        p = float(t10.open.iloc[0] - o.open.iloc[0])
+        o = day[day.hm == 930]; t10 = day[day.hm == 1000]; x = day[day.hm == 1555]; pre = day[(day.hm >= 930) & (day.hm < 1000)]
+        if len(o) != 1 or len(t10) != 1 or len(x) != 1 or not len(pre) or not np.isfinite(day.atr_d.iloc[0]): continue
+        p = float(pre.close.iloc[-1] - o.open.iloc[0])                 # attempt-2 predictor: first-30-min return (09:55 close - 09:30 open)
         if p == 0: continue
         side = int(np.sign(p)); rows.append(row(k, idx, side, float(t10.open.iloc[0]), float(x.close.iloc[0]), "time", cost, float(day.atr_d.iloc[0]), 0.0))
     return pd.DataFrame(rows)
 
 
-def combination(A_rows, B_rows, E_rows, mom_rows):
+def combination(A_rows, B_rows, E_rows, mom_rows, live):
+    """Equal-weight portfolio of three pre-specified components. Each component's daily series = mean R over the
+    instruments live that date (0 for a live instrument without a trade); window = the common live window."""
     def daily(df, name):
         if df is None or not len(df): return pd.Series(dtype=float, name=name)
-        return df.groupby("date").R.sum().rename(name)
+        return (df.groupby("date").R.sum() / live.reindex(df.groupby("date").R.sum().index)).rename(name)
     comps = dict(momentum=daily(mom_rows, "momentum"),
                  reversal=daily(E_rows[(E_rows.k == 2.0) & (E_rows.tgt == "vwap")], "reversal"),
-                 volbreak=daily(B_rows[(B_rows.pc == 10) & (B_rows.mult == 2.0) & (B_rows.ex == "sess")], "volbreak"))
-    M = pd.concat(comps.values(), axis=1).fillna(0.0).sort_index()
+                 volbreak=daily(B_rows[(B_rows.pc == 10) & (B_rows["mult"] == 2.0) & (B_rows.ex == "sess")], "volbreak"))
+    start = max(c.index.min() for c in comps.values() if len(c)); end = min(c.index.max() for c in comps.values() if len(c))
+    M = pd.concat(comps.values(), axis=1).reindex(live.index).fillna(0.0).sort_index()
+    M = M[(M.index >= start) & (M.index <= end)]
     M["combo"] = M[["momentum", "reversal", "volbreak"]].sum(axis=1) / 3
     out = {c: dict(mean_R_per_day=float(M[c].mean()), sharpe_daily=float(M[c].mean() / M[c].std(ddof=1)) if M[c].std(ddof=1) > 0 else None,
                    ann_sharpe=float(M[c].mean() / M[c].std(ddof=1) * np.sqrt(252)) if M[c].std(ddof=1) > 0 else None,
                    active_days=int((M[c] != 0).sum())) for c in M.columns}
     out["corr"] = M[["momentum", "reversal", "volbreak"]].corr().round(3).to_dict()
-    out["days"] = int(len(M))
+    out["days"] = int(len(M)); out["window"] = [str(start), str(end)]; out["live_instruments_mean"] = float(live.reindex(M.index).mean())
     return out
 
 
@@ -265,7 +277,9 @@ if __name__ == "__main__":
         bb = battery_B(idx); B_all.append(bb); print(f"B {idx}: trade rows {len(bb)}")
         ee = battery_E(idx); E_all.append(ee); print(f"E {idx}: trade rows {len(ee)}")
         M_all.append(momentum_component(idx))
-    A = pd.concat(A_all); AM = pd.concat(A_meas); AC = np.concatenate(A_ctl); B = pd.concat(B_all); EE = pd.concat(E_all); MM = pd.concat(M_all)
+    srt = lambda df: pd.concat(df).sort_values("date", kind="stable").reset_index(drop=True)
+    A = srt(A_all); AM = srt(A_meas); ACd = srt(A_ctl); AC = ACd.v.values; B = srt(B_all); EE = srt(E_all); MM = srt(M_all)
+    live = pd.concat([pd.Series(1, index=[str(k) for k in E.sessions(i)[0].index]) for i in IDX]).groupby(level=0).sum()
 
     # ---- A: measures
     resA = {"measure_fwd30_r5": {}}
@@ -277,10 +291,16 @@ if __name__ == "__main__":
     resA["control_rvol<1.25_fwd30_r5"] = stats(AC)
     resA["clock_split_fwd30_r5"] = {c: stats(g.fwd30_r5) for c, g in AM.groupby("clock")}
     resA["onhour_split_fwd30_r5"] = {str(c): stats(g.fwd30_r5) for c, g in AM.groupby("onhour")}
-    A["cell"] = np.where(A.rv3, "rv3", "rv2") + np.where(A.big, "_big", "_any") + "_" + A.ex
+    # NESTED cells (the registered grid): rv2 = all RVOL >= 2 events (rv3 is a subset); any = no range condition (big is a subset)
+    parts = []
+    for rv, mrv in (("rv2", np.ones(len(A), bool)), ("rv3", A.rv3.values)):
+        for rc, mrc in (("any", np.ones(len(A), bool)), ("big", A.big.values)):
+            pp = A[mrv & mrc].copy(); pp["cell"] = f"{rv}_{rc}_" + pp.ex; parts.append(pp)
+    A = pd.concat(parts).sort_values("date", kind="stable").reset_index(drop=True)
     resA["cells"] = {c: cell_stats(g) for c, g in A.groupby("cell")}
     resA["clock_split_cells_x1"] = {f"{c}|{cl}": stats(g.R) for (c, cl), g in A.groupby(["cell", "clock"])}
-    resA["mirror_x1"] = stats(-A[A.cell == "rv2_any_t30"].R0 - (A[A.cell == "rv2_any_t30"].R0 - A[A.cell == "rv2_any_t30"].R))
+    base_cell = A[A.cell == "rv2_any_t30"]
+    resA["mirror_x1"] = stats((-base_cell.pnl - base_cell.instr.map(E.MICRO)) / (base_cell.pnl / base_cell.R0).where(base_cell.R0 != 0))
     print("\n=== A: forward 30-min signed move in 5m-ATR14 units ==="); [print(f"  {k}: {v}") for k, v in resA["measure_fwd30_r5"].items()]
     print("  control:", resA["control_rvol<1.25_fwd30_r5"]); print("  clock:", {k: (v.get('n'), round(v.get('mean', 0), 3)) for k, v in resA["clock_split_fwd30_r5"].items()})
     print("=== A cells (net R):"); [print(f"  {k:16s} n {v['x1'].get('n')} gross {v['x0_gross'].get('mean', 0):+.4f} net {v['x1'].get('mean', 0):+.4f} t {v['x1'].get('t') or 0:+.2f} halves {v['x1'].get('halves')} x2 {v['x2'].get('mean', 0):+.4f} exits {v['how']}") for k, v in resA["cells"].items()]
@@ -307,6 +327,11 @@ if __name__ == "__main__":
     res["E"] = resE
 
     # ---- D
-    res["D_combination"] = combination(A, B, EE, MM)
+    res["D_combination"] = combination(A, B, EE, MM, live)
+    res["notes"] = ["GOLD E: VWAP/sigma reset at 09:30 NY on a 24h instrument (overnight volume excluded); atr_d = RTH-range ATR20",
+                    "A/E volume cells 2010+ (VOL_START); B full sample (price-only)",
+                    "holdout NOT opened: no 2026 Dukascopy path in this runner; a cleared cell needs run_r77_unseal.py",
+                    "A t30 windows = 6 contiguous in-session bars spanning exactly 30 clock minutes; others voided",
+                    "E stop = (k+1) sigma with sigma frozen at the event bar; D momentum predictor = 09:55 close - 09:30 open"]
     print("\n=== D combination:", json.dumps(res["D_combination"], default=float))
-    json.dump(res, open(f"results/r77_battery_{'oos' if UNSEAL else 'is'}.json", "w"), indent=1, default=float)
+    json.dump(res, open(os.path.join(HERE, "results", "r77_battery_is.json"), "w"), indent=1, default=float)
