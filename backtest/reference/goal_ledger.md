@@ -6668,3 +6668,65 @@ Expectation stated first: A's direction was null in Round 34 and is expected nul
 (the volatility half is real); B is expected to inherit the TTM-squeeze PF ~1.0; E is
 untested and gets no prior. Test count: A 12 + B 8 + E 6 = 26 selectable cells + ~20
 read-only, all counted. Runner run_r77_battery.py -> results/r77_battery_is.json.
+
+### Round 77 result: ALL THREE RUN BATTERIES FAIL on every cell; the volume claim's volatility half is real, its direction half is not; gamma flip waits on data
+
+(run_r77_battery.py after a four-lens review - one crash fix (frame index named 'ts'),
+one grid fix (A cells nested as registered, not partitioned), in-session 30-minute windows,
+chronological halves, event-bar ATR in E, attempt-2's momentum predictor, a common-window
+combination, a vectorised scan, and --unseal refused because the registered holdout needs
+its own loader; results/r77_battery_is.json + .log. IS: SPX/NDX/RTY/GOLD; volume cells
+2010+; 26 selectable cells + read-only; all counted.)
+A. VOLUME CONTINUATION (175,530 RVOL >= 2 events, 69,717 RVOL >= 3; 24h frames). The
+  MEASURE the user's numbers are stated in - the signed move over the next 30 minutes in
+  5m-ATR14 units: RVOL >= 2: -0.008R (t -1.5, halves [-,-]) against the hypothesised
+  +0.34R (t -70 against it); RVOL >= 3: -0.010R (t -1.2) against +0.46R (t -58);
+  with the supporting condition range >= 2 ATR: +0.037R (t +2.1, n 28,635) and +0.048R
+  (t +2.0, n 14,719) - a tenth of the hypothesis, halves [+,+], and worth a fraction of one
+  commission. Control (RVOL < 1.25, same slots): -0.010R - the high-volume candles are
+  indistinguishable from ordinary ones in direction. The VOLATILITY half is confirmed
+  again (Round 34): the forward 30-minute range after an event is 2.9-3.0 ATR14 vs ~1.5
+  on ordinary windows. Clock: peak -0.023R, off-peak -0.001, overnight -0.008, on-the-
+  hour/half-hour candles +0.028 (n 28,926) vs others -0.015 - the clock modulates nothing
+  tradeable. TRADES: every one of the 12 cells is negative net - t30 cells -0.025R, 1R
+  target cells -0.026 to -0.030R (t -42 to -88; the 1R/1R walk is a coin flip minus a
+  round trip, 51% stopped), 4R target cells -0.022 to -0.024R (t -17 to -40; 79% stopped,
+  19% reach 4R - exactly the 1-in-5 a driftless walk gives). The 4R target is marginally
+  better than 1R only because it trades less often against the same cost. Gross across
+  the grid: -0.006 to +0.001R. Per instrument, every cell negative (rv2_big_t30: SPX -0.026
+  t -11, NDX -0.024 t -13, RTY -0.030 t -15, GOLD -0.021 t -3.4). Mirror -0.022R (t -44).
+  Best cell rv3_big_t30 t -13.8 vs floor 2.86. FAIL.
+B. COMPRESSION -> EXPANSION (8 cells, 8,201-10,658 trades each, price-only, full
+  sample). Every cell negative net: session-end exits -0.024 to -0.027R (t -9 to -12.5),
+  60-minute exits -0.027 to -0.029R (t -35 to -44); gross -0.002 to +0.002R; the stop at
+  the trigger bar's opposite extreme is hit on 95% of session-end trades and 60-70% of
+  60-minute trades - the "expansion" bar is followed by a retrace through its own range
+  far more often than by a ride. Triggers at the 09:30 open are 12 of 8,201 (the
+  compression state rarely spans the open). Per instrument all negative. Best cell
+  p10_m2.0_sess t -8.9 vs floor 2.73. FAIL. Consistent with the TTM-squeeze PF ~1.0 at
+  daily/H1 (Round 24).
+E. VWAP DEVIATION (6 cells, 1,978-8,211 trades). Fade toward VWAP: every cell negative
+  net, -0.020 to -0.026R (t -5 to -19), gross -0.003 to +0.003R; 65-75% stopped at (k+1)
+  sigma, 15-30% reach the target; the no-stop fade is worse (-0.030 to -0.041R) and the
+  continuation mirror equally negative (-0.022 to -0.025R): at 2-3 sigma from VWAP the
+  price neither reverts nor continues on average - it is noise around a round trip. Per
+  instrument all negative (k2 VWAP target: SPX -0.023, NDX -0.031, RTY -0.026, GOLD
+  -0.012). Best cell k3.0_vwap t -5.0 vs floor 2.64. FAIL.
+D. COMBINATION (common window 2010-01-04..2024-05-07, 3,699 sessions, mean over live
+  instruments): momentum -0.008R/day (annualised Sharpe -0.24), reversal -0.022R/day
+  (-2.71), volatility breakout -0.014R/day (-1.03); pairwise correlations -0.04 to +0.05;
+  the equal-weight combination -0.015R/day (Sharpe -1.13). Three uncorrelated losing
+  strategies combine into a smoother losing strategy - the diversification is real, the
+  expectancy is the average of the components. Descriptive, as registered.
+C. GAMMA FLIP: registered, not run (premium data). Decision left to the user: a premium
+  Alpha Vantage key (~USD 50/month; 15+ years of SPY chains with Greeks) enables a real
+  backtest of the registered spec; the free route is a daily forward log of the flip
+  level from IBKR live chains (needs a daily routine and months of accrual).
+Holdout: nothing cleared, the 2026 Dukascopy block stays SEALED. Test count: +26
+selectable + ~20 read-only (counted). Program score unchanged: 1 OOS pass (on paper) / 55
+attempts + 25 registration-stage kills; 12 shots; 11 watch items; 24 assets.
+ROUND 76/77 SUMMARY (2026-09-13): six user-commissioned specs on 5-minute candles, all
+registered before running, all reviewed before reading, all negative net of one micro
+round trip on 9,000-175,000 trades each; two established facts survive (high-volume
+candles double the next half hour's range; the first candle continues slightly, gross),
+neither large enough to pay a commission. One spec waits on data (gamma).

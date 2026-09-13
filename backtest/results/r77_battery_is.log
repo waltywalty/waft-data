@@ -1,0 +1,60 @@
+A SPX: events 62788, trade rows 188364
+B SPX: trade rows 25532
+E SPX: trade rows 22800
+A NDX: events 61020, trade rows 183060
+B NDX: trade rows 25016
+E NDX: trade rows 19712
+A RTY: events 35925, trade rows 107775
+B RTY: trade rows 19438
+E RTY: trade rows 11804
+A GOLD: events 15797, trade rows 47391
+B GOLD: trade rows 6056
+E GOLD: trade rows 6172
+
+=== A: forward 30-min signed move in 5m-ATR14 units ===
+  rvol>=2: {'n': 175530, 'wr': 0.4763003475189426, 'pf': 0.9895491341731233, 'mean': -0.007633145690372581, 't': -1.528819624948459, 'halves': [-1.0, -1.0], 't_vs_user_hypothesis': -69.6263895610339, 'user_hypothesis_r': 0.34, 'fwd30_abs_range_r5_mean': 2.930835526683333}
+  rvol>=3: {'n': 69717, 'wr': 0.47281150938795413, 'pf': 0.9868681479888414, 'mean': -0.009844272261115358, 't': -1.2092713594630393, 'halves': [-1.0, -1.0], 't_vs_user_hypothesis': -57.71571598008076, 'user_hypothesis_r': 0.46, 'fwd30_abs_range_r5_mean': 3.0189513235350307}
+  rvol>=2 & range>=2ATR: {'n': 28635, 'wr': 0.4685175484546883, 'pf': 1.0366417778988801, 'mean': 0.036609398291656894, 't': 2.103296320620264, 'halves': [1.0, 1.0], 't_vs_user_hypothesis': -17.430505991936794, 'user_hypothesis_r': 0.34, 'fwd30_abs_range_r5_mean': 4.17123469695846}
+  rvol>=3 & range>=2ATR: {'n': 14719, 'wr': 0.4676948162239283, 'pf': 1.0483436269228112, 'mean': 0.048381261712527525, 't': 1.981027924223379, 'halves': [1.0, 1.0], 't_vs_user_hypothesis': -16.85421557474464, 'user_hypothesis_r': 0.46, 'fwd30_abs_range_r5_mean': 4.270950158354273}
+  control: {'n': 160823, 'wr': 0.4816164354601021, 'pf': 0.9864846153543897, 'mean': -0.009935911388637211, 't': -1.8764462455286561, 'halves': [-1.0, -1.0]}
+  clock: {'offpeak': (34957, -0.001), 'other': (3034, 0.018), 'overnight': (123607, -0.008), 'peak': (13932, -0.023)}
+=== A cells (net R):
+  rv2_any_t30      n 175530 gross -0.0017 net -0.0251 t -52.01 halves [-1.0, -1.0] x2 -0.0485 exits {'time': 175530}
+  rv2_any_tp1      n 175530 gross -0.0021 net -0.0255 t -88.07 halves [-1.0, -1.0] x2 -0.0489 exits {'stop': 90237, 'target': 85018, 'time': 275}
+  rv2_any_tp4      n 175530 gross +0.0014 net -0.0220 t -39.79 halves [-1.0, -1.0] x2 -0.0454 exits {'stop': 137250, 'target': 32787, 'time': 5493}
+  rv2_big_t30      n 28635 gross -0.0009 net -0.0256 t -21.30 halves [-1.0, -1.0] x2 -0.0502 exits {'time': 28635}
+  rv2_big_tp1      n 28635 gross -0.0042 net -0.0289 t -61.15 halves [-1.0, -1.0] x2 -0.0535 exits {'stop': 15318, 'target': 13315, 'time': 2}
+  rv2_big_tp4      n 28635 gross -0.0001 net -0.0248 t -26.68 halves [-1.0, -1.0] x2 -0.0494 exits {'stop': 22737, 'target': 5637, 'time': 261}
+  rv3_any_t30      n 69717 gross -0.0024 net -0.0255 t -28.45 halves [-1.0, -1.0] x2 -0.0485 exits {'time': 69717}
+  rv3_any_tp1      n 69717 gross -0.0032 net -0.0263 t -49.75 halves [-1.0, -1.0] x2 -0.0493 exits {'stop': 36207, 'target': 33392, 'time': 118}
+  rv3_any_tp4      n 69717 gross +0.0012 net -0.0218 t -21.68 halves [-1.0, -1.0] x2 -0.0449 exits {'stop': 54642, 'target': 13092, 'time': 1983}
+  rv3_big_t30      n 14719 gross -0.0008 net -0.0251 t -13.76 halves [-1.0, -1.0] x2 -0.0495 exits {'time': 14719}
+  rv3_big_tp1      n 14719 gross -0.0055 net -0.0299 t -41.87 halves [-1.0, -1.0] x2 -0.0543 exits {'stop': 8012, 'target': 6706, 'time': 1}
+  rv3_big_tp4      n 14719 gross +0.0000 net -0.0244 t -17.25 halves [-1.0, -1.0] x2 -0.0487 exits {'stop': 11679, 'target': 2911, 'time': 129}
+
+A VOLUME VERDICT: FAIL - best rv3_big_t30 t -13.76 (floor 2.86), bar-cell p 0.000, spike False
+
+=== B cells (net R):
+  p10_m1.5_sess    n 9044 gross -0.0005 net -0.0271 t -12.09 halves [-1.0, -1.0] x2 -0.0538 exits {'stop': 8679, 'time': 365}
+  p10_m1.5_t60     n 9044 gross -0.0021 net -0.0288 t -43.03 halves [-1.0, -1.0] x2 -0.0554 exits {'stop': 6092, 'time': 2952}
+  p10_m2.0_sess    n 8201 gross +0.0024 net -0.0240 t -8.88 halves [-1.0, -1.0] x2 -0.0505 exits {'stop': 7770, 'time': 431}
+  p10_m2.0_t60     n 8201 gross -0.0009 net -0.0274 t -34.85 halves [-1.0, -1.0] x2 -0.0539 exits {'stop': 4956, 'time': 3245}
+  p20_m1.5_sess    n 10658 gross -0.0007 net -0.0274 t -12.50 halves [-1.0, -1.0] x2 -0.0540 exits {'stop': 10210, 'time': 448}
+  p20_m1.5_t60     n 10658 gross -0.0022 net -0.0288 t -43.60 halves [-1.0, -1.0] x2 -0.0555 exits {'stop': 7018, 'time': 3640}
+  p20_m2.0_sess    n 10118 gross +0.0017 net -0.0248 t -9.64 halves [-1.0, -1.0] x2 -0.0513 exits {'stop': 9558, 'time': 560}
+  p20_m2.0_t60     n 10118 gross -0.0010 net -0.0275 t -35.49 halves [-1.0, -1.0] x2 -0.0540 exits {'stop': 5994, 'time': 4124}
+
+B COMPRESSION VERDICT: FAIL - best p10_m2.0_sess t -8.88 (floor 2.73), bar-cell p 0.000, spike False
+
+=== E cells (net R):
+  k2.0_half      n 8211 gross -0.0029 net -0.0264 t -19.08 halves [-1.0, -1.0] x2 -0.0499 exits {'stop': 5405, 'target': 2593, 'time': 213}
+  k2.0_vwap      n 8211 gross -0.0014 net -0.0249 t -13.54 halves [-1.0, -1.0] x2 -0.0484 exits {'stop': 6192, 'target': 1494, 'time': 525}
+  k2.5_half      n 4933 gross +0.0007 net -0.0225 t -11.39 halves [-1.0, -1.0] x2 -0.0457 exits {'stop': 3314, 'target': 1446, 'time': 173}
+  k2.5_vwap      n 4933 gross +0.0012 net -0.0220 t -8.50 halves [-1.0, -1.0] x2 -0.0452 exits {'stop': 3735, 'target': 754, 'time': 444}
+  k3.0_half      n 1978 gross -0.0000 net -0.0230 t -7.36 halves [-1.0, -1.0] x2 -0.0459 exits {'stop': 1369, 'target': 522, 'time': 87}
+  k3.0_vwap      n 1978 gross +0.0028 net -0.0201 t -4.99 halves [-1.0, -1.0] x2 -0.0430 exits {'stop': 1503, 'target': 275, 'time': 200}
+  mirror: {'k2.0': (8211, -0.0224), 'k2.5': (4933, -0.0253), 'k3.0': (1978, -0.0238)}
+
+E VWAP VERDICT: FAIL - best k3.0_vwap t -4.99 (floor 2.64), bar-cell p 0.000, spike False
+
+=== D combination: {"momentum": {"mean_R_per_day": -0.008424930570991458, "sharpe_daily": -0.014933697857217999, "ann_sharpe": -0.23706510410866194, "active_days": 3575}, "reversal": {"mean_R_per_day": -0.0220286997160592, "sharpe_daily": -0.17047902860574962, "ann_sharpe": -2.7062706806560795, "active_days": 3347}, "volbreak": {"mean_R_per_day": -0.013636041007153626, "sharpe_daily": -0.06488460992476788, "ann_sharpe": -1.030011250658215, "active_days": 2946}, "combo": {"mean_R_per_day": -0.014696557098068094, "sharpe_daily": -0.07130675111965297, "ann_sharpe": -1.13195958157547, "active_days": 3698}, "corr": {"momentum": {"momentum": 1.0, "reversal": -0.04, "volbreak": 0.047}, "reversal": {"momentum": -0.04, "reversal": 1.0, "volbreak": -0.042}, "volbreak": {"momentum": 0.047, "reversal": -0.042, "volbreak": 1.0}}, "days": 3699, "window": ["2010-01-04", "2024-05-07"], "live_instruments_mean": 2.1751824817518246}
