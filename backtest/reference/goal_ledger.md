@@ -6810,3 +6810,56 @@ size the cells clear 2x cost by an order of magnitude; the registered risk is po
 publication decay (sample 2013+ is almost entirely post-sample for the paper). Test
 count: +2 selectable + 10 read-only. Runner run_r79_fomcfx.py -> results/r79_fomcfx_is.json.
 Intraday band: eight days a year, one or two windows each.
+
+### Attempt 56 AMENDMENT (critic A, adopted BEFORE running; supersedes the cells, clock and diagnostics above)
+
+CHASSIS ADJACENCY DISCLOSED: this is the fourth unconditional clock-window family on the
+program's chassis (enter at a fixed clock, exit at a fixed clock, sign fixed by a
+published clock-split paper); the first three died - attempt 7 (gold Asia-long /
+London-short, Lucey-O'Connor, burned OOS), attempt 6 (index euro-open windows, burned IS),
+attempt 36 (gold fix windows, burned IS, "gross ~0 in every window either direction").
+Registered prior: 0 of 3. CELL-CONTENT ADJACENCY: the USD-hours cell contains attempt 54's
+fix window, the month-end fix clock (51/52), watch #12's release windows and attempt 57's
+FOMC window - none of these may ever be cited as independent confirmations of each other;
+if the USD cell passes, its mean is also printed with release days and FOMC days excluded
+(a decomposition, not a cell).
+CELLS RE-ANCHORED to the papers' definition (each currency area's own local trading hours,
+08:00-17:00 local, converted per calendar day through the IANA tz database, never a fixed
+London offset): C1 SHORT EURUSD over the EUR-ONLY window 08:00 Europe/Berlin -> 08:00
+America/New_York (07:00 -> 13:00 London in aligned weeks); C2 LONG EURUSD over the USD-
+ONLY window 17:00 Europe/Berlin -> 17:00 America/New_York, exiting at the close of the
+last bar starting before 16:55 New York (never in the 17:00 rollover minute). The EU/US
+OVERLAP 08:00 New York -> 17:00 Berlin carries both papers' predictions with opposite
+signs on EURUSD, is NOT selectable, and is the design's second placebo (predicted ~0)
+beside the Tokyo-hours placebo (09:00 -> 17:00 Asia/Tokyo). No boundary variant may be
+run now or in any repair: the boundaries are the papers', not a parameter.
+CLOCK CORRECTED: the ejtrader stamp is UTC+2 when New York is on EST and UTC+3 on EDT
+(ET = Date - 7 h all year, confirmed on ten years of gold overlap), so London = feed - 2 h
+only in weeks when the EU and US DST calendars agree and feed - 3 h in the mismatch
+windows (~20 weekdays a year, ~185 of 2,415 IS weekdays). The runner builds the clock as
+ET = Date - 7 h localised to America/New_York and converts to each block's zone; the OOS
+loader (UTC-pinned) converts the same way, so IS and OOS clocks are constructed
+identically. CLOCK GATE before any cell is read: the 15-minute slot carrying the 08:30-ET
+release volatility peak on first Fridays must be 08:30 ET in BOTH seasons under the
+constructed clock; failure aborts the run.
+DRIFT CONTROL (decisive): the papers' statistic is the contrast across blocks within the
+day, not a block's level; EURUSD fell ~1.27 -> ~1.10 over the IS window (~ -0.5 bp/day).
+Beside each cell the runner prints the unconditional per-hour drift over the same days,
+each block's net mean minus (block hours x drift), and both placebos. A cell PASSES only
+if it clears the bar raw AND drift-adjusted with the same sign; if C1 and C2 print
+opposite signs of similar magnitude, or a placebo prints a mean of the cells' order with
+the drift-implied sign, the family is a whole-day-drift artefact and FAILS regardless of
+t. MAX-STAT added: per-date sign-flip randomisation over the two cells (2,000 draws),
+bar-cell p < 0.05, alongside Bonferroni (floor 2.24). Read-only prints (placebos,
+mirrors, per-year, day-of-week, every USDJPY print incl. the gotobi-adjacent Tokyo block)
+are NON-PROMOTABLE forever. OOS: EURUSD only, cleared cells only, one opening; USDJPY's
+sealed block is never read. NO REPAIR reserved: an IS failure closes the family.
+POWER STATED: ~2,415 IS weekdays, ~27 bp standard deviation per 6-hour block -> SE ~0.56
+bp, so t >= 2.24 needs ~1.25 bp net (~2.15 bp gross); the design can detect a 2.5 bp
+block effect and cannot detect a 1 bp one; the papers' 1997-2010 point estimates are of
+that lower order (Breedon & Ranaldo 2013, EUR/USD hour-of-day returns; exact table values
+not verifiable offline), so an IS failure at |t| < 2 is recorded as a POWER failure, not a
+refutation, and a failure with the wrong sign as a refutation. Test count re-stated: +2
+selectable; 16 scored read-only statistics (2 placebos, 2 mirrors, 2 gross/net, 2 drift-
+adjusted, 3 USDJPY blocks with mirrors/gross) plus ~60 unscored per-year / day-of-week
+sub-means inspected for sign only.
