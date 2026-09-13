@@ -6466,3 +6466,36 @@ Test count: +1 gate + 1 selectable + 9 read-only. Program score: 1 OOS pass (on 
 ROUND 74/75 SUMMARY (2026-09-13): two new-class FX families on the minute feed: the daily
 fix (attempt 54, real and fix-specific, half a pip gross - dead) and the dollar's post-
 release drift (attempt 55, gate passed, drift positive at every cost, t +1.1 - watch #12).
+
+## 2026-09-13: history acquisition complete - assets #23 (index CFD 1m 2012-2026) and #24 (gold 1m 2003-2026)
+
+Delivered via the cloud VM after ~14 h wall time (the feed serves ~1,000 day files per
+burst then blocks 20-55 min; ~7.4 h of throttle waits; the VM's CPU pauses whenever no
+command is active, so the fetch only advanced while an agent polled it - recorded as an
+operational rule for future pulls). All files gitignored; manifests carry every md5.
+ - data/idx/dukascopy/USA500IDXUSD_1m_hist.csv 2012-01-19..2025-07-06, 3,636,183 active
+   bars, md5 db7388e9...; USATECHIDXUSD_1m_hist.csv same span, 3,800,650 bars, md5
+   221033e1...; both abut the overlap files (2025-07-07..2026-09-11). 16,751 day files
+   requested across the three jobs, 0 x 404, 0 unfetched, 0 decode anomalies; 8 days
+   re-fetched after throttle failures. Schedule caveat for any 24h family: 2012 is US
+   cash hours only; 2013-14 partial 24h (first Sunday bars 2013-05-26); 2015-2017 the
+   feed dropped overnight hours entirely; 2018 overnight returns; 2019+ the modern 24h
+   schedule with the 16:15-18:00 ET break. Usable overnight history: 2013-14 and 2018+.
+ - data/fx/dukascopy/XAUUSD_1m_hist.csv 2003-06-02..2022-03-31, 6,355,248 active bars,
+   md5 476cbbad...; abuts XAUUSD_1m.csv (2022-04-01..). Bars per day ~530 in 2003 rising
+   to ~1,110 from 2007. Yearly medians 376 (2003) -> 1,213 (2010) -> 1,663 (2012) ->
+   1,168 (2015) -> 1,863 (2022Q1), consistent with spot gold.
+CLOCK PROVENANCE (house rule): gold NFP-slot test - from 2008 the release spike sits at
+12:30Z in summer / 13:30Z in winter (2008-2021: 71 summer spikes at 12:30Z vs 1 at
+13:30Z; 49 winter at 13:30Z vs 1 at 12:30Z) -> stamps are UTC; 2003-2007 bars are too
+sparse to resolve the release minute, so the pre-2008 clock is UNVERIFIED by this test
+and any pre-2008 intraday use must pin it another way. ejtrader m15 overlap 2012-2022:
+best shift -2 h in every winter segment (corr 0.999995-1.000000, mean |diff| $0.03-0.12)
+and -3 h in every summer segment (corr 0.99976-0.99998, mean |diff| $0.13-0.27) ->
+ejtrader stamps are UTC+2 winter / UTC+3 summer, i.e. exactly "ET = Date - 7 h" all year,
+the r54 convention, now confirmed on ten years of overlap; ejtrader prices /100.
+What this buys: a 23-year gold intraday frame at 1 minute (2003-2026) on one feed with a
+pinned clock, replacing the 2012-2022 m15 + 2020-25 5m splice for any future gold
+registration; a second, independent 24h index frame at 1 minute (2013-14, 2018-2026)
+for cross-feed confirmation of any index intraday cell. No test was run on either.
+Program: 55 attempts + 25 registration-stage kills; 12 shots; 11 watch items; 24 assets.

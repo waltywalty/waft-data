@@ -1008,3 +1008,7 @@ Event / calendar / conditioning data:
   refuted (two independent CFD feeds agree at corr 0.964 on 16:00-18:00). New asset: Dukascopy 1m index
   CFDs (USA500/USATECH, overlap 2025-07..2026-09 on disk; 2012-2025 history being pulled) with a fixed
   16:15-18:00 ET break and a Sunday 18:00 ET open.
+
+- **2026-09-13 - assets #23/#24 complete.** Dukascopy 1m USA500/USATECH 2012-2026 (24h usable 2013-14 and 2018+;
+  overnight absent 2015-17) and XAUUSD 1m 2003-2026 (UTC-pinned from 2008; 2003-07 clock unverified). Gold
+  intraday families now have one 23-year 1-minute frame; index cells have a second independent feed.
