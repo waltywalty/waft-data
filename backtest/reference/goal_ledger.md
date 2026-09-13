@@ -6579,3 +6579,92 @@ win is slightly larger than the average loss, and the two cancel to within a fra
 one commission on 9,359 trades across 15 years and four instruments; every take-profit
 variant is worse than none, every tighter stop is worse than a wider one, and the pattern
 is the same on each instrument. There is nothing here to trade.
+
+## Round 77 (2026-09-13): COMMISSIONED BATTERY (five user specs, 5-minute candles) - registered BEFORE running
+
+USER SPECS (verbatim intent): (A) extreme-volume continuation - a candle with > 2x normal
+volume continues ~0.34R in the next 30 minutes, > 3x ~0.46R, more when the candle's range
+is also > 2 ATR; try a 4R target against a 1R target; split by time of day (peak vs
+off-peak, on-the-hour candles); (B) volatility compression -> expansion - when ATR is very
+low and compressed the next move is expansive; catch the start and ride it, direction
+given by the first big move; (C) a gamma-flip strategy; (D) one system combining a
+momentum, a trend-reversal and a volatility-breakout strategy; (E) VWAP deviation at 2,
+2.5 and 3 sigma. All on 5-minute candles. Run as commissioned audits with house
+discipline; none is a program attempt.
+DATA CAVEATS REGISTERED FIRST: (1) the index frames carry broker TICK volume, not exchange
+volume (Round 33 note); pre-2010 granularity is too coarse (2005 median 7 ticks per bar),
+so volume cells run 2010+ (SPX/NDX to the IS cut, RTY 2010-2016 IS); gold's 5m frame has
+tick volume from 2020 (IS to 2024-05). (2) "Normal volume" = the trailing 20-session mean
+of the same 5-minute slot (minute-of-day baseline, no self-contamination), the Round 33
+convention. (3) R for the volume test = the 5-minute ATR14 computed on bars BEFORE the
+event bar. (4) Round 34 (the session atlas, ~75 cells) already found: RVOL >= 2.5 predicts
+1.5-2.2x forward range in every session, and the SIGNED continuation is flat - i.e. the
+volatility half of spec A is established and its directional half was null; this battery
+re-tests the direction with the user's exact construction (2x / 3x, range > 2 ATR, 30-min
+horizon, 1R vs 4R targets, clock splits). (5) TTM Squeeze (daily + H1, Round 24 books
+battery) printed PF ~1.0 in all six cells; spec B is its 5-minute cousin; band mean-
+reversion on gold (Round 8, 2-2.6 sigma) is dead - spec E on index VWAP bands is untested.
+(6) GAMMA FLIP (C) is DATA-GATED: dealer gamma needs historical option chains with open
+interest and gamma per strike; the only reachable source (Alpha Vantage HISTORICAL_OPTIONS,
+15+ years of SPY chains with Greeks) is a premium endpoint - the free key was refused
+2026-09-13; IBKR serves live chains only. Spec C is therefore REGISTERED, NOT RUN:
+ C (frozen, for whenever the data exists): daily net dealer gamma GEX = sum over strikes
+ of gamma x open interest x 100 x spot^2 x 0.01 with calls positive and puts negative
+ (the SqueezeMetrics / SpotGamma convention, dealers assumed long calls / short puts),
+ SPY chains at the prior close; flip = the spot level where cumulative GEX crosses zero;
+ regime for the session = spot at 09:30 above the flip (positive gamma: dealers hedge
+ against moves, intraday mean reversion) or below (negative gamma: dealers hedge with
+ moves, intraday trending). Strategy: in negative-gamma sessions run the volatility-
+ breakout cell (B); in positive-gamma sessions run the VWAP-fade cell (E); the regime is
+ the switch, nothing else is fitted. Routes: a premium Alpha Vantage key (~USD 50/month)
+ unlocks the history for a real backtest; without it, a daily forward log of the flip
+ level from IBKR live chains is the only free route and needs a daily pull. Decision is
+ the user's; nothing runs on C in this round.
+FROZEN SPECS (5m frames SPX / NDX / RTY / GOLD, NY time, 24h frames where stated; costs
+micro 1x / 1.5x / 2x; R for trades = (pnl - cost)/ATR20-daily as in the engine, plus the
+5m-ATR14 R the user's numbers are stated in; IS = the engine cuts; sealed holdout = the
+2026 Dukascopy block (S&P / Nasdaq / gold, 1m -> 5m with the feed's volume) for a cell
+that clears the IS bar; every cell counted):
+ A. VOLUME CONTINUATION. Event = a 5m bar with RVOL >= 2 (and, second event set, >= 3)
+    where RVOL = bar volume / same-slot trailing-20-session mean; direction = sign(close -
+    open) of the event bar (doji excluded); entry = open of the next bar. (i) MEASURE:
+    the signed forward move over the next 6 bars in 5m-ATR14 units, tested against 0 and
+    against the user's 0.34R (2x) and 0.46R (3x); the same with the supporting condition
+    event-bar range >= 2 x ATR14. (ii) TRADES: exits {30-min time; 1R target / 1R stop
+    (5m-ATR14 units) held to session end; 4R target / 1R stop held to session end}.
+    Selectable grid = {RVOL 2, 3} x {no range condition, range >= 2 ATR} x {3 exits} = 12
+    pooled cells. Read-only: mirror; control = same-slot bars with RVOL < 1.25 (the Round
+    34 control); clock splits - peak (09:30-11:00 and 15:00-16:00 ET), off-peak (11:00-
+    15:00), overnight (18:00-09:30), and on-the-hour/half-hour bars vs others; per-
+    instrument; per-year signs; gross vs net. 24h frames.
+ B. COMPRESSION -> EXPANSION. Compression state = 5m-ATR14 at or below the 10th percentile
+    (variant: 20th) of its own values over the trailing 20 sessions; trigger = the first bar
+    in a compression state whose range >= 2 x (variant 1.5 x) the current ATR14; direction
+    = sign of the trigger bar; entry = next bar open; stop = the trigger bar's opposite
+    extreme; exits {60-min time; session end (15:55 for RTH triggers, next 15:55 for
+    overnight ones)}, no target ("ride it"). Grid = {10th, 20th} x {2x, 1.5x} x {2 exits}
+    = 8 pooled cells. Read-only: mirror; 09:30 triggers vs others (the open is a mechanical
+    expansion); per-instrument; per-year; gross vs net. 24h frames.
+ E. VWAP DEVIATION. Session VWAP from 09:30 on tick volume; sigma = the volume-weighted
+    standard deviation of the typical price about VWAP within the session so far (the
+    standard VWAP-band construction); event = first bar per side per session whose close
+    is >= k sigma from VWAP, k in {2, 2.5, 3}, after at least 12 bars (10:30 ET) so the
+    bands exist; FADE toward VWAP: entry next bar open, target {VWAP; half-way to VWAP},
+    stop at (k + 1) sigma from VWAP, time exit 15:55. Grid = 3 x 2 = 6 pooled cells. Read-
+    only: continuation mirror; no-stop variant; per-instrument; per-year; gross vs net. RTH
+    only, 2010+.
+ D. COMBINATION. Three components, each pre-specified, no selection: momentum = attempt-2's
+    base rule (direction = sign of the 09:30 -> 10:00 return, enter 10:00, exit 15:55);
+    reversal = E's k = 2 fade with the VWAP target; volatility breakout = B's base cell
+    (10th percentile, 2x, session-end exit). Each component's daily R series (0 on days
+    without a trade), the equal-weight sum, the correlation matrix, and mean / Sharpe of
+    each vs the combination. DESCRIPTIVE ONLY (a portfolio of three cells cannot clear a
+    bar its components fail); reported, not scored.
+BAR for A, B, E (each grid separately): n >= 40, avg R > 0, PF >= 1.15, halves [+,+],
+positive at 2x, t >= the Bonferroni floor for the grid size (12: 2.86; 8: 2.73; 6: 2.64),
+bar-cell max-stat sign-flip p < 0.05 (per-date flips shared across instruments and
+cells), no lone spike. A cell that clears takes ONE shot on the 2026 Dukascopy holdout.
+Expectation stated first: A's direction was null in Round 34 and is expected null here
+(the volatility half is real); B is expected to inherit the TTM-squeeze PF ~1.0; E is
+untested and gets no prior. Test count: A 12 + B 8 + E 6 = 26 selectable cells + ~20
+read-only, all counted. Runner run_r77_battery.py -> results/r77_battery_is.json.
