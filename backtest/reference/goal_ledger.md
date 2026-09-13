@@ -7120,3 +7120,55 @@ OOS SE ~11 bp -> t 2 needs ~22 bp, so an OOS miss at |t| < 2 with the right sign
 POWER miss. Post-publication decay (2013) and the post-2008 Fed-as-buyer regime are the
 registered risks. Test count: +2 selectable + 16 read-only. Runner run_r80_auction.py ->
 results/r80_auction_{is,oos}.json. Band: daily, ~12 events a year, 5-day holds.
+
+### Attempt 58 RE-REGISTRATION (critic verdict REFUSE on the first registration; every point below adopted BEFORE running; supersedes the cells, proxy, control, statistic, power and diagnostics above)
+Critic findings adopted. (1) MECHANISM RESTATED: the paper attributes the pattern to
+dealers' limited risk-bearing capacity AND end-investors' slow-moving capital; the
+follow-up literature (Amin & Tedongap 2023) keeps the slow-capital channel and drops
+the dealer one, and reports the post-auction recovery largely GONE after ~2010 - so
+decay is registered as the PREDICTION for the 2009+ half, not a footnote. (2) MAGNITUDE
+CORRECTED: the paper's headline is a hidden issuance cost of 9-18 bp of auction size for
+the whole round trip, i.e. ~5-9 bp of price per leg; the first registration's 15-25 bp
+per leg was 2-3x too large and its power statement was therefore inverted. (3) THE
+PAPER'S STATISTIC IS A SPREAD: the tradeable version (Collin-Dufresne's 2011 discussion)
+is duration-matched against neighbouring maturities over +-10 days (Sharpe ~1.4 gross,
+~0.9 net); an outright 10-year position has a 5-day sd of ~100 bp and cannot detect a
+5-9 bp effect at n ~236. The instrument is therefore the DV01-matched 10y-vs-5y CMT
+spread: long 10y par bond vs short (ModD10/ModD5) x 5y par bond, spread return = -ModD10
+x (dy10 - dy5) + carry differential; 5-day sd expected ~30-50 bp -> IS SE ~2-3 bp. (4)
+ERA MATCHING: 10-year auctions went from 4/yr to 12/yr, so a pooled control has a
+different yield-level mix (event carry 7.4 vs control 9.8 bp per window, a -2.4/+2.6 bp
+artefact of opposite sign on the two cells); the gated differential is now YEAR-
+STRATIFIED (weights = event share by year; strata with < 3 events or < 5 control windows
+dropped and counted), halves on the stratified differential. (5) CONTROL CLEANLINESS:
+a control window is valid only if EVERY day in it is >= 6 business days from every
+10-year auction; in the monthly era this leaves the mid-cycle days (+6..+10 for the
+recovery window, +11..+15 for the concession window); the 1990-2008 quarterly era is
+registered as the identifying block and the 2009+ era as a separately reported,
+decay-predicted read (by_era_diff). (6) CMT ROLL GUARD: 87% of 10-year auctions settle
+inside the recovery window (mode T+3) and the H.15 CMT rolls its input to the new note
+on the issue date, which mechanically richens the 10-year node; C1 therefore PASSES ONLY
+IF the stratified differential is positive on BOTH the new-issue and the reopening
+subsets, and an issue-date-excluded C1 (T -> the close before issue) is printed. (7)
+MAX-STAT REBUILT: shifts |k| in 8..120 business days, any shift with > 10% of its
+shifted dates within 5 bd of a real auction dropped (the 19-21 and 63-day auction
+spacings resonate), the control rebuilt per shift with the same rule, and EACH CELL's
+own signed stratified t compared with the max-over-cells null. (8) C2's absolute leg on
+the outright was unpassable (carry + bull-market drift); on the spread the carry
+differential is small and era-matched, so both cells keep the absolute leg. (9) SEAL:
+the IS run clips both yield series at 2020-02-12 and takes auctions 1990-01-01..
+2020-02-04 (236) so no window crosses the cut; OOS = auctions from 2020-02-12 (79) on the
+post-2019-12 series. (10) COST: a micro 10-year and 5-year yield-futures pair, ~1 tick
+per side per leg -> 4 bp per round trip on the pair, 1.5x / 2x; positive at 2x needs
+> 8 bp gross, which sits AT the paper's per-leg size - registered as marginal, with a
+clean negative the modal expectation. (11) Floors: two-sided Bonferroni-2 at df ~236 =
+2.26 (directional hypothesis, two-sided floor kept). (12) Read-only now: the outright
+10-year legs (the first registration's cells), the 5-year hedge leg alone in the same
+windows (its own auction cycle sits ~2 weeks off and could leak into C1), T+-2 spread
+windows, mirrors, per-year, unconditional 5-day drift of the spread and the outright,
+the 30-year suspension gap in the AV 30-year file noted (not used). The 2-year / 5-year /
+30-year analogs are dropped from this registration (the hedge legs would need their own
+neighbours). POWER (honest): at SE ~2-3 bp the floor 2.26 needs ~5-7 bp of stratified
+differential: adequate at the paper's full size, ~coin-flip at half of it, and the
+prediction for 2009+ is zero. Test count: +2 selectable + 14 read-only. Third family on
+the auction calendar (26, 27 on equities). Runner run_r80_auction.py (v2). Nothing read.
