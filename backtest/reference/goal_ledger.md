@@ -7172,3 +7172,35 @@ neighbours). POWER (honest): at SE ~2-3 bp the floor 2.26 needs ~5-7 bp of strat
 differential: adequate at the paper's full size, ~coin-flip at half of it, and the
 prediction for 2009+ is zero. Test count: +2 selectable + 14 read-only. Third family on
 the auction calendar (26, 27 on equities). Runner run_r80_auction.py (v2). Nothing read.
+
+### Attempt 58 IS RESULT (2026-09-13, run_r80_auction.py v2 -> results/r80_auction_is.json, log results/r80_auction_is.log) - FAIL both cells, family closed, no OOS opened
+236 auctions 1990-02-07..2020-01-08 on the series clipped at 2020-02-12; controls
+10,681 windows (every day >= 6 bd from every auction). Unconditional 5-day drift of the
+DV01-matched 10y-vs-5y spread long: -7.0 bp (t -8.8; carry differential + steepening),
+of the outright 10-year long +12.5 bp (the bull market).
+C1 RECOVERY (long the spread T -> T+5): gross +6.0 bp, net +2.0 (t 0.81, PF 1.16, WR
+50%, halves [+,+]), 1.5x 0.0, 2x -2.0 -> fails own-t, 2x and the OOS-style rungs.
+Year-stratified differential +11.2 bp (control -9.2), t 4.23, halves [+,+], eras
+1990-2008 +10.0 / 2009+ +12.1, new-issue +12.9 / reopening +9.2 (roll guard passed),
+issue-date-excluded gross +4.9 (t 2.67, halves [+,+]), T+2 recovery differential +5.4.
+BUT the calendar-shift max-stat gives p 0.30 (56 de-resonated shifts; null 95th
+percentile of the max |t| is 5.6): the stratified SE treats 10,681 OVERLAPPING 5-day
+control windows as independent observations, so every differential t in this design is
+inflated by roughly 2-3x - a design defect of the re-registration that the max-stat
+was built to catch and did. Read as evidence: the recovery leg is present at about the
+paper's per-leg size (~5-6 bp gross) and does not clear a 4 bp pair round trip, exactly
+the marginal case the re-registration predicted; the 2009+ era does NOT show the
+predicted decay on this proxy (+12 differential), which is noted and not promotable.
+C2 CONCESSION (short the spread T-5 -> T): net +2.9 (t 1.04), differential +1.8 (t 0.6),
+diff halves [-,+], new-issue -7.4 vs reopening +11.6 (opposite signs), 1990-2008 era
+-2.6 -> FAIL; the T-2 concession is WRONG-WAY (net -4.2, t -2.2): the spread richens,
+not cheapens, in the last two days before the auction on this proxy.
+Read-only: outright 10-year C1 +24.6 gross vs control +12.6 (the bull-market drift the
+first registration would have credited); the 5-year hedge leg alone -18.5 vs control
+-21.8 (no leak of the 5-year's own cycle into C1); mirrors -10.0 / -10.9.
+VERDICT: IS FAIL on both registered cells (own t, 2x cost, max-stat). No repair
+reserved; the auction-cycle family on the bond is CLOSED after one IS read; the sealed
+2020-02-12+ block was never opened. Program score: 1 OOS pass / 58 attempts; OOS shots
+spent 14. Lesson recorded for future daily-data families: an event-minus-control gate
+with overlapping control windows needs a block/HAC SE or non-overlapping controls; the
+calendar-shift max-stat is the safeguard and stays mandatory.
