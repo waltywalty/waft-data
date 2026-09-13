@@ -6772,3 +6772,41 @@ positive at 2x cost needs > 1.8 bp net per block on a 5-8 hour hold with ~50 bp 
 range - marginal, registered as such; decay to zero is the modal expectation. Test count:
 +2 selectable + 8 read-only. Runner run_r78_fxtod.py -> results/r78_fxtod_is.json.
 Intraday band: one block trade per day per cell (two per day if both run).
+
+## Round 79 (2026-09-13): the dollar on FOMC days - attempt 57 registered BEFORE running
+
+### Attempt 57 registration (BEFORE running): USD depreciation on FOMC announcement days - long EURUSD around the statement, IS 2013-2022 (ejtrader m15), sealed OOS 2022-2026 (Dukascopy 1m)
+
+Mechanism (external, cited): Mueller, Tahbaz-Salehi & Vedolin, "Exchange rates and
+monetary policy uncertainty" (Journal of Finance 2017): the US dollar depreciates against
+the major currencies on FOMC announcement days (close-to-close), by an amount an order
+of magnitude larger than on other days, and a short-USD position held on those days
+earns a large premium; the effect is a compensation for bearing monetary-policy
+uncertainty that resolves at the announcement, and the flow is the unwinding of pre-
+announcement dollar hedges/longs by international investors as the uncertainty resolves.
+Sign fixed by the paper: USD DOWN on FOMC days -> LONG EURUSD. Not burned on FX: the
+program's FOMC families (attempts 12, 24, 34 -> watch #10) are index families; FX on
+FOMC days has never been read here. Calendar: the two-source-verified FOMC statement list
+of run_r42l_fomc.py (2013-01-30..2026-07-29; statements at 14:00 ET throughout).
+FROZEN CELLS (two selectable, Bonferroni 2 -> t floor 2.24), every FOMC statement day:
+ W1 PRE: long EURUSD from the prior day's 17:00 New York (the FX day boundary) to the
+    14:00 ET statement - the paper's evidence that most of the day's depreciation accrues
+    before the release;
+ W2 POST: long EURUSD from 14:00 ET to 17:00 ET (the statement, the 14:30 press
+    conference and the close).
+Entry = open of the first 15m (IS) / 1m (OOS) bar at or after the window start; exit =
+close of the last bar before the window end; cost 1 pip RT (~0.9 bp) per cell, 1.5x /
+2x. IS = ejtrader m15 2012-11..2022-03 (New York = feed - 7 h all year; ~74 statement
+days); SEALED OOS = Dukascopy 1m 2022-04..2026-09 (~34 statement days), opened by the
+integrator only (UNSEAL_OK=1 --unseal) for a cell that clears IS. IS bar: n >= 40, avg
+net > 0, t >= 2.24, PF >= 1.15, halves [+,+], positive at 2x. One shot per cleared cell.
+Read-only diagnostics (counted): the full FOMC day (prior 17:00 -> 17:00 NY, the paper's
+statistic); the same windows on FOMC-1 (pre-announcement drift as in Karnaukh) and on
+FOMC+1; the same clock windows on all NON-FOMC days (the control - the paper's claim is
+FOMC-specific); mirrors; per-year signs (the 2017-publication decay check); USDJPY under
+the paper's sign (short USDJPY) read-only; gross vs net. Expected magnitude if real: the
+paper reports roughly 15-25 bp per FOMC day against the majors in 1994-2013; at that
+size the cells clear 2x cost by an order of magnitude; the registered risk is post-
+publication decay (sample 2013+ is almost entirely post-sample for the paper). Test
+count: +2 selectable + 10 read-only. Runner run_r79_fomcfx.py -> results/r79_fomcfx_is.json.
+Intraday band: eight days a year, one or two windows each.
