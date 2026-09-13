@@ -7204,3 +7204,61 @@ reserved; the auction-cycle family on the bond is CLOSED after one IS read; the 
 spent 14. Lesson recorded for future daily-data families: an event-minus-control gate
 with overlapping control windows needs a block/HAC SE or non-overlapping controls; the
 calendar-shift max-stat is the safeguard and stays mandatory.
+
+## Round 81 (2026-09-13): month-end index duration extension in Treasuries - attempt 59 registered BEFORE running
+
+### Attempt 59 registration (BEFORE running): the month-end index-extension rally in the 10-year Treasury and its reversal, daily CMT 1990-2026, sealed OOS = month-ends from 2020-03
+
+Mechanism (practitioner-documented flow with a forced counterparty; academic citation
+NOT verified offline and flagged as such): the Bloomberg (formerly Barclays / Lehman)
+US Treasury and Aggregate indices rebalance at the close of the LAST BUSINESS DAY of
+each month - the month's new issues enter and short paper drops out, so the index
+duration EXTENDS (typically a few hundredths to a tenth of a year); index-tracking funds
+and duration-benchmarked managers must buy duration at that close to stay matched,
+dealers and fast money pre-position for the flow, and the pressure reverses in the
+first sessions of the new month. Participants named (index trackers, forced by the
+index rules; dealers), sign fixed by the flow: long-duration Treasuries UP into the
+month-end close, DOWN after. Predicted cross-section (a refutation condition, registered
+as BLOCKING): the effect scales with duration, so the 30-year must show a larger
+differential than the 2-year; if the 2-year matches the 30-year the flow story is wrong.
+Adjacency disclosed: the equity turn-of-month (attempt 21 -> watch #6) and the FX month-
+end fix flows (attempts 51/52/54, burned) are different instruments and different
+flows; no rates instrument has ever carried a month-end test here; attempt 58 (auction
+cycle) was a different calendar on the same class. Not a sub-cell of a spent family.
+DATA: FRED DGS10 / DGS2, AV 5-year / 30-year CMTs (banked, provenance checked by the
+attempt-58 critic: corr 0.993-0.996 across tenors, no mislabelled series; the AV 30-year
+carries composite values through the 2002-2006 30-year suspension - month-ends in that
+window are read but flagged). Price proxy as attempt 58: par-bond log return -ModD(y0)
+x dy + carry; cost 3 bp per round trip (ZN, 2 ticks + commission), 1.5x / 2x. The CMT
+is the 3:30 pm bid-side on-the-run quote, so the last-hour flow at the 4:00/5:00 pm
+index close is only partly visible - a bias AGAINST the hypothesis, stated.
+FROZEN CELLS (two selectable, 10-year outright, two-sided Bonferroni-2 floor 2.26):
+ C1 EXTENSION LONG: close of the business day before month-end (T-1) -> month-end close (T)
+ C2 REVERSAL SHORT: month-end close (T) -> close of the second business day of the new month (T+2)
+Month-end T = the last business day on the DGS10 calendar of each calendar month.
+GATE per cell: net mean > 0, PF >= 1.15, own t >= 2.26, halves [+,+], positive at 2x;
+year-stratified event-minus-control differential > 0 with t >= 2.26 and halves [+,+],
+where the control is the SAME-LENGTH NON-OVERLAPPING window anchored on every business
+day whose window lies entirely >= 3 business days from any month-end (non-overlapping
+by construction for the 1-day cell; 2-day control windows tiled without overlap for
+C2, so the independence assumption of the SE holds - the attempt-58 lesson);
+placebo-clock max-stat: the same cell measured at every other business-day-of-month
+rank from T-10 to T+10 (20 placebo anchors), p = the rank of the observed max over the
+two cells among the placebo maxima (< 0.05 requires the observed to beat all 20);
+BLOCKING cross-section: the 30-year differential must exceed the 2-year differential
+for the cell (same sign convention). IS = month-ends 1990-01..2020-02 (362) on series
+clipped at 2020-03-05; SEALED OOS = month-ends 2020-03..2026-08 (78), opened by the
+integrator only (UNSEAL_OK=1 --unseal) for a cell that clears IS, at the house OOS bar
+(n >= 40, net > 0, t >= 2, PF >= 1.15, [+,+], positive at 1.5x and 2x, differential > 0
+with t >= 2). One shot per cleared cell; the family burns after; NO REPAIR.
+Read-only (counted): 2-year / 5-year / 30-year analogs (the cross-section), quarter-
+end vs other month-ends (pension rebalancing confound), month-ends within +-1 bd of an
+FOMC statement or a coupon auction flagged, T-2 -> T and T -> T+1 variants, mirrors,
+per-year signs, unconditional 1-day and 2-day drift, the 1990-2008 / 2009+ era split.
+POWER (honest): 10-year 1-day price sd ~40 bp -> IS SE ~2.1 bp at n 362 -> t 2.26
+needs ~4.8 bp gross (~0.6 bp of yield); the practitioner-quoted month-end rally is of
+the order of 1-2 bp of yield (~8-16 bp of price) when it appears at all, so the test is
+powered if the flow is real and unchanged; positive at 2x cost needs > 6 bp gross. OOS
+SE ~4.5 bp -> t 2 needs ~9 bp. Test count: +2 selectable + 14 read-only. Runner
+run_r81_monthend.py -> results/r81_monthend_{is,oos}.json. Band: 12 events a year,
+1-2 day holds. Nothing read.
