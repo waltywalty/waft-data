@@ -7042,3 +7042,17 @@ Dukascopy EURUSD block for W1 ONLY. 35 statement days (2022-05-04..2026-07-29);
 registered OOS bar: n >= 30, net > 0, PF >= 1.15, positive at 1.5x and 2x, differential
 > 0 with Welch t >= 2 and diff halves [+,+]. Power: sd ~34 bp -> SE ~5.7 bp -> t >= 2
 needs ~11.5 bp, about the IS point estimate (~50% power). OOS shots spent after this: 14.
+
+### Attempt 57 OOS RESULT (2026-09-13, sealed Dukascopy EURUSD 1m opened for W1 only; results/r79_fomcfx_oos.json) - FAIL, family burned
+Clock provenance PASS on the OOS frame (27/35 = 77% of statement days peak at 14:00-
+14:30 NY; the 1m bars make the peak slot noisier than the 15m IS frame). 35 statement
+days 2022-05-04..2026-07-29, 1,049 control days. W1 PRE long EURUSD: n 35, net -0.04 bp,
+t -0.01, PF 1.00, WR 51.4%, halves [+,-]; differential vs control +0.24 bp (control W1
+gross +0.64), Welch t 0.03, diff halves [+,-]. Read-only: FOMC-1 W1 -3.6, FOMC+1 W1 -4.9
+(no reversal to reverse). House/registered OOS bar: FAILS on every criterion except n.
+Not a power miss: the point estimate is zero, not a sub-floor positive. Combined with
+the IS caveats (outlier-assisted, decaying thirds, cross-section null on AUD, FOMC+1
+reversal) the reading is post-publication decay of a temporary premium, exactly the
+registered risk. One shot spent; the family (USD on FOMC days, FX) is BURNED; W2 was
+refuted IS; USDJPY and AUDUSD never promotable. OOS shots spent: 14. Program score: 1
+OOS pass / 57 attempts.
