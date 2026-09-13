@@ -7006,3 +7006,39 @@ positive at 1.5x and 2x, diff halves [+,+]. Test count: +2 selectable (unchanged
 read-only (full day, FOMC-1/+1 x 3 windows, control x 3, mirrors, 4x, delayed entry,
 regime splits, USDJPY x 3, AUDUSD x 3). The 2022-03-16 statement falls in the IS/OOS gap
 and is read by neither. Nothing has been read.
+
+### Attempt 57 IS RESULT (2026-09-13, run_r79_fomcfx.py -> results/r79_fomcfx_is.json, log results/r79_fomcfx_is.log)
+Clock provenance assertion PASS on all three IS frames (EURUSD 65/72 = 90%, USDJPY 92%,
+AUDUSD 92% of FOMC days peak at 14:00-14:30 NY under the two-regime clock). 72 statement
+days, 2,201 control days.
+EURUSD W1 PRE (prior-day 18:00 NY -> 14:00 ET, long): n 72, net +10.17 bp, t 2.57, PF
+2.39, WR 63.9%, halves [+,+]; 1.5x/2x/4x +9.7/+9.3/+7.6; differential vs control +11.1
+bp (control W1 gross -0.12), Welch t 2.73 >= 2.28, diff halves [+,+]; calendar-shift
+max-stat: observed max |t| 2.78 vs 500 shifted calendars, p 0.012. Per year: 2013 +23,
+2014 -9, 2015 +34, 2016 +18, 2017 +3, 2018 +6, 2019 +2, 2020 +25, 2021 -5, 2022 -16.
+Regime: hold +14.2, tightening +9.0, easing -4.6 (the paper predicts easing largest;
+n small). PASSES every registered IS criterion.
+EURUSD W2 POST (14:00 -> 17:00 ET, long): net -2.1 (t -0.33), differential -0.9 (t
+-0.15), delayed-entry -2.5 -> FAIL (wrong sign; refutation of the post-window claim on
+this instrument, not a power miss).
+Read-only: full day +9.2 net (t 1.15; differential +10.5, t 1.30) - the whole-day
+statistic is carried by W1 and diluted by W2. FOMC-1 windows ~0 (+2.6 / -0.8 / +2.6).
+FOMC+1 W1: -10.8 net (t -1.66; differential -9.8, t -1.49, halves [-,-]) - the pre-
+statement gain REVERSES over the following night, i.e. a temporary premium, not a
+level shift. USDJPY (short): W1 -1.8, W2 -5.3, full -7.2 -> nothing. AUDUSD (long, the
+paper's high-differential instrument): W1 +2.5 net (differential +2.2, t 0.31), W2 -3.7,
+full -0.5 -> nothing; the cross-sectional prediction AUD > EUR FAILS - the effect
+appears only on the mechanism-adverse instrument, which is evidence AGAINST the paper's
+interest-differential channel even where the EURUSD cell passes.
+SELF-REFUTATION CHECKS (integrator, IS only): median +5.9 (mean +10.2, sd 33.6); the
+largest event (2015-04-29, +155 bp) and the top three carry the t: excluding the top 3
+the mean is +6.4 (t 1.94, below the floor); winsorised at +-40 bp +7.3; sign test 46/72
+positive (p 0.024); chronological thirds +16.1 / +8.8 / +5.6 (decaying); pre-splice era
++13.5 (n 15) vs post +9.3 (n 57). Verdict: W1 clears the registered bar but the
+margin is outlier-assisted and decaying, and the cross-section and FOMC+1 reversal both
+point away from the paper's mechanism.
+OOS DECISION (integrator, before the read; the registration binds): open the sealed
+Dukascopy EURUSD block for W1 ONLY. 35 statement days (2022-05-04..2026-07-29);
+registered OOS bar: n >= 30, net > 0, PF >= 1.15, positive at 1.5x and 2x, differential
+> 0 with Welch t >= 2 and diff halves [+,+]. Power: sd ~34 bp -> SE ~5.7 bp -> t >= 2
+needs ~11.5 bp, about the IS point estimate (~50% power). OOS shots spent after this: 14.
