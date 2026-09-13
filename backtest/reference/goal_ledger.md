@@ -6863,3 +6863,21 @@ refutation, and a failure with the wrong sign as a refutation. Test count re-sta
 selectable; 16 scored read-only statistics (2 placebos, 2 mirrors, 2 gross/net, 2 drift-
 adjusted, 3 USDJPY blocks with mirrors/gross) plus ~60 unscored per-year / day-of-week
 sub-means inspected for sign only.
+
+### Attempt 56 CLOCK CORRECTION (critic B's empirical check, adopted BEFORE running; supersedes the
+### "CLOCK CORRECTED" paragraph of the amendment above)
+Critic B tested the amendment's clock claim on the data itself (2026-09-13): the NFP
+release spike sits at feed 15:30 in BOTH DST seasons and at feed 14:30 in the March
+US/EU mismatch gap, and the tick-volume profile matches the EU-calendar construction at
+shift 0 (corr 0.9895). The ejtrader feed therefore follows the EU DST calendar (UTC+2 in
+EU winter, UTC+3 in EU summer): London = feed - 2 h in EVERY week, and ET = feed - 7 h
+only in the aligned weeks (feed - 6 h in the mismatch weeks). Critic A's inference (feed
+follows the US calendar) was wrong; the amendment paragraph is retained as written for
+the record but is superseded here. The runner now builds the IS clock as London wall
+clock = Date - 2 h localised to Europe/London and converted to UTC; the OOS loader is
+UTC-pinned, so both clocks are constructed identically in UTC and each block's bounds
+are taken from the IANA zones. Other fixes from critic B applied: block completeness
+threshold raised 0.6 -> 0.9 of expected bars with first/last-bar flush checks; empty
+frames returned explicitly; OOS restricted to cleared EURUSD cells (already in v2). The
+OOS Dukascopy series is BID (~0.1 bp conservative drift on longs); no swap-cost term is
+added. No cell has been read under either clock construction.

@@ -5,8 +5,8 @@ Blocks anchored to each currency area's own local hours via the IANA tz database
   C2 LONG  EURUSD  17:00 Europe/Berlin -> 16:55 America/New_York      (USD-only hours, exit before the 17:00 NY rollover)
   overlap placebo  08:00 America/New_York -> 17:00 Europe/Berlin     (both predictions, opposite signs: predicted ~0)
   Tokyo placebo    09:00 -> 17:00 Asia/Tokyo                          (EURUSD: no prediction; USDJPY read-only: long)
-Clock: IS ejtrader m15 stamps = New York wall clock + 7 h all year -> localised America/New_York and converted;
-OOS Dukascopy 1m stamps = UTC. A clock gate (08:30-ET first-Friday release peak in both seasons) runs first.
+Clock: IS ejtrader m15 stamps follow the EU DST calendar (UTC+2 winter / UTC+3 summer, verified empirically): London wall
+clock = stamp - 2 h in every week -> localised Europe/London and converted to UTC; OOS Dukascopy 1m stamps = UTC. A clock gate (08:30-ET first-Friday release peak in both seasons) runs first.
 Bar: n >= 40, net mean > 0, t >= 2.24 (Bonferroni 2), bar-cell max-stat p < 0.05, PF >= 1.15, halves [+,+],
 positive at 2x cost, raw AND drift-adjusted; opposite-sign-similar-size cells or a same-order placebo = drift artefact.
 OOS (UNSEAL_OK=1 --unseal): EURUSD only, cleared cells only. Outputs results/r78_fxtod_{is,oos}.json.
@@ -22,7 +22,7 @@ import pandas as pd
 HERE = os.path.dirname(os.path.abspath(__file__))
 UNSEAL = "--unseal" in sys.argv and os.environ.get("UNSEAL_OK") == "1"
 PIP = {"EURUSD": 1e-4, "USDJPY": 1e-2}
-BER, NY, TKY = ZoneInfo("Europe/Berlin"), ZoneInfo("America/New_York"), ZoneInfo("Asia/Tokyo")
+BER, NY, TKY, LON = ZoneInfo("Europe/Berlin"), ZoneInfo("America/New_York"), ZoneInfo("Asia/Tokyo"), ZoneInfo("Europe/London")
 # block = (start tz, start "HH:MM", end tz, end "HH:MM"); end is exclusive
 BLOCKS = {"C1_eur_only": (BER, "08:00", NY, "08:00"), "C2_usd_only": (BER, "17:00", NY, "16:55"),
           "overlap": (NY, "08:00", BER, "17:00"), "tokyo": (TKY, "09:00", TKY, "17:00")}
@@ -40,8 +40,8 @@ def load_is(sym):
         if lo <= px.close.median() <= hi: break
         px = px / 10.0
     assert lo <= px.close.median() <= hi
-    et = (df.Date - pd.Timedelta(hours=7)).dt.tz_localize(NY, ambiguous="NaT", nonexistent="shift_forward")
-    px.index = et; px = px[~px.index.isna()]
+    lon = (df.Date - pd.Timedelta(hours=2)).dt.tz_localize(LON, ambiguous="NaT", nonexistent="shift_forward")
+    px.index = lon; px = px[~px.index.isna()]
     return px.tz_convert("UTC").sort_index(), 4            # bars per hour
 
 
@@ -80,13 +80,15 @@ def blocks(px, bph, sym, which):
             if t1 <= t0: continue
             w = px[(px.index >= t0) & (px.index < t1)]
             expected = (t1 - t0).total_seconds() / 3600 * bph; step = pd.Timedelta(minutes=60 // bph)
-            if len(w) < 0.6 * expected or (w.index[0] - t0) > step or (t1 - w.index[-1]) > 2 * step:
+            if len(w) < 0.9 * expected or (w.index[0] - t0) > step or (t1 - w.index[-1]) > 2 * step:
                 rows.append(dict(date=str(d), block=blk, sym=sym, void=True)); continue
             entry, exit_px = float(w.open.iloc[0]), float(w.close.iloc[-1])
             mv = np.log(exit_px / entry) * 1e4; cost = PIP[sym] / entry * 1e4; s = SIGN[(sym, blk)]
             rows.append(dict(date=str(d), dow=pd.Timestamp(d).dayofweek, block=blk, sym=sym, void=False, raw=mv, sign=s,
                              gross=(s * mv if s else mv), net=(s * mv - cost if s else np.nan), net15=(s * mv - 1.5 * cost if s else np.nan),
                              net2=(s * mv - 2 * cost if s else np.nan), hours=(t1 - t0).total_seconds() / 3600))
+    if not rows:
+        return pd.DataFrame(columns=["date", "dow", "block", "sym", "void", "raw", "sign", "gross", "net", "net15", "net2", "hours"])
     return pd.DataFrame(rows).sort_values("date").reset_index(drop=True)
 
 
@@ -120,7 +122,7 @@ if __name__ == "__main__":
         if not cleared: raise SystemExit("no cell cleared IS; holdout stays sealed")
     for sym in (("EURUSD",) if UNSEAL else ("EURUSD", "USDJPY")):
         px, bph = load_oos(sym) if UNSEAL else load_is(sym)
-        ok, gate = clock_gate(px, bph); res[f"{sym}_clock_gate"] = dict(pass=ok, **gate); print(f"{sym} clock gate {'PASS' if ok else 'FAIL'}: {gate}")
+        ok, gate = clock_gate(px, bph); res[f"{sym}_clock_gate"] = dict(passed=ok, **gate); print(f"{sym} clock gate {'PASS' if ok else 'FAIL'}: {gate}")
         if not ok: raise SystemExit("clock gate failed; no cell read")
         which = cleared if UNSEAL else list(BLOCKS)
         t = blocks(px, bph, sym, which)
