@@ -6308,3 +6308,48 @@ the reference it was run against (Round 70's provenance finding withdrawn; data 
 revised to a quantified 2-4 bp/night bias); one revived family (attempt 53) tested and
 killed at IS; one new asset (Dukascopy 1m index CFDs), with the 2012-2025 index history
 and the 2003-2022 gold history being pulled in the background as banked assets.
+
+## Round 74 (2026-09-13): the daily WMR 4pm-London fix on EURUSD - attempt 54 registered BEFORE running
+
+### Attempt 54 registration (BEFORE running): post-fix reversal of the pre-fix drift at the daily WM/Reuters 16:00-London fix, EURUSD 1m, 2022-2026
+
+Why now: the Dukascopy 1-minute FX frame (asset #22, UTC-pinned) is the first data on
+which the DAILY fix window can be read at minute resolution; the program has only ever
+tested the fix on month-ends (attempts 51/52, gold PM fix attempt 36). Not burned: no
+ledger or inventory entry covers the daily fix on FX. Intraday band: at most one
+15-minute trade per day.
+Mechanism (external, cited): Evans, "Forex trading and the WMR fix" (J. Banking & Finance
+2018) and Evans, O'Neill, Rime & Saakvitne, "Fixing the fix? Assessing the effectiveness
+of the 4pm fix benchmark" (2018): benchmark ("fix") orders from asset managers and
+corporates are filled by banks who trade AHEAD of the window, producing a pre-fix price
+drift in the direction of the net benchmark order, and the price REVERSES after the fix
+once the order is done - the pattern survived the 2015 reform (window widened to five
+minutes) at reduced size. The participants are named (benchmark-order clients and the
+banks filling them); the SIGN of the day's net benchmark order is not observable ex ante,
+and the papers' own identification is the pre-fix move itself. DISCLOSED TENSION with
+kill #22 (which refused "-sign of a 15-minute push" on the SOQ morning as price-derived):
+here the pre-fix move is the documented footprint of a named flow whose completion time
+is fixed by the benchmark clock, which the SOQ push was not; the critics' standard is
+met by citing the identification, and the placebo clocks below are the test of that
+claim - if the same rule works at 15:30 or 16:30 London, the mechanism is refuted and the
+family dies regardless of the fix cell's print.
+FROZEN CELL (the only selectable one) P1: EURUSD, every weekday 2022-03-01..2026-09-11
+EXCLUDING the 53 month-ends of the attempt-52 map (already read); pre-move = log move
+from the open of the 15:45-London bar to the close of the 15:59 bar; direction =
+-sign(pre-move) (pre-move == 0 -> no trade); enter at the open of the 16:00-London bar,
+exit at the close of the 16:14 bar (fix+15); cost 1.0 pip per RT (~0.9 bp), 1.5x / 2x.
+IS = the first 75% of eligible days (to 2025-07-24, ~880 days); OOS = the last 25% (~295
+days), SEALED, one shot only if IS passes. IS bar (house intraday bar): n >= 40, avg net
+> 0, t >= 2, PF >= 1.15, halves [+,+], positive at 2x cost.
+Read-only diagnostics (counted): mirror (+sign); placebo clocks 15:30 -> 15:45 London
+signed by -(15:15 -> 15:30) and 16:30 -> 16:45 signed by -(16:15 -> 16:30); dose ladder
+of |pre-move| terciles (the mechanism predicts a rising response); gross vs net; per-year
+signs; USDJPY as a second instrument (read-only); the pre-fix drift itself (15:45 ->
+16:00, unsigned magnitude and autocorrelation with the post-fix move - the paper's
+statistic). Clock note: 16:00 London is 11:00 or 12:00 New York depending on the DST
+mismatch weeks - the frame is UTC and the fix is computed per day in Europe/London, so
+the cell is anchored to the fix, not to New York.
+Expected magnitude if real: the papers report post-fix reversals of order 1-2 bp on
+ordinary days against ~0.9 bp cost: marginal, registered as such; positive at 2x needs
+> 1.8 bp net of nothing. Test count: +1 selectable + 8 read-only. Runner
+run_r74_dailyfix.py -> results/r74_dailyfix_is.json.
