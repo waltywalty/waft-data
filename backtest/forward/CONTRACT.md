@@ -24,6 +24,7 @@ must concatenate all files matching the glob, sort by time, drop duplicate times
 | hsi_fut_15m_*.json | IBKR HKFE HSI FRONT-MONTH FUTURE (FUT), FIFTEEN_MINS, outside_rth true, one file per weekly pull, top-level key "contract" (e.g. HSIU6); at a roll the later file's bars win on overlapping timestamps | 15m | one week per file |
 | es_5m_*.json | IBKR CME E-mini S&P 500 FRONT-MONTH FUTURE (FUT; underlying 11004968; ESU6 649180671 to 2026-09-18, ESZ6 515416632 next), FIVE_MINS, ONE_WEEK, outside_rth true, keys "contract"/"contract_id"; pull the most-liquid contract (roll on the Thursday before the third Friday) and BOTH contracts in roll week | 5m | one week per file, Globex 18:00-17:00 ET |
 | gc_5m_*.json | IBKR COMEX Gold FRONT-MONTH FUTURE (FUT; underlying 17340718; GCZ6 462941472 = the active December contract; from 2026-11-20 pull GCG7 765079322 as well), FIVE_MINS, ONE_WEEK, outside_rth true, keys "contract"/"contract_id" | 5m | one week per file, Globex 18:00-17:00 ET |
+| eurusd_5m_*.json | IBKR CASH EUR.USD conid 12087792 (IDEALPRO), midpoint, FIVE_MINS ONE_WEEK outside_rth true; WATCH #12 forward feed (forward/watch12_usddrift.py, not a journal stream) | 5m | one week per file |
 | ism_pmi.json | list of {"release": "YYYY-MM-DD", "month": "YYYY-MM", "value": float} maintained by the main session from the ISM press release (via web search) | monthly | all releases since 2026-08 |
 
 Declared substitutions vs the backtests (recorded in the ledger): the XAU corr gate uses
