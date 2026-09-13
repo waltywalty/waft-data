@@ -7262,3 +7262,53 @@ powered if the flow is real and unchanged; positive at 2x cost needs > 6 bp gros
 SE ~4.5 bp -> t 2 needs ~9 bp. Test count: +2 selectable + 14 read-only. Runner
 run_r81_monthend.py -> results/r81_monthend_{is,oos}.json. Band: 12 events a year,
 1-2 day holds. Nothing read.
+
+### Attempt 59 RE-REGISTRATION (critic verdict REFUSE on the first registration; adopted BEFORE running; supersedes the cells, gate, null, control and power above)
+Source found by the critic: Hartley & Schwarz, "Predictable End-of-Month Treasury
+Returns" (SSRN 3440417, 2019): coupon-Treasury excess returns are positive and highly
+significant in the LAST FEW DAYS of the month and ~0 otherwise; the effect is largest
+over the last 3-5 days ("not waiting until just the last day"); the 10-year over the
+last 3 days averages ~+0.25% per month (~25 bp of price, Sharpe ~1); life insurers are
+net buyers on index rebalancing dates. NY Fed (Liberty Street, 2024): benchmark
+trading ~46% higher on the last trading day since 2020. NO reachable source documents
+a significant post-month-end reversal. Changes: (1) ONE selectable cell, C1 EXTENSION
+LONG = close of T-3 -> month-end close T (the documented window); the 1-day T-1 -> T
+and the reversal T -> T+2 become READ-ONLY (the reversal was the program's own
+conjecture, and its short leg would need ~12 bp of gross fall against carry and drift
+to print positive at 2x). Single cell -> house IS floor t >= 2.0, no Bonferroni. (2)
+Differential computed on the -ModD x dy PRICE COMPONENT (carry reported separately) so
+the event/control weekday mix (43% of month-ends are Fridays) and era mix cannot leak;
+year-stratified, control windows non-overlapping, every day of a control window >= 5
+bd from EVERY month-end in the loaded series (the OOS fix: the near mask is built from
+all month-ends, not just the tested ones), control universe clipped to the event span.
+(3) BLOCKING cross-section restated in yield space: the 30-year (settles mid-month, no
+month-end CMT roll) must carry a positive differential on its -ModD x dy component in
+the same window; the 2-year and 5-year CMTs ROLL AT MONTH-END (a new 2-year note
+settles on the last business day in 70% of IS months, a 5-year in 50%) so they are
+read-only with that roll flagged, never blocking; 30-year month-ends 2002-02..2006-02
+(the H.15 composite era) excluded from the blocking leg. (4) Max-stat: placebo clocks
+k in +-4..+-13 (20 clocks whose 3-day windows share no day with C1), placebo controls
+exclude the true month-ends as well as the shifted anchors, the cell's own SIGNED t vs
+the 20 placebo maxima (p < 0.05 = beats all 20). (5) Auction-calendar adjacency
+corrected: the 2/5/7-year auctions sit at T-3..T-1 in about half of all months and
+SETTLE on the month-end, so attempt 58's recovery leg (+6 bp gross on the 10-year)
+lives inside this window; a pass credits the COMBINED month-end flow (index extension
+plus post-auction recovery, both forced) and the auction-inside-window split is
+reported read-only, not separable on this calendar. (6) FOMC: the verified list starts
+2013, so the FOMC-inside-window split is read-only on 2013+ (of ~85 events) and stated
+as blind before. (7) IS/OOS: holdout raised to the house 20%: IS = month-ends 1990-01..
+2019-04 (352) on series clipped at 2019-05-06; SEALED OOS = 2019-05..2026-08 (88);
+the whole OOS block is post-publication (Nov 2019) -> DECAY IS THE REGISTERED
+PREDICTION for the holdout. OOS bar as registered before (house bar + differential > 0
+with t >= 2); diff-halves and the cross-section are IS gates only. (8) Provenance
+corrections: the 3:30 pm CMT vs the index mark (3 pm or 4 pm ET, unverified) is a bias
+of UNKNOWN sign; DGS10 is published to 1 bp against a ~0.6 bp/day target; 22 Dec-31
+month-ends carry a SIFMA 2 pm early close (flagged). (9) Read-only added: the same-
+window S&P 500 return where a daily close is on disk (separates index extension from a
+generic month-boundary risk-on, i.e. watch #6 in a bond costume). POWER (honest): C1
+3-day price sd ~70 bp -> IS SE ~3.7 bp at n 352 -> t 2.0 needs ~7.5 bp gross vs ~25 bp
+documented: well powered; 2x cost = 6 bp plus carry earned. OOS: 2019-2026 3-day sd
+~100-120 bp -> SE ~11-13 bp -> t 2 needs ~25 bp, i.e. the full documented size with no
+decay - the OOS shot is marginal by construction and an OOS miss at |t| < 2 with the
+right sign is a POWER miss. Test count: +1 selectable + 16 read-only. Runner
+run_r81_monthend.py (v2). Nothing read.
