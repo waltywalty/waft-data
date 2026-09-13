@@ -55,7 +55,7 @@ def spx_daily():
     try:
         d = pd.read_csv(os.path.join(HERE, "data", "SPX_5m.csv"))
         tcol = [c for c in d.columns if c.lower() in ("ts", "time", "date", "datetime", "timestamp")][0]
-        d[tcol] = pd.to_datetime(d[tcol]); d["day"] = d[tcol].dt.normalize()
+        d[tcol] = pd.to_datetime(d[tcol], utc=True).dt.tz_localize(None); d["day"] = d[tcol].dt.normalize()
         return d.groupby("day").close.last()
     except Exception:
         return None
@@ -95,10 +95,12 @@ def rows_for(y, years, pos_list, cells, tag):
     return pd.DataFrame(rows)
 
 
-def control_positions(y, excl_pos, a, b, lo, hi):
-    """non-overlapping tiling of anchors p in [lo, hi] whose window [p+a, p+b] lies entirely >= EXCL bd from every excluded position."""
+def control_positions(y, excl_pos, a, b, lo, hi, win_pos=()):
+    """non-overlapping tiling of anchors p in [lo, hi] whose window [p+a, p+b] lies entirely >= EXCL bd from every
+    excluded position (the true month-ends) and does not touch the windows [q+a-1, q+b+1] of any q in win_pos (placebo anchors)."""
     n = len(y); near = np.zeros(n, bool)
     for e in excl_pos: near[max(0, e - EXCL + 1):min(n, e + EXCL)] = True
+    for q in win_pos: near[max(0, q + a - 1):min(n, q + b + 2)] = True
     ok = ~near; cum = np.concatenate([[0], np.cumsum(ok)]); L = b - a
     out = []; p = max(lo, -a)
     while p + b < n and p <= hi:
@@ -118,6 +120,7 @@ def stats(x):
 
 
 def strat_diff(ev, ct, col="price", min_e=3, min_c=5):
+    if len(ev) == 0 or len(ct) == 0: return dict(n_event=0)
     ev = ev.copy(); ct = ct.copy(); ev["yr"] = ev.date.dt.year; ct["yr"] = ct.date.dt.year
     num = den = var = 0.0; used = dropped = 0
     for yr, g in ev.groupby("yr"):
@@ -177,8 +180,9 @@ def placebo_maxima(y, years, ev_pos, all_me, lo, hi):
         sh = [p + k for p in ev_pos if 0 <= p + k < n]
         e = rows_for(y, years, sh, CELL, "placebo"); vals = []
         for cn, (a, b, s) in CELL.items():
-            c = rows_for(y, years, control_positions(y, sorted(set(all_me) | set(sh)), a, b, lo, hi), {cn: (a, b, s)}, "ctrl")
-            vals.append(abs(strat_diff(e[e.cell == cn], c).get("t") or 0.0))
+            c = rows_for(y, years, control_positions(y, all_me, a, b, lo, hi, win_pos=sh), {cn: (a, b, s)}, "ctrl")
+            r = strat_diff(e[e.cell == cn], c) if len(c) and len(e) else {}
+            vals.append(abs(r.get("t") or 0.0))
         maxima.append(max(vals))
     return np.array(maxima)
 

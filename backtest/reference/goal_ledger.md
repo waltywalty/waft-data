@@ -7312,3 +7312,47 @@ documented: well powered; 2x cost = 6 bp plus carry earned. OOS: 2019-2026 3-day
 decay - the OOS shot is marginal by construction and an OOS miss at |t| < 2 with the
 right sign is a POWER miss. Test count: +1 selectable + 16 read-only. Runner
 run_r81_monthend.py (v2). Nothing read.
+
+### Attempt 59 IS RESULT (2026-09-13, run_r81_monthend.py v2 -> results/r81_monthend_is.json, log results/r81_monthend_is.log) - C1 PASSES IS
+(First run of v2 crashed at the placebo-max-stat stage after printing the cells - an
+empty placebo-control frame when the 5-day buffer around both the true month-ends and
+the shifted anchors left no room; fixed by keeping the 5-day buffer for the true month-
+ends and excluding only the placebo windows themselves (+-1 day); the S&P same-window
+read also needed a timezone fix. No parameter of the cell changed.)
+352 month-ends 1990-01-31..2019-04-30; 1,162 non-overlapping 3-day control windows.
+C1 EXTENSION LONG 10-year, T-3 close -> T close: net +20.7 bp, t 4.98, PF 1.96, WR
+63.4%, halves [+,+]; 1.5x +19.2, 2x +17.7; price component +18.7 (control +1.2), carry
++4.95 (control +5.42); year-stratified price-component differential +17.6 bp, SE 4.7,
+t 3.73, diff halves [+,+]; mirror -26.7. Placebo-clock max-stat: observed t 3.73 beats
+all 20 placebo maxima (largest 2.74; p 0.048). BLOCKING cross-section: 30-year (n 303
+ex the 2002-06 composite era) price-component differential +39.2 bp (t 4.2) -> PASS.
+Read-only cross-section: 2-year +6.0 (t 5.8), 5-year +13.8 (t 5.0) - in yield space
+2y 3.1 / 5y 3.1 / 10y 2.2 / 30y 2.5 bp: a roughly parallel rally into month-end, so the
+price effect scales with duration as the extension story requires, while the 2y/5y
+CMTs carry the month-end roll flag. Splits (all same sign): quarter-end +17.4 (t 2.4)
+vs other +17.8 (t 3.1); auction inside the window (204 events) +13.9 (t 2.2) vs none
+(148) +22.7 (t 3.6) - the effect is NOT the post-auction recovery; FOMC inside (2013+,
+17/76) +16.6 vs none +23.2 (t 3.1); era 1990-2008 +15.7 (t 2.6) vs 2009+ +21.1 (t 2.8);
+Dec-31 early-close month-ends +32.8 gross (n 29). Shape: T-3->T-2 +2.7, T-2->T-1 +5.2,
+T-1->T +10.9 (t 4.6) - builds into the last day exactly as Hartley & Schwarz describe;
+the read-only T-1 -> T cell alone is +9.5 net (t 4.0, differential +10.8, t 4.3). The
+conjectured reversal T -> T+2 is ABSENT (-4.6 net, differential +3.2, t 0.8). S&P 500
+same window (2005-2019, n 172): +17 bp (t 1.3) - equities also lean up into month-end,
+so a generic month-boundary risk-on is not excluded by this read; the bond effect is
+an order of magnitude more significant. Unconditional 3-day drift +1.7 bp.
+SELF-REFUTATION (integrator, IS only): median +25.1 (mean +20.7, sd 78); excluding the
+top 5% (18 events) +12.3, t 3.2; winsorised at +-100 bp +17.7; sign test 223/352 (p 6e-7),
+Wilcoxon p 3e-7; chronological thirds +18.1 / +19.3 / +24.7 (no decay through 2019);
+per-year positive in 24 of 30 years. The largest events are Dec 2010, Oct 2001, Dec
+2007, Feb 2008, Nov 2008 - stress month-ends contribute but do not carry the result.
+VERDICT: C1 PASSES every registered IS criterion by a wide margin. This is the
+strongest in-sample read in the program's history on a cited, forced-flow mechanism.
+OOS DECISION (integrator, before the read; the registration binds): open the sealed
+block, month-ends 2019-05..2026-08 (88), for C1 only. Registered OOS bar: n >= 40, net
+> 0, t >= 2, PF >= 1.15, halves [+,+], positive at 1.5x and 2x, price-component
+differential > 0 with t >= 2. Registered prediction: post-publication decay (the whole
+block is after Nov 2019); OOS 3-day sd ~100-120 bp -> SE ~11-13 bp -> t 2 needs ~25 bp,
+so an undecayed +20 bp effect has only ~45% power: an OOS miss at |t| < 2 with the right
+sign is a POWER miss and still burns the family under the one-shot rule; a pass goes to
+Walton for sign-off as a watch-list candidate with a forward ZN log, never to the
+journal. OOS shots spent after this: 15.
