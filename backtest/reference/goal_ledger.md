@@ -6881,3 +6881,42 @@ threshold raised 0.6 -> 0.9 of expected bars with first/last-bar flush checks; e
 frames returned explicitly; OOS restricted to cleared EURUSD cells (already in v2). The
 OOS Dukascopy series is BID (~0.1 bp conservative drift on longs); no swap-cost term is
 added. No cell has been read under either clock construction.
+
+### Attempt 56 IS RESULT (2026-09-13, run_r78_fxtod.py -> results/r78_fxtod_is.json, log results/r78_fxtod_is.log)
+Clock gate PASS on both feeds under the London-anchored construction (first-Friday range
+peak at the 08:30 ET slot, winter ratio 2.6x / summer 3.3x on EURUSD). 2,415 weekdays.
+C1 SHORT EURUSD 08:00 Berlin -> 08:00 New York (5.93 h): n 2,411, net +1.63 bp, t 2.94,
+PF 1.175, WR 51.9%, halves [+,+]; 1.5x +1.20 (t 2.17), 2x +0.78 (t 1.40, halves [+,+]);
+gross +2.48 (t 4.48); drift-adjusted (registered intrabar drift, +0.001 bp/h) +1.64 (t
+2.95, halves [+,+]); max-stat p 0.0075 (obs t 2.94 vs the max over the two cells under
+2,000 per-date sign flips); mirror -3.33 (t -6.0). Per year: 2012 (7 weeks) -7.1, 2013
++0.3, 2014 +2.3, 2015 +4.1, 2016 +2.4, 2017 +2.4, 2018 +1.9, 2019 +1.1, 2020 +0.5, 2021
++0.8, 2022 (9 weeks) +2.3 -> positive in 9 of 10 full years, magnitude decaying 2015 ->
+2021. Day of week: Mon +0.3, Tue +1.0, Wed +3.0, Thu +0.8, Fri +3.1 (all positive).
+C2 LONG EURUSD 17:00 Berlin -> 16:55 New York (5.85 h): n 2,290 (125 voided by the 0.9
+completeness rule around the 17:00 NY rollover), gross +0.49, net -0.37 (t -0.80, halves
+[+,-]), 2x -1.23 (t -2.64) -> FAIL (right sign gross, below cost). Placebos: overlap
++0.13 raw (t 0.22), Tokyo +0.54 raw (t 1.25) -> neither of the cells' order. Drift
+artefact rule: C1 and C2 raw moves have OPPOSITE signs (-2.48 / +0.49), so not a whole-
+day-drift artefact. USDJPY (read-only, NON-PROMOTABLE): C2 short -1.72 net (t -3.5),
+Tokyo long -1.61 (t -2.6) -> both paper-sign cells FAIL; the EU-hours block prints USDJPY
+UP +1.79 raw (t 3.5) alongside EURUSD DOWN, i.e. the dollar rises in European hours
+against both (noted, not tested).
+SELF-REFUTATION CHECKS (integrator, IS only): (i) open-print bias: mean log(open / prior
+close) over 230,400 bars -0.007 bp, median 0, 48% exactly zero -> no bid/ask print
+artefact; the sample's -1,535 bp close-to-close decline sits in gaps/other hours, not in
+the bars (sum of intrabar returns +68 bp). (ii) C1 re-measured close-to-close (entry =
+prior bar close) +2.48 gross (t 4.47) and skipping the first bar +2.22 (t 4.11); the
+first bar alone +0.25 and the entry gap +0.01 -> the effect is not an entry-print effect.
+(iii) The registered intrabar drift is ~0 because the decline lives in the gaps; the
+close-to-close alternative (-0.026 bp/h x 5.93 h = -0.16 bp, helping a short) gives an
+adjusted +1.47 bp, t 2.66 -> still clears 2.24.
+VERDICT: C1 PASSES IS (all registered criteria, raw and drift-adjusted, max-stat and
+Bonferroni); C2 FAILS (below cost; power failure with the right gross sign, not a
+refutation). Caveats carried into the OOS read: the per-year magnitude decays through
+2021; 2x-cost margin is thin (+0.78, t 1.4); ~1,150 OOS weekdays give SE ~0.8 bp so an
+IS-sized effect has only ~50% power at t >= 2 - an OOS miss at |t| < 2 with the right
+sign is a POWER miss, still burning the family under the one-shot rule.
+OOS DECISION (integrator, before the read): open the sealed Dukascopy EURUSD block for
+C1 ONLY (C2 not cleared; USDJPY never read). House OOS bar: n >= 40, mean net > 0, t >=
+2, PF >= 1.15, halves [+,+], positive at 1.5x and 2x. OOS shots spent after this: 13.
