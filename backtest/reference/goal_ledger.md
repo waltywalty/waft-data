@@ -6730,3 +6730,45 @@ registered before running, all reviewed before reading, all negative net of one 
 round trip on 9,000-175,000 trades each; two established facts survive (high-volume
 candles double the next half hour's range; the first candle continues slightly, gross),
 neither large enough to pay a commission. One spec waits on data (gamma).
+
+## Round 78 (2026-09-13): FX time-of-day pattern (Ranaldo) on EURUSD - attempt 56 registered BEFORE running
+
+### Attempt 56 registration (BEFORE running): a currency depreciates during its own market's hours - EURUSD by trading-hour block, IS 2012-2022 (ejtrader m15), sealed OOS 2022-2026 (Dukascopy 1m)
+
+Mechanism (external, cited): Ranaldo, "Segmentation and time-of-day patterns in foreign
+exchange markets" (J. Banking & Finance 2009) and Breedon & Ranaldo, "Intraday patterns in
+FX returns and order flow" (J. Money, Credit & Banking 2013): a currency tends to
+DEPRECIATE during its own market's trading hours and appreciate during the hours of the
+counter-currency's market; the order-flow channel is that domestic investors and
+corporates are net buyers of foreign currency while their own market is open (imports,
+outward investment executed in local hours), and that flow is absorbed by dealers with a
+price impact that reverses only partially. Participants named; sign fixed by the paper:
+EUR down in European hours, USD down (EURUSD up) in US hours. Not burned: no ledger or
+inventory entry tests an unconditional hour-block seasonality on FX (attempt 6 was the
+index Euro-open drift; Round 16 H was the USDJPY gotobi fix; attempts 51/52/54 were fix
+windows). Post-publication decay is the registered risk: the papers' samples end 2006-
+2010; if the effect is gone this is a clean negative.
+FROZEN CELLS (two selectable, Bonferroni 2 -> t floor 2.24): C1 SHORT EURUSD from 08:00 to
+13:00 London (European-only hours, before the US overlap); C2 LONG EURUSD from 13:00 to
+21:00 London (US hours, from the New York open to the US close); every weekday; entry =
+open of the first 15m bar of the block, exit = close of the last bar of the block; cost 1
+pip per round trip (~0.9 bp), 1.5x / 2x. IS = the ejtrader m15 frame 2012-11-14..2022-03-04
+(2,415 weekdays; London time = feed stamp - 2 h all year, from the r54 convention ET =
+feed - 7 h and the Round-73 gold overlap check); SEALED OOS = the Dukascopy 1m frame
+2022-04-01..2026-09-11 (UTC-pinned; London = Europe/London), ~1,150 weekdays, opened by
+the integrator only (UNSEAL_OK=1 --unseal) for a cell that clears IS. IS bar: n >= 40,
+avg net > 0, t >= 2.24, PF >= 1.15, halves [+,+], positive at 2x cost. One shot per
+cleared cell; the family burns after.
+Read-only diagnostics (counted): the Asia block 00:00 -> 08:00 London (no local-currency
+prediction for EURUSD - should be ~0); the mirrors; per-year signs (decay check); day-
+of-week split; the same two blocks on USDJPY under the paper's sign (JPY depreciates in
+Tokyo hours 00:00 -> 08:00 London -> long USDJPY; USD depreciates in US hours -> short
+USDJPY 13:00 -> 21:00) - read-only because the Tokyo block is gotobi-adjacent (Round 16
+H); gross vs net; a cross-feed check of C1/C2 on the 2022-03 overlap weeks is impossible
+(the ejtrader frame ends 2022-03-04, the Dukascopy EURUSD file starts 2022-03-01: four
+overlap days, used only to confirm the clock alignment, not returns).
+Expected magnitude if real: the papers report a few bp per block in 1996-2010 data;
+positive at 2x cost needs > 1.8 bp net per block on a 5-8 hour hold with ~50 bp typical
+range - marginal, registered as such; decay to zero is the modal expectation. Test count:
++2 selectable + 8 read-only. Runner run_r78_fxtod.py -> results/r78_fxtod_is.json.
+Intraday band: one block trade per day per cell (two per day if both run).
