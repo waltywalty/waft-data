@@ -6377,3 +6377,51 @@ flows are real and the prints are inside the spread.
 Test count: +1 selectable + 8 read-only. Program score: 1 OOS pass (on paper) / 54
 attempts + 25 registration-stage kills; 12 shots; 23 data assets (+ the gold 2003-2022
 frame pending).
+
+## Round 75 (2026-09-13): the dollar's post-release drift on EURUSD 1m - attempt 55 registered BEFORE running, staged behind a mapping gate
+
+### Attempt 55 registration (BEFORE running): USD post-announcement drift after 08:30 / 10:00 ET US releases, EURUSD, 2022-2026
+
+Why now and why FX: attempt 17 (indices) died because the equity sign of a growth beat
+flipped in the 2022+ "good news is bad news" regime - a registered risk that
+materialised. For the DOLLAR the mapping has no such ambiguity: a growth beat and a
+hotter inflation print both raise expected policy rates and both are USD-positive, in
+every regime the sample covers. The instrument (EURUSD 1m, Dukascopy, UTC-pinned) and the
+horizon (the hour after the release) are untested here; attempts 10/11/17/18 were gold and
+indices. Data: data/econ_events_us_high_fxs.json (FXStreet, standardized deviation
+"dev" = the attempt-17 surprise measure), 2022-04-01..2026-09-11.
+Mechanism (external, cited): Evans & Lyons, "Do currency markets absorb news quickly?"
+(J. International Money & Finance 2005) and Love & Payne, "Macroeconomic news, order
+flows and exchange rates" (JFQA 2008): macro news is impounded into FX partly through
+ORDER FLOW over the following hours, not only at the instant of release, so the price
+continues in the surprise's direction after the initial jump. Participants named:
+dealers absorbing the informed flow of institutions re-positioning on the print.
+FROZEN EVENT SET (names as they appear in the feed, USD-POSITIVE-on-beat, all): Nonfarm
+Payrolls; Average Hourly Earnings (MoM), (YoY); Retail Sales (MoM); Retail Sales Control
+Group; Gross Domestic Product Annualized; Durable Goods Orders; Nondefense Capital Goods
+Orders ex Aircraft; Consumer Price Index (MoM), (YoY), ex Food & Energy (MoM), (YoY);
+Producer Price Index ex Food & Energy (YoY); Core Personal Consumption Expenditures -
+Price Index (MoM), (YoY); ISM Manufacturing PMI; ISM Services PMI (the two at 10:00 ET,
+the rest at 08:30 ET). Excluded: Michigan Sentiment (soft data, weak rate link), speeches,
+testimonies, the single Unemployment Rate row, anything with dev == 0 or missing.
+Collisions (116 of ~397 release timestamps carry two or more mapped events): the event
+with the largest |dev| decides the sign; one trade per timestamp.
+STAGE 1 - MAPPING GATE (counted, read first): on IS events the JUMP from the release bar
+open to the close of the 4th minute after (t0 -> t0+5m), signed by the mapped USD
+direction (short EURUSD on a USD-positive surprise), must be positive with t >= 3. If not,
+the mapping is wrong for this instrument and the family dies UNRUN (no drift cell read).
+STAGE 2 - FROZEN CELL (the only selectable one) P1: enter at the open of the bar starting
+t0+5m, exit at the close of the bar ending t0+60m, direction = the mapped USD direction
+(short EURUSD on a USD-positive surprise, long on a miss); cost 1 pip RT (~0.9 bp), 1.5x /
+2x. IS = first 75% of release timestamps; OOS sealed, one shot if IS passes. IS bar: n >=
+40, avg net > 0, t >= 2, PF >= 1.15, halves [+,+], positive at 2x.
+Read-only diagnostics (counted): horizons t0+5 -> +30 and -> +120; mirror; lookahead
+placebo (t0-60 -> t0-5, signed by the not-yet-known surprise: must be ~0); next-day placebo
+(same clock next day, signed by today's surprise); dose terciles of |dev|; per-class
+(growth / inflation / labor) and per-year signs; USDJPY as a second instrument (read-
+only). Expected magnitude if real: jumps of 10-30 bp on top-tier prints, documented
+post-jump continuation of 10-30% of the jump -> 1-5 bp against 0.9 bp cost: the first
+intraday candidate in this program whose plausible gross clears 2x cost on its own terms.
+Test count: +1 gate + 1 selectable + 9 read-only. Runner run_r75_usddrift.py ->
+results/r75_usddrift_is.json. Intraday band: at most one trade per release timestamp
+(~1.7 per week).
