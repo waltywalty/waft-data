@@ -6540,3 +6540,42 @@ Expectation, stated first: the Round-23 read on the same candle says the by-clos
 wins often and loses net; the EMA filter removes the counter-trend half of the days and
 cannot manufacture expectancy the candle does not have. Test count: +12 selectable cells
 (counted) + 4 read-only. Runner run_r76_open5_ema.py -> results/r76_open5_ema_is.json.
+
+### Round 76 result: IS FAIL - the first-candle + 12 EMA rule has no expectancy net of costs on any stop/target cell; holdout stays sealed
+
+(run_r76_open5_ema.py after a three-lens adversarial review - 1 major fixed (sessions
+without the 15:55 bar are voided: 270 IS sessions), max-stat rebuilt at trade level with
+per-date sign flips shared across instruments and cells, gradient and gross/net added;
+results/r76_open5_ema_is.json; IS signal days SPX 3,100 / NDX 3,144 / RTY 2,400 / GOLD 715
+= 9,359 pooled trades per cell.)
+POOLED, net of micro cost, R = (pnl - cost)/ATR20:
+  stop at the candle extreme (b 0): no-TP +0.0003R (t +0.08, WR 20.5%: 78% of trades are
+    stopped, 24% on the entry bar itself); TP 1R -0.0226 (t -12.0), 2R -0.0148 (t -5.6),
+    3R -0.0096 (t -3.0).
+  stop half a range beyond (b 0.5): no-TP +0.0025 (t +0.5); TP 1R -0.0142 (t -4.9), 2R
+    -0.0092, 3R -0.0059.
+  stop a full range beyond (b 1.0): no-TP +0.0109R (t +1.92, PF 1.05, halves [-,+],
+    -0.0154R at 2x cost); TP 1R -0.0066, 2R -0.0007, 3R +0.0051.
+  Gross (cost-free) runs +0.004 to +0.037R across the grid - a real but tiny continuation
+  of the first candle, all of it inside one to two round trips; the gradient is monotone in
+  the direction of "wider stop, no target" i.e. toward simply holding the day.
+Bar: best cell b1.0/no-TP fails t (1.92 vs 2.86 Bonferroni), fails the bar-cell max-stat p
+(0.46), fails PF (1.05), fails halves [-,+], fails 2x cost, and is a lone spike (best minus
+next +0.0057R > 1 SE 0.0057). The max-|t| over the grid is -12.0 on the TP-1R cell (p
+0.0005) - i.e. the ONLY statistically strong statement the grid makes is that taking 1R
+targets against candle-extreme stops loses reliably. Per-instrument best cell: SPX +0.015
+(t 1.5), RTY +0.015 (t 1.3), NDX +0.007 (t 0.8), GOLD -0.002 (t -0.1; not a session open
+for gold). Per-year sign of the best cell: 11 of 20 years positive - a coin.
+THE 12 EMA ADDS NOTHING: on SPX b0/no-TP the sign-only rule (no EMA) prints +0.0001R and
+the EMA-only rule -0.0036R against the combined rule's +0.0042R; RTH-only EMA -0.0017R.
+The filter removes ~15% of days without changing expectancy.
+Reconciliation with Round 23 (the edgeful 09:30-09:35 spec): same candle, same verdict -
+frequent small wins on by-close entries, negative once costs and unfitted stops enter.
+VERDICT: FAIL on every clause; the 2026 Dukascopy holdout stays SEALED (run_oos refuses
+without IS_pass). Not a program attempt (commissioned audit inside the burned opening-range
+class); no shot, no watch item. Test count: +12 selectable cells + 4 read-only (counted).
+User-facing summary: the rule wins 20-50% of the time depending on the stop, the average
+win is slightly larger than the average loss, and the two cancel to within a fraction of
+one commission on 9,359 trades across 15 years and four instruments; every take-profit
+variant is worse than none, every tighter stop is worse than a wider one, and the pattern
+is the same on each instrument. There is nothing here to trade.

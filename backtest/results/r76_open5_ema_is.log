@@ -1,0 +1,23 @@
+SPX: IS to 2020-09-25, signal days 3100
+NDX: IS to 2020-04-06, signal days 3144
+RTY: IS to 2016-07-11, signal days 2400
+GOLD: IS to 2024-05-08, signal days 715
+
+POOLED IS cells (R = (pnl - micro cost)/ATR20):
+  b0.0_tpnone  n  9347 WR  20.5% PF  1.00 gross +0.0266 net +0.0003 t  +0.08 halves [-1.0, 1.0] | x2 -0.0260 | risk-units -0.073R | exits {'stop': 5056, 'stop_entry': 2255, 'time': 2036}
+  b0.0_tp1     n  9347 WR  49.1% PF  0.75 gross +0.0037 net -0.0226 t -12.02 halves [-1.0, -1.0] | x2 -0.0489 | risk-units -0.241R | exits {'target': 4615, 'stop': 2453, 'stop_entry': 2255, 'time': 24}
+  b0.0_tp2     n  9347 WR  35.1% PF  0.87 gross +0.0115 net -0.0148 t  -5.57 halves [-1.0, -1.0] | x2 -0.0411 | risk-units -0.187R | exits {'stop': 3753, 'target': 3162, 'stop_entry': 2255, 'time': 177}
+  b0.0_tp3     n  9347 WR  28.4% PF  0.93 gross +0.0168 net -0.0096 t  -3.02 halves [-1.0, 1.0] | x2 -0.0359 | risk-units -0.156R | exits {'stop': 4361, 'target': 2278, 'stop_entry': 2255, 'time': 453}
+  b0.5_tpnone  n  9359 WR  29.7% PF  1.01 gross +0.0289 net +0.0025 t  +0.50 halves [-1.0, 1.0] | x2 -0.0238 | risk-units -0.016R | exits {'stop': 5462, 'time': 3145, 'stop_entry': 752}
+  b0.5_tp1     n  9359 WR  51.6% PF  0.89 gross +0.0122 net -0.0142 t  -4.85 halves [-1.0, -1.0] | x2 -0.0405 | risk-units -0.090R | exits {'target': 4725, 'stop': 3647, 'stop_entry': 752, 'time': 235}
+  b0.5_tp2     n  9359 WR  37.2% PF  0.95 gross +0.0172 net -0.0092 t  -2.35 halves [-1.0, 1.0] | x2 -0.0355 | risk-units -0.074R | exits {'stop': 4846, 'target': 2786, 'time': 975, 'stop_entry': 752}
+  b0.5_tp3     n  9359 WR  32.5% PF  0.97 gross +0.0204 net -0.0059 t  -1.36 halves [-1.0, 1.0] | x2 -0.0323 | risk-units -0.058R | exits {'stop': 5218, 'time': 1701, 'target': 1688, 'stop_entry': 752}
+  b1.0_tpnone  n  9359 WR  37.1% PF  1.05 gross +0.0372 net +0.0109 t  +1.92 halves [-1.0, 1.0] | x2 -0.0154 | risk-units +0.025R | exits {'stop': 4900, 'time': 4246, 'stop_entry': 213}
+  b1.0_tp1     n  9359 WR  51.9% PF  0.96 gross +0.0198 net -0.0066 t  -1.72 halves [-1.0, 1.0] | x2 -0.0329 | risk-units -0.042R | exits {'target': 4447, 'stop': 3824, 'time': 875, 'stop_entry': 213}
+  b1.0_tp2     n  9359 WR  40.6% PF  1.00 gross +0.0256 net -0.0007 t  -0.15 halves [-1.0, 1.0] | x2 -0.0271 | risk-units -0.022R | exits {'stop': 4639, 'time': 2286, 'target': 2221, 'stop_entry': 213}
+  b1.0_tp3     n  9359 WR  38.2% PF  1.03 gross +0.0315 net +0.0051 t  +0.99 halves [-1.0, 1.0] | x2 -0.0212 | risk-units -0.000R | exits {'stop': 4810, 'time': 3204, 'target': 1132, 'stop_entry': 213}
+max-stat: {'observed_max_abs_t': 12.023199545853775, 'p_max': 0.0004997501249375312, 'best_cell': '0.0_1.0', 'best_cell_t': -12.023199545853775, 'draws': 2000, 'statistic': 'trade-level t, per-date sign flips shared across instruments and cells', 'obs_t': {'0.0_0.0': 0.07733913911328269, '0.0_1.0': -12.023199545853775, '0.0_2.0': -5.568661108594731, '0.0_3.0': -3.0184950869830094, '0.5_0.0': 0.4981976910024991, '0.5_1.0': -4.849041801066977, '0.5_2.0': -2.353766365221045, '0.5_3.0': -1.3562742798519378, '1.0_0.0': 1.9234365337084771, '1.0_1.0': -1.7227198001111308, '1.0_2.0': -0.15475862969269347, '1.0_3.0': 0.9858634656616786}}
+gradient: {'by_buffer': {'0.0': -0.01164240775107501, '0.5': -0.006682549081122737, '1.0': 0.002180230788462597}, 'by_target': {'1.0': -0.01442529994005996, '2.0': -0.00822837418444943, '3.0': -0.00344831751957683, 'none': 0.004586398250135839}, 'best_minus_next': 0.005741402915821493, 'best_se': 0.0056585424204339645, 'lone_spike': True}
+bar-cell max-stat p: 0.4607696151924038
+
+ROUND 76 IS VERDICT: FAIL (best cell b1.0_tpnone t +1.92; needs n>=40, t>=2.86 Bonferroni, bar-cell max-stat p<0.05, PF>=1.15, halves [+,+], positive at 2x, no lone spike)
