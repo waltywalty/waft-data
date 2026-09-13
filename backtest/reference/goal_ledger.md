@@ -6425,3 +6425,44 @@ intraday candidate in this program whose plausible gross clears 2x cost on its o
 Test count: +1 gate + 1 selectable + 9 read-only. Runner run_r75_usddrift.py ->
 results/r75_usddrift_is.json. Intraday band: at most one trade per release timestamp
 (~1.7 per week).
+
+### Attempt 55 result: IS FAIL ON POWER with full sign agreement - WATCH ITEM #12 (USD post-release drift), forward accrual registered
+
+(run_r75_usddrift.py; results/r75_usddrift_is.json; 346 release timestamps 2022-04..2026-09
+after collision resolution, IS = first 259 to 2025-06-11, OOS 87 SEALED.)
+STAGE 1 GATE PASS: the release jump signed by the mapping is +10.4 bp per event, WR 70%,
+PF 4.3, t +7.7 (growth +8.6 bp t +6.7; inflation +14.7 bp t +4.5): the dollar mapping is
+right, in contrast to attempt 17's equity mapping.
+STAGE 2 P1 (t0+5 -> t0+60, mapped direction): GROSS +2.37 bp, WR 56%, PF 1.37, t +1.87,
+halves [+,+]; NET at 1 pip +1.44 bp (t +1.13, PF 1.21, halves [+,+]), at 1.5x +0.97, at
+2x +0.50 bp (halves [+,-]). Per-year net 2022 +0.5, 2023 +3.1, 2024 +1.7, 2025 -0.8.
+Mirror -3.29 bp (t -2.6). Horizons: +5 -> +30 +1.08 bp; +5 -> +120 +1.40 bp (nested, no
+better). Dose terciles of |dev|: -2.0 / +3.6 / +2.8 bp - rising then flat, the
+mechanism's shape. Class: inflation prints +3.56 bp (t +1.5, n 80), growth +0.49 (n 179)
+- a sub-cell, not selectable, recorded. USDJPY (read-only): jump +14.5 bp t +8.3, drift
++1.06 bp t +0.7. Placebos: lookahead (t0-60 -> t0-5, signed by the not-yet-known
+surprise) +0.97 bp gross, t +1.34 - inside noise but same-signed, so a pre-release lean
+in the surprise direction cannot be excluded (whisper numbers, positioning); next-day
+same clock +0.71 bp, t +0.57.
+VERDICT: fails the bar on t alone (+1.13 net vs 2), PF 1.21 passes, halves pass, 2x
+positive; OOS NOT opened, the 87 sealed events stay sealed. Under the program's
+standing rule (attempt-18 precedent: "leans that agree in sign everywhere and fail only
+on statistical power accrue forward data toward a verdict") this becomes WATCH ITEM #12.
+WATCH #12 (frozen): the attempt-55 P1 cell exactly - EURUSD, mapped USD direction from the
+registered name set, enter open of the t0+5m bar, exit close of the bar ending t0+60m,
+1 pip cost; on 5-minute forward bars the entry is the open of the bar starting t0+5m and
+the exit the close of the bar starting t0+55m. Forward data: IBKR EUR.USD CASH 5m weekly
+pull (added to the weekly routine) + the FXStreet event feed re-pull at the monthly run.
+Scoring (monthly, forward/watch12_usddrift.py): pooled IS + forward events; the SEALED 87-
+event OOS block is opened as the family's ONE shot only when the forward sample alone
+reaches n >= 40 with the same sign (that is the sign-agreement test the standard asks
+for), and the shot is scored at the house OOS bar on the sealed block + forward pooled.
+Kill: forward n >= 40 with mean net < 0. Independence: none of the watch #6-#10 calendars
+overlap by construction (release timestamps), disclosed only that NFP days are watch #6-
+adjacent when they fall on trading days 1-3 (attempt-50 lesson) - the NFP subset is
+printed at each re-score.
+Test count: +1 gate + 1 selectable + 9 read-only. Program score: 1 OOS pass (on paper) /
+55 attempts + 25 registration-stage kills; 12 shots; 11 watch items.
+ROUND 74/75 SUMMARY (2026-09-13): two new-class FX families on the minute feed: the daily
+fix (attempt 54, real and fix-specific, half a pip gross - dead) and the dollar's post-
+release drift (attempt 55, gate passed, drift positive at every cost, t +1.1 - watch #12).
