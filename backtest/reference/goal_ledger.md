@@ -6958,3 +6958,51 @@ the OOS verdict is unaffected (Dukascopy is UTC-pinned). Other runners on the ej
 frame that read 2012-11..2014-11 dates under "feed - 7 h" inherit a 1-hour clock error
 over that stretch; they are listed in the commit that carries this note and re-scored
 only if a decision could turn on it (none did: every such family failed).
+
+### Attempt 57 RE-REGISTRATION (critic verdict REFUSE on the first registration; every point below adopted BEFORE running; supersedes the cells, clock, statistic and diagnostics above)
+Critic findings adopted (Lens 1): (1) the paper's intraday result is that BOTH the pre- and
+post-announcement windows exceed their non-announcement counterparts, not that "most
+accrues before"; the W1 justification is corrected accordingly. (2) The gated statistic
+is the DIFFERENTIAL: FOMC-window mean minus the same clock window on control days
+(Welch t), with halves [+,+] required on the differential (control split at the same
+date) - the program's own attempt-34 precedent; an absolute FOMC mean would credit a
+generic overnight drift. (3) EURUSD is the paper's low-interest-differential (mechanism-
+adverse) instrument; a null on EURUSD does NOT refute the mechanism. AUDUSD (the high-
+differential major; data/AUDUSD_m15_ejtrader.csv, same frame) is added IS-ONLY, read-
+only, as the cross-sectional check AUD > EUR; no AUD holdout exists, so it can never be
+promoted here. (4) Easing / tightening / hold regime split (public cycle dates,
+approximate) registered as a read-only diagnostic. (5) The paper's day convention (WM
+16:00 London fix vs 17:00 NY) is unverifiable offline (full text egress-blocked); the
+full-day read-only is paper-comparable only under the 17:00 NY assumption. (6) W1 is a
+JOINT test of the pre-announcement premium and the Karnaukh/Lucca-Moench pre-drift; it
+cannot attribute between them. (7) Max-stat added: calendar-shift randomisation (the
+whole FOMC calendar shifted by k trading days, k = +-1..+-250, 500 shifts; max |Welch t|
+over the two cells; empirical p of the observed max), quoted beside Bonferroni.
+(8) Power restated honestly: EURUSD non-FOMC daily range averages ~71 bp, so a 20-hour
+window has sd ~35-45 bp; at n ~72 and t 2.28 the detectable differential is ~9-12 bp
+for W1 and ~6-8 bp for W2; the paper's (unverified) 15-25 bp whole-day figure split
+over two cells sits AT the floor, so a positive sub-floor result on both cells is the
+modal expectation and will be recorded as a power miss, not repaired.
+Runner fixes adopted (Lens 2): the IS clock is the two-regime EU-DST construction (CET
+era before 2014-12-01, EET era after; the -7 h assumption was wrong on 26 of 72 IS FOMC
+days and would have put the statement INSIDE W1 on those days) with a hard provenance
+assertion (>= 75% of FOMC days must carry their 12:00-16:00 range peak at 14:00-14:30
+NY; the old clock scores 54%, the new one 86%); W1 now starts at 18:00 NY on the prior
+trading day on BOTH frames (the ejtrader 17:00 bar is missing on ~20% of days and the
+Dukascopy 17:00-18:00 hour is the volume-0 daily break, so 17:00 was asymmetric);
+coverage guard >= 60% of expected bars with first/last bar within two bars of the
+bounds; cost ladder extended to 4x (~3.6 bp) and a delayed-entry read for W2 (entry =
+close of the first bar) because the registered open-of-the-14:00-bar price is not
+transactable; 2020-03-03, 2020-03-13 and 2020-03-16 (unscheduled Fed actions) excluded
+from the control (minutes days stay in the control - conservative, stated); the prior
+trading day must exist; t floor 2.28 (df 71), not 2.24.
+FROZEN CELLS (two selectable, EURUSD long): W1 PRE prior-day 18:00 NY -> 14:00 ET; W2
+POST 14:00 -> 17:00 ET. IS BAR per cell: FOMC net mean > 0, PF >= 1.15, positive at 2x,
+differential > 0 with Welch t >= 2.28 and halves [+,+], calendar-shift max-stat p < 0.05.
+OOS (one shot per cleared cell, EURUSD only): the holdout has only ~35 statement days,
+so the registered OOS n floor is 30 (a stated exception to the house n >= 40), bar
+otherwise the house bar on the differential (t >= 2) plus net > 0, PF >= 1.15,
+positive at 1.5x and 2x, diff halves [+,+]. Test count: +2 selectable (unchanged) + 22
+read-only (full day, FOMC-1/+1 x 3 windows, control x 3, mirrors, 4x, delayed entry,
+regime splits, USDJPY x 3, AUDUSD x 3). The 2022-03-16 statement falls in the IS/OOS gap
+and is read by neither. Nothing has been read.
