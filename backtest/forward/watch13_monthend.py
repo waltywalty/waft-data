@@ -55,7 +55,8 @@ def load_zn(data_dir):
     for f in sorted(glob.glob(os.path.join(data_dir, "zn_1d_*.json"))):
         d = json.load(open(f))
         parts.append(pd.DataFrame(dict(close=pd.to_numeric(d["close"]), contract=d.get("contract", os.path.basename(f))),
-                                  index=pd.to_datetime(d["time"], utc=True).tz_convert("America/New_York").tz_localize(None).normalize()))
+                                  index=(pd.to_datetime(d["time"], utc=True).tz_convert("America/New_York") + pd.Timedelta(hours=6)).tz_localize(None).normalize()))
+        # IBKR labels a futures ONE_DAY bar by its Globex session START (previous evening, 18:00 ET); +6 h -> the session's trade date
     if not parts: return pd.DataFrame(columns=["close", "contract"])
     b = pd.concat(parts).sort_index(kind="stable"); b = b[~b.index.duplicated(keep="last")]
     return b

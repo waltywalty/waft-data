@@ -7402,3 +7402,20 @@ decision to paper-trade it is Walton's, not the routine's. No journal row is wri
 by any routine. Adjacent watch items: #6 (equity quarter-end TOM) shares the calendar
 but not the instrument or the flow; the holdout read shows equities flat while bonds
 rally, so the two are distinct. Test count unchanged (+0).
+
+### Watch #13 forward log opened (2026-09-13)
+forward/watch13_monthend.py scores the frozen cell on (a) FRED DGS10 (the pass's proxy)
+and (b) IBKR ZN active-contract daily bars (data/forward/zn_1d_*.json; ZNZ6 866514750
+first pull today; ZNH7 893091637 from 2026-11-25; month-ends straddling a roll are
+skipped; the IBKR daily bar is labelled by its Globex session start, mapped to the
+session's trade date). START 2026-09-13; forward n 0/0. Weekly trigger
+trig_01MQnmLG9nRdyTtZ6LrGpg5W updated: ZN ONE_DAY THREE_MONTHS pull added to the
+Monday list and the watch #13 tally added to step (4b); a sign-off request only when
+it prints graduate True. CONTRACT.md carries the zn_1d row.
+PROXY FIDELITY (read on the already-opened 2026 OOS months, not a new test): ZN vs the
+CMT par-bond return on the six month-ends 2026-03..2026-08: corr 0.988, means -17.7 vs
+-14.9 bp (Mar +79/+102, Apr -42/-37, May +24/+44, Jun -17/-26, Jul -81/-107, Aug
+-69/-65) - the futures track the proxy at ~0.8x as expected from the deliverable's
+shorter duration, and the last three 2026 month-ends were NEGATIVE on both (the 2026
+partial year is -8 bp net in the OOS read): the forward log starts in a losing stretch,
+which is exactly what it is for.
