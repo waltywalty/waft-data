@@ -6353,3 +6353,27 @@ Expected magnitude if real: the papers report post-fix reversals of order 1-2 bp
 ordinary days against ~0.9 bp cost: marginal, registered as such; positive at 2x needs
 > 1.8 bp net of nothing. Test count: +1 selectable + 8 read-only. Runner
 run_r74_dailyfix.py -> results/r74_dailyfix_is.json.
+
+### Attempt 54 result: IS FAIL - the post-fix reversal exists, is specific to the fix clock, and is an order of magnitude inside cost
+
+(run_r74_dailyfix.py; results/r74_dailyfix_is.json; IS = 839 eligible EURUSD days
+2022-03-01..2025-07-22, month-ends excluded.)
+P1 (-sign of the 15:45 -> 16:00 London move, held 16:00 -> 16:15): GROSS +0.45 bp per
+day, WR 53.6%, PF 1.19, t +1.90, halves [+,-]; NET at 1 pip -0.48 bp (t -2.03), at 1.5x
+-0.95, at 2x -1.41 bp. Mirror -1.38 bp net (t -5.8). Per-year net 2022 -0.27, 2023 +0.09,
+2024 -0.73, 2025 -1.38. The paper's statistic - correlation of the pre-fix and post-fix
+15-minute moves - is -0.097 at the fix (n 843) against +0.011 at 15:30, +0.001 at 16:30
+and -0.076 at 15:00 (the 15:00 clock is the gold PM-fix / US-data hour, a known cousin);
+the placebo cells' NET prints (-0.72 / -0.71 / -0.57 bp) are the pure cost of trading
+noise. So the fix-clock reversal is REAL in the documented direction and specific to the
+benchmark clock, exactly as Evans et al. describe post-reform - and worth ~0.45 bp gross
+on a typical day, i.e. half a pip. Dose ladder (|pre-move| terciles, net): -1.04 /
+-0.26 / -0.15 bp - the response does rise with dose but the top tercile is still negative
+net; a threshold spec would be a search over this ladder and is not run. USDJPY (read-
+only): gross -0.29 bp, corr +0.10 - no reversal in the yen. VERDICT: fails the bar on
+every clause but n; OOS not opened; family burned. The fix class (attempts 36, 51, 52,
+54) is closed on this data: month-end and daily, gold and FX, pre- and post-fix - the
+flows are real and the prints are inside the spread.
+Test count: +1 selectable + 8 read-only. Program score: 1 OOS pass (on paper) / 54
+attempts + 25 registration-stage kills; 12 shots; 23 data assets (+ the gold 2003-2022
+frame pending).
