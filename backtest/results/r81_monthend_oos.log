@@ -1,0 +1,43 @@
+=== 10y (OOS) month-ends 88 ['2019-05-31', '2026-08-31'] ===
+  C1_extension_long    net {"n": 88, "mean_bp": 19.508319007114803, "wr": 0.5795454545454546, "pf": 2.0064822734460757, "t": 2.534247715542335, "halves": [1.0, 1.0]}
+      price +19.3 carry +3.21 | control price -8.1 carry +3.55 n_control 288
+      strat_diff(price) {"n_event": 88, "n_control": 288, "dropped_events": 0, "diff_bp": 27.33889945719151, "se": 9.222902798789688, "t": 2.9642402238890737} diff_halves [1.0, 1.0]
+      x2 +16.5 mirror -25.5
+      qtr {"n_event": 27, "n_control": 288, "dropped_events": 2, "diff_bp": 27.760849811143142, "se": 13.109281931700137, "t": 2.1176483926257927}
+      other {"n_event": 59, "n_control": 288, "dropped_events": 0, "diff_bp": 26.563064606377484, "se": 11.085155788174767, "t": 2.3962734592069492}
+      auction_in 56 {"n_event": 56, "n_control": 288, "dropped_events": 0, "diff_bp": 24.550600352551758, "se": 10.549057120912051, "t": 2.3272791180439794}
+      no_auction 32 {"n_event": 30, "n_control": 288, "dropped_events": 2, "diff_bp": 35.52490161953087, "se": 15.65221926411008, "t": 2.269639916237825}
+      fomc_in(2013+) 17/88 {"n_event": 12, "n_control": 288, "dropped_events": 5, "diff_bp": -6.60799779811229, "se": 16.373873715982562, "t": -0.403569608067895} no_fomc {"n_event": 71, "n_control": 288, "dropped_events": 0, "diff_bp": 26.3588459042275, "se": 10.117252127000295, "t": 2.6053364662013956}
+      era {"1990-2008": {"n_event": 0}, "2009+": {"n_event": 88, "n_control": 288, "dropped_events": 0, "diff_bp": 27.33889945719151, "se": 9.222902798789688, "t": 2.9642402238890737}}
+      dec31 {"n": 7, "gross": {"n": 7}} spx_same_window {"n": 79, "mean_bp": 1.9552580629925929, "wr": 0.5443037974683544, "pf": 1.0297268217476356, "t": 0.09701955805834936, "halves": [-1.0, 1.0]}
+      per-year {2019: 37.3, 2020: 37.0, 2021: 7.6, 2022: 31.9, 2023: 7.4, 2024: 18.3, 2025: 21.6, 2026: -8.2}
+  T-1_long             net {"n": 88, "mean_bp": 6.856975439648931, "wr": 0.4772727272727273, "pf": 1.5136603170170697, "t": 1.4522940738643209, "halves": [1.0, 1.0]}
+      price +8.8 carry +1.08 | control price -2.6 carry +1.19 n_control 943
+      strat_diff(price) {"n_event": 88, "n_control": 943, "dropped_events": 0, "diff_bp": 11.412890401301327, "se": 5.0785462353977175, "t": 2.2472750807608914} diff_halves [1.0, 1.0]
+      x2 +3.9 mirror -12.9
+      qtr {"n_event": 27, "n_control": 943, "dropped_events": 2, "diff_bp": 2.372002914952657, "se": 7.479614873904739, "t": 0.3171290173279137}
+      other {"n_event": 59, "n_control": 943, "dropped_events": 0, "diff_bp": 15.930974921442564, "se": 6.398489166363823, "t": 2.4898025935856865}
+      auction_in 0 {"n_event": 0}
+      no_auction 88 {"n_event": 88, "n_control": 943, "dropped_events": 0, "diff_bp": 11.412890401301327, "se": 5.0785462353977175, "t": 2.2472750807608914}
+      fomc_in(2013+) 3/88 {"n_event": 0} no_fomc {"n_event": 85, "n_control": 943, "dropped_events": 0, "diff_bp": 9.95679695789516, "se": 5.153866961760818, "t": 1.9319080278497178}
+      era {"1990-2008": {"n_event": 0}, "2009+": {"n_event": 88, "n_control": 943, "dropped_events": 0, "diff_bp": 11.412890401301327, "se": 5.0785462353977175, "t": 2.2472750807608914}}
+      dec31 {"n": 7, "gross": {"n": 7}} spx_same_window {"n": 79, "mean_bp": -10.066480318311388, "wr": 0.4936708860759494, "pf": 0.7765180242402435, "t": -0.8402999368691155, "halves": [-1.0, 1.0]}
+      per-year {2019: 20.2, 2020: 13.6, 2021: 19.7, 2022: -2.9, 2023: 9.6, 2024: -0.9, 2025: 2.0, 2026: -6.3}
+  T+2_reversal_short   net {"n": 88, "mean_bp": -11.396354010795447, "wr": 0.48863636363636365, "pf": 0.6855301800412379, "t": -1.3315957139551962, "halves": [-1.0, -1.0]}
+      price -5.6 carry -2.77 | control price +5.4 carry -2.39 n_control 451
+      strat_diff(price) {"n_event": 88, "n_control": 451, "dropped_events": 0, "diff_bp": -10.990243093305581, "se": 9.255801150101147, "t": -1.187389715387898} diff_halves [-1.0, -1.0]
+      x2 -14.4 mirror +5.4
+      qtr {"n_event": 27, "n_control": 451, "dropped_events": 2, "diff_bp": -10.627637567842275, "se": 16.143226062790788, "t": -0.6583341846607953}
+      other {"n_event": 59, "n_control": 451, "dropped_events": 0, "diff_bp": -12.01969252061867, "se": 10.773118069535125, "t": -1.115711574219973}
+      auction_in 2 {"n_event": 0}
+      no_auction 86 {"n_event": 86, "n_control": 451, "dropped_events": 0, "diff_bp": -11.426150461405754, "se": 9.442671591331308, "t": -1.2100548399772102}
+      fomc_in(2013+) 4/88 {"n_event": 0} no_fomc {"n_event": 84, "n_control": 451, "dropped_events": 0, "diff_bp": -7.0323823450120395, "se": 9.113805674342066, "t": -0.7716186405872335}
+      era {"1990-2008": {"n_event": 0}, "2009+": {"n_event": 88, "n_control": 451, "dropped_events": 0, "diff_bp": -10.990243093305581, "se": 9.255801150101147, "t": -1.187389715387898}}
+      dec31 {"n": 7, "gross": {"n": 7}} spx_same_window {"n": 77, "mean_bp": 21.77406019281775, "wr": 0.5584415584415584, "pf": 1.4672856431099455, "t": 1.23812639606841, "halves": [1.0, -1.0]}
+      per-year {2019: -48.9, 2020: 0.0, 2021: -4.4, 2022: -27.2, 2023: 16.5, 2024: -33.9, 2025: -7.6, 2026: 8.5}
+  unconditional 3d long price: {'n': 605, 'mean_bp': -3.874304471232131, 'wr': 0.45289256198347105, 'pf': 0.8818281222674981, 't': -1.1554382061543553, 'halves': [-1.0, -1.0]}
+  read-only 2y (n 88): C1_extension_long net +2.4 (t +1.41) price-diff +4.2 (t +2.05)
+  read-only 5y (n 88): C1_extension_long net +12.5 (t +2.84) price-diff +17.7 (t +3.39)
+  read-only 30y (n 88): C1_extension_long net +31.9 (t +2.04) price-diff +46.8 (t +2.43)
+
+ATTEMPT 59 OOS VERDICT: {'C1_extension_long': True}

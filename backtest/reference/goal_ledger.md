@@ -7356,3 +7356,49 @@ so an undecayed +20 bp effect has only ~45% power: an OOS miss at |t| < 2 with t
 sign is a POWER miss and still burns the family under the one-shot rule; a pass goes to
 Walton for sign-off as a watch-list candidate with a forward ZN log, never to the
 journal. OOS shots spent after this: 15.
+
+### Attempt 59 OOS RESULT (2026-09-13, sealed block 2019-05..2026-08 opened for C1 only; results/r81_monthend_oos.json, log results/r81_monthend_oos.log) - PASS
+88 month-ends 2019-05-31..2026-08-31; 288 non-overlapping 3-day control windows.
+C1 EXTENSION LONG 10-year, T-3 close -> T close: net +19.5 bp, t 2.53, PF 2.01, WR
+58.0%, halves [+,+]; 1.5x +18.0, 2x +16.5; price component +19.3 (control -8.1), carry
++3.2; year-stratified price-component differential +27.3 bp, SE 9.2, t 2.96, diff
+halves [+,+]; mirror -25.5. House OOS bar (n >= 40, net > 0, t >= 2, PF >= 1.15, [+,+],
+positive at 1.5x and 2x, differential > 0 with t >= 2): PASSES every criterion.
+Splits, all same sign: quarter-end +27.8 (t 2.1) vs other +26.6 (t 2.4); auction in
+window (56) +24.6 (t 2.3) vs none (30) +35.5 (t 2.3); FOMC inside (12) -6.6 vs none (71)
++26.4 (t 2.6) - the FOMC month-ends are the one sub-sample without the effect (n 12,
+SE 16; noted, not a gate). Per year: 2019 +37, 2020 +37, 2021 +8, 2022 +32, 2023 +7,
+2024 +18, 2025 +22, 2026 (8 months) -8. Cross-section: 30-year +46.8 price-diff (t 2.4),
+5-year +17.7 (t 3.4), 2-year +4.2 (t 2.05) - scales with duration again. The registered
+decay prediction (post-Nov-2019 publication) is NOT borne out: the OOS effect equals
+the IS effect. S&P 500 same window (n 79): +2.0 bp, t 0.1 - equities show NOTHING in
+the holdout, so the bond effect is not a generic month-boundary risk-on (the IS +17 bp
+equity lean was the 2005-2019 bull market's turn-of-month). Read-only: T-1 -> T alone
++6.9 net (t 1.5; differential +11.4, t 2.2); the reversal T -> T+2 short LOSES (-11.4
+net, t -1.3; the drift is up after month-end too) - do not fade.
+VERDICT: OOS PASS. Program score: 2 OOS passes / 59 attempts; OOS shots spent 15. The
+family is spent (no re-parameterisation); what survives is the frozen spec below.
+CAVEATS carried into sign-off: (a) the instrument is the CMT-implied par 10-year, not a
+traded price: a ZN futures implementation tracks a ~6.5-year cheapest-to-deliver, so
+the expected size is ~0.8x (~15 bp per month-end, ~180 bp/yr on ZN notional, ~2 ticks
+cost per round trip), and the futures roll and the on-the-run specialness are not in
+the proxy; (b) the H.15 quote is 3:30 pm bid-side, the index mark is 3 pm or 4 pm ET -
+the last hour's flow is unobserved in either direction; (c) 12 events a year, 3-day
+holds, so a forward sample of 40 takes ~3.3 years; (d) the source is public since 2019
+and the effect has not decayed through 2025, which is itself a caveat about capacity/
+crowding that only the forward log can settle; (e) DGS10 resolution 1 bp.
+
+### WATCH #13 registered (2026-09-13): month-end index-extension long in the 10-year Treasury (attempt 59, OOS pass) - candidate for Walton's sign-off; NOTHING TRADES
+FROZEN SPEC: long the 10-year Treasury (ZN front month, or the CMT-implied par bond
+for scoring) from the close of the third-to-last business day of the month (T-3) to
+the month-end close (T), every calendar month; cost 3 bp per round trip, 1.5x / 2x.
+Forward scoring (backtest/forward/watch13_monthend.py): on FRED DGS10 (the same proxy
+as the pass, pulled by the monthly routine where reachable) AND on IBKR ZN daily
+bars (data/forward/zn_1d_*.json, weekly pull added to the Monday trigger); the bar for
+graduation to a sign-off request with a live forward sample: n >= 40 forward month-
+ends (~3.3 years), net > 0, t >= 2, PF >= 1.15, halves [+,+], positive at 1.5x, on
+BOTH the CMT proxy and ZN. Until then the OOS pass above IS the evidence, and any
+decision to paper-trade it is Walton's, not the routine's. No journal row is written
+by any routine. Adjacent watch items: #6 (equity quarter-end TOM) shares the calendar
+but not the instrument or the flow; the holdout read shows equities flat while bonds
+rally, so the two are distinct. Test count unchanged (+0).
