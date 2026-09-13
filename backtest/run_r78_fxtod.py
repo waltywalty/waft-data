@@ -6,7 +6,8 @@ Blocks anchored to each currency area's own local hours via the IANA tz database
   overlap placebo  08:00 America/New_York -> 17:00 Europe/Berlin     (both predictions, opposite signs: predicted ~0)
   Tokyo placebo    09:00 -> 17:00 Asia/Tokyo                          (EURUSD: no prediction; USDJPY read-only: long)
 Clock: IS ejtrader m15 stamps follow the EU DST calendar (UTC+2 winter / UTC+3 summer, verified empirically): London wall
-clock = stamp - 2 h in every week -> localised Europe/London and converted to UTC; OOS Dukascopy 1m stamps = UTC. A clock gate (08:30-ET first-Friday release peak in both seasons) runs first.
+clock = stamp - 1 h before 2014-12-01 (CET era) and stamp - 2 h after (EET era, vendor splice) -> localised
+Europe/London and converted to UTC; OOS Dukascopy 1m stamps = UTC. A clock gate (08:30-ET first-Friday release peak in both seasons) runs first.
 Bar: n >= 40, net mean > 0, t >= 2.24 (Bonferroni 2), bar-cell max-stat p < 0.05, PF >= 1.15, halves [+,+],
 positive at 2x cost, raw AND drift-adjusted; opposite-sign-similar-size cells or a same-order placebo = drift artefact.
 OOS (UNSEAL_OK=1 --unseal): EURUSD only, cleared cells only. Outputs results/r78_fxtod_{is,oos}.json.
@@ -40,7 +41,10 @@ def load_is(sym):
         if lo <= px.close.median() <= hi: break
         px = px / 10.0
     assert lo <= px.close.median() <= hi
-    lon = (df.Date - pd.Timedelta(hours=2)).dt.tz_localize(LON, ambiguous="NaT", nonexistent="shift_forward")
+    # ejtrader vendor splice (verified on first-Friday release peaks): feed = CET/CEST (London + 1 h) before
+    # 2014-12-01 and EET/EEST (London + 2 h) from 2014-12-01; both follow the EU DST calendar.
+    base = np.where(df.Date < pd.Timestamp("2014-12-01"), 1, 2)
+    lon = (df.Date - pd.to_timedelta(base, unit="h")).dt.tz_localize(LON, ambiguous="NaT", nonexistent="shift_forward")
     px.index = lon; px = px[~px.index.isna()]
     return px.tz_convert("UTC").sort_index(), 4            # bars per hour
 
@@ -163,4 +167,5 @@ if __name__ == "__main__":
         if artefact: passes = {k: False for k in passes}
         res["verdict"] = passes
         print(f"\nATTEMPT 56 IS VERDICT: {passes} (drift artefact: {artefact})")
-    json.dump(res, open(os.path.join(HERE, "results", f"r78_fxtod_{'oos' if UNSEAL else 'is'}.json"), "w"), indent=1, default=float)
+    tag = os.environ.get("R78_TAG", "")
+    json.dump(res, open(os.path.join(HERE, "results", f"r78_fxtod_{'oos' if UNSEAL else 'is'}{tag}.json"), "w"), indent=1, default=float)

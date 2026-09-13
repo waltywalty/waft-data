@@ -6920,3 +6920,41 @@ sign is a POWER miss, still burning the family under the one-shot rule.
 OOS DECISION (integrator, before the read): open the sealed Dukascopy EURUSD block for
 C1 ONLY (C2 not cleared; USDJPY never read). House OOS bar: n >= 40, mean net > 0, t >=
 2, PF >= 1.15, halves [+,+], positive at 1.5x and 2x. OOS shots spent after this: 13.
+
+### Attempt 56 OOS RESULT (2026-09-13, sealed Dukascopy EURUSD 1m opened for C1 only; results/r78_fxtod_oos.json) - FAIL, family burned
+Clock gate PASS on the OOS frame (first-Friday peak 08:30 ET, 2.7x winter / 3.0x summer).
+1,161 weekdays 2022-04-01..2026-09-11, 6 voided. C1 SHORT EURUSD 08:00 Berlin -> 08:00
+New York: n 1,155, net +0.42 bp, t 0.54, PF 1.044, WR 50.6%, halves [+,-]; 1.5x -0.04;
+2x -0.50 (t -0.65); gross +1.33 (t 1.73, PF 1.148, halves [+,+]). Per year: 2022 +2.3,
+2023 +1.0, 2024 +0.8, 2025 -1.0, 2026 -0.9 -> the IS decay (2015 +4.1 -> 2021 +0.8)
+continues through the holdout to a negative sign. Day of week: Mon -1.9, Tue +0.3, Wed
++0.7, Thu +0.9, Fri +2.1. House OOS bar (n >= 40, net > 0, t >= 2, PF >= 1.15, [+,+],
+positive at 1.5x and 2x): FAILS on t, PF, halves and both cost rungs. Right sign, below
+cost: a POWER miss on the registered reading (an IS-sized +1.6 bp would have needed t
+~2 at SE 0.8), but the per-year path says decay, not noise. One shot spent; the family
+(FX local-hours seasonality, EURUSD) is BURNED; USDJPY never read. OOS shots spent: 13.
+Program score: 1 OOS pass / 56 attempts.
+Note on the registered drift control: on 1m bid bars the intrabar drift is a print
+artefact (sum of intrabar log returns -14,827 bp vs close-to-close +466 bp over the
+frame; mean open > close by ~0.01 pip per bar), so the runner's "drift-adjusted" OOS
+line (-2.77) is VOID; the close-to-close drift is +0.017 bp/h -> +0.10 bp per block
+against a short, i.e. an adjusted +0.52 bp. Neither reading changes the verdict.
+
+### Data note (2026-09-13): ejtrader m15 feed has a VENDOR CLOCK SPLICE at 2014-12-01
+Found by the attempt-57 critic and verified here on first-Friday release peaks: the
+08:30 ET release bar sits at feed 14:30 on 16 of 21 first Fridays 2012-11..2014-11 and
+at feed 15:30 on 78 of 89 from 2014-12 onward. The feed is CET/CEST (London + 1 h)
+before 2014-12-01 and EET/EEST (London + 2 h) after; both eras follow the EU DST
+calendar (so ET = feed - 6 h before the splice and feed - 7 h after, in aligned weeks
+only). Clock provenance record amended: "ET = feed - 7 h" (the r54 convention) holds
+only from 2014-12-01. CONSEQUENCE FOR ATTEMPT 56: the London-anchored IS clock was one
+hour late for 2012-11..2014-11 (~510 weekdays, 21% of IS); the pooled clock gate could
+not see it. RECORD CORRECTION (non-promotable; run after the OOS read, so it cannot
+change any decision): under the two-regime clock (run_r78_fxtod.py now carries it;
+results/r78_fxtod_is_clockfix.json) C1 IS is n 2,411, net +1.71, t 3.15, PF 1.19,
+halves [+,+], 2x +0.86, max-stat p 0.0045, 2013 +1.1 (was +0.3); C2 net -0.18 (t -0.39);
+placebos unchanged in sign and order. The IS verdict (C1 pass, C2 fail) is unchanged and
+the OOS verdict is unaffected (Dukascopy is UTC-pinned). Other runners on the ejtrader
+frame that read 2012-11..2014-11 dates under "feed - 7 h" inherit a 1-hour clock error
+over that stretch; they are listed in the commit that carries this note and re-scored
+only if a decision could turn on it (none did: every such family failed).
