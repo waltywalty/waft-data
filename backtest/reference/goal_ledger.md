@@ -6499,3 +6499,44 @@ pinned clock, replacing the 2012-2022 m15 + 2020-25 5m splice for any future gol
 registration; a second, independent 24h index frame at 1 minute (2013-14, 2018-2026)
 for cross-feed confirmation of any index intraday cell. No test was run on either.
 Program: 55 attempts + 25 registration-stage kills; 12 shots; 11 watch items; 24 assets.
+
+## Round 76 (2026-09-13): COMMISSIONED AUDIT - first 5-minute candle of the 09:30 NY open + 12 EMA, registered BEFORE running
+
+USER SPEC (verbatim intent): at 09:30 NY, after the first 5-minute candle closes, if it
+closes up and above the 12 EMA -> long; closes down and below the 12 EMA -> short; test
+take-profit and stop-loss variations; on all the futures we analyse. Run as a commissioned
+audit (Round 23 / 24 / 29 precedent), with full house discipline, not as a program attempt.
+ADJACENCY DISCLOSED (burned neighbourhood): Round 23 ran the edgeful 09:30-09:35 range
+spec (by-close entry, opposite-edge stop, 50%-range target) on 20 years of ES proxy: 74%
+gross win rate, -0.06 pt gross / -0.66 pt net per trade; attempt 1 (ORB with participation
+gates, OR windows 15/30/60 min) spent the opening-range family's OOS shot and failed;
+Round 29 audited twelve RTY open scripts; the Asia-session ORB transplant is dead both
+arms. The user's spec differs by the candle-direction condition and the 12 EMA filter; it
+is inside the burned class, which is why its result cannot become a program attempt or
+take the program frames' holdout. Instruments: SPX / NDX / RTY / GOLD (MES / MNQ / M2K /
+MGC micro costs); HSI excluded (no 09:30 NY open). Gold's 09:30 NY is not a session open
+for gold - run with that caveat.
+FROZEN SPEC: 5m frames (Oanda/MT5 CFD, NY time); signal candle = the 09:30-09:35 bar;
+EMA12 = exponential average (span 12) of 5m closes on the 24h series, as a chart would
+show it (RTH-only EMA is a read-only variant); long if close > open AND close > EMA12,
+short if close < open AND close < EMA12, else no trade; entry = open of the 09:35 bar; SL
+= the candle's opposite extreme minus a buffer b x candle range, b in {0, 0.5, 1.0}; TP =
+k x risk, k in {1, 2, 3, none}; time exit = close of the 15:55 bar; worst-case stop-first
+on each 5m bar; one trade per instrument per session; costs micro 1x / 1.5x / 2x; R =
+(pnl - cost)/ATR20, plus risk units. GRID = 12 cells per instrument, pooled across
+instruments; every cell counted.
+SAMPLE: IS = the engine's stored cuts (SPX to 2020-09-25, NDX 2020-04-06, RTY 2016-07-11,
+GOLD 2024-05-08; the Oanda-era frames). The 2020+ MT5 block is attempt-1-seen and is
+never a shot. SEALED HOLDOUT (new, untouched by any test): the 2026-01-01..2026-09-11
+block of the Dukascopy 1-minute frames (USA500 / USATECH / XAUUSD, resampled to 5m in NY
+time; ~180 sessions each), opened by the integrator only (UNSEAL_OK=1 --unseal) for the
+single best IS cell if the IS bar clears; RTY has no 2026 frame and gets no holdout.
+BAR (IS): n >= 40, avg R > 0, PF >= 1.15, halves [+,+], positive at 2x cost, t >= 2.86
+(Bonferroni over 12 cells) AND max-|t| sign-flip randomisation p < 0.05 (2,000 draws,
+same sign per date across cells), AND a smooth gradient across the buffer and target
+axes (a lone spike is overfitting). Diagnostics: per-instrument, per-year signs, exit
+mix, long share, risk-unit expectancy, the RTH-only-EMA variant, gross vs net.
+Expectation, stated first: the Round-23 read on the same candle says the by-close entry
+wins often and loses net; the EMA filter removes the counter-trend half of the days and
+cannot manufacture expectancy the candle does not have. Test count: +12 selectable cells
+(counted) + 4 read-only. Runner run_r76_open5_ema.py -> results/r76_open5_ema_is.json.
