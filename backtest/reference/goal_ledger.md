@@ -7056,3 +7056,67 @@ reversal) the reading is post-publication decay of a temporary premium, exactly 
 registered risk. One shot spent; the family (USD on FOMC days, FX) is BURNED; W2 was
 refuted IS; USDJPY and AUDUSD never promotable. OOS shots spent: 14. Program score: 1
 OOS pass / 57 attempts.
+
+## Round 80 (2026-09-13): the Treasury auction cycle on the bond itself - attempt 58 registered BEFORE running
+
+### Attempt 58 registration (BEFORE running): pre-auction concession and post-auction recovery in the 10-year Treasury, daily constant-maturity yields 1990-2026, sealed OOS = last 25% of auctions (2020-02-13 on)
+
+Mechanism (external, cited): Lou, Yan & Zhang, "Anticipated and Repeated Shocks in
+Liquid Markets" (Review of Financial Studies 2013): Treasury prices fall in the days
+before a scheduled auction and recover in the days after, so the auctioned maturity's
+yield peaks on the auction day (a "V" in yields across T-10..T+10); the flow is the
+primary dealers' limited risk-bearing capacity - they must absorb the new supply, so
+they sell (concession) ahead of the auction and are compensated by the recovery after
+it; the paper reports the pattern for 2-, 5- and 10-year notes over 1980-2008 with
+yields several basis points higher on the auction day than a week before or after
+(exact table values NOT verifiable offline; the full text is egress-blocked, so the
+magnitude below is an approximate recollection and is flagged as such). Participants
+named (primary dealers, forced by the auction calendar); sign fixed by the paper: price
+DOWN into the auction, UP after. NEW INSTRUMENT CLASS for this program: rates. Adjacency
+disclosed: attempts 26/27 tested the auction calendar's reflection in EQUITY INDICES and
+refuted it (wrong-way both arms); that says nothing about the bond itself, which is the
+mechanism's home instrument and has never been read here. Not a sub-cell of a spent
+family: no rates instrument exists anywhere in the ledger or the inventory.
+DATA (banked, checked): FRED DGS10 daily 10-year constant-maturity yield 1962-01-02..
+2026-09-02 (data/fred_DGS10.csv); FRED DGS2; Alpha Vantage daily 30-year (1977+) and
+5-year (data/UST30Y_daily_av.csv, UST05Y_daily_av.csv, pulled today); TreasuryDirect
+note and bond auction histories 1979-2026 (auction_date, term, reopening, btc, high
+yield). 10-year auctions 1990-01..2026-08: 315 (4/yr in the 1990s, 8/yr 2004-08, 12/yr
+from 2009; 57% reopenings). PRICE PROXY: the daily log return of a par 10-year
+semiannual bond implied by the CMT, r = -ModD(y0) x dy + carry, with ModD from the
+prevailing yield (~7.5-9.5) and carry = y0 x calendar-days/365; the CMT is NOT a traded
+price - a ZN futures implementation tracks a ~6.5-7-year cheapest-to-deliver, and the
+on-the-run 10-year carries a repo-specialness premium that itself cycles with the
+auction - so a pass here is a SIGNAL result that goes to a forward-only ZN daily log,
+never straight to sign-off. Cost: 3 bp per round trip (ZN: two ticks of 1/64 on ~112 =
+2.8 bp + commission), 1.5x / 2x.
+FROZEN CELLS (two selectable, Bonferroni 2 -> t floor 2.24), every 10-year auction
+(originals + reopenings), windows in business days on the DGS10 calendar:
+ C1 RECOVERY LONG:   auction-day close T -> T+5 close (the 13:00 result is inside T)
+ C2 CONCESSION SHORT: T-5 close -> T close
+GATED STATISTIC (per attempts 34/57): the event-window mean MINUS the same-length
+window anchored on every business day at least 6 business days from any 10-year
+auction (control), Welch t, halves [+,+] on the differential (control split at the
+same date); plus event net mean > 0, PF >= 1.15, positive at 2x cost, own-t >= 2.24,
+halves [+,+]; calendar-shift max-stat (whole auction calendar shifted by k business
+days, |k| in 8..120, 226 shifts, max |Welch t| over the two cells) p < 0.05.
+IS = the first 75% of 10-year auctions 1990-01-01..2020-02-12 (236 events); SEALED OOS
+= 2020-02-13..2026-08 (79 events), opened by the integrator only (UNSEAL_OK=1 --unseal)
+for a cell that clears IS; OOS bar = the house bar (n >= 40, net > 0, t >= 2, PF >=
+1.15, [+,+], positive at 1.5x and 2x) plus differential > 0 with Welch t >= 2 and diff
+halves [+,+]. One shot per cleared cell; the family burns after.
+Read-only diagnostics (counted): windows T-2->T, T->T+2, T-10->T, T->T+10 (shape of
+the V); new-issue vs reopening split (a CMT roll artefact would live on new issues
+only); the same two cells on 2-year, 5-year and 30-year auctions with their own CMTs
+(the paper's cross-section; the 30-year is outside the paper); auctions within +-1
+business day of an FOMC statement excluded (2013+); mirrors; per-year signs (the 2013-
+publication decay check); gross vs net; the unconditional 5-day drift over the sample
+(the 1990-2020 bond bull market makes the raw long C1 drift-positive and the raw short
+C2 drift-negative - the differential is the gate for exactly this reason).
+Expected magnitude if real: ~2-3 bp of yield over each leg x ModD ~8 = ~15-25 bp of
+price per leg, an order of magnitude above cost; 5-day price sd ~90-110 bp -> IS SE
+~6.5 bp, t 2.24 needs ~15 bp: adequate power at the paper's size, ~50% at half of it;
+OOS SE ~11 bp -> t 2 needs ~22 bp, so an OOS miss at |t| < 2 with the right sign is a
+POWER miss. Post-publication decay (2013) and the post-2008 Fed-as-buyer regime are the
+registered risks. Test count: +2 selectable + 16 read-only. Runner run_r80_auction.py ->
+results/r80_auction_{is,oos}.json. Band: daily, ~12 events a year, 5-day holds.
