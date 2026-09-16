@@ -7420,3 +7420,35 @@ shorter duration, and the last three 2026 month-ends were NEGATIVE on both (the 
 partial year is -8 bp net in the OOS read): the forward log starts in a losing stretch,
 which is exactly what it is for.
 2026-09-14 weekly check-in: 14 forward pulls OK (ES roll week: ESU6 + ESZ6 both pulled; HSIU6 single; ZN daily added for watch #13); ISM PMI current (Aug 54.6, regime INACTIVE); journal 10 -> 10 rows (no new rows: XAU gate CLOSED at corr 0.737, MHI/MHIF no trigger 09-11/09-14, D7 open since 09-10 at 7591.70 +65 pts, PMI flat); SPRT: XAU +0.17, XAUAUD +0.17, MHI -0.49, MHIF -1.50 (n 6, W 2), D7 +0.23, all continue; journal artifact unchanged so not republished. Round 71 accrual: F1 0 events, F2 n 9 mean +2.08 pts (t 1.8), F3 n 10 +1.85 (t 1.6), F4 n 1 -30.3, F5 n 7 +9.7 (t 2.9; R -0.001 at 1x), none at bar. Watch #12: FXStreet feed refreshed via the Kernel browser (endpoint now needs the fxstreet.com Origin header; 13 new events 2026-08-28..09-11 merged, 3,080 total; forward n 0 - no mapped release after the 2026-09-12 start yet. Watch #13: forward n 0/0 (first month-end after START is 2026-09-30).
+
+## Round 82 (2026-09-16): orchestrated hypothesis sweep on index futures and gold - 0 registrable as proposed, 1 acquisition-gated revival
+Walton's direction: keep finding strategies, on index futures or gold futures. A 36-agent
+workflow: two inventory readers (101 burned families, 58 untested gaps mapped), eight
+proposer lenses (index flows, gold flows, new free data classes, event calendars, cross-
+asset, 24h session structure, literature 2018-2026, practitioner flows) -> 10 proposals ->
+8 canonical after merging -> adjacency screen (5 NEW, 3 SUBCELL, 0 already burned) -> two
+adversarial critics each (mechanism; data & feasibility) -> synthesis. Outcome: 0 cleared
+both critics; 6 KILLED at registration (#26-#31): C01 COMEX first-notice forced close-out
+(the forced action is a roll, outright-neutral; calendar unpowered), C02 gold ETF creation/
+redemption reversal (no forced party at the traded horizon; 23 sealed events), C04 SGE
+physical-bid session split (sub-cell of attempt 7; cost-dominated at the program's own
+measured Asia drift), C05 pre-release informed-flow drift into 10:00 ET private releases
+(sign derived from the 09:30-09:55 price, the intraday standard forbids it), C06 vol-
+control de-leveraging short after 2-sigma up days (attempt 30's read-only leg already
+refuted it; 147 distinct days, unpowered), C07 CTA trend-flip continuation on MES/MNQ
+(pre-announced flow, sign not fixed at the traded window; ~16 flips/yr, 5-session spacing).
+2 CONTESTED: C08 CTA trend-flip on gold (killed by the synthesiser on the same argument as
+C07 plus attempt 47 adjacency) and C03 CME GOLD MARGIN-HIKE FORCED DE-LEVERAGING - short
+MGC from the first Globex session after a GC performance-bond INCREASE takes effect, the
+one route the ledger has three times reserved as attempt 37's single repair (3934-3936,
+3944, 5136-5137) and mis-filed as paywalled: the CME clearing advisories (2008-2016 HTML
+lookups, later PDFs) are reachable through the Wayback Machine from the cloud VM. Ruled a
+NEW DATA CLASS (exchange-dated trigger), not a re-parameterisation of attempts 37/38's
+realised-move trigger. STATUS: ACQUISITION-GATED - no registration text is frozen until
+the advisory calendar is on disk with >= 85% coverage of a press-verified hike set and
+IS n_eff >= 40 after cluster-merging; if coverage fails the family is parked without a
+run. Frontier note carried forward (synthesiser): every on-disk proposal failed on sign
+(a price pattern standing in for an unobserved flow) and every forced-party proposal
+failed on outright-neutrality or data reach; the rule for future candidates is to cite
+the DOCUMENT that dates and signs the flow (advisory, methodology, schedule, rule book)
+before naming the instrument. Registration-stage kills: 31. Test count: 0 selectable run.
