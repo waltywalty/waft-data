@@ -7452,3 +7452,27 @@ run. Frontier note carried forward (synthesiser): every on-disk proposal failed 
 failed on outright-neutrality or data reach; the rule for future candidates is to cite
 the DOCUMENT that dates and signs the flow (advisory, methodology, schedule, rule book)
 before naming the instrument. Registration-stage kills: 31. Test count: 0 selectable run.
+
+### Round 82 acquisition result (2026-09-17): CME margin-change calendar PARTIAL - attempt 37's reserved repair CLOSED WITHOUT A RUN; asset #26 banked
+Route (reference/cme_margin_acquisition_2026-09-16.md; data/cme_margins/, gitignored): cmegroup.com is
+403 on every path from the container and the cloud VM; web.archive.org serves the advisory pages
+(7,831), 422 advisory PDFs (17% of the 2,218 "Performance Bond Requirements" advisories have their
+rate table archived), the margin API captures, and - the decisive documents - CME's own Performance
+Bond History PDFs (GC_2008_to_present.pdf, GC-2020-to-present.pdf and the SP/ND/ES/NQ equivalents),
+the listing the ledger twice filed as paywalled. Result: 72 dated GC outright tier-1 changes 2009-01..
+2026-05 (54 with two witnesses), complete for 2009-01..2016-08 and 2020-06..2025-06, a structural hole
+2016-08..2020-06 (46 metals advisories with A/E but no rates; >= 6 net increases unassignable) and
+nothing archived for Jul-Sep and Dec 2025. Press-set coverage 15/21 (71%); one press date (2024-08-29)
+shown wrong by the primary (2024-08-23). GC INCREASES: in-sample (E < 2022-04-13) 22 raw / 22 merged;
+holdout 22 / 21. Scope extension: ES 24/20 IS and 7/7 holdout; NQ 30/27 and 7/7; RTY 11/7 and 4/4
+(equity-index margins were never a registered family; the leveraged-fund book in ES is net SHORT in
+the COT record, so the gold sign argument does not transfer - noted, not proposed).
+GATE: >= 85% coverage AND IS n_eff >= 40 -> achieved 71% and 22 -> FAILS both. Per the Round 82
+registration, attempt 37's single reserved repair is CLOSED WITHOUT A RUN: the family (gold margin
+cascade, price-triggered and exchange-dated) is fully spent; its sealed holdout stays sealed; no
+descriptive read was taken (22 exogenous events cannot reach the bar and a read would burn the
+sample for nothing). Record corrected: the class is "public, direct site blocked, archive partial",
+not "paywalled"; the residual gap (2016-2020 rate tables, late-2025 advisories) is CME DataMine.
+ASSET #26 BANKED: CME GC/ES/NQ/RTY performance-bond change calendars 2008-2026 with witnesses,
+unresolved-advisory list, and the reproduction recipe (data/cme_margins/README.md). Test count 0.
+Program state after Round 82: 2 OOS passes / 59 attempts, 31 registration-stage kills, 26 assets.

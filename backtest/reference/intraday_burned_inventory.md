@@ -899,7 +899,7 @@ Mechanisms never tested intraday (data permitting):
     2026-08-19 (MHIF). MGC intraday history does not exist here beyond 3 days.
 23. **0DTE / same-day gamma regimes (VIX1D, from 2022-05)** - data too short for the 75/25 rule; never proposed.
 24. **CME margin-change dates as an ex-ante trigger for the sealed metals margin-cascade families**
-    (attempts 37/38) - the registered repair route; the data class is paywalled (CME DataMine).
+    (attempts 37/38) - the registered repair route; CORRECTED 2026-09-17: the CME advisories and Performance Bond History PDFs are PUBLIC (direct site 403 from our infrastructure, Internet Archive partial: GC dated calendar complete 2009-01..2016-08 and 2020-06..2025-06, hole 2016-08..2020-06 and after 2025-06); the free route yields IS n_eff 22 GC increases (< 40) and 71% press coverage (< 85%), so the repair was CLOSED WITHOUT A RUN (Round 82); full coverage still needs CME DataMine.
 25. **Order-flow / DOM / imbalance families** - structurally untestable on this data (no depth feed;
     CFD volume is tick count; exchange volume usable only 2010+ at 5m).
 
@@ -990,7 +990,7 @@ Event / calendar / conditioning data:
 - Reachable-but-not-pulled (frontier probe 2026-09-03 / acquisition 2026-09-04): VX futures term
   structure ~1.5 yrs via IBKR; GC front/second/third daily term structure 5 yrs; VXEEM/VXFXI/VXSLV
   CBOE; other-country FXStreet calendars; Deribit funding since 2018-08 (Kernel only). Blocked:
-  CME historical margins (paywalled), NYSE MOC imbalances, any DOM/order-flow product, FTD before
+  CME historical margins (public but partially archived; see Round 82 - the residual gap is DataMine), NYSE MOC imbalances, any DOM/order-flow product, FTD before
   2012, daily short volume before 2019.
 
 - **Round 71 (2026-09-09) - true ES / GC 5m forward pulls** (`data/forward/es_5m_*.json`, `gc_5m_*.json`,
