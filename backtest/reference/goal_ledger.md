@@ -7476,3 +7476,39 @@ not "paywalled"; the residual gap (2016-2020 rate tables, late-2025 advisories) 
 ASSET #26 BANKED: CME GC/ES/NQ/RTY performance-bond change calendars 2008-2026 with witnesses,
 unresolved-advisory list, and the reproduction recipe (data/cme_margins/README.md). Test count 0.
 Program state after Round 82: 2 OOS passes / 59 attempts, 31 registration-stage kills, 26 assets.
+
+### DATA-LOSS INCIDENT (2026-09-21, found at the weekly check-in): container wiped; every gitignored file under backtest/data/ lost
+The session container was re-created before the Monday routine: the working tree was on
+the relay's main-branch lineage (no backtest/ directory, no CLAUDE.md), the local branch
+had to be reset to origin/claude/trading-strategy-backtest-gqym2i (4fa21a4f0; nothing
+committed was lost), the Python scientific stack was gone (reinstalled), and backtest/data/
+was empty: every price frame, the Dukascopy 1-minute FX/gold/index frames (assets #22-#23,
+including the sealed 2022-2026 holdout frames and the watch-#12 event sample), the
+ejtrader frames, FRED/CBOE/Treasury series, the CME margin calendar (asset #26, raw tables
+were only on disk), the FXStreet event feed, and all data/forward/ pulls since 2026-08-19.
+The old subagent transcripts and the scratchpad were also gone.
+RESTORED SAME DAY: fetch_data.sh frames (gold/AUD/EUR/JPY/HSI/JP225/VIX/COT, 28 files);
+fred_DGS10.csv rebuilt from the Alpha Vantage DGS10 series (16,163 rows 1962-01-02..
+2026-09-17; same H.15 source, provenance noted); ism_pmi.json rewritten from the ledger;
+the journal page reconstructed from the live artifact's embedded template; forward feeds
+re-pulled (12 files for 2026-09-21) plus an IBKR recovery pull of the live contracts:
+HSIU6 15m back to 2026-08-21 (complete), ESZ6/GCZ6/XAUUSD/AUD/EUR 5m back to 2026-09-02
+(IBKR's 3,500-bar cap). NOT RECOVERABLE: ESU6 5m bars 2026-09-02..09-18 (expired contract
+returns nothing) - Round 71 F1-F3 events on those dates are now scored on the ESZ6 back-
+month prints (disclosed substitution; point moves track the front month, volume does not);
+the pre-2026-09-02 XAU/AUD/EUR 5m weeks (already journalled; only the raw bars are gone).
+IN PROGRESS (background agents): FXStreet event feed re-harvest (watch #12), FRED/CBOE/
+TreasuryDirect/AV-yield series and the SPX/NDX/RTY 5m frames from their GitHub sources,
+and the full Dukascopy re-acquisition (~17,000 day files, throttled feed). The CME margin
+tables need a re-crawl if ever needed (family closed; memo in reference/ survives).
+LESSON: gitignored data has no backup; a data manifest with md5s and a re-acquisition
+recipe per asset now lives in data/RESTORE_2026-09-21.md (when the agents finish) and
+should be committed as reference/data_restore_2026-09-21.md.
+2026-09-21 weekly check-in (post-restore): 12 forward pulls + 6 recovery pulls OK (HSIU6 alone,
+last trade 09-29 -> next week pull HSIU6 AND HSIV6 897062803; ESZ6 only, GCZ6, ZNZ6); ISM PMI
+current (Aug 54.6, regime INACTIVE); journal 10 -> 11 rows (+ MHIF 2026-09-15 L stop -82; XAU
+gate CLOSED at corr 0.653; MHI no trigger; D7 open since 09-10 +59 pts; PMI flat); SPRT: XAU
++0.17, XAUAUD +0.17, MHI -0.49, MHIF -1.99 (n 7, W 2 - nearing the -2.20 kill boundary), D7 +0.23;
+journal republished. Round 71 (re-scored on the recovered frames, ESZ6 substitution above):
+F1 n 1 +17.0, F2 n 10 -1.52 pts (t -1.0), F3 n 11 +1.18 (t 0.7), F4 n 2 -23.3, F5 n 12 +3.4
+(t 1.0), none at bar. Watch #12: feed being rebuilt, forward n 0. Watch #13: n 0/0.
