@@ -4,6 +4,31 @@ Backtest of the Asia-open breakout: form a range from the first 5/15/30 minutes 
 09:30 Hong Kong time (01:30 UTC), enter on the first candle to *close* beyond it, hold
 to a fixed clock time in the London session.
 
+## State as of 2026-09-23
+
+This README indexes the first 33 rounds; everything since lives in
+`reference/goal_ledger.md` (the canonical pre-registration ledger, rounds 34-83) and in the
+Edge Hunt Ledger artifact. The short version:
+
+- **Program score: 2 out-of-sample passes in 59 attempts run** (60 registered; attempt 60 is
+  data-gated). 31 further ideas were killed at the registration stage without a run. 15 sealed
+  OOS shots have been spent. Most of the ledger is negative results, as intended.
+- **Pass 1, attempt 44 (Round 61):** long the US equity index futures only while the last
+  released ISM manufacturing PMI is below 50; flat otherwise. OOS n 1,597 days, PF 1.33,
+  t 4.1 nominal, three separate contraction episodes all positive; effective n ~8 episodes.
+- **Pass 2, attempt 59 (Round 81):** long the 10-year Treasury from the close of the
+  third-to-last business day of the month to the month-end close (index duration
+  extension flow, Hartley & Schwarz 2019). IS +20.7 bp/month t 5.0; OOS +19.5 bp on 88
+  sealed month-ends t 2.5. Registered as watch #13; forward log on CMT and ZN.
+- Nothing trades. Every pass waits on explicit sign-off; the forward routines only score.
+- **Live routines:** a Monday data pull + journal update (weekly trigger) and a monthly
+  FRED/ISM pull; `forward/` holds the scorers and `forward/CONTRACT.md` the data contract.
+- **Data loss 2026-09-21:** the container was wiped and the gitignored data re-fetched;
+  `reference/data_restore_2026-09-21.md` records what was restored, from where, and what
+  was lost (ESU6 2026-09-02..09-18 is unrecoverable).
+- **Open now:** attempt 60 (Round 83) replicates the month-end extension on Bund, Gilt and
+  JGB yields (`run_r83_monthend_global.py`, registered before any foreign data was read).
+
 ## Running it
 
 ```bash
