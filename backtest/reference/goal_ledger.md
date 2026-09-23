@@ -7814,3 +7814,42 @@ UK now takes its ONE sealed shot (OOS bar: n >= 40, net > 0, PF >= 1.15, t >= 2.
 positive at 1.5x and 2x, differential > 0 with t >= 2.0). Test count: +3 selectable run;
 read-only 44 as enumerated (JP ex-roll ran; DE/UK have no roll dates). Shots after this
 entry: 15 spent, the UK shot pending.
+
+### Attempt 60 OOS RESULT (2026-09-23, UNSEAL_OK=1 --unseal; results/r83_monthend_global_oos.json, log .../_oos.log; manifest and file SHA-256 asserted, cut asserted; DE and JP holdouts stay sealed)
+US anchor holdout (already open since attempt 59, read for fidelity only): n 88, +19.5 bp,
+t 2.53, PF 2.01, differential +27.3 bp t 2.96 - identical to attempt 59's OOS file.
+UK, the one sealed shot (n 88, 2019-05..2026-08): net +4.7 bp, WR 55%, PF 1.19, t 0.63,
+halves [-,+]; x1.5 +3.2, x2 +1.7; price +4.6 / carry +3.1 vs control price -6.0;
+differential +10.8 bp t 1.18 (halves [+,+]). FAILS the OOS bar on own t (0.63 < 2.0),
+halves and differential t (1.18 < 2.0). Self-refutation reads: drop-one-max removes
+2022-09-30 (+291 bp, the window containing the Bank of England's LDI intervention on
+Sep 28) and leaves net +1.4 bp t 0.21 - the residual is one event; per-year 2019 +7.6,
+2020 +9.5, 2021 -26.5, 2022 +1.0, 2023 +3.1, 2024 +18.2, 2025 +29.2, 2026 -7.6; ex-December
+differential t 1.23; T-1 read-only -2.1 bp (the IS day-before structure is absent OOS);
+T+2 reversal -9.7 (n.s.); US-orthogonalised residual (IS beta 0.58) event mean -6.3 bp
+t -1.13, residual differential -4.1 bp t -0.60: out of sample the gilt moved LESS at month-
+end than its US co-movement predicts. Pooled date-clustered (UK only, since one shot)
++10.8 t 1.44.
+VERDICT: ATTEMPT 60 FAILS. Family outcome FAILS (0 OOS passes; REPLICATES was impossible
+after IS with one candidate). Shots spent after this: 16. Program score: 2 OOS passes /
+60 attempts.
+WHAT THIS MEANS FOR WATCH #13 (recorded as a caveat on the watch item, sign-off still
+Walton's): the month-end index-extension long did NOT replicate out of market. JGBs show
+nothing (IS -1.1 bp, differential t -1.3); Bunds show only the US co-movement (residual
+-0.6 bp) on an attenuated series; gilts echoed the US structure in sample (+14.9 bp,
+t 3.9, with the same T-1 build-up) but not in the holdout (+4.7 bp t 0.6, residual to the
+US negative, one LDI window carrying the mean). The generality argument in the Round 83
+registration ("every major bond index extends duration at month-end, so the flow should
+appear everywhere") is therefore NOT supported by this test; the surviving evidence for
+the effect is US-specific: attempt 59's IS + OOS pass on Treasuries (which stands as
+recorded), and the US-specific parts of the mechanism (Treasury settlement calendar, the
+2/5/7-year month-end settlements, the size of US index-benchmarked assets) are the
+candidates for why. A UK IS echo without an OOS echo is also consistent with the UK IS
+period simply sharing the US flow (cross-market event correlation 0.65 with DE, 0.58
+beta on the US). Forward scoring of watch #13 continues unchanged on CMT and ZN; the
+watch item's evidence line now reads "US only; out-of-market replication failed (attempt
+60)". Nothing trades.
+Negative-result value: this is the first replication family in the program and it did what
+replications are for - it bounded the claim. Test count: +3 selectable, +44 read-only, 1
+shot. Data assets: +5 (DE par/spot, UK par, JP 10y/9y, JGB issue dates; manifest
+committed; raw md5s in data/yields_global_MANIFEST.md).

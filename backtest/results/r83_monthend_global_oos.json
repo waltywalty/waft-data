@@ -1,0 +1,1106 @@
+{
+ "unsealed": true,
+ "registered_cut": {
+  "is_first_month": "1990-01",
+  "is_last_month": "2019-04",
+  "is_series_clip": "2019-05-06",
+  "oos_first_month": "2019-05",
+  "oos_last_month": "2026-08",
+  "oos_series_start": "2018-06-01"
+ },
+ "manifest_sha256": "798f227fe1c226c5c81e639f393337f69c3e227950f204f3bc86e5a1b6d6ab65",
+ "markets": {
+  "US": {
+   "n_events": 88,
+   "span": [
+    "2019-05-31",
+    "2026-08-31"
+   ],
+   "C1_extension_long": {
+    "x1": {
+     "n": 88,
+     "mean_bp": 19.508319007114803,
+     "wr": 0.5795454545454546,
+     "pf": 2.006482273446075,
+     "t": 2.534247715542335,
+     "halves": [
+      1.0,
+      1.0
+     ]
+    },
+    "gross": {
+     "n": 88,
+     "mean_bp": 22.508319007114803,
+     "wr": 0.5909090909090909,
+     "pf": 2.240811991677728,
+     "t": 2.9239657196335247,
+     "halves": [
+      1.0,
+      1.0
+     ]
+    },
+    "price_component": {
+     "n": 88,
+     "mean_bp": 19.296706304748678,
+     "wr": 0.5454545454545454,
+     "pf": 1.991298973966751,
+     "t": 2.504345588543698,
+     "halves": [
+      1.0,
+      1.0
+     ]
+    },
+    "carry": {
+     "n": 88,
+     "mean_bp": 3.2116127023661267,
+     "wr": 1.0,
+     "pf": null,
+     "t": 17.174146187502792,
+     "halves": [
+      1.0,
+      1.0
+     ]
+    },
+    "control_price": {
+     "n": 288,
+     "mean_bp": -8.073539610245575,
+     "wr": 0.4513888888888889,
+     "pf": 0.7650784731455719,
+     "t": -1.6825263792999405,
+     "halves": [
+      -1.0,
+      -1.0
+     ]
+    },
+    "n_control": 288,
+    "strat_diff": {
+     "n_event": 88,
+     "n_control": 288,
+     "dropped_events": 0,
+     "diff_bp": 27.33889945719151,
+     "se": 9.222902798789688,
+     "t": 2.9642402238890737
+    },
+    "diff_halves": [
+     1.0,
+     1.0
+    ],
+    "x15": {
+     "n": 88,
+     "mean_bp": 18.008319007114807,
+     "wr": 0.5681818181818182,
+     "pf": 1.8993134687217255,
+     "t": 2.339388713496741,
+     "halves": [
+      1.0,
+      1.0
+     ]
+    },
+    "x2": {
+     "n": 88,
+     "mean_bp": 16.508319007114807,
+     "wr": 0.5568181818181818,
+     "pf": 1.7981533387645323,
+     "t": 2.144529711451146,
+     "halves": [
+      1.0,
+      1.0
+     ]
+    },
+    "mirror_x1": {
+     "n": 88,
+     "mean_bp": -25.50831900711481,
+     "wr": 0.4090909090909091,
+     "pf": 0.3986870588269985,
+     "t": -3.3136837237247154,
+     "halves": [
+      -1.0,
+      -1.0
+     ]
+    },
+    "quarter_end": {
+     "n": 29,
+     "strat_diff": {
+      "n_event": 27,
+      "n_control": 288,
+      "dropped_events": 2,
+      "diff_bp": 27.76084981114314,
+      "se": 13.109281931700137,
+      "t": 2.1176483926257923
+     }
+    },
+    "other_month_end": {
+     "n": 59,
+     "strat_diff": {
+      "n_event": 59,
+      "n_control": 288,
+      "dropped_events": 0,
+      "diff_bp": 26.563064606377488,
+      "se": 11.085155788174767,
+      "t": 2.3962734592069497
+     }
+    },
+    "ex_december": {
+     "n": 81,
+     "x1": {
+      "n": 81,
+      "mean_bp": 22.326466254169116,
+      "wr": 0.5925925925925926,
+      "pf": 2.1338365011392626,
+      "t": 2.698823596302968,
+      "halves": [
+       1.0,
+       1.0
+      ]
+     },
+     "strat_diff": {
+      "n_event": 81,
+      "n_control": 288,
+      "dropped_events": 0,
+      "diff_bp": 30.2343951425419,
+      "se": 9.707662093982579,
+      "t": 3.1144877983838235
+     }
+    },
+    "december_only": {
+     "n": 7,
+     "x1": {
+      "n": 7
+     }
+    },
+    "drop_one_max": {
+     "dropped_date": "2021-11-30",
+     "dropped_net_bp": 192.65284727813744,
+     "x1": {
+      "n": 87,
+      "mean_bp": 17.518152015493854,
+      "wr": 0.5747126436781609,
+      "pf": 1.893534144377952,
+      "t": 2.3288814127132165,
+      "halves": [
+       1.0,
+       1.0
+      ]
+     },
+     "strat_diff": {
+      "n_event": 87,
+      "n_control": 288,
+      "dropped_events": 0,
+      "diff_bp": 25.37682933310964,
+      "se": 9.025139442407365,
+      "t": 2.8117936010904034
+     }
+    },
+    "per_year_net": {
+     "2019": 37.3,
+     "2020": 37.0,
+     "2021": 7.6,
+     "2022": 31.9,
+     "2023": 7.4,
+     "2024": 18.3,
+     "2025": 21.6,
+     "2026": -8.2
+    },
+    "by_era_diff": {
+     "pre-2009": {
+      "n_event": 0
+     },
+     "2009+": {
+      "n_event": 88,
+      "n_control": 288,
+      "dropped_events": 0,
+      "diff_bp": 27.33889945719151,
+      "se": 9.222902798789688,
+      "t": 2.9642402238890737
+     }
+    },
+    "negative_yield_split": {
+     "n_neg": 0,
+     "neg": {
+      "x1": {
+       "n": 0
+      },
+      "strat_diff": {
+       "n_event": 0
+      }
+     },
+     "pos": {
+      "x1": {
+       "n": 88,
+       "mean_bp": 19.508319007114803,
+       "wr": 0.5795454545454546,
+       "pf": 2.006482273446075,
+       "t": 2.534247715542335,
+       "halves": [
+        1.0,
+        1.0
+       ]
+      },
+      "strat_diff": {
+       "n_event": 88,
+       "n_control": 288,
+       "dropped_events": 0,
+       "diff_bp": 27.33889945719151,
+       "se": 9.222902798789688,
+       "t": 2.9642402238890737
+      }
+     }
+    }
+   },
+   "T-1_long": {
+    "x1": {
+     "n": 88,
+     "mean_bp": 6.856975439648931,
+     "wr": 0.4772727272727273,
+     "pf": 1.5136603170170697,
+     "t": 1.4522940738643209,
+     "halves": [
+      1.0,
+      1.0
+     ]
+    },
+    "gross": {
+     "n": 88,
+     "mean_bp": 9.85697543964893,
+     "wr": 0.625,
+     "pf": 1.8288992601828673,
+     "t": 2.0876882443611646,
+     "halves": [
+      1.0,
+      1.0
+     ]
+    },
+    "price_component": {
+     "n": 88,
+     "mean_bp": 8.779796112127137,
+     "wr": 0.4772727272727273,
+     "pf": 1.7094666476556097,
+     "t": 1.852803463438938,
+     "halves": [
+      1.0,
+      1.0
+     ]
+    },
+    "carry": {
+     "n": 88,
+     "mean_bp": 1.0771793275217934,
+     "wr": 1.0,
+     "pf": null,
+     "t": 12.546638087394776,
+     "halves": [
+      1.0,
+      1.0
+     ]
+    },
+    "control_price": {
+     "n": 943,
+     "mean_bp": -2.648018276390005,
+     "wr": 0.44538706256627786,
+     "pf": 0.8667489249537313,
+     "t": -1.6348187570163983,
+     "halves": [
+      -1.0,
+      -1.0
+     ]
+    },
+    "n_control": 943,
+    "strat_diff": {
+     "n_event": 88,
+     "n_control": 943,
+     "dropped_events": 0,
+     "diff_bp": 11.412890401301325,
+     "se": 5.078546235397718,
+     "t": 2.2472750807608906
+    },
+    "diff_halves": [
+     1.0,
+     1.0
+    ]
+   },
+   "T+2_reversal_short": {
+    "x1": {
+     "n": 88,
+     "mean_bp": -11.396354010795447,
+     "wr": 0.48863636363636365,
+     "pf": 0.6855301800412378,
+     "t": -1.3315957139551962,
+     "halves": [
+      -1.0,
+      -1.0
+     ]
+    },
+    "gross": {
+     "n": 88,
+     "mean_bp": -8.396354010795447,
+     "wr": 0.48863636363636365,
+     "pf": 0.7580706268006502,
+     "t": -0.9810636808083284,
+     "halves": [
+      -1.0,
+      -1.0
+     ]
+    },
+    "price_component": {
+     "n": 88,
+     "mean_bp": -5.628203325863941,
+     "wr": 0.48863636363636365,
+     "pf": 0.8310667783055316,
+     "t": -0.6574414549540815,
+     "halves": [
+      -1.0,
+      1.0
+     ]
+    },
+    "carry": {
+     "n": 88,
+     "mean_bp": -2.7681506849315065,
+     "wr": 0.0,
+     "pf": 0.0,
+     "t": -15.631715854631572,
+     "halves": [
+      -1.0,
+      -1.0
+     ]
+    },
+    "control_price": {
+     "n": 451,
+     "mean_bp": 5.413509146493024,
+     "wr": 0.5077605321507761,
+     "pf": 1.2377901529545055,
+     "t": 1.6177346963888937,
+     "halves": [
+      1.0,
+      1.0
+     ]
+    },
+    "n_control": 451,
+    "strat_diff": {
+     "n_event": 88,
+     "n_control": 451,
+     "dropped_events": 0,
+     "diff_bp": -10.990243093305583,
+     "se": 9.255801150101147,
+     "t": -1.1873897153878983
+    },
+    "diff_halves": [
+     -1.0,
+     -1.0
+    ]
+   },
+   "jump_rank_guard": {
+    "event_rank_jump_share": 0.0017064846416382253,
+    "mid_month_jump_share": 0.007772020725388601,
+    "ratio": 0.21956769055745165,
+    "event_rank_jumps": 1,
+    "mid_month_jumps": 6,
+    "roll_flag": false,
+    "by_rank": {
+     "-14": {
+      "n": 96,
+      "jump_share": 0.010416666666666666
+     },
+     "-13": {
+      "n": 96,
+      "jump_share": 0.010416666666666666
+     },
+     "-12": {
+      "n": 96,
+      "jump_share": 0.010416666666666666
+     },
+     "-11": {
+      "n": 96,
+      "jump_share": 0.010416666666666666
+     },
+     "-10": {
+      "n": 97,
+      "jump_share": 0.010309278350515464
+     },
+     "-9": {
+      "n": 97,
+      "jump_share": 0.0
+     },
+     "-8": {
+      "n": 97,
+      "jump_share": 0.0
+     },
+     "-7": {
+      "n": 97,
+      "jump_share": 0.010309278350515464
+     },
+     "-6": {
+      "n": 97,
+      "jump_share": 0.0
+     },
+     "-5": {
+      "n": 97,
+      "jump_share": 0.0
+     },
+     "-4": {
+      "n": 97,
+      "jump_share": 0.0
+     },
+     "-3": {
+      "n": 98,
+      "jump_share": 0.0
+     },
+     "-2": {
+      "n": 98,
+      "jump_share": 0.0
+     },
+     "-1": {
+      "n": 98,
+      "jump_share": 0.01020408163265306
+     },
+     "0": {
+      "n": 98,
+      "jump_share": 0.0
+     },
+     "1": {
+      "n": 97,
+      "jump_share": 0.0
+     }
+    }
+   },
+   "cut_record": {
+    "is_first_month": "1990-01",
+    "is_last_month": "2019-04",
+    "is_series_clip": "2019-05-06",
+    "oos_first_month": "2019-05",
+    "oos_last_month": "2026-08",
+    "oos_series_start": "2018-06-01",
+    "stage": "OOS",
+    "series_first": "1962-01-02",
+    "series_last": "2026-09-17",
+    "n_events": 88,
+    "first_event": "2019-05-31",
+    "last_event": "2026-08-31"
+   },
+   "file_sha256": "81305d9fed48560c3091c9265a842bc60f89f26584ce2704050a79281eb40c9f",
+   "coupon_freq": 2,
+   "selectable": false,
+   "manifest": null
+  },
+  "DE": {
+   "skipped": "did not clear IS; holdout stays sealed"
+  },
+  "UK": {
+   "n_events": 88,
+   "span": [
+    "2019-05-31",
+    "2026-08-28"
+   ],
+   "C1_extension_long": {
+    "x1": {
+     "n": 88,
+     "mean_bp": 4.71309402162667,
+     "wr": 0.5454545454545454,
+     "pf": 1.1911136063522139,
+     "t": 0.6303755353956594,
+     "halves": [
+      -1.0,
+      1.0
+     ]
+    },
+    "gross": {
+     "n": 88,
+     "mean_bp": 7.713094021626668,
+     "wr": 0.5568181818181818,
+     "pf": 1.3308428685917562,
+     "t": 1.0316250325432414,
+     "halves": [
+      1.0,
+      1.0
+     ]
+    },
+    "price_component": {
+     "n": 88,
+     "mean_bp": 4.614988479908111,
+     "wr": 0.5340909090909091,
+     "pf": 1.1880227211079595,
+     "t": 0.6211523197452673,
+     "halves": [
+      -1.0,
+      1.0
+     ]
+    },
+    "carry": {
+     "n": 88,
+     "mean_bp": 3.0981055417185557,
+     "wr": 1.0,
+     "pf": null,
+     "t": 12.55250985374735,
+     "halves": [
+      1.0,
+      1.0
+     ]
+    },
+    "control_price": {
+     "n": 291,
+     "mean_bp": -5.954087942238346,
+     "wr": 0.47079037800687284,
+     "pf": 0.8327489547321205,
+     "t": -1.1281071046264617,
+     "halves": [
+      -1.0,
+      -1.0
+     ]
+    },
+    "n_control": 291,
+    "strat_diff": {
+     "n_event": 88,
+     "n_control": 291,
+     "dropped_events": 0,
+     "diff_bp": 10.81705048594366,
+     "se": 9.202607844627115,
+     "t": 1.1754331672688985
+    },
+    "diff_halves": [
+     1.0,
+     1.0
+    ],
+    "x15": {
+     "n": 88,
+     "mean_bp": 3.2130940216266684,
+     "wr": 0.5340909090909091,
+     "pf": 1.1267376613363738,
+     "t": 0.4297507868218679,
+     "halves": [
+      -1.0,
+      1.0
+     ]
+    },
+    "x2": {
+     "n": 88,
+     "mean_bp": 1.7130940216266686,
+     "wr": 0.5227272727272727,
+     "pf": 1.0657560530190247,
+     "t": 0.2291260382480768,
+     "halves": [
+      -1.0,
+      1.0
+     ]
+    },
+    "mirror_x1": {
+     "n": 88,
+     "mean_bp": -10.713094021626667,
+     "wr": 0.42045454545454547,
+     "pf": 0.6729180582901901,
+     "t": -1.4328745296908236,
+     "halves": [
+      -1.0,
+      -1.0
+     ]
+    },
+    "quarter_end": {
+     "n": 29,
+     "strat_diff": {
+      "n_event": 27,
+      "n_control": 291,
+      "dropped_events": 2,
+      "diff_bp": 8.713040151596966,
+      "se": 15.127324772642119,
+      "t": 0.5759802399003533
+     }
+    },
+    "other_month_end": {
+     "n": 59,
+     "strat_diff": {
+      "n_event": 59,
+      "n_control": 291,
+      "dropped_events": 0,
+      "diff_bp": 11.943571165102759,
+      "se": 10.052179812531191,
+      "t": 1.1881573338166644
+     }
+    },
+    "ex_december": {
+     "n": 81,
+     "x1": {
+      "n": 81,
+      "mean_bp": 5.374112723725055,
+      "wr": 0.5555555555555556,
+      "pf": 1.222541363642858,
+      "t": 0.6859307781678824,
+      "halves": [
+       -1.0,
+       1.0
+      ]
+     },
+     "strat_diff": {
+      "n_event": 81,
+      "n_control": 291,
+      "dropped_events": 0,
+      "diff_bp": 11.706603470984703,
+      "se": 9.552969648229993,
+      "t": 1.2254412922952962
+     }
+    },
+    "december_only": {
+     "n": 7,
+     "x1": {
+      "n": 7
+     }
+    },
+    "drop_one_max": {
+     "dropped_date": "2022-09-30",
+     "dropped_net_bp": 290.88624522375744,
+     "x1": {
+      "n": 87,
+      "mean_bp": 1.4237474560849352,
+      "wr": 0.5402298850574713,
+      "pf": 1.0570761993000497,
+      "t": 0.20962683824621559,
+      "halves": [
+       -1.0,
+       1.0
+      ]
+     },
+     "strat_diff": {
+      "n_event": 87,
+      "n_control": 291,
+      "dropped_events": 0,
+      "diff_bp": 7.308442333067421,
+      "se": 8.47432201917117,
+      "t": 0.8624220694627582
+     }
+    },
+    "per_year_net": {
+     "2019": 7.6,
+     "2020": 9.5,
+     "2021": -26.5,
+     "2022": 1.0,
+     "2023": 3.1,
+     "2024": 18.2,
+     "2025": 29.2,
+     "2026": -7.6
+    },
+    "by_era_diff": {
+     "pre-2009": {
+      "n_event": 0
+     },
+     "2009+": {
+      "n_event": 88,
+      "n_control": 291,
+      "dropped_events": 0,
+      "diff_bp": 10.81705048594366,
+      "se": 9.202607844627115,
+      "t": 1.1754331672688985
+     }
+    },
+    "negative_yield_split": {
+     "n_neg": 0,
+     "neg": {
+      "x1": {
+       "n": 0
+      },
+      "strat_diff": {
+       "n_event": 0
+      }
+     },
+     "pos": {
+      "x1": {
+       "n": 88,
+       "mean_bp": 4.71309402162667,
+       "wr": 0.5454545454545454,
+       "pf": 1.1911136063522139,
+       "t": 0.6303755353956594,
+       "halves": [
+        -1.0,
+        1.0
+       ]
+      },
+      "strat_diff": {
+       "n_event": 88,
+       "n_control": 291,
+       "dropped_events": 0,
+       "diff_bp": 10.81705048594366,
+       "se": 9.202607844627115,
+       "t": 1.1754331672688985
+      }
+     }
+    },
+    "us_orthogonalised": {
+     "beta": 0.5796732229003854,
+     "us_event_mean_bp": 18.861690457557582,
+     "us_control_mean_bp": -6.728098571790767,
+     "event_ortho": {
+      "n": 88,
+      "mean_bp": -6.318628416973737,
+      "wr": 0.45454545454545453,
+      "pf": 0.7221137288701046,
+      "t": -1.1269779696084836,
+      "halves": [
+       -1.0,
+       1.0
+      ]
+     },
+     "strat_diff": {
+      "n_event": 88,
+      "n_control": 291,
+      "dropped_events": 0,
+      "diff_bp": -4.1361668551681126,
+      "se": 6.879421915400308,
+      "t": -0.6012375612417185
+     },
+     "raw_diff_for_reference": 10.81705048594366
+    }
+   },
+   "T-1_long": {
+    "x1": {
+     "n": 88,
+     "mean_bp": -2.1354653509786896,
+     "wr": 0.48863636363636365,
+     "pf": 0.8760913376488402,
+     "t": -0.49081409891068123,
+     "halves": [
+      -1.0,
+      1.0
+     ]
+    },
+    "gross": {
+     "n": 88,
+     "mean_bp": 0.8645346490213099,
+     "wr": 0.5568181818181818,
+     "pf": 1.054937266867662,
+     "t": 0.1987041346945698,
+     "halves": [
+      -1.0,
+      1.0
+     ]
+    },
+    "price_component": {
+     "n": 88,
+     "mean_bp": -0.05029193877445531,
+     "wr": 0.5113636363636364,
+     "pf": 0.9968828489367613,
+     "t": -0.01159767956807047,
+     "halves": [
+      -1.0,
+      1.0
+     ]
+    },
+    "carry": {
+     "n": 88,
+     "mean_bp": 0.9148265877957659,
+     "wr": 1.0,
+     "pf": null,
+     "t": 10.859817720532272,
+     "halves": [
+      1.0,
+      1.0
+     ]
+    },
+    "control_price": {
+     "n": 961,
+     "mean_bp": -1.8544445109134882,
+     "wr": 0.4890738813735692,
+     "pf": 0.9085531316912451,
+     "t": -1.0836213194432303,
+     "halves": [
+      -1.0,
+      -1.0
+     ]
+    },
+    "n_control": 961,
+    "strat_diff": {
+     "n_event": 88,
+     "n_control": 961,
+     "dropped_events": 0,
+     "diff_bp": 1.8269892302804231,
+     "se": 4.544278259347639,
+     "t": 0.4020416721890397
+    },
+    "diff_halves": [
+     -1.0,
+     1.0
+    ]
+   },
+   "T+2_reversal_short": {
+    "x1": {
+     "n": 88,
+     "mean_bp": -9.708924581867883,
+     "wr": 0.4772727272727273,
+     "pf": 0.699284170556026,
+     "t": -1.2726113018391656,
+     "halves": [
+      -1.0,
+      1.0
+     ]
+    },
+    "gross": {
+     "n": 88,
+     "mean_bp": -6.708924581867884,
+     "wr": 0.48863636363636365,
+     "pf": 0.7818313973440484,
+     "t": -0.8793819721307472,
+     "halves": [
+      -1.0,
+      1.0
+     ]
+    },
+    "price_component": {
+     "n": 88,
+     "mean_bp": -4.079182053847959,
+     "wr": 0.5113636363636364,
+     "pf": 0.8624879565730015,
+     "t": -0.5314379207562977,
+     "halves": [
+      -1.0,
+      1.0
+     ]
+    },
+    "carry": {
+     "n": 88,
+     "mean_bp": -2.6297425280199254,
+     "wr": 0.0,
+     "pf": 0.0,
+     "t": -12.526239671604598,
+     "halves": [
+      -1.0,
+      -1.0
+     ]
+    },
+    "control_price": {
+     "n": 460,
+     "mean_bp": 5.481739273787186,
+     "wr": 0.5369565217391304,
+     "pf": 1.2287848657985245,
+     "t": 1.602726275561232,
+     "halves": [
+      1.0,
+      1.0
+     ]
+    },
+    "n_control": 460,
+    "strat_diff": {
+     "n_event": 88,
+     "n_control": 460,
+     "dropped_events": 0,
+     "diff_bp": -9.662432055900531,
+     "se": 8.422600209165402,
+     "t": -1.1472029795960106
+    },
+    "diff_halves": [
+     -1.0,
+     1.0
+    ]
+   },
+   "jump_rank_guard": {
+    "event_rank_jump_share": 0.005119453924914676,
+    "mid_month_jump_share": 0.00903225806451613,
+    "ratio": 0.5667966845441248,
+    "event_rank_jumps": 3,
+    "mid_month_jumps": 7,
+    "roll_flag": false,
+    "by_rank": {
+     "-14": {
+      "n": 96,
+      "jump_share": 0.03125
+     },
+     "-13": {
+      "n": 97,
+      "jump_share": 0.0
+     },
+     "-12": {
+      "n": 97,
+      "jump_share": 0.010309278350515464
+     },
+     "-11": {
+      "n": 97,
+      "jump_share": 0.0
+     },
+     "-10": {
+      "n": 97,
+      "jump_share": 0.0
+     },
+     "-9": {
+      "n": 97,
+      "jump_share": 0.010309278350515464
+     },
+     "-8": {
+      "n": 97,
+      "jump_share": 0.0
+     },
+     "-7": {
+      "n": 97,
+      "jump_share": 0.020618556701030927
+     },
+     "-6": {
+      "n": 97,
+      "jump_share": 0.0
+     },
+     "-5": {
+      "n": 97,
+      "jump_share": 0.010309278350515464
+     },
+     "-4": {
+      "n": 97,
+      "jump_share": 0.0
+     },
+     "-3": {
+      "n": 98,
+      "jump_share": 0.0
+     },
+     "-2": {
+      "n": 98,
+      "jump_share": 0.02040816326530612
+     },
+     "-1": {
+      "n": 98,
+      "jump_share": 0.0
+     },
+     "0": {
+      "n": 98,
+      "jump_share": 0.0
+     },
+     "1": {
+      "n": 97,
+      "jump_share": 0.010309278350515464
+     }
+    }
+   },
+   "cut_record": {
+    "is_first_month": "1990-01",
+    "is_last_month": "2019-04",
+    "is_series_clip": "2019-05-06",
+    "oos_first_month": "2019-05",
+    "oos_last_month": "2026-08",
+    "oos_series_start": "2018-06-01",
+    "stage": "OOS",
+    "series_first": "1993-11-01",
+    "series_last": "2026-09-21",
+    "n_events": 88,
+    "first_event": "2019-05-31",
+    "last_event": "2026-08-28"
+   },
+   "file_sha256": "b12f55c79b32f082439967673e457427801f3800e286d89595e71c344102926f",
+   "coupon_freq": 2,
+   "selectable": true,
+   "manifest": {
+    "series_id": "IUDMNPY",
+    "source": "Bank of England Interactive Database, 'Yield from British Government Securities, 10 year Nominal Par Yield' (VRP model, Anderson & Sleath 2001)",
+    "route": "BoE IADB CSV download from a Kernel cloud VM; raw IUDMNPY_boe_database.csv under data/raw_yields/ (md5 in the acquisition manifest); single continuous download, no archive stitching; cross-checked against the GLC nominal daily spreadsheet zero-coupon 10y (mean |diff| 0.000125 on 11,302 dates)",
+    "file": "yield_UK10Y_daily.csv",
+    "file_md5": "9fdf03317328c5d4e3fbb1f0fd265d98",
+    "file_sha256": "b12f55c79b32f082439967673e457427801f3800e286d89595e71c344102926f",
+    "construction": "fitted-par",
+    "coupon_convention": "semi-annual (gilt)",
+    "quote_time": "not stated on the provider pages read; treated as end-of-day per the BoE curve methodology (unverified)",
+    "attenuated": false,
+    "first_date": "1993-11-01",
+    "last_date": "2026-09-21",
+    "n_rows": 8310,
+    "is_month_ends": 306,
+    "is_first_event": "1993-11-30",
+    "oos_month_ends": 88,
+    "scale_check": "PASS: percent, 4 decimals, min 0.1239 (2020-08-04), max 9.1256 (1994-09-20), never negative, daily sd 5.4 bp",
+    "known_date_checks": {
+     "verdict": "PASS (anchors 1994-09-14 9.00, 2000-01-19 5.87, 2012-07-18 1.58, 2016-08-12, 2020-08-04, 2022-09-23, 2023-08-17, 2025-01-09 within tolerance; 2008-12-17 3.51 vs a medium-confidence memory anchor 3.15 +-0.3 = UNCERTAIN, all high-confidence anchors pass; jump anchors 2022-09-23 +0.34, 2022-09-26 +0.32, 2016-06-24 -0.27 on the named day)",
+     "items": [
+      {
+       "date": "1990-01-17",
+       "expected": 11.6,
+       "actual": null,
+       "verdict": "OUT_OF_SPAN"
+      },
+      {
+       "date": "1994-09-14",
+       "expected": 8.9,
+       "actual": 8.9966,
+       "verdict": "PASS"
+      },
+      {
+       "date": "2000-01-19",
+       "expected": 5.75,
+       "actual": 5.8738,
+       "verdict": "PASS"
+      },
+      {
+       "date": "2008-12-17",
+       "expected": 3.15,
+       "actual": 3.5106,
+       "verdict": "UNCERTAIN"
+      },
+      {
+       "date": "2012-07-18",
+       "expected": 1.5,
+       "actual": 1.5763,
+       "verdict": "PASS"
+      },
+      {
+       "date": "2016-08-12",
+       "expected": 0.53,
+       "actual": 0.6119,
+       "verdict": "PASS"
+      },
+      {
+       "date": "2020-08-04",
+       "expected": 0.09,
+       "actual": 0.1239,
+       "verdict": "PASS"
+      },
+      {
+       "date": "2022-09-23",
+       "expected": 3.82,
+       "actual": 3.9689,
+       "verdict": "PASS"
+      },
+      {
+       "date": "2022-10-11",
+       "expected": 4.5,
+       "actual": 4.6433,
+       "verdict": "PASS"
+      },
+      {
+       "date": "2023-08-17",
+       "expected": 4.73,
+       "actual": 4.7501,
+       "verdict": "PASS"
+      },
+      {
+       "date": "2025-01-09",
+       "expected": 4.88,
+       "actual": 4.7733,
+       "verdict": "PASS"
+      }
+     ]
+    },
+    "holiday_row_check": "PASS: 0 rows on any bank holiday incl. moved ones; Dec 24/31 half-day sessions carry data (December T = Dec 31 when a weekday; flagged in the ex-December read-only)",
+    "gaps_check": "9 one-off missing weekdays, all documented closures: 1999-12-31 Millennium, 2002-06-03/04 Golden Jubilee, 2011-04-29 royal wedding, 2012-06-04/05 Diamond Jubilee, 2022-06-02/03 Platinum Jubilee, 2022-09-19 state funeral",
+    "repeats_check": "0.4% exact repeats at 0.01 bp resolution; no run >= 6; T-repeat share 1% vs 0.4% base",
+    "splices": "none: one continuous IADB series from 1993-11-01 (par yields are not published before then)",
+    "passed": true,
+    "admission_note": "ADMITTED. IS 306 month-ends 1993-11..2019-04 (>= 120), OOS 88."
+   }
+  },
+  "JP": {
+   "skipped": "did not clear IS; holdout stays sealed"
+  }
+ },
+ "pooled_date_clustered": {
+  "n": 88,
+  "mean_bp": 10.817050485943664,
+  "wr": 0.5909090909090909,
+  "pf": 1.4950034198883535,
+  "t": 1.4414697715778517,
+  "halves": [
+   1.0,
+   1.0
+  ],
+  "n_dates": 88,
+  "dates_with_all_markets": 88
+ },
+ "pooled_market_stratified": {
+  "n_event": 88,
+  "diff_bp": 10.81705048594366,
+  "se": 9.202607844627115,
+  "t": 1.1754331672688982,
+  "note": "market x year strata; SE ignores same-date cross-market correlation"
+ },
+ "cross_market_event_corr": {},
+ "verdict": {
+  "UK": false
+ },
+ "family": "FAILS",
+ "shots_taken": 1
+}
