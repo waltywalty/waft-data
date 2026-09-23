@@ -7718,3 +7718,51 @@ edit, aborts the sealed run; --unseal without UNSEAL_OK falls back to an IS run.
 fixed from the run: an infinite jump-rank ratio (event-rank jumps with zero mid-month
 jumps) did not raise the roll flag; it now does, and an IS-stage flag is carried onto the
 sealed verdict. Nothing foreign read.
+
+### Round 83 DATA ADMISSION (2026-09-23, recorded BEFORE the IS run; manifest reference/yields_global_manifest.json sha256 798f227f...)
+Acquisition delivered (Kernel VM, official providers, raw files and md5s under data/raw_yields/,
+narrative in data/yields_global_MANIFEST.md md5 in the JSON manifest; no return computed by the
+acquisition agent). check_yield_provenance.py run on every delivered file; results and the
+admission decision per market:
+- DE: Bundesbank Svensson PAR yield at 10y residual maturity (BBSIS ... ZAR ...; "listed
+  Federal securities with annual coupon payments"), 1997-08-07..2026-09-23, 7,394 rows. The
+  par series is the primary (the proxy is a par bond; the critics recommended par before any
+  data existed); the spot (ZST) file from the same curve is kept as a companion and NOT run.
+  Checker: parse/weekday/holiday-rows/scale/anchors/jump-anchors/month-end-calendar PASS;
+  "span FAIL" is a band artefact (Frankfurt trades on Ascension, Whit Monday, Corpus Christi
+  and Oct 3, giving 257-row years) - not a data fault; one one-off gap 2017-10-31 = the
+  Reformation-500 national holiday; repeats 12% at 1 bp (expected ~10%), one 6-run in
+  2020-11 (OOS period, disclosed), T-repeat share 15% vs 12% base. OBSERVATION TIME NOT
+  ESTABLISHED by any provider text -> DE is ADMITTED AS ATTENUATED: a DE null is
+  inconclusive, a DE pass counts. IS 261 month-ends (1997-08-29..2019-04-30, >= 120), OOS 88,
+  no pre-1990 placebo (series starts 1997).
+- UK: Bank of England IADB IUDMNPY, 10-year nominal PAR yield from the VRP curve,
+  1993-11-01..2026-09-21, 8,310 rows, single continuous download, no stitching, cross-checked
+  against the GLC spreadsheet. Checker: all PASS except "gaps UNCERTAIN" = nine one-off
+  missing weekdays that are all documented closures (Millennium, two Jubilees, royal wedding,
+  Platinum Jubilee, state funeral); one medium-confidence memory anchor (2008-12-17) 0.36
+  off a 0.3 tolerance while every high-confidence anchor passes. Quote time not stated on
+  the pages read; treated as end-of-day per the BoE methodology (unverified; not flagged
+  attenuated - no known midday-fixing concern as for Frankfurt). Dec 24/31 half-day sessions
+  carry data (December T = Dec 31), covered by the ex-December read-only. ADMITTED. IS 306
+  month-ends (1993-11-30..2019-04-30), OOS 88, no pre-1990 placebo.
+- JP: MoF constant-maturity 10y compound yield "read off a curve through selected issues"
+  at the 15:00 JST close (JSDA reference prices from 2002-08), 1986-07-05..2026-09-17,
+  9,942 rows; classified ISSUE-BASED (composition changes as issues enter) -> admitted only
+  with roll dates: 256 new-issue issue dates 1989-04..2026-07 (122 on the 20th, 60 on the
+  21st/22nd - mid-month, away from [T-3, T]) + 43 isolation-detector days (|d10y - d9y| >
+  8 bp; 33 in 1986-89, 9 in the 1990s, 1 in 2023), 299 roll dates in the manifest, computed
+  mechanically with no month-end information. Checker: anchors/jump-anchors/holiday-rows/
+  scale/month-end-calendar PASS; "span FAIL" = 1987-88 Saturday half-sessions (pre-IS);
+  "repeats FAIL" = excess exact repeats in 1989/1997/2013/2015 (6-9% vs 1-2% expected from
+  volatility at 0.1 bp) - NOT concentrated at month-ends (T-repeat share 5.2% vs 5.5% base),
+  so they can dilute but cannot manufacture the effect; disclosed, not disqualifying. Six
+  one-off gaps all documented (1993 wedding, 2019 enthronement, Olympics-shifted holidays).
+  Price-basis changes 1998-12 and 2002-08 inside IS, no level step reported. Loader
+  adjustments (pre-data, disclosed): leading not-yet-published rows dropped; JP Saturday
+  rows allowed only before 1989-03 (they touch the pre-1990 placebo only). ADMITTED. IS 352
+  month-ends (1990-01-31..2019-04-26), OOS 88 (59 inside YCC), pre-1990 placebo 42.
+Per-market cut and counts now bound: DE 261/88, UK 306/88, JP 352/88; US anchor 352/88.
+Bonferroni-3 floor 2.39 applies (three admitted). Power at these n: DE SE ~3.7 bp (t 2.39
+needs ~9 bp), UK ~3.4 bp (~8 bp), JP ~1.6 bp (~4 bp, cost-bound at 6 bp). No return has
+been computed; the IS run follows this entry.

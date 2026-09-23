@@ -45,7 +45,7 @@ T_FLOOR_IS, T_FLOOR_OOS = 2.39, 2.0
 MANIFEST = os.path.join(HERE, "reference", "yields_global_manifest.json")
 MARKETS = {  # code: (file, coupon frequency per year, selectable)
     "US": ("fred_DGS10.csv", 2, False),
-    "DE": ("yield_DE10Y_daily.csv", 1, True),
+    "DE": ("yield_DE10Y_par_daily.csv", 1, True),   # Bundesbank Svensson PAR yield (ZAR); the spot (ZST) file is a companion, not run
     "UK": ("yield_UK10Y_daily.csv", 2, True),
     "JP": ("yield_JP10Y_daily.csv", 2, True),   # JGBs pay semi-annual coupons (corrected pre-data, see ledger)
 }
@@ -83,17 +83,22 @@ def admitted(code, man):
 
 
 def load_yield(fname):
-    """contract: exactly two columns (date, yield_pct), ISO naive dates, '.' decimal, percent, weekday-only,
-    unique ascending dates, missing empty/NaN/'.', no gap > 12 calendar days."""
+    """contract: exactly two columns (date, yield_pct), ISO naive dates, '.' decimal, percent, no Sunday rows (JP
+    Saturday half-sessions allowed before 1989-03, pre-IS), unique ascending dates, missing empty/NaN/'.', leading
+    not-yet-published rows allowed, no gap > 12 calendar days."""
     d = pd.read_csv(os.path.join(HERE, "data", fname))
     assert d.shape[1] == 2, f"{fname}: expected 2 columns (date, yield_pct), got {list(d.columns)}"
     d.columns = ["date", "y"]
     d["date"] = pd.to_datetime(d.date, format="%Y-%m-%d")
     assert not d.y.astype(str).str.contains(",").any(), f"{fname}: comma in a value (European decimal?)"
-    d["y"] = pd.to_numeric(d.y, errors="coerce"); n_missing = int(d.y.isna().sum())
+    d["y"] = pd.to_numeric(d.y, errors="coerce")
+    first = d.y.first_valid_index(); d = d.loc[first:]                       # leading rows before the provider published the tenor
+    n_missing = int(d.y.isna().sum())
     y = d.dropna().sort_values("date", kind="stable").set_index("date").y
     assert y.index.is_unique and y.index.is_monotonic_increasing, f"{fname}: duplicate dates"
-    assert (y.index.dayofweek < 5).all(), f"{fname}: weekend rows"
+    assert (y.index.dayofweek < 6).all(), f"{fname}: Sunday rows"
+    sat = y.index[y.index.dayofweek == 5]
+    assert len(sat) == 0 or (fname.startswith("yield_JP") and sat.max() < pd.Timestamp("1989-03-01")), f"{fname}: Saturday rows after 1989-02 ({len(sat)})"
     assert -2.0 < y.min() and 1.0 < y.max() < 25.0, f"{fname}: yields {y.min():.3f}..{y.max():.3f} not in percent"
     gaps = y.index.to_series().diff().dt.days
     assert gaps.max() <= 12, f"{fname}: {int(gaps.max())}-day gap ending {gaps.idxmax().date()}"
