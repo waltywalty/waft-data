@@ -7512,3 +7512,64 @@ gate CLOSED at corr 0.653; MHI no trigger; D7 open since 09-10 +59 pts; PMI flat
 journal republished. Round 71 (re-scored on the recovered frames, ESZ6 substitution above):
 F1 n 1 +17.0, F2 n 10 -1.52 pts (t -1.0), F3 n 11 +1.18 (t 0.7), F4 n 2 -23.3, F5 n 12 +3.4
 (t 1.0), none at bar. Watch #12: feed being rebuilt, forward n 0. Watch #13: n 0/0.
+
+## Round 83 (2026-09-23): out-of-market replication of the month-end index-extension pass (attempt 59) on Bund, Gilt and JGB - attempt 60 registered BEFORE running, data-gated
+
+Purpose (Walton: "keep going with other things in the meantime" while the data restore
+runs): the program's strongest result (attempt 59, watch #13: long the 10-year Treasury
+from T-3 close to the month-end close, +20.7 bp IS / +19.5 bp on 88 sealed month-ends)
+rests on a mechanism that is not US-specific - every major bond index (Bloomberg Euro-
+Aggregate and Global-Aggregate, FTSE World Government Bond Index, iBoxx sovereigns)
+rebalances at the last business day of the month and extends duration as the month's
+new issues enter, so index-benchmarked funds must buy duration into that close in every
+market. If the flow is real it should appear in German, UK and Japanese government bonds
+on their own month-end calendars; if it is a US-only artefact of the Treasury calendar
+(2/5/7-year settlements on the last business day) it should not. Three independent
+markets on independent data are the cheapest available test of the mechanism's
+generality and the strongest possible support (or refutation) for the watch-#13 sign-
+off. Hartley & Schwarz (2019) document the US effect only; the Euro and UK cases are
+untested here and, to our knowledge, in the literature we could reach (unverified).
+DATA (acquisition in progress, gated): daily 10-year benchmark yields - Germany
+(Bundesbank/ECB daily Bund yield), UK (Bank of England daily nominal 10-year yield), Japan
+(Ministry of Finance daily JGB yield) - written to data/yield_{DE,UK,JP}10Y_daily.csv
+with a manifest of provenance checks (spans, scale, known-date levels, weekday-only).
+The registration below binds only after the manifest shows each series is daily, in
+percent, and passes the known-date checks; otherwise the market is dropped before any
+return is read.
+PRICE PROXY (identical to attempt 59): par 10-year bond return = -ModD(y0) x dy + carry
+(semi-annual for UK and US convention; ANNUAL coupon for Bund and JGB - ModD formula
+switched accordingly; disclosed); cost 3 bp per round trip per market (Bund FGBL ~1 tick
+0.01 on ~130 = 0.8 bp per side; Gilt ~1.5 bp; JGB ~1 bp; 3 bp is conservative), 1.5x /
+2x.
+FROZEN CELL per market (three selectable cells, one per market, two-sided Bonferroni-3
+floor t >= 2.39): C1 EXTENSION LONG = close of T-3 -> month-end close T, T = the last
+trading day of the month on that market's own yield calendar. IS/OOS: hold out the last
+20% of each market's month-ends (cut date fixed at registration from the series span:
+the OOS block starts at the month-end nearest 80% of the way through the series and is
+sealed); IS bar per cell exactly as attempt 59 v2: net > 0, PF >= 1.15, own t >= 2.39,
+halves [+,+], positive at 2x; year-stratified event-minus-control differential on the
+price component > 0 with t >= 2.39 and halves [+,+], non-overlapping controls every
+day >= 5 bd from every month-end; placebo-clock max-stat (20 clocks k in +-4..+-13,
+placebo controls exclude the true month-ends; the cell's signed t must beat all 20).
+No blocking cross-section (no 30-year series); instead a BLOCKING REPLICATION rule for
+the family: the pooled three-market differential is read-only and the family's
+conclusion is "mechanism replicates" only if at least two of the three markets clear
+the full IS bar; a market that clears takes ONE sealed OOS shot at the house OOS bar
+(n >= 40 if available, else the market's full holdout with n stated; net > 0, t >= 2,
+PF >= 1.15, [+,+], positive at 1.5x and 2x, differential > 0 with t >= 2).
+Read-only diagnostics (counted): T-1 -> T and T -> T+2 (reversal) per market; quarter-
+end vs other; era split at 2009; per-year signs; the US 10-year re-scored on the same
+code as a fidelity anchor (must reproduce attempt 59's IS numbers - not a new test);
+the three-market pooled differential; the cross-market month-end coincidence (all
+three share the calendar month, so the events are NOT independent across markets on
+the same date - the replication is across instruments and flows, not across dates;
+disclosed).
+POWER (honest): 10-year price sd over 3 days ~50-70 bp for Bund and Gilt, ~25-35 bp for
+JGB (lower yields, lower vol until 2022); at ~350 IS month-ends SE ~3-4 bp (Bund/Gilt)
+and ~1.5-2 bp (JGB), so t 2.39 needs ~8-9 bp (Bund/Gilt) and ~4-5 bp (JGB) against a
+US-sized effect of ~20 bp: well powered if the effect transfers at full size, ~50% at
+a third of it. OOS at ~90 month-ends: SE ~6-8 bp (Bund/Gilt) -> t 2 needs ~14 bp.
+Test count: +3 selectable + 14 read-only. Runner run_r83_monthend_global.py ->
+results/r83_monthend_global_{is,oos}.json. Adjacency: attempt 59 (same mechanism, US
+instrument, PASSED) - this is a replication family on new instruments, registered as
+such; not a re-parameterisation. Shots: up to 3 (one per cleared market). Nothing read.
