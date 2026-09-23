@@ -7766,3 +7766,51 @@ Per-market cut and counts now bound: DE 261/88, UK 306/88, JP 352/88; US anchor 
 Bonferroni-3 floor 2.39 applies (three admitted). Power at these n: DE SE ~3.7 bp (t 2.39
 needs ~9 bp), UK ~3.4 bp (~8 bp), JP ~1.6 bp (~4 bp, cost-bound at 6 bp). No return has
 been computed; the IS run follows this entry.
+
+### Attempt 60 IS RESULT (2026-09-23, run_r83_monthend_global.py v2 -> results/r83_monthend_global_is.json, log results/r83_monthend_global_is.log; manifest sha 798f227f asserted)
+US anchor: reproduces attempt 59 IS to the digit (n 352, +20.7 bp, t 4.98, differential
++17.6 t 3.73, placebo p 0.048). Per market, C1 extension long, IS bar (floor 2.39 on own t
+and differential t, [+,+], PF >= 1.15, positive at 2x, diff halves [+,+], placebo p < 0.05):
+- UK (n 306, 1993-11..2019-04): net +14.9 bp, WR 60%, PF 1.79, t 3.88, halves [+,+], x1.5
+  +13.4, x2 +11.9; price +12.9 / carry +5.0 vs control price -0.9; differential +13.7 bp
+  t 3.05, diff halves [+,+]; placebo max |t| 1.68 -> p 0.048 (beats all 20). CLEARS THE BAR
+  -> CANDIDATE. Read-only: T-1 +7.3 bp t 3.3 (differential t 3.9, the same day-before
+  structure as the US); T+2 reversal -4.1 (t -1.1, n.s.); quarter-end +16.8 t 2.3 vs other
+  +12.2 t 2.3; era pre-2009 +10.7 t 1.9 / 2009+ +18.1 t 2.5; ex-December differential t 2.95
+  (own t 3.64); drop-one-max (1999-10-29, +283 bp) leaves own t 3.74 / differential t 2.91
+  - not one-event driven; jump-rank guard ratio 0.82, no roll flag; per-year 20 of 27
+  positive. US-ORTHOGONALISED: beta 0.58 on IS controls; residual event mean +3.2 bp t 1.05,
+  residual differential +5.6 bp t 1.59 (raw +13.7): about 60% of the UK month-end move is
+  the same-date co-movement with the US 10-year, the residual is positive but not
+  significant. This read cannot separate "UK index flow on the same date" from "US
+  spillover" when the flows are simultaneous - it says only that the UK effect BEYOND what
+  co-moves with the US is small; disclosed as registered.
+- DE (n 261 -> 259 valid, 1997-08..2019-04, ATTENUATED - quote time unknown): net +7.7 bp,
+  WR 59%, PF 1.41, t 2.11 (< 2.39), halves [-,+], x2 +4.7; differential +5.0 bp t 1.21,
+  diff halves [-,+]; placebo p 0.14. FAILS the IS bar (own t, halves, differential, placebo
+  all short). Era pre-2009 -1.8 / 2009+ +12.6 t 2.1; quarter-end +1.0 vs other +7.1;
+  drop-one-max (2015-04-30, -201 bp, the Bund tantrum) lifts own t to 2.38, differential t
+  1.43 - still short; US-orthogonalised residual differential -0.6 bp t -0.17 (beta 0.44):
+  the entire DE month-end move is the US co-movement. Per the registration a DE null is
+  INCONCLUSIVE (attenuated series), but nothing here suggests a local effect either.
+- JP (n 352, 1990-01..2019-04): net -1.1 bp, WR 51%, PF 0.93, t -0.44, halves [-,-];
+  differential -3.9 bp t -1.34, halves [-,-]; placebo p 1.0. FAILS - no month-end extension
+  effect in the JGB 10-year. YCC inside (n 32) +0.6 t 0.2 / outside (n 320) -4.3 t -1.35;
+  ex-roll (3 flagged windows) unchanged; negative-yield split n 12, n.s.; jump-rank ratio
+  1.50 (35 event-rank jumps, below the 2.0 flag); US-orthogonalised residual -6.2 bp t -2.14
+  (the JGB moves AGAINST its US co-movement at month-end, read-only, uncorrected); pre-1990
+  placebo (n 42) +3.4 bp t 0.31, differential -0.1. T+2 reversal read-only differential +6.1
+  t 2.05 (n.s. after the family's count).
+- Family read-onlys: pooled date-clustered +2.5 bp t 1.00 (352 dates, 259 with all three
+  markets); pooled market-stratified +4.5 bp t 2.03 (SE ignores same-date correlation, so
+  overstated); cross-market event correlations DE-UK 0.65, DE-JP 0.30, JP-UK 0.20; family
+  max-stat: max observed t 3.05 (UK) beats all 20 family placebo maxima (max 1.89), p 0.048.
+IS-STAGE FAMILY VERDICT: CANDIDATES ['UK'] - one market of three clears; REPLICATES (>= 2
+OOS passes) is already impossible, the sealed stage can only return PARTIAL or FAILS. The
+honest reading before the shot: the extension flow shows in gilts with the same T-1 / no-
+reversal structure as Treasuries, is absent in JGBs, and is not separable from the US move
+in Bunds; the mechanism is NOT general across the three markets. Per the registration the
+UK now takes its ONE sealed shot (OOS bar: n >= 40, net > 0, PF >= 1.15, t >= 2.0, [+,+],
+positive at 1.5x and 2x, differential > 0 with t >= 2.0). Test count: +3 selectable run;
+read-only 44 as enumerated (JP ex-roll ran; DE/UK have no roll dates). Shots after this
+entry: 15 spent, the UK shot pending.

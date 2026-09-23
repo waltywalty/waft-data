@@ -8,7 +8,7 @@
   "oos_last_month": "2026-08",
   "oos_series_start": "2018-06-01"
  },
- "manifest_sha256": null,
+ "manifest_sha256": "798f227fe1c226c5c81e639f393337f69c3e227950f204f3bc86e5a1b6d6ab65",
  "markets": {
   "US": {
    "n_events": 352,
@@ -610,16 +610,2564 @@
    }
   },
   "DE": {
-   "skipped": "no data"
+   "n_events": 261,
+   "span": [
+    "1997-08-29",
+    "2019-04-30"
+   ],
+   "C1_extension_long": {
+    "x1": {
+     "n": 259,
+     "mean_bp": 7.678883417480906,
+     "wr": 0.5868725868725869,
+     "pf": 1.4053393070258433,
+     "t": 2.110557684832726,
+     "halves": [
+      -1.0,
+      1.0
+     ]
+    },
+    "gross": {
+     "n": 259,
+     "mean_bp": 10.678883417480908,
+     "wr": 0.6138996138996139,
+     "pf": 1.6021168912003874,
+     "t": 2.935114161375161,
+     "halves": [
+      -1.0,
+      1.0
+     ]
+    },
+    "price_component": {
+     "n": 259,
+     "mean_bp": 7.316160616401938,
+     "wr": 0.5521235521235521,
+     "pf": 1.3798914276786671,
+     "t": 2.0036501511274825,
+     "halves": [
+      -1.0,
+      1.0
+     ]
+    },
+    "carry": {
+     "n": 259,
+     "mean_bp": 3.362722801078966,
+     "wr": 0.9768339768339769,
+     "pf": 1383.1521739130433,
+     "t": 23.487019822124022,
+     "halves": [
+      1.0,
+      1.0
+     ]
+    },
+    "control_price": {
+     "n": 885,
+     "mean_bp": 2.229093687153728,
+     "wr": 0.49265536723163844,
+     "pf": 1.0996890534708685,
+     "t": 1.057568244557172,
+     "halves": [
+      1.0,
+      1.0
+     ]
+    },
+    "n_control": 885,
+    "strat_diff": {
+     "n_event": 259,
+     "n_control": 885,
+     "dropped_events": 0,
+     "diff_bp": 5.026791087282211,
+     "se": 4.168810811727771,
+     "t": 1.2058093577047813
+    },
+    "diff_halves": [
+     -1.0,
+     1.0
+    ],
+    "x15": {
+     "n": 259,
+     "mean_bp": 6.178883417480906,
+     "wr": 0.5637065637065637,
+     "pf": 1.3155904551555924,
+     "t": 1.6982794465615094,
+     "halves": [
+      -1.0,
+      1.0
+     ]
+    },
+    "x2": {
+     "n": 259,
+     "mean_bp": 4.678883417480906,
+     "wr": 0.555984555984556,
+     "pf": 1.2311849591566648,
+     "t": 1.2860012082902925,
+     "halves": [
+      -1.0,
+      1.0
+     ]
+    },
+    "mirror_x1": {
+     "n": 259,
+     "mean_bp": -13.678883417480906,
+     "wr": 0.37065637065637064,
+     "pf": 0.5482559020503442,
+     "t": -3.759670637917594,
+     "halves": [
+      -1.0,
+      -1.0
+     ]
+    },
+    "quarter_end": {
+     "n": 85,
+     "strat_diff": {
+      "n_event": 82,
+      "n_control": 885,
+      "dropped_events": 3,
+      "diff_bp": 0.9507953622405435,
+      "se": 7.141597615349111,
+      "t": 0.13313482689042047
+     }
+    },
+    "other_month_end": {
+     "n": 174,
+     "strat_diff": {
+      "n_event": 174,
+      "n_control": 885,
+      "dropped_events": 0,
+      "diff_bp": 7.113604009209364,
+      "se": 4.771029310418665,
+      "t": 1.4909998548269523
+     }
+    },
+    "ex_december": {
+     "n": 239,
+     "x1": {
+      "n": 239,
+      "mean_bp": 8.994722609593614,
+      "wr": 0.602510460251046,
+      "pf": 1.4986660364208932,
+      "t": 2.3892852243636633,
+      "halves": [
+       -1.0,
+       1.0
+      ]
+     },
+     "strat_diff": {
+      "n_event": 239,
+      "n_control": 885,
+      "dropped_events": 0,
+      "diff_bp": 6.499277283386029,
+      "se": 4.282151545121849,
+      "t": 1.5177597557914293
+     }
+    },
+    "december_only": {
+     "n": 20,
+     "x1": {
+      "n": 20,
+      "mean_bp": -8.045394928265997,
+      "wr": 0.4,
+      "pf": 0.7298407347313531,
+      "t": -0.5803030405737406,
+      "halves": [
+       -1.0,
+       1.0
+      ]
+     }
+    },
+    "drop_one_max": {
+     "dropped_date": "2015-04-30",
+     "dropped_net_bp": -201.23656426821998,
+     "x1": {
+      "n": 258,
+      "mean_bp": 8.488633214712303,
+      "wr": 0.5891472868217055,
+      "pf": 1.4654423577955444,
+      "t": 2.383884551061778,
+      "halves": [
+       -1.0,
+       1.0
+      ]
+     },
+     "strat_diff": {
+      "n_event": 258,
+      "n_control": 885,
+      "dropped_events": 0,
+      "diff_bp": 5.869007533576459,
+      "se": 4.0956397226224555,
+      "t": 1.4329892107351936
+     }
+    },
+    "per_year_net": {
+     "1997": -2.5,
+     "1998": 2.7,
+     "1999": -19.7,
+     "2000": 4.4,
+     "2001": 12.4,
+     "2002": 15.9,
+     "2003": -21.7,
+     "2004": -19.9,
+     "2005": 10.0,
+     "2006": -7.7,
+     "2007": -6.5,
+     "2008": 40.5,
+     "2009": 23.0,
+     "2010": 30.6,
+     "2011": -8.2,
+     "2012": 33.6,
+     "2013": 40.2,
+     "2014": 35.7,
+     "2015": -2.0,
+     "2016": 6.8,
+     "2017": 3.1,
+     "2018": 1.5,
+     "2019": -10.5
+    },
+    "by_era_diff": {
+     "pre-2009": {
+      "n_event": 136,
+      "n_control": 464,
+      "dropped_events": 0,
+      "diff_bp": -1.7949047049167854,
+      "se": 5.825560031726582,
+      "t": -0.30810852435500713
+     },
+     "2009+": {
+      "n_event": 123,
+      "n_control": 421,
+      "dropped_events": 0,
+      "diff_bp": 12.569479117681102,
+      "se": 5.963834852300347,
+      "t": 2.107616899021416
+     }
+    },
+    "negative_yield_split": {
+     "n_neg": 6,
+     "neg": {
+      "x1": {
+       "n": 6
+      },
+      "strat_diff": {
+       "n_event": 4,
+       "n_control": 16,
+       "dropped_events": 2,
+       "diff_bp": 21.294200729525947,
+       "se": 16.413329351987628,
+       "t": 1.2973724143875327
+      }
+     },
+     "pos": {
+      "x1": {
+       "n": 253,
+       "mean_bp": 7.854526776125739,
+       "wr": 0.5849802371541502,
+       "pf": 1.4105514361479312,
+       "t": 2.114814111267045,
+       "halves": [
+        -1.0,
+        1.0
+       ]
+      },
+      "strat_diff": {
+       "n_event": 251,
+       "n_control": 869,
+       "dropped_events": 2,
+       "diff_bp": 5.081959802393143,
+       "se": 4.275856507625473,
+       "t": 1.1885244028488988
+      }
+     }
+    },
+    "us_orthogonalised": {
+     "beta": 0.43747029393967923,
+     "us_event_mean_bp": 16.19266045140474,
+     "us_control_mean_bp": 3.2775576491750056,
+     "event_ortho": {
+      "n": 259,
+      "mean_bp": 0.23235268906048892,
+      "wr": 0.47876447876447875,
+      "pf": 1.012806686218056,
+      "t": 0.07750779324336445,
+      "halves": [
+       -1.0,
+       1.0
+      ]
+     },
+     "strat_diff": {
+      "n_event": 259,
+      "n_control": 885,
+      "dropped_events": 0,
+      "diff_bp": -0.5778292769978408,
+      "se": 3.382636158399106,
+      "t": -0.1708221783070246
+     },
+     "raw_diff_for_reference": 5.026791087282211
+    },
+    "maxstat": {
+     "placebo_clocks": 20,
+     "obs_t": 1.2058093577047813,
+     "placebo_max_t": [
+      0.89,
+      1.54,
+      0.99,
+      0.37,
+      0.97,
+      0.79,
+      0.73,
+      0.88,
+      0.8,
+      0.55,
+      1.89,
+      0.53,
+      0.16,
+      1.05,
+      1.15,
+      1.14,
+      0.46,
+      0.62,
+      0.52,
+      0.45
+     ],
+     "p": 0.14285714285714285
+    }
+   },
+   "T-1_long": {
+    "x1": {
+     "n": 261,
+     "mean_bp": 2.1697786165777746,
+     "wr": 0.5019157088122606,
+     "pf": 1.1899479337396277,
+     "t": 1.0543370594106485,
+     "halves": [
+      1.0,
+      1.0
+     ]
+    },
+    "gross": {
+     "n": 261,
+     "mean_bp": 5.169778616577774,
+     "wr": 0.6475095785440613,
+     "pf": 1.5153507538904696,
+     "t": 2.5120946177465857,
+     "halves": [
+      1.0,
+      1.0
+     ]
+    },
+    "price_component": {
+     "n": 261,
+     "mean_bp": 4.118028236060271,
+     "wr": 0.4942528735632184,
+     "pf": 1.39547576057588,
+     "t": 2.002572605611537,
+     "halves": [
+      1.0,
+      1.0
+     ]
+    },
+    "carry": {
+     "n": 261,
+     "mean_bp": 1.051750380517504,
+     "wr": 0.9770114942528736,
+     "pf": 1412.1971830985917,
+     "t": 19.506803469965543,
+     "halves": [
+      1.0,
+      1.0
+     ]
+    },
+    "control_price": {
+     "n": 2895,
+     "mean_bp": 0.725880497011038,
+     "wr": 0.46010362694300516,
+     "pf": 1.0522590230905864,
+     "t": 1.018394287452863,
+     "halves": [
+      1.0,
+      1.0
+     ]
+    },
+    "n_control": 2895,
+    "strat_diff": {
+     "n_event": 261,
+     "n_control": 2895,
+     "dropped_events": 0,
+     "diff_bp": 3.3936521514345968,
+     "se": 2.171296669276721,
+     "t": 1.5629610635220352
+    },
+    "diff_halves": [
+     1.0,
+     1.0
+    ]
+   },
+   "T+2_reversal_short": {
+    "x1": {
+     "n": 261,
+     "mean_bp": -9.422236758079128,
+     "wr": 0.40229885057471265,
+     "pf": 0.634957085418772,
+     "t": -2.7647031130121786,
+     "halves": [
+      -1.0,
+      -1.0
+     ]
+    },
+    "gross": {
+     "n": 261,
+     "mean_bp": -6.422236758079128,
+     "wr": 0.41762452107279696,
+     "pf": 0.7328332684047607,
+     "t": -1.884433432681261,
+     "halves": [
+      -1.0,
+      -1.0
+     ]
+    },
+    "price_component": {
+     "n": 261,
+     "mean_bp": -3.543960371158433,
+     "wr": 0.41762452107279696,
+     "pf": 0.8416162886725186,
+     "t": -1.0438230502820294,
+     "halves": [
+      -1.0,
+      -1.0
+     ]
+    },
+    "carry": {
+     "n": 261,
+     "mean_bp": -2.878276386920695,
+     "wr": 0.019157088122605363,
+     "pf": 0.0010019163928095193,
+     "t": -22.50023900399782,
+     "halves": [
+      -1.0,
+      -1.0
+     ]
+    },
+    "control_price": {
+     "n": 1386,
+     "mean_bp": -1.0968979615173746,
+     "wr": 0.44805194805194803,
+     "pf": 0.946114344061087,
+     "t": -0.7865666724292657,
+     "halves": [
+      -1.0,
+      -1.0
+     ]
+    },
+    "n_control": 1386,
+    "strat_diff": {
+     "n_event": 261,
+     "n_control": 1386,
+     "dropped_events": 0,
+     "diff_bp": -2.4579653401238044,
+     "se": 3.547709985849891,
+     "t": -0.6928315307416464
+    },
+    "diff_halves": [
+     -1.0,
+     1.0
+    ]
+   },
+   "jump_rank_guard": {
+    "event_rank_jump_share": 0.004513217279174726,
+    "mid_month_jump_share": 0.007751937984496124,
+    "ratio": 0.5822050290135397,
+    "event_rank_jumps": 7,
+    "mid_month_jumps": 16,
+    "roll_flag": false,
+    "by_rank": {
+     "-14": {
+      "n": 258,
+      "jump_share": 0.007751937984496124
+     },
+     "-13": {
+      "n": 258,
+      "jump_share": 0.003875968992248062
+     },
+     "-12": {
+      "n": 258,
+      "jump_share": 0.015503875968992248
+     },
+     "-11": {
+      "n": 258,
+      "jump_share": 0.007751937984496124
+     },
+     "-10": {
+      "n": 258,
+      "jump_share": 0.007751937984496124
+     },
+     "-9": {
+      "n": 258,
+      "jump_share": 0.011627906976744186
+     },
+     "-8": {
+      "n": 258,
+      "jump_share": 0.0
+     },
+     "-7": {
+      "n": 258,
+      "jump_share": 0.007751937984496124
+     },
+     "-6": {
+      "n": 258,
+      "jump_share": 0.015503875968992248
+     },
+     "-5": {
+      "n": 258,
+      "jump_share": 0.003875968992248062
+     },
+     "-4": {
+      "n": 258,
+      "jump_share": 0.003875968992248062
+     },
+     "-3": {
+      "n": 258,
+      "jump_share": 0.0
+     },
+     "-2": {
+      "n": 258,
+      "jump_share": 0.007751937984496124
+     },
+     "-1": {
+      "n": 259,
+      "jump_share": 0.003861003861003861
+     },
+     "0": {
+      "n": 259,
+      "jump_share": 0.007722007722007722
+     },
+     "1": {
+      "n": 259,
+      "jump_share": 0.003861003861003861
+     }
+    }
+   },
+   "cut_record": {
+    "is_first_month": "1990-01",
+    "is_last_month": "2019-04",
+    "is_series_clip": "2019-05-06",
+    "oos_first_month": "2019-05",
+    "oos_last_month": "2026-08",
+    "oos_series_start": "2018-06-01",
+    "stage": "IS",
+    "series_first": "1997-08-07",
+    "series_last": "2026-09-23",
+    "n_events": 261,
+    "first_event": "1997-08-29",
+    "last_event": "2019-04-30"
+   },
+   "file_sha256": "909ba2993ff52ffe2015a0909beacc0b481ffeabfc2c14adf418337318486133",
+   "coupon_freq": 1,
+   "selectable": true,
+   "manifest": {
+    "series_id": "BBSIS.D.I.ZAR.ZI.EUR.S1311.B.A604.R10XX.R.A.A._Z._Z.A",
+    "source": "Deutsche Bundesbank, 'Yields, derived from the term structure of interest rates, on listed Federal securities with annual coupon payments / residual maturity of 10.0 years / daily data' (Svensson method)",
+    "route": "Bundesbank SDMX REST API from a Kernel cloud VM (the container proxy refuses the host); raw CSV md5 bcd20fa42e7e2549318420ec9c5e96b6 under data/raw_yields/; transferred as md5-verified base64/xz blobs",
+    "file": "yield_DE10Y_par_daily.csv",
+    "file_md5": "0caef1f48516ef036488d2be87c467fd",
+    "file_sha256": "909ba2993ff52ffe2015a0909beacc0b481ffeabfc2c14adf418337318486133",
+    "companion": "yield_DE10Y_daily.csv = the ZST spot (zero-coupon) series from the same curve, md5 77f0951423698706003ee95a9bc988ec; not run (the proxy is a par bond, the par series is the consistent choice, decided from the critics' pre-data recommendation)",
+    "construction": "fitted-par",
+    "coupon_convention": "annual (Bund)",
+    "quote_time": "NOT ESTABLISHED by the provider text reachable (Frankfurt midday fixing vs end-of-day unknown)",
+    "attenuated": true,
+    "attenuated_reason": "quote time unknown: per the Round 83 amendment a DE null is inconclusive; a DE pass counts",
+    "first_date": "1997-08-07",
+    "last_date": "2026-09-23",
+    "n_rows": 7394,
+    "is_month_ends": 261,
+    "is_first_event": "1997-08-29",
+    "oos_month_ends": 88,
+    "scale_check": "PASS: percent, 2 decimals, min -0.85 (2020-03-09), max 5.79 (1997-08-25), negative 2016-06-13..2022-03-07, daily sd 4.6 bp",
+    "known_date_checks": {
+     "verdict": "PASS (9 in-span anchors incl. 2008-06-16 4.72, 2012-06-01 1.21, 2016-07-08, 2019-08-28, 2023-10-04 within tolerance; 3 jump anchors on the named day: 2025-03-05 +0.22, 2016-06-24 -0.14, 2015-06-03 +0.09)",
+     "items": [
+      {
+       "date": "1990-09-19",
+       "expected": 9.0,
+       "actual": null,
+       "verdict": "OUT_OF_SPAN"
+      },
+      {
+       "date": "1994-09-14",
+       "expected": 7.5,
+       "actual": null,
+       "verdict": "OUT_OF_SPAN"
+      },
+      {
+       "date": "1999-01-13",
+       "expected": 3.65,
+       "actual": 3.83,
+       "verdict": "PASS"
+      },
+      {
+       "date": "2008-06-16",
+       "expected": 4.6,
+       "actual": 4.72,
+       "verdict": "PASS"
+      },
+      {
+       "date": "2012-06-01",
+       "expected": 1.17,
+       "actual": 1.21,
+       "verdict": "PASS"
+      },
+      {
+       "date": "2015-04-17",
+       "expected": 0.07,
+       "actual": 0.07,
+       "verdict": "PASS"
+      },
+      {
+       "date": "2016-07-08",
+       "expected": -0.19,
+       "actual": -0.2,
+       "verdict": "PASS"
+      },
+      {
+       "date": "2019-08-28",
+       "expected": -0.71,
+       "actual": -0.72,
+       "verdict": "PASS"
+      },
+      {
+       "date": "2020-03-09",
+       "expected": -0.85,
+       "actual": -0.85,
+       "verdict": "PASS"
+      },
+      {
+       "date": "2022-12-19",
+       "expected": 2.2,
+       "actual": 2.2,
+       "verdict": "PASS"
+      },
+      {
+       "date": "2023-10-04",
+       "expected": 2.97,
+       "actual": 2.98,
+       "verdict": "PASS"
+      },
+      {
+       "date": "2025-03-05",
+       "expected": 2.8,
+       "actual": 2.69,
+       "verdict": "PASS"
+      }
+     ]
+    },
+    "holiday_row_check": "PASS: 0 rows on Jan 1, Good Friday, Easter Monday, May 1, Dec 24/25/26/31; December T is Dec 30 or earlier every year; rows exist on Ascension/Whit Monday/Corpus Christi/Oct 3 in some years (Frankfurt trades) which is why 2004/2005/2011/2022 have 257 rows - the checker's 244-256 band was too tight for the German calendar, not a data fault",
+    "gaps_check": "one one-off missing weekday: 2017-10-31 (Reformation Day 500th anniversary, national holiday) - documented closure",
+    "repeats_check": "12.0% exact consecutive repeats at 1 bp resolution (expected ~10%); one run of 6 (2020-11-23..30, -0.59, OOS period, disclosed); T-repeat share 15% vs 12% base - not concentrated at month-ends",
+    "splices": "none stated by the provider within the span; series starts 1997-08-07 (Svensson adoption), so no 1997 join inside the file",
+    "passed": true,
+    "admission_note": "ADMITTED, attenuated (quote time unknown). IS 261 month-ends 1997-08..2019-04 (>= 120), OOS 88."
+   },
+   "pre_index_era_readonly": {
+    "n": 0,
+    "note": "series starts after 1989"
+   },
+   "maxstat": {
+    "placebo_clocks": 20,
+    "obs_t": 1.2058093577047813,
+    "placebo_max_t": [
+     0.89,
+     1.54,
+     0.99,
+     0.37,
+     0.97,
+     0.79,
+     0.73,
+     0.88,
+     0.8,
+     0.55,
+     1.89,
+     0.53,
+     0.16,
+     1.05,
+     1.15,
+     1.14,
+     0.46,
+     0.62,
+     0.52,
+     0.45
+    ],
+    "p": 0.14285714285714285
+   }
   },
   "UK": {
-   "skipped": "no data"
+   "n_events": 306,
+   "span": [
+    "1993-11-30",
+    "2019-04-30"
+   ],
+   "C1_extension_long": {
+    "x1": {
+     "n": 306,
+     "mean_bp": 14.923618320016535,
+     "wr": 0.6013071895424836,
+     "pf": 1.7882654534973452,
+     "t": 3.8835789668193983,
+     "halves": [
+      1.0,
+      1.0
+     ]
+    },
+    "gross": {
+     "n": 306,
+     "mean_bp": 17.923618320016534,
+     "wr": 0.630718954248366,
+     "pf": 2.007906336153864,
+     "t": 4.664270127007505,
+     "halves": [
+      1.0,
+      1.0
+     ]
+    },
+    "price_component": {
+     "n": 306,
+     "mean_bp": 12.942701317599132,
+     "wr": 0.5816993464052288,
+     "pf": 1.6521816598522496,
+     "t": 3.3636269171222977,
+     "halves": [
+      1.0,
+      1.0
+     ]
+    },
+    "carry": {
+     "n": 306,
+     "mean_bp": 4.980917002417406,
+     "wr": 1.0,
+     "pf": null,
+     "t": 29.236083025315907,
+     "halves": [
+      1.0,
+      1.0
+     ]
+    },
+    "control_price": {
+     "n": 1029,
+     "mean_bp": -0.8564650083534879,
+     "wr": 0.5238095238095238,
+     "pf": 0.9690797278018357,
+     "t": -0.3806722324050406,
+     "halves": [
+      1.0,
+      -1.0
+     ]
+    },
+    "n_control": 1029,
+    "strat_diff": {
+     "n_event": 304,
+     "n_control": 1029,
+     "dropped_events": 2,
+     "diff_bp": 13.679183678962746,
+     "se": 4.4777408129663625,
+     "t": 3.0549297626498206
+    },
+    "diff_halves": [
+     1.0,
+     1.0
+    ],
+    "x15": {
+     "n": 306,
+     "mean_bp": 13.423618320016537,
+     "wr": 0.5915032679738562,
+     "pf": 1.6872853770766123,
+     "t": 3.4932333867253456,
+     "halves": [
+      1.0,
+      1.0
+     ]
+    },
+    "x2": {
+     "n": 306,
+     "mean_bp": 11.923618320016537,
+     "wr": 0.565359477124183,
+     "pf": 1.591190139935692,
+     "t": 3.102887806631292,
+     "halves": [
+      1.0,
+      1.0
+     ]
+    },
+    "mirror_x1": {
+     "n": 306,
+     "mean_bp": -20.923618320016534,
+     "wr": 0.3562091503267974,
+     "pf": 0.4438305262660699,
+     "t": -5.4449612871956115,
+     "halves": [
+      -1.0,
+      -1.0
+     ]
+    },
+    "quarter_end": {
+     "n": 102,
+     "strat_diff": {
+      "n_event": 100,
+      "n_control": 1029,
+      "dropped_events": 2,
+      "diff_bp": 16.822841464476365,
+      "se": 7.2368188695495625,
+      "t": 2.324618284321307
+     }
+    },
+    "other_month_end": {
+     "n": 204,
+     "strat_diff": {
+      "n_event": 203,
+      "n_control": 1029,
+      "dropped_events": 1,
+      "diff_bp": 12.22044400493058,
+      "se": 5.290927220552427,
+      "t": 2.30969799725475
+     }
+    },
+    "ex_december": {
+     "n": 280,
+     "x1": {
+      "n": 280,
+      "mean_bp": 14.583892491867106,
+      "wr": 0.6,
+      "pf": 1.7746026629722118,
+      "t": 3.6367852754964645,
+      "halves": [
+       1.0,
+       1.0
+      ]
+     },
+     "strat_diff": {
+      "n_event": 279,
+      "n_control": 1029,
+      "dropped_events": 1,
+      "diff_bp": 13.719827542318525,
+      "se": 4.643049594098792,
+      "t": 2.954917293960441
+     }
+    },
+    "december_only": {
+     "n": 26,
+     "x1": {
+      "n": 26,
+      "mean_bp": 18.582204161625807,
+      "wr": 0.6153846153846154,
+      "pf": 1.9263691929738251,
+      "t": 1.3588430643944063,
+      "halves": [
+       1.0,
+       1.0
+      ]
+     }
+    },
+    "drop_one_max": {
+     "dropped_date": "1999-10-29",
+     "dropped_net_bp": 282.995494749961,
+     "x1": {
+      "n": 305,
+      "mean_bp": 14.044694135000327,
+      "wr": 0.6,
+      "pf": 1.739416365987563,
+      "t": 3.74208944612516,
+      "halves": [
+       1.0,
+       1.0
+      ]
+     },
+     "strat_diff": {
+      "n_event": 303,
+      "n_control": 1029,
+      "dropped_events": 2,
+      "diff_bp": 12.757417693973343,
+      "se": 4.37958115577762,
+      "t": 2.9129309950435633
+     }
+    },
+    "per_year_net": {
+     "1993": 64.6,
+     "1994": -23.9,
+     "1995": -1.8,
+     "1996": -2.9,
+     "1997": 25.1,
+     "1998": 47.2,
+     "1999": 10.5,
+     "2000": 25.9,
+     "2001": 1.3,
+     "2002": 27.3,
+     "2003": -2.5,
+     "2004": -8.9,
+     "2005": 29.7,
+     "2006": 13.9,
+     "2007": 7.4,
+     "2008": 44.9,
+     "2009": 2.4,
+     "2010": 41.7,
+     "2011": 9.0,
+     "2012": 43.9,
+     "2013": 14.0,
+     "2014": 22.1,
+     "2015": -1.2,
+     "2016": 32.5,
+     "2017": 8.0,
+     "2018": 12.1,
+     "2019": -23.2
+    },
+    "by_era_diff": {
+     "pre-2009": {
+      "n_event": 180,
+      "n_control": 611,
+      "dropped_events": 2,
+      "diff_bp": 10.663762642609642,
+      "se": 5.685233580489816,
+      "t": 1.8756947259308379
+     },
+     "2009+": {
+      "n_event": 124,
+      "n_control": 418,
+      "dropped_events": 0,
+      "diff_bp": 18.056407763991455,
+      "se": 7.238894505792292,
+      "t": 2.4943598431422638
+     }
+    },
+    "negative_yield_split": {
+     "n_neg": 0,
+     "neg": {
+      "x1": {
+       "n": 0
+      },
+      "strat_diff": {
+       "n_event": 0
+      }
+     },
+     "pos": {
+      "x1": {
+       "n": 306,
+       "mean_bp": 14.923618320016535,
+       "wr": 0.6013071895424836,
+       "pf": 1.7882654534973452,
+       "t": 3.8835789668193983,
+       "halves": [
+        1.0,
+        1.0
+       ]
+      },
+      "strat_diff": {
+       "n_event": 304,
+       "n_control": 1029,
+       "dropped_events": 2,
+       "diff_bp": 13.679183678962746,
+       "se": 4.4777408129663625,
+       "t": 3.0549297626498206
+      }
+     }
+    },
+    "us_orthogonalised": {
+     "beta": 0.5796732229003854,
+     "us_event_mean_bp": 16.72212785257863,
+     "us_control_mean_bp": 2.98559869900108,
+     "event_ortho": {
+      "n": 306,
+      "mean_bp": 3.2493315715425783,
+      "wr": 0.5228758169934641,
+      "pf": 1.173595979787142,
+      "t": 1.051725493443858,
+      "halves": [
+       -1.0,
+       1.0
+      ]
+     },
+     "strat_diff": {
+      "n_event": 304,
+      "n_control": 1029,
+      "dropped_events": 2,
+      "diff_bp": 5.581227325620025,
+      "se": 3.4994586583123386,
+      "t": 1.5948830578017594
+     },
+     "raw_diff_for_reference": 13.679183678962746
+    },
+    "maxstat": {
+     "placebo_clocks": 20,
+     "obs_t": 3.0549297626498206,
+     "placebo_max_t": [
+      0.2,
+      0.77,
+      0.52,
+      1.17,
+      0.7,
+      0.4,
+      0.26,
+      0.24,
+      0.53,
+      0.44,
+      0.28,
+      0.71,
+      1.68,
+      0.58,
+      0.68,
+      0.01,
+      0.98,
+      0.21,
+      0.0,
+      0.65
+     ],
+     "p": 0.047619047619047616
+    }
+   },
+   "T-1_long": {
+    "x1": {
+     "n": 306,
+     "mean_bp": 7.253465259692169,
+     "wr": 0.5849673202614379,
+     "pf": 1.6260114437469795,
+     "t": 3.3010126161883524,
+     "halves": [
+      1.0,
+      1.0
+     ]
+    },
+    "gross": {
+     "n": 306,
+     "mean_bp": 10.25346525969217,
+     "wr": 0.6143790849673203,
+     "pf": 1.9859383072598706,
+     "t": 4.666296310810382,
+     "halves": [
+      1.0,
+      1.0
+     ]
+    },
+    "price_component": {
+     "n": 306,
+     "mean_bp": 8.712215461142613,
+     "wr": 0.6045751633986928,
+     "pf": 1.7954929859074826,
+     "t": 3.9706984960421647,
+     "halves": [
+      1.0,
+      1.0
+     ]
+    },
+    "carry": {
+     "n": 306,
+     "mean_bp": 1.541249798549557,
+     "wr": 1.0,
+     "pf": null,
+     "t": 21.666732987855124,
+     "halves": [
+      1.0,
+      1.0
+     ]
+    },
+    "control_price": {
+     "n": 3371,
+     "mean_bp": -0.3898391166291401,
+     "wr": 0.5048946900029665,
+     "pf": 0.9747428984384777,
+     "t": -0.5535938807125192,
+     "halves": [
+      -1.0,
+      -1.0
+     ]
+    },
+    "n_control": 3371,
+    "strat_diff": {
+     "n_event": 304,
+     "n_control": 3371,
+     "dropped_events": 2,
+     "diff_bp": 9.057917616979537,
+     "se": 2.3018512035049463,
+     "t": 3.9350578365740456
+    },
+    "diff_halves": [
+     1.0,
+     1.0
+    ]
+   },
+   "T+2_reversal_short": {
+    "x1": {
+     "n": 306,
+     "mean_bp": -4.14676162087972,
+     "wr": 0.45098039215686275,
+     "pf": 0.8500237033208796,
+     "t": -1.0867622595849737,
+     "halves": [
+      -1.0,
+      1.0
+     ]
+    },
+    "gross": {
+     "n": 306,
+     "mean_bp": -1.1467616208797209,
+     "wr": 0.4803921568627451,
+     "pf": 0.9559527606776052,
+     "t": -0.3005374709839684,
+     "halves": [
+      -1.0,
+      1.0
+     ]
+    },
+    "price_component": {
+     "n": 306,
+     "mean_bp": 2.883422728659181,
+     "wr": 0.5163398692810458,
+     "pf": 1.12043893121428,
+     "t": 0.7578144064768818,
+     "halves": [
+      -1.0,
+      1.0
+     ]
+    },
+    "carry": {
+     "n": 306,
+     "mean_bp": -4.030184349538902,
+     "wr": 0.0,
+     "pf": 0.0,
+     "t": -28.401869572774757,
+     "halves": [
+      -1.0,
+      -1.0
+     ]
+    },
+    "control_price": {
+     "n": 1618,
+     "mean_bp": 0.9271766761808331,
+     "wr": 0.4894932014833127,
+     "pf": 1.043309929735056,
+     "t": 0.6406615474844212,
+     "halves": [
+      1.0,
+      1.0
+     ]
+    },
+    "n_control": 1618,
+    "strat_diff": {
+     "n_event": 304,
+     "n_control": 1618,
+     "dropped_events": 2,
+     "diff_bp": 1.7015756389750059,
+     "se": 3.936705614498062,
+     "t": 0.43223339655077564
+    },
+    "diff_halves": [
+     -1.0,
+     1.0
+    ]
+   },
+   "jump_rank_guard": {
+    "event_rank_jump_share": 0.004388370817334065,
+    "mid_month_jump_share": 0.005363036303630363,
+    "ratio": 0.8182623739398287,
+    "event_rank_jumps": 8,
+    "mid_month_jumps": 13,
+    "roll_flag": false,
+    "by_rank": {
+     "-14": {
+      "n": 303,
+      "jump_share": 0.0033003300330033004
+     },
+     "-13": {
+      "n": 303,
+      "jump_share": 0.0033003300330033004
+     },
+     "-12": {
+      "n": 303,
+      "jump_share": 0.006600660066006601
+     },
+     "-11": {
+      "n": 303,
+      "jump_share": 0.009900990099009901
+     },
+     "-10": {
+      "n": 303,
+      "jump_share": 0.009900990099009901
+     },
+     "-9": {
+      "n": 303,
+      "jump_share": 0.0033003300330033004
+     },
+     "-8": {
+      "n": 303,
+      "jump_share": 0.0033003300330033004
+     },
+     "-7": {
+      "n": 303,
+      "jump_share": 0.0033003300330033004
+     },
+     "-6": {
+      "n": 303,
+      "jump_share": 0.006600660066006601
+     },
+     "-5": {
+      "n": 303,
+      "jump_share": 0.0
+     },
+     "-4": {
+      "n": 303,
+      "jump_share": 0.006600660066006601
+     },
+     "-3": {
+      "n": 303,
+      "jump_share": 0.0
+     },
+     "-2": {
+      "n": 303,
+      "jump_share": 0.009900990099009901
+     },
+     "-1": {
+      "n": 305,
+      "jump_share": 0.003278688524590164
+     },
+     "0": {
+      "n": 305,
+      "jump_share": 0.0
+     },
+     "1": {
+      "n": 304,
+      "jump_share": 0.006578947368421052
+     }
+    }
+   },
+   "cut_record": {
+    "is_first_month": "1990-01",
+    "is_last_month": "2019-04",
+    "is_series_clip": "2019-05-06",
+    "oos_first_month": "2019-05",
+    "oos_last_month": "2026-08",
+    "oos_series_start": "2018-06-01",
+    "stage": "IS",
+    "series_first": "1993-11-01",
+    "series_last": "2026-09-21",
+    "n_events": 306,
+    "first_event": "1993-11-30",
+    "last_event": "2019-04-30"
+   },
+   "file_sha256": "b12f55c79b32f082439967673e457427801f3800e286d89595e71c344102926f",
+   "coupon_freq": 2,
+   "selectable": true,
+   "manifest": {
+    "series_id": "IUDMNPY",
+    "source": "Bank of England Interactive Database, 'Yield from British Government Securities, 10 year Nominal Par Yield' (VRP model, Anderson & Sleath 2001)",
+    "route": "BoE IADB CSV download from a Kernel cloud VM; raw IUDMNPY_boe_database.csv under data/raw_yields/ (md5 in the acquisition manifest); single continuous download, no archive stitching; cross-checked against the GLC nominal daily spreadsheet zero-coupon 10y (mean |diff| 0.000125 on 11,302 dates)",
+    "file": "yield_UK10Y_daily.csv",
+    "file_md5": "9fdf03317328c5d4e3fbb1f0fd265d98",
+    "file_sha256": "b12f55c79b32f082439967673e457427801f3800e286d89595e71c344102926f",
+    "construction": "fitted-par",
+    "coupon_convention": "semi-annual (gilt)",
+    "quote_time": "not stated on the provider pages read; treated as end-of-day per the BoE curve methodology (unverified)",
+    "attenuated": false,
+    "first_date": "1993-11-01",
+    "last_date": "2026-09-21",
+    "n_rows": 8310,
+    "is_month_ends": 306,
+    "is_first_event": "1993-11-30",
+    "oos_month_ends": 88,
+    "scale_check": "PASS: percent, 4 decimals, min 0.1239 (2020-08-04), max 9.1256 (1994-09-20), never negative, daily sd 5.4 bp",
+    "known_date_checks": {
+     "verdict": "PASS (anchors 1994-09-14 9.00, 2000-01-19 5.87, 2012-07-18 1.58, 2016-08-12, 2020-08-04, 2022-09-23, 2023-08-17, 2025-01-09 within tolerance; 2008-12-17 3.51 vs a medium-confidence memory anchor 3.15 +-0.3 = UNCERTAIN, all high-confidence anchors pass; jump anchors 2022-09-23 +0.34, 2022-09-26 +0.32, 2016-06-24 -0.27 on the named day)",
+     "items": [
+      {
+       "date": "1990-01-17",
+       "expected": 11.6,
+       "actual": null,
+       "verdict": "OUT_OF_SPAN"
+      },
+      {
+       "date": "1994-09-14",
+       "expected": 8.9,
+       "actual": 8.9966,
+       "verdict": "PASS"
+      },
+      {
+       "date": "2000-01-19",
+       "expected": 5.75,
+       "actual": 5.8738,
+       "verdict": "PASS"
+      },
+      {
+       "date": "2008-12-17",
+       "expected": 3.15,
+       "actual": 3.5106,
+       "verdict": "UNCERTAIN"
+      },
+      {
+       "date": "2012-07-18",
+       "expected": 1.5,
+       "actual": 1.5763,
+       "verdict": "PASS"
+      },
+      {
+       "date": "2016-08-12",
+       "expected": 0.53,
+       "actual": 0.6119,
+       "verdict": "PASS"
+      },
+      {
+       "date": "2020-08-04",
+       "expected": 0.09,
+       "actual": 0.1239,
+       "verdict": "PASS"
+      },
+      {
+       "date": "2022-09-23",
+       "expected": 3.82,
+       "actual": 3.9689,
+       "verdict": "PASS"
+      },
+      {
+       "date": "2022-10-11",
+       "expected": 4.5,
+       "actual": 4.6433,
+       "verdict": "PASS"
+      },
+      {
+       "date": "2023-08-17",
+       "expected": 4.73,
+       "actual": 4.7501,
+       "verdict": "PASS"
+      },
+      {
+       "date": "2025-01-09",
+       "expected": 4.88,
+       "actual": 4.7733,
+       "verdict": "PASS"
+      }
+     ]
+    },
+    "holiday_row_check": "PASS: 0 rows on any bank holiday incl. moved ones; Dec 24/31 half-day sessions carry data (December T = Dec 31 when a weekday; flagged in the ex-December read-only)",
+    "gaps_check": "9 one-off missing weekdays, all documented closures: 1999-12-31 Millennium, 2002-06-03/04 Golden Jubilee, 2011-04-29 royal wedding, 2012-06-04/05 Diamond Jubilee, 2022-06-02/03 Platinum Jubilee, 2022-09-19 state funeral",
+    "repeats_check": "0.4% exact repeats at 0.01 bp resolution; no run >= 6; T-repeat share 1% vs 0.4% base",
+    "splices": "none: one continuous IADB series from 1993-11-01 (par yields are not published before then)",
+    "passed": true,
+    "admission_note": "ADMITTED. IS 306 month-ends 1993-11..2019-04 (>= 120), OOS 88."
+   },
+   "pre_index_era_readonly": {
+    "n": 0,
+    "note": "series starts after 1989"
+   },
+   "maxstat": {
+    "placebo_clocks": 20,
+    "obs_t": 3.0549297626498206,
+    "placebo_max_t": [
+     0.2,
+     0.77,
+     0.52,
+     1.17,
+     0.7,
+     0.4,
+     0.26,
+     0.24,
+     0.53,
+     0.44,
+     0.28,
+     0.71,
+     1.68,
+     0.58,
+     0.68,
+     0.01,
+     0.98,
+     0.21,
+     0.0,
+     0.65
+    ],
+    "p": 0.047619047619047616
+   }
   },
   "JP": {
-   "skipped": "no data"
+   "n_events": 352,
+   "span": [
+    "1990-01-31",
+    "2019-04-26"
+   ],
+   "C1_extension_long": {
+    "x1": {
+     "n": 352,
+     "mean_bp": -1.1143901349167566,
+     "wr": 0.5085227272727273,
+     "pf": 0.9349381790447842,
+     "t": -0.44048867450495655,
+     "halves": [
+      -1.0,
+      -1.0
+     ]
+    },
+    "gross": {
+     "n": 352,
+     "mean_bp": 1.8856098650832431,
+     "wr": 0.5340909090909091,
+     "pf": 1.1201630285899828,
+     "t": 0.7453312480786018,
+     "halves": [
+      1.0,
+      1.0
+     ]
+    },
+    "price_component": {
+     "n": 352,
+     "mean_bp": -0.24625968659795108,
+     "wr": 0.5085227272727273,
+     "pf": 0.9852804264179962,
+     "t": -0.09719013425642227,
+     "halves": [
+      -1.0,
+      1.0
+     ]
+    },
+    "carry": {
+     "n": 352,
+     "mean_bp": 2.1318695516811954,
+     "wr": 0.9659090909090909,
+     "pf": 705.6632364291228,
+     "t": 19.412329723415144,
+     "halves": [
+      1.0,
+      1.0
+     ]
+    },
+    "control_price": {
+     "n": 1120,
+     "mean_bp": 3.6402225965699477,
+     "wr": 0.5526785714285715,
+     "pf": 1.2484351625579284,
+     "t": 2.5501079936631172,
+     "halves": [
+      1.0,
+      1.0
+     ]
+    },
+    "n_control": 1120,
+    "strat_diff": {
+     "n_event": 352,
+     "n_control": 1120,
+     "dropped_events": 0,
+     "diff_bp": -3.906794456522731,
+     "se": 2.905103138864506,
+     "t": -1.3448040464579676
+    },
+    "diff_halves": [
+     -1.0,
+     -1.0
+    ],
+    "x15": {
+     "n": 352,
+     "mean_bp": -2.614390134916756,
+     "wr": 0.48011363636363635,
+     "pf": 0.8538350788232247,
+     "t": -1.0333986357967357,
+     "halves": [
+      -1.0,
+      -1.0
+     ]
+    },
+    "x2": {
+     "n": 352,
+     "mean_bp": -4.114390134916757,
+     "wr": 0.45454545454545453,
+     "pf": 0.7798898529156038,
+     "t": -1.626308597088515,
+     "halves": [
+      -1.0,
+      -1.0
+     ]
+    },
+    "mirror_x1": {
+     "n": 352,
+     "mean_bp": -4.885609865083243,
+     "wr": 0.42613636363636365,
+     "pf": 0.7460371868917813,
+     "t": -1.93115117066216,
+     "halves": [
+      -1.0,
+      -1.0
+     ]
+    },
+    "quarter_end": {
+     "n": 117,
+     "strat_diff": {
+      "n_event": 116,
+      "n_control": 1120,
+      "dropped_events": 1,
+      "diff_bp": -8.244354592656011,
+      "se": 5.088505626585243,
+      "t": -1.6201917021733887
+     }
+    },
+    "other_month_end": {
+     "n": 235,
+     "strat_diff": {
+      "n_event": 235,
+      "n_control": 1120,
+      "dropped_events": 0,
+      "diff_bp": -1.8716742148961183,
+      "se": 3.2579740731909808,
+      "t": -0.5744902116617924
+     }
+    },
+    "ex_december": {
+     "n": 323,
+     "x1": {
+      "n": 323,
+      "mean_bp": 0.25605005419730853,
+      "wr": 0.5170278637770898,
+      "pf": 1.016036641366216,
+      "t": 0.09994630364013538,
+      "halves": [
+       1.0,
+       -1.0
+      ]
+     },
+     "strat_diff": {
+      "n_event": 323,
+      "n_control": 1120,
+      "dropped_events": 0,
+      "diff_bp": -2.5513099566306403,
+      "se": 2.906165977982486,
+      "t": -0.8778954732660543
+     }
+    },
+    "december_only": {
+     "n": 29,
+     "x1": {
+      "n": 29,
+      "mean_bp": -16.37825844815272,
+      "wr": 0.41379310344827586,
+      "pf": 0.4552583048460632,
+      "t": -1.4699789050138938,
+      "halves": [
+       -1.0,
+       -1.0
+      ]
+     }
+    },
+    "drop_one_max": {
+     "dropped_date": "1999-01-29",
+     "dropped_net_bp": -215.29876412561873,
+     "x1": {
+      "n": 351,
+      "mean_bp": -0.5041782432053548,
+      "wr": 0.50997150997151,
+      "pf": 0.9695610427226174,
+      "t": -0.20476691480725498,
+      "halves": [
+       1.0,
+       -1.0
+      ]
+     },
+     "strat_diff": {
+      "n_event": 351,
+      "n_control": 1120,
+      "dropped_events": 0,
+      "diff_bp": -3.296054442727385,
+      "se": 2.844911048563752,
+      "t": -1.1585790861163803
+     }
+    },
+    "per_year_net": {
+     "1990": -19.8,
+     "1991": 13.2,
+     "1992": -12.8,
+     "1993": 15.7,
+     "1994": -15.2,
+     "1995": 5.2,
+     "1996": 29.8,
+     "1997": 4.8,
+     "1998": -4.7,
+     "1999": -21.5,
+     "2000": 15.8,
+     "2001": -3.0,
+     "2002": 15.2,
+     "2003": -31.1,
+     "2004": -16.2,
+     "2005": -0.9,
+     "2006": -20.6,
+     "2007": 17.0,
+     "2008": 19.2,
+     "2009": -5.5,
+     "2010": 1.9,
+     "2011": -11.7,
+     "2012": 4.9,
+     "2013": 2.4,
+     "2014": -0.6,
+     "2015": -9.4,
+     "2016": 2.7,
+     "2017": -8.2,
+     "2018": -0.4,
+     "2019": 3.2
+    },
+    "by_era_diff": {
+     "pre-2009": {
+      "n_event": 228,
+      "n_control": 727,
+      "dropped_events": 0,
+      "diff_bp": -4.124834969386901,
+      "se": 4.215462690451549,
+      "t": -0.9785011212956697
+     },
+     "2009+": {
+      "n_event": 124,
+      "n_control": 393,
+      "dropped_events": 0,
+      "diff_bp": -3.5058812554498995,
+      "se": 2.8161330581316233,
+      "t": -1.2449274175190759
+     }
+    },
+    "negative_yield_split": {
+     "n_neg": 12,
+     "neg": {
+      "x1": {
+       "n": 12,
+       "mean_bp": -7.740567910422293,
+       "wr": 0.5833333333333334,
+       "pf": 0.4749086704426111,
+       "t": -0.8454514461559323,
+       "halves": [
+        -1.0,
+        -1.0
+       ]
+      },
+      "strat_diff": {
+       "n_event": 12,
+       "n_control": 38,
+       "dropped_events": 0,
+       "diff_bp": -4.43052907773289,
+       "se": 10.06287492565592,
+       "t": -0.4402846214889328
+      }
+     },
+     "pos": {
+      "x1": {
+       "n": 340,
+       "mean_bp": -0.8805250369577377,
+       "wr": 0.5058823529411764,
+       "pf": 0.9488436030718308,
+       "t": -0.3386611775735487,
+       "halves": [
+        -1.0,
+        -1.0
+       ]
+      },
+      "strat_diff": {
+       "n_event": 339,
+       "n_control": 1082,
+       "dropped_events": 1,
+       "diff_bp": -3.8706215242548963,
+       "se": 2.9865128677483304,
+       "t": -1.296033767694139
+      }
+     }
+    },
+    "ycc_split": {
+     "window": [
+      "2016-09-21",
+      "2024-03-19"
+     ],
+     "n_in": 32,
+     "inside": {
+      "x1": {
+       "n": 32,
+       "mean_bp": -2.394170632780652,
+       "wr": 0.4375,
+       "pf": 0.6561329668538125,
+       "t": -0.8428861161106463,
+       "halves": [
+        -1.0,
+        1.0
+       ]
+      },
+      "strat_diff": {
+       "n_event": 32,
+       "n_control": 98,
+       "dropped_events": 0,
+       "diff_bp": 0.6447258924027921,
+       "se": 3.145415894717957,
+       "t": 0.20497317810514956
+      }
+     },
+     "outside": {
+      "x1": {
+       "n": 320,
+       "mean_bp": -0.986412085130366,
+       "wr": 0.515625,
+       "pf": 0.9456364762991125,
+       "t": -0.35622654683242067,
+       "halves": [
+        1.0,
+        -1.0
+       ]
+      },
+      "strat_diff": {
+       "n_event": 320,
+       "n_control": 1022,
+       "dropped_events": 0,
+       "diff_bp": -4.308938462237507,
+       "se": 3.181622358135985,
+       "t": -1.354321153551983
+      }
+     }
+    },
+    "ex_roll": {
+     "n_flagged": 3,
+     "flagged_dates": [
+      "1990-05-31",
+      "2000-01-31",
+      "2003-01-31"
+     ],
+     "x1": {
+      "n": 349,
+      "mean_bp": -0.8949669110315849,
+      "wr": 0.5128939828080229,
+      "pf": 0.9474981996617058,
+      "t": -0.35118999104154397,
+      "halves": [
+       -1.0,
+       -1.0
+      ]
+     },
+     "strat_diff": {
+      "n_event": 349,
+      "n_control": 1120,
+      "dropped_events": 0,
+      "diff_bp": -3.7202916690941668,
+      "se": 2.9138838707945287,
+      "t": -1.27674671814555
+     }
+    },
+    "us_orthogonalised": {
+     "beta": 0.16554471482045946,
+     "us_event_mean_bp": 15.730452816929544,
+     "us_control_mean_bp": 1.8955696540278186,
+     "event_ortho": {
+      "n": 352,
+      "mean_bp": -2.8503530121732457,
+      "wr": 0.45454545454545453,
+      "pf": 0.841693092554695,
+      "t": -1.1246411154059337,
+      "halves": [
+       -1.0,
+       -1.0
+      ]
+     },
+     "strat_diff": {
+      "n_event": 352,
+      "n_control": 1120,
+      "dropped_events": 0,
+      "diff_bp": -6.189514568823299,
+      "se": 2.8888246225895204,
+      "t": -2.142571937535988
+     },
+     "raw_diff_for_reference": -3.906794456522731
+    },
+    "maxstat": {
+     "placebo_clocks": 20,
+     "obs_t": -1.3448040464579676,
+     "placebo_max_t": [
+      0.91,
+      0.2,
+      0.02,
+      0.33,
+      0.0,
+      1.3,
+      0.95,
+      0.09,
+      0.12,
+      0.42,
+      0.85,
+      0.64,
+      1.15,
+      0.35,
+      0.35,
+      0.56,
+      0.11,
+      0.66,
+      0.0,
+      0.18
+     ],
+     "p": 1.0
+    }
+   },
+   "T-1_long": {
+    "x1": {
+     "n": 352,
+     "mean_bp": -0.0076949713347875814,
+     "wr": 0.4772727272727273,
+     "pf": 0.9992154313490806,
+     "t": -0.005200756356997462,
+     "halves": [
+      1.0,
+      -1.0
+     ]
+    },
+    "gross": {
+     "n": 352,
+     "mean_bp": 2.992305028665213,
+     "wr": 0.5426136363636364,
+     "pf": 1.3602122561601135,
+     "t": 2.0223921211443567,
+     "halves": [
+      1.0,
+      1.0
+     ]
+    },
+    "price_component": {
+     "n": 352,
+     "mean_bp": 2.2650066164609783,
+     "wr": 0.4971590909090909,
+     "pf": 1.261982753880015,
+     "t": 1.5283567447865232,
+     "halves": [
+      1.0,
+      1.0
+     ]
+    },
+    "carry": {
+     "n": 352,
+     "mean_bp": 0.7272984122042342,
+     "wr": 0.9659090909090909,
+     "pf": 675.1940836940836,
+     "t": 15.999605752309291,
+     "halves": [
+      1.0,
+      1.0
+     ]
+    },
+    "control_price": {
+     "n": 3679,
+     "mean_bp": 1.1420234124450213,
+     "wr": 0.5023104104376189,
+     "pf": 1.1286194699263614,
+     "t": 2.5342816488059667,
+     "halves": [
+      1.0,
+      1.0
+     ]
+    },
+    "n_control": 3679,
+    "strat_diff": {
+     "n_event": 352,
+     "n_control": 3679,
+     "dropped_events": 0,
+     "diff_bp": 1.1158560169377032,
+     "se": 1.5260383253260725,
+     "t": 0.7312110046117455
+    },
+    "diff_halves": [
+     1.0,
+     1.0
+    ]
+   },
+   "T+2_reversal_short": {
+    "x1": {
+     "n": 338,
+     "mean_bp": -1.353582678438985,
+     "wr": 0.46449704142011833,
+     "pf": 0.9263204506331543,
+     "t": -0.4793172888287764,
+     "halves": [
+      -1.0,
+      1.0
+     ]
+    },
+    "gross": {
+     "n": 338,
+     "mean_bp": 1.6464173215610143,
+     "wr": 0.4970414201183432,
+     "pf": 1.097854907133258,
+     "t": 0.5830129916862212,
+     "halves": [
+      -1.0,
+      1.0
+     ]
+    },
+    "price_component": {
+     "n": 338,
+     "mean_bp": 3.538891991253808,
+     "wr": 0.5118343195266272,
+     "pf": 1.223549713835249,
+     "t": 1.2604686839333952,
+     "halves": [
+      -1.0,
+      1.0
+     ]
+    },
+    "carry": {
+     "n": 338,
+     "mean_bp": -1.8924746696927939,
+     "wr": 0.029585798816568046,
+     "pf": 0.001344802364525277,
+     "t": -17.941751183937832,
+     "halves": [
+      -1.0,
+      -1.0
+     ]
+    },
+    "control_price": {
+     "n": 1748,
+     "mean_bp": -2.4905657963913312,
+     "wr": 0.4279176201372998,
+     "pf": 0.8329036946365509,
+     "t": -2.68416911630158,
+     "halves": [
+      -1.0,
+      -1.0
+     ]
+    },
+    "n_control": 1748,
+    "strat_diff": {
+     "n_event": 338,
+     "n_control": 1748,
+     "dropped_events": 0,
+     "diff_bp": 6.072488051613827,
+     "se": 2.9560522880726268,
+     "t": 2.0542559670259233
+    },
+    "diff_halves": [
+     1.0,
+     1.0
+    ]
+   },
+   "jump_rank_guard": {
+    "event_rank_jump_share": 0.014887282007656316,
+    "mid_month_jump_share": 0.009910485933503837,
+    "ratio": 1.5021747780628696,
+    "event_rank_jumps": 35,
+    "mid_month_jumps": 31,
+    "roll_flag": false,
+    "by_rank": {
+     "-14": {
+      "n": 391,
+      "jump_share": 0.005115089514066497
+     },
+     "-13": {
+      "n": 391,
+      "jump_share": 0.010230179028132993
+     },
+     "-12": {
+      "n": 391,
+      "jump_share": 0.01278772378516624
+     },
+     "-11": {
+      "n": 391,
+      "jump_share": 0.017902813299232736
+     },
+     "-10": {
+      "n": 391,
+      "jump_share": 0.0076726342710997444
+     },
+     "-9": {
+      "n": 391,
+      "jump_share": 0.0076726342710997444
+     },
+     "-8": {
+      "n": 391,
+      "jump_share": 0.0076726342710997444
+     },
+     "-7": {
+      "n": 391,
+      "jump_share": 0.010230179028132993
+     },
+     "-6": {
+      "n": 392,
+      "jump_share": 0.012755102040816327
+     },
+     "-5": {
+      "n": 392,
+      "jump_share": 0.007653061224489796
+     },
+     "-4": {
+      "n": 392,
+      "jump_share": 0.007653061224489796
+     },
+     "-3": {
+      "n": 392,
+      "jump_share": 0.01020408163265306
+     },
+     "-2": {
+      "n": 392,
+      "jump_share": 0.007653061224489796
+     },
+     "-1": {
+      "n": 392,
+      "jump_share": 0.00510204081632653
+     },
+     "0": {
+      "n": 392,
+      "jump_share": 0.017857142857142856
+     },
+     "1": {
+      "n": 391,
+      "jump_share": 0.04092071611253197
+     }
+    }
+   },
+   "cut_record": {
+    "is_first_month": "1990-01",
+    "is_last_month": "2019-04",
+    "is_series_clip": "2019-05-06",
+    "oos_first_month": "2019-05",
+    "oos_last_month": "2026-08",
+    "oos_series_start": "2018-06-01",
+    "stage": "IS",
+    "series_first": "1986-07-05",
+    "series_last": "2026-09-17",
+    "n_events": 352,
+    "first_event": "1990-01-31",
+    "last_event": "2019-04-26"
+   },
+   "file_sha256": "7bb0a28cb65d6ca2343ae847dc9588119586f1192f7001efa42100fd769aad38",
+   "coupon_freq": 2,
+   "selectable": true,
+   "manifest": {
+    "series_id": "MoF jgbcme_all.csv / jgbcme.csv, column 10Y",
+    "source": "Japan Ministry of Finance, JGB 'Interest Rate' by constant maturity: semiannual compound yield on a constant-maturity point read off a curve through selected issues, from secondary-market prices at the 15:00 JST close (JSDA Reference Statistical Prices from 2002-08; JSDA Standard Quotation 1998-12..2002-07; TSE/JSDA quotations before)",
+    "route": "MoF English CSV download from a Kernel cloud VM (jgbcme_all.csv to 2026-08-31 + jgbcme.csv 2026-09-01..17 appended, 0 overlap); raw files byte-exact under data/raw_yields/; Gregorian dates in the English files (no era conversion); new-issue dates from MoF jgb_historical_data.xls cross-checked against 66 MoF auction-result pages (0 mismatches)",
+    "file": "yield_JP10Y_daily.csv",
+    "file_md5": "f06c83bbaa452a75edae0e1a7dc748ed",
+    "file_sha256": "7bb0a28cb65d6ca2343ae847dc9588119586f1192f7001efa42100fd769aad38",
+    "companion": "yield_JP09Y_daily.csv (9y column, md5 f1d2b6c08c7c6ed2248e835e49c43f1b) for the isolation detector; jgb10y_new_issue_dates.csv (256 issues #119..#383, md5 e2f1956b2a63422c0cefbd8991472fb1)",
+    "construction": "issue-based",
+    "coupon_convention": "semi-annual",
+    "quote_time": "15:00 JST market close (provider statement); pre-2002 quotation time not stated",
+    "attenuated": false,
+    "first_date": "1986-07-05",
+    "last_date": "2026-09-17",
+    "n_rows": 9942,
+    "is_month_ends": 352,
+    "is_first_event": "1990-01-31",
+    "oos_month_ends": 88,
+    "scale_check": "PASS: percent, 3 decimals, min -0.297 (2016-07-27), max 8.105 (1990-09-28), negative 2016-02-09..2020-05-22, daily sd 3.5 bp",
+    "known_date_checks": {
+     "verdict": "PASS (anchors 1990-09-19 7.98, 1998-10-02 0.77, 2003-06-11 0.44, 2006-05-10 2.00, 2016-02-09, 2016-07-08 -0.29, 2019-09-04, 2022-12-19/20, 2024-05-22 within tolerance; jump anchors 2022-12-20 +0.15, 2013-04-04 -0.11, 2024-08-05 -0.19 on the named day)",
+     "items": [
+      {
+       "date": "1990-09-19",
+       "expected": 8.4,
+       "actual": 7.976,
+       "verdict": "PASS"
+      },
+      {
+       "date": "1998-10-02",
+       "expected": 0.75,
+       "actual": 0.772,
+       "verdict": "PASS"
+      },
+      {
+       "date": "2003-06-11",
+       "expected": 0.44,
+       "actual": 0.44,
+       "verdict": "PASS"
+      },
+      {
+       "date": "2006-05-10",
+       "expected": 2.0,
+       "actual": 1.995,
+       "verdict": "PASS"
+      },
+      {
+       "date": "2013-04-10",
+       "expected": 0.58,
+       "actual": 0.585,
+       "verdict": "PASS"
+      },
+      {
+       "date": "2016-02-09",
+       "expected": -0.02,
+       "actual": -0.02,
+       "verdict": "PASS"
+      },
+      {
+       "date": "2016-07-08",
+       "expected": -0.28,
+       "actual": -0.293,
+       "verdict": "PASS"
+      },
+      {
+       "date": "2019-09-04",
+       "expected": -0.28,
+       "actual": -0.286,
+       "verdict": "PASS"
+      },
+      {
+       "date": "2022-12-19",
+       "expected": 0.25,
+       "actual": 0.282,
+       "verdict": "PASS"
+      },
+      {
+       "date": "2022-12-20",
+       "expected": 0.41,
+       "actual": 0.432,
+       "verdict": "PASS"
+      },
+      {
+       "date": "2024-05-22",
+       "expected": 1.0,
+       "actual": 1.007,
+       "verdict": "PASS"
+      },
+      {
+       "date": "2025-05-21",
+       "expected": 1.55,
+       "actual": 1.53,
+       "verdict": "PASS"
+      }
+     ]
+    },
+    "holiday_row_check": "PASS: 0 rows on Jan 1-3, Dec 31, May 3/5, Nov 3, Nov 23, Feb 11; December T = Dec 28 or earlier to 2008, Dec 30 after; 519 Saturday half-session rows all before 1989-03 (pre-IS, allowed by the loader for the pre-1990 placebo only); 3,361 leading empty rows before 1986-07-05 (tenor not published) dropped by the loader",
+    "gaps_check": "6 one-off missing weekdays, all documented: 1993-06-09 (Crown Prince wedding), 2019-10-22 (enthronement), 2020-07-23/24 and 2021-07-22/23 (Olympics-shifted holidays); 2019 Golden Week 10-day closure drops the April-2019 T+2 read-only window (T = 2019-04-26)",
+    "repeats_check": "5.5% exact repeats at 0.1 bp resolution; excess in 1989 (7%), 1997 (6%), 2013 (9%), 2015 (9%) vs ~1-2% expected from vol - NOT concentrated at month-ends (T-repeat share 5.2% vs 5.5% base) so repeats can dilute, not manufacture; no run >= 6 outside YCC; disclosed",
+    "splices": "price basis changes 1998-12-01 (JSDA Standard Quotation) and 2002-08-01 (JSDA Reference Statistical Prices), both inside IS; no level step reported at either; disclosed",
+    "roll_dates": [
+     "1986-07-21",
+     "1986-09-01",
+     "1986-09-17",
+     "1986-10-31",
+     "1986-12-01",
+     "1987-01-05",
+     "1987-02-27",
+     "1987-03-02",
+     "1987-04-01",
+     "1987-04-08",
+     "1987-04-24",
+     "1987-05-15",
+     "1987-05-19",
+     "1987-06-25",
+     "1987-06-26",
+     "1987-07-01",
+     "1987-07-29",
+     "1987-08-18",
+     "1987-12-07",
+     "1987-12-21",
+     "1987-12-23",
+     "1987-12-28",
+     "1988-01-04",
+     "1988-02-01",
+     "1988-03-01",
+     "1988-07-29",
+     "1988-09-01",
+     "1989-01-04",
+     "1989-02-01",
+     "1989-04-20",
+     "1989-05-01",
+     "1989-06-20",
+     "1989-07-20",
+     "1989-08-01",
+     "1989-08-21",
+     "1989-09-01",
+     "1989-10-02",
+     "1989-10-20",
+     "1989-11-20",
+     "1989-12-20",
+     "1990-01-25",
+     "1990-02-20",
+     "1990-03-20",
+     "1990-04-20",
+     "1990-05-18",
+     "1990-05-28",
+     "1990-06-01",
+     "1990-09-12",
+     "1990-09-20",
+     "1990-10-22",
+     "1990-11-01",
+     "1990-11-20",
+     "1990-12-20",
+     "1991-02-20",
+     "1991-03-20",
+     "1991-04-22",
+     "1991-06-20",
+     "1991-07-22",
+     "1991-09-20",
+     "1991-10-21",
+     "1992-01-27",
+     "1992-05-25",
+     "1992-06-22",
+     "1992-07-20",
+     "1992-08-20",
+     "1992-09-21",
+     "1992-11-20",
+     "1992-12-04",
+     "1992-12-21",
+     "1993-01-04",
+     "1993-02-22",
+     "1993-03-05",
+     "1993-03-22",
+     "1993-04-20",
+     "1993-06-21",
+     "1993-07-20",
+     "1993-07-22",
+     "1993-08-02",
+     "1993-09-20",
+     "1993-10-20",
+     "1993-11-22",
+     "1993-12-20",
+     "1994-01-20",
+     "1994-02-21",
+     "1994-04-20",
+     "1994-06-20",
+     "1994-07-20",
+     "1994-08-22",
+     "1994-09-20",
+     "1994-10-20",
+     "1994-11-21",
+     "1995-02-20",
+     "1995-03-20",
+     "1995-04-20",
+     "1995-05-22",
+     "1995-06-20",
+     "1995-07-20",
+     "1995-09-20",
+     "1995-10-20",
+     "1996-01-25",
+     "1996-03-21",
+     "1996-05-20",
+     "1996-07-22",
+     "1996-09-20",
+     "1996-10-21",
+     "1996-12-20",
+     "1997-01-27",
+     "1997-02-20",
+     "1997-04-21",
+     "1997-05-20",
+     "1997-06-20",
+     "1997-07-22",
+     "1997-09-22",
+     "1997-10-20",
+     "1997-11-20",
+     "1998-01-26",
+     "1998-02-20",
+     "1998-04-20",
+     "1998-06-22",
+     "1998-08-20",
+     "1998-09-21",
+     "1998-10-20",
+     "1998-12-21",
+     "1999-01-25",
+     "1999-02-22",
+     "1999-04-20",
+     "1999-05-20",
+     "1999-06-21",
+     "1999-07-21",
+     "1999-09-20",
+     "1999-10-20",
+     "1999-11-22",
+     "1999-12-20",
+     "2000-01-26",
+     "2000-02-21",
+     "2000-04-20",
+     "2000-05-22",
+     "2000-07-21",
+     "2000-09-20",
+     "2000-10-20",
+     "2000-12-20",
+     "2001-01-25",
+     "2001-02-20",
+     "2001-03-21",
+     "2001-04-20",
+     "2001-06-20",
+     "2001-07-23",
+     "2001-08-20",
+     "2001-09-20",
+     "2001-12-20",
+     "2002-02-20",
+     "2002-03-20",
+     "2002-05-20",
+     "2002-06-20",
+     "2002-07-22",
+     "2002-09-20",
+     "2002-10-21",
+     "2002-11-20",
+     "2002-12-20",
+     "2003-01-30",
+     "2003-02-20",
+     "2003-03-20",
+     "2003-04-21",
+     "2003-05-26",
+     "2003-06-20",
+     "2003-07-22",
+     "2003-08-20",
+     "2003-09-22",
+     "2003-10-20",
+     "2003-11-20",
+     "2003-12-22",
+     "2004-02-20",
+     "2004-03-22",
+     "2004-04-20",
+     "2004-06-21",
+     "2004-07-26",
+     "2004-08-20",
+     "2004-09-21",
+     "2004-10-20",
+     "2004-12-20",
+     "2005-01-25",
+     "2005-02-21",
+     "2005-03-22",
+     "2005-04-20",
+     "2005-06-20",
+     "2005-07-20",
+     "2005-09-20",
+     "2005-10-20",
+     "2005-12-20",
+     "2006-01-25",
+     "2006-02-20",
+     "2006-03-20",
+     "2006-04-20",
+     "2006-05-25",
+     "2006-06-20",
+     "2006-07-20",
+     "2006-09-20",
+     "2006-11-20",
+     "2006-12-20",
+     "2007-03-20",
+     "2007-06-20",
+     "2007-07-20",
+     "2007-09-20",
+     "2007-12-20",
+     "2008-03-21",
+     "2008-04-04",
+     "2008-05-13",
+     "2008-06-20",
+     "2008-07-08",
+     "2008-08-08",
+     "2008-09-22",
+     "2008-12-22",
+     "2009-01-14",
+     "2009-03-23",
+     "2009-05-15",
+     "2009-06-22",
+     "2009-07-07",
+     "2009-09-24",
+     "2009-10-09",
+     "2009-12-21",
+     "2010-03-23",
+     "2010-05-14",
+     "2010-06-21",
+     "2010-07-09",
+     "2010-09-21",
+     "2010-10-13",
+     "2010-12-20",
+     "2011-03-22",
+     "2011-05-17",
+     "2011-06-20",
+     "2011-08-05",
+     "2011-09-20",
+     "2011-10-07",
+     "2011-12-20",
+     "2012-01-17",
+     "2012-03-21",
+     "2012-05-10",
+     "2012-06-20",
+     "2012-07-05",
+     "2012-09-20",
+     "2012-12-20",
+     "2013-01-10",
+     "2013-03-21",
+     "2013-06-20",
+     "2013-09-20",
+     "2013-11-08",
+     "2013-12-20",
+     "2014-03-20",
+     "2014-06-20",
+     "2014-09-22",
+     "2014-12-22",
+     "2015-01-08",
+     "2015-03-20",
+     "2015-06-22",
+     "2015-09-24",
+     "2015-12-21",
+     "2016-03-22",
+     "2016-06-20",
+     "2016-09-20",
+     "2016-12-20",
+     "2017-03-21",
+     "2017-06-20",
+     "2017-09-20",
+     "2017-12-20",
+     "2018-03-20",
+     "2018-07-04",
+     "2018-10-03",
+     "2019-01-09",
+     "2019-04-03",
+     "2019-07-03",
+     "2019-10-02",
+     "2020-01-08",
+     "2020-04-03",
+     "2020-07-03",
+     "2020-10-02",
+     "2021-01-07",
+     "2021-04-02",
+     "2021-07-02",
+     "2021-10-06",
+     "2022-01-06",
+     "2022-04-06",
+     "2022-07-06",
+     "2022-10-05",
+     "2023-01-06",
+     "2023-03-14",
+     "2023-04-05",
+     "2023-07-05",
+     "2023-10-04",
+     "2024-01-11",
+     "2024-04-03",
+     "2024-07-03",
+     "2024-10-04",
+     "2025-01-08",
+     "2025-04-04",
+     "2025-07-02",
+     "2025-10-03",
+     "2026-01-07",
+     "2026-04-03",
+     "2026-07-03"
+    ],
+    "roll_dates_note": "256 new-issue issue dates (#119 1989-04-20 .. #383 2026-07-03; 122 fall on the 20th, 60 on the 21st/22nd, i.e. mid-month) + 43 isolation-detector days (|d10y - d9y| > 8 bp; 33 in 1986-89, 9 in the 1990s, 1 in 2023), computed mechanically without month-end information",
+    "passed": true,
+    "admission_note": "ADMITTED. IS 352 month-ends 1990-01..2019-04, OOS 88; YCC covers 59 of the 88 OOS month-ends (read-only split registered)."
+   },
+   "pre_index_era_readonly": {
+    "span": [
+     "1986-07-31",
+     "1989-12-29"
+    ],
+    "x1": {
+     "n": 42,
+     "mean_bp": 3.4172219837801414,
+     "wr": 0.42857142857142855,
+     "pf": 1.142424242721226,
+     "t": 0.3089630949468858,
+     "halves": [
+      -1.0,
+      1.0
+     ]
+    },
+    "x2": {
+     "n": 42,
+     "mean_bp": 0.41722198378013997,
+     "wr": 0.42857142857142855,
+     "pf": 1.0162295528816732,
+     "t": 0.03772251144363615,
+     "halves": [
+      -1.0,
+      1.0
+     ]
+    },
+    "strat_diff": {
+     "n_event": 42,
+     "n_control": 152,
+     "dropped_events": 0,
+     "diff_bp": -0.07924009936242339,
+     "se": 12.643056290594933,
+     "t": -0.006267479756565623
+    },
+    "diff_halves": [
+     -1.0,
+     1.0
+    ]
+   },
+   "maxstat": {
+    "placebo_clocks": 20,
+    "obs_t": -1.3448040464579676,
+    "placebo_max_t": [
+     0.91,
+     0.2,
+     0.02,
+     0.33,
+     0.0,
+     1.3,
+     0.95,
+     0.09,
+     0.12,
+     0.42,
+     0.85,
+     0.64,
+     1.15,
+     0.35,
+     0.35,
+     0.56,
+     0.11,
+     0.66,
+     0.0,
+     0.18
+    ],
+    "p": 1.0
+   }
   }
  },
- "verdict": {},
- "candidates": [],
- "family": "INCONCLUSIVE (fewer than 2 markets admitted)"
+ "pooled_date_clustered": {
+  "n": 352,
+  "mean_bp": 2.528943952819793,
+  "wr": 0.5454545454545454,
+  "pf": 1.1480108649968326,
+  "t": 1.0040256188369157,
+  "halves": [
+   -1.0,
+   1.0
+  ],
+  "n_dates": 352,
+  "dates_with_all_markets": 259
+ },
+ "pooled_market_stratified": {
+  "n_event": 915,
+  "diff_bp": 4.464720307447831,
+  "se": 2.2033336158413763,
+  "t": 2.026347837362301,
+  "note": "market x year strata; SE ignores same-date cross-market correlation"
+ },
+ "cross_market_event_corr": {
+  "DE-JP": {
+   "n": 259,
+   "corr": 0.30372107603439435
+  },
+  "DE-UK": {
+   "n": 259,
+   "corr": 0.6521505345962189
+  },
+  "JP-UK": {
+   "n": 306,
+   "corr": 0.19686382015993456
+  }
+ },
+ "family_maxstat": {
+  "markets": [
+   "DE",
+   "UK",
+   "JP"
+  ],
+  "obs_max_t": 3.0549297626498206,
+  "placebo_family_max_t": [
+   0.91,
+   1.54,
+   0.99,
+   1.17,
+   0.97,
+   1.3,
+   0.95,
+   0.88,
+   0.8,
+   0.55,
+   1.89,
+   0.71,
+   1.68,
+   1.05,
+   1.15,
+   1.14,
+   0.98,
+   0.66,
+   0.52,
+   0.65
+  ],
+  "p": 0.047619047619047616
+ },
+ "verdict": {
+  "DE": false,
+  "UK": true,
+  "JP": false
+ },
+ "candidates": [
+  "UK"
+ ],
+ "family": "CANDIDATES ['UK'] - verdict at the sealed stage"
 }
