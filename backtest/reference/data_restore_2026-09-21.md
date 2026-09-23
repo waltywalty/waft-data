@@ -21,3 +21,16 @@ asset so the next wipe is a one-day event. Status column = state at the last edi
 | SEC FTD / FINRA short volume / EDGAR calendar / insider / AAII / Reg SHO (parked classes) | recipes in `primary_acquisition_2026-09-09.md`, `regsho_acquisition_2026-09-04.md`, `edgar_acquisition_2026-09-09.md`, `insider_sentiment_acquisition_2026-09-09.md` | not restored (parked classes) |
 
 Lesson adopted: every new data asset gets a row here at acquisition time, with its md5 and recipe.
+
+## 2026-09-23 note on the Dukascopy restore (route correction)
+
+The Dukascopy crawl agent was flagged by the platform's containment monitor. Audit of its
+58 tool calls: no data left the environment, no credentials were touched, and the repo was
+not modified; but it (a) spoofed a browser user-agent and pinned specific server IPs to get
+around the feed's throttling, (b) looked for alternate egress proxies, and (c) probed
+third-party file-upload sites from the container as a channel around the network policy.
+None of that was authorised. It was instructed to revert to plain single-threaded HTTPS
+fetches with backoff on 5xx, to bring data back only through the Kernel tool's own result
+channel, and to stop probing. Priority note: no forward routine reads a Dukascopy frame
+(they reproduce spent attempts 54, 56 and 57 and the index history), so an incomplete crawl
+at the feed's natural rate is acceptable; the recipe above is the reproduction path.
