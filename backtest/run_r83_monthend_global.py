@@ -59,6 +59,7 @@ YCC = (pd.Timestamp("2016-09-21"), pd.Timestamp("2024-03-19"))   # BoJ yield-cur
 MANIFEST_REQUIRED = ("series_id", "source", "route", "construction", "quote_time", "first_date", "last_date",
                      "scale_check", "known_date_checks", "holiday_row_check", "passed")
 CONSTRUCTIONS = ("fitted-par", "fitted-spot", "bucket-average", "issue-based")
+SPLIT_MONTHS = None   # optional read-only split of C1 by calendar month set (set by a wrapper before main())
 
 
 def sha256(path):
@@ -220,6 +221,10 @@ def evaluate_market(code, y, freq, ev_pos, all_me, us=None, roll_dates=(), beta=
                            per_year_net={int(k): round(float(v), 1) for k, v in g.groupby(g.date.dt.year).net.mean().items()},
                            by_era_diff={era: strat_diff(g[m_], c[m_c]) for era, m_, m_c in (
                                ("pre-2009", g.date < "2009-01-01", c.date < "2009-01-01"), ("2009+", g.date >= "2009-01-01", c.date >= "2009-01-01"))})
+            if SPLIT_MONTHS:
+                im, imc = g.date.dt.month.isin(SPLIT_MONTHS), c.date.dt.month.isin(SPLIT_MONTHS)
+                out[cn]["month_split"] = dict(months=sorted(SPLIT_MONTHS), inside=dict(n=int(im.sum()), x1=stats(g[im].net), strat_diff=strat_diff(g[im], c)),
+                                              outside=dict(n=int((~im).sum()), x1=stats(g[~im].net), strat_diff=strat_diff(g[~im], c)))
             neg, negc = g.y0 <= 0, c.y0 <= 0
             out[cn]["negative_yield_split"] = dict(n_neg=int(neg.sum()), neg=dict(x1=stats(g[neg].net), strat_diff=strat_diff(g[neg], c[negc])),
                                                    pos=dict(x1=stats(g[~neg].net), strat_diff=strat_diff(g[~neg], c[~negc])))
@@ -307,8 +312,8 @@ def clean(o):
     return o
 
 
-def market_passes(v, stage_oos):
-    s, sd = v["x1"], v["strat_diff"]; floor = T_FLOOR_OOS if stage_oos else T_FLOOR_IS; nmin = MIN_OOS_EVENTS if stage_oos else 40
+def market_passes(v, stage_oos, floor_is=None):
+    s, sd = v["x1"], v["strat_diff"]; floor = T_FLOOR_OOS if stage_oos else (T_FLOOR_IS if floor_is is None else floor_is); nmin = MIN_OOS_EVENTS if stage_oos else 40
     own_t = s.get("t") if s.get("t") is not None else -9; d_t = sd.get("t") if sd.get("t") is not None else -9
     base = (s.get("n", 0) >= nmin and s.get("mean_bp", -1) > 0 and (s.get("pf") or 0) >= 1.15 and own_t >= floor and s.get("halves") == [1.0, 1.0]
             and v.get("x2", {}).get("mean_bp", -1) > 0 and sd.get("diff_bp", -1) > 0 and d_t >= floor)
@@ -316,18 +321,20 @@ def market_passes(v, stage_oos):
     return bool(base and v.get("diff_halves") == [1.0, 1.0] and v.get("maxstat", {}).get("p", 1.0) < 0.05)
 
 
-if __name__ == "__main__":
+def main(markets=None, t_floor_is=None, tag="r83_monthend_global", single=False):
+    """single=True: one selectable market, the family verdict is that market's own verdict (attempt 61 wrapper)."""
+    markets = markets or MARKETS; floor_is = T_FLOOR_IS if t_floor_is is None else t_floor_is
     man = load_manifest()
-    res = {"unsealed": UNSEAL, "registered_cut": REGISTERED_CUT, "manifest_sha256": sha256(MANIFEST) if os.path.exists(MANIFEST) else None, "markets": {}}
+    res = {"unsealed": UNSEAL, "registered_cut": REGISTERED_CUT, "tag": tag, "t_floor_is": floor_is, "manifest_sha256": sha256(MANIFEST) if os.path.exists(MANIFEST) else None, "markets": {}}
     isr = None
     if UNSEAL:
-        with open(os.path.join(HERE, "results", "r83_monthend_global_is.json")) as f: isr = json.load(f)
+        with open(os.path.join(HERE, "results", f"{tag}_is.json")) as f: isr = json.load(f)
         candidates = [m for m, ok in isr["verdict"].items() if ok]
         if not candidates: raise SystemExit("no market cleared IS; holdouts stay sealed")
         assert isr.get("manifest_sha256") == res["manifest_sha256"], "manifest changed since the IS run"
     us_full = load_yield("fred_DGS10.csv") if os.path.exists(os.path.join(HERE, "data", "fred_DGS10.csv")) else None
     pooled_e, pooled_c, maxima = [], [], {}
-    for code, (fname, freq, selectable) in MARKETS.items():
+    for code, (fname, freq, selectable) in markets.items():
         path = os.path.join(HERE, "data", fname)
         if not os.path.exists(path):
             print(f"=== {code}: {fname} missing - market skipped (data-gated) ==="); res["markets"][code] = {"skipped": "no data"}; continue
@@ -364,6 +371,7 @@ if __name__ == "__main__":
         if v and v.get("n_control"):
             print(f"  C1 net {json.dumps(clean(v['x1']))}\n     price {v['price_component'].get('mean_bp', float('nan')):+.1f} carry {v['carry'].get('mean_bp', float('nan')):+.2f} control price {v['control_price'].get('mean_bp', float('nan')):+.1f} n_control {v['n_control']}\n     strat_diff {json.dumps(clean(v['strat_diff']))} diff_halves {v['diff_halves']}\n     x15 {v['x15'].get('mean_bp', float('nan')):+.1f} x2 {v['x2'].get('mean_bp', float('nan')):+.1f} mirror {v['mirror_x1'].get('mean_bp', float('nan')):+.1f} qtr {json.dumps(clean(v['quarter_end']['strat_diff']))} other {json.dumps(clean(v['other_month_end']['strat_diff']))}\n     ex-Dec {json.dumps(clean(v['ex_december']['strat_diff']))} drop-one-max {json.dumps(clean(v['drop_one_max']))}\n     era {json.dumps(clean(v['by_era_diff']))}\n     neg-yield split n_neg {v['negative_yield_split']['n_neg']} neg {json.dumps(clean(v['negative_yield_split']['neg']['strat_diff']))}\n     per-year {v['per_year_net']}")
             if "ycc_split" in v: print(f"     YCC split {json.dumps(clean(v['ycc_split']))}")
+            if "month_split" in v: print(f"     month split {json.dumps(clean(v['month_split']))}")
             if "ex_roll" in v: print(f"     ex-roll {json.dumps(clean(v['ex_roll']))}")
             if "us_orthogonalised" in v: print(f"     US-orthogonalised {json.dumps(clean(v['us_orthogonalised']))}")
             print(f"     jump-rank roll guard {json.dumps(clean({k: out['jump_rank_guard'][k] for k in ('event_rank_jump_share', 'mid_month_jump_share', 'ratio', 'event_rank_jumps', 'roll_flag')}))}")
@@ -384,19 +392,26 @@ if __name__ == "__main__":
     passes = {}
     for code, out in res["markets"].items():
         if "skipped" in out or not out.get("selectable") or "C1_extension_long" not in out or not out["C1_extension_long"].get("n_control"): continue
-        passes[code] = market_passes(out["C1_extension_long"], UNSEAL)
+        passes[code] = market_passes(out["C1_extension_long"], UNSEAL, floor_is)
     res["verdict"] = passes; n_adm = len(passes)
     if not UNSEAL:
         res["candidates"] = [m for m, ok in passes.items() if ok]
-        res["family"] = "INCONCLUSIVE (fewer than 2 markets admitted)" if n_adm < 2 else ("FAILS at IS stage (no candidate)" if not res["candidates"] else f"CANDIDATES {res['candidates']} - verdict at the sealed stage")
+        if single: res["family"] = "INCONCLUSIVE (market not admitted)" if n_adm < 1 else ("FAILS at IS stage" if not res["candidates"] else f"CANDIDATE {res['candidates']} - one sealed shot")
+        else: res["family"] = "INCONCLUSIVE (fewer than 2 markets admitted)" if n_adm < 2 else ("FAILS at IS stage (no candidate)" if not res["candidates"] else f"CANDIDATES {res['candidates']} - verdict at the sealed stage")
         for code in maxima:
             if passes.get(code) and res["markets"][code]["jump_rank_guard"]["roll_flag"]: res["family"] += f"; {code} candidate carries a roll flag"
     else:
         n_pass = sum(passes.values())
-        res["family"] = "REPLICATES" if n_pass >= 2 else ("PARTIAL" if n_pass == 1 else "FAILS")
+        if single: res["family"] = "PASS" if n_pass == 1 else "FAILS"
+        else: res["family"] = "REPLICATES" if n_pass >= 2 else ("PARTIAL" if n_pass == 1 else "FAILS")
         res["shots_taken"] = len(passes)
         flags = [c for c in passes if passes[c] and (res["markets"][c]["jump_rank_guard"]["roll_flag"] or isr["markets"].get(c, {}).get("jump_rank_guard", {}).get("roll_flag"))]
         if flags: res["family"] += f" (roll flag on {flags}, IS or OOS stage)"
-    print(f"\nATTEMPT 60 {'OOS' if UNSEAL else 'IS'} VERDICT per market: {passes}\nFAMILY: {res['family']}")
-    with open(os.path.join(HERE, "results", f"r83_monthend_global_{'oos' if UNSEAL else 'is'}.json"), "w") as f:
+    print(f"\n{tag} {'OOS' if UNSEAL else 'IS'} VERDICT per market: {passes}\nFAMILY: {res['family']}")
+    with open(os.path.join(HERE, "results", f"{tag}_{'oos' if UNSEAL else 'is'}.json"), "w") as f:
         json.dump(clean(res), f, indent=1)
+    return res
+
+
+if __name__ == "__main__":
+    main()

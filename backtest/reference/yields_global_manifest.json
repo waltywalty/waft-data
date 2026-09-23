@@ -1,5 +1,5 @@
 {
- "registered": "Round 83 / attempt 60, written 2026-09-23 BEFORE the IS run; sealed by SHA-256 at IS and asserted at OOS",
+ "registered": "Round 83 / attempt 60, written 2026-09-23 BEFORE the IS run; sealed by SHA-256 at IS and asserted at OOS; TIPS entry added 2026-09-23 for Round 84 / attempt 61 BEFORE its IS run",
  "checker": "check_yield_provenance.py (A0-A10); acquisition provenance in data/yields_global_MANIFEST.md (gitignored, md5-listed here)",
  "acquisition_manifest_md5": "2f85fea1363c24e455950a4f15aac5d1",
  "registered_cut": {
@@ -615,6 +615,37 @@
    "roll_dates_note": "256 new-issue issue dates (#119 1989-04-20 .. #383 2026-07-03; 122 fall on the 20th, 60 on the 21st/22nd, i.e. mid-month) + 43 isolation-detector days (|d10y - d9y| > 8 bp; 33 in 1986-89, 9 in the 1990s, 1 in 2023), computed mechanically without month-end information",
    "passed": true,
    "admission_note": "ADMITTED. IS 352 month-ends 1990-01..2019-04, OOS 88; YCC covers 59 of the 88 OOS month-ends (read-only split registered)."
+  },
+  "TIPS": {
+   "series_id": "DFII10",
+   "source": "FRED / Federal Reserve H.15, 'Market Yield on U.S. Treasury Securities at 10-Year Constant Maturity, Inflation-Indexed' (Treasury real yield curve, read at 10 years)",
+   "route": "FRED fredgraph.csv via a Kernel cloud VM (restore agent, 2026-09-23; the container proxy refuses fred.stlouisfed.org); same route class as fred_DGS10.csv",
+   "file": "fred_DFII10.csv",
+   "file_md5": "448fe12e8b2f6818e3696818d113a63d",
+   "file_sha256": "fc7d104500d787cd87f964d2f90e78b4064e8c938d63461e69b053507facee2e",
+   "construction": "fitted-par",
+   "coupon_convention": "semi-annual (TIPS)",
+   "quote_time": "~3:30pm ET close (H.15 convention, same as DGS10)",
+   "attenuated": false,
+   "first_date": "2003-01-02",
+   "last_date": "2026-09-21",
+   "n_rows": 5934,
+   "is_month_ends": 196,
+   "is_first_event": "2003-01-31",
+   "oos_month_ends": 88,
+   "scale_check": "PASS: percent, 2 decimals, min -1.19 (2021-08-03, the record low real yield), max 3.15 (2008-11-21, the crisis liquidity spike), negative 2011-08-10..2022-04-28, daily sd 5.1 bp",
+   "known_date_checks": {
+    "verdict": "PASS on real-yield history from memory (record low -1.19 in Aug 2021, ~3.1 peak Nov 2008, negative through 2012-13 and 2020-21, ~1.7 Oct 2022); the checker's nominal-level anchors do not apply to a real-yield series",
+    "items": []
+   },
+   "holiday_row_check": "PASS: 0 rows on US market holidays; December T = Dec 31 when a weekday (as DGS10)",
+   "gaps_check": "3 one-off missing weekdays, all documented US closures: 2004-06-11 (Reagan funeral), 2012-10-30 (Sandy), 2018-12-05 (Bush funeral)",
+   "repeats_check": "9.1% exact repeats at 1 bp (expected ~10%); no run >= 6; T-repeat share 12% vs 9% base",
+   "splices": "none (H.15 series continuous from 2003-01-02)",
+   "roll_dates": [],
+   "roll_dates_note": "TIPS issue dates from data/tips_auctions.csv are added here before the IS run for the ex-roll read-only; not required for admission (fitted-par)",
+   "passed": true,
+   "admission_note": "ADMITTED for attempt 61. IS 196 month-ends 2003-01..2019-04 (>= 120), OOS 88."
   }
  }
 }

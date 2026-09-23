@@ -7853,3 +7853,71 @@ Negative-result value: this is the first replication family in the program and i
 replications are for - it bounded the claim. Test count: +3 selectable, +44 read-only, 1
 shot. Data assets: +5 (DE par/spot, UK par, JP 10y/9y, JGB issue dates; manifest
 committed; raw md5s in data/yields_global_MANIFEST.md).
+
+## Round 84 (2026-09-23): the in-market replication - month-end index extension on 10-year TIPS, attempt 61 registered BEFORE running
+
+Purpose: attempt 60 bounded the month-end extension to the US. The question that decides
+what watch #13 IS is whether the flow is a US-bond-index phenomenon (index-benchmarked funds
+of every US bond index buying duration into the last close) or something specific to
+nominal Treasuries (the nominal index's size, the note futures, the 2/5/7-year settlement
+calendar). The one US instrument with its own index and investor base AND the same data
+provenance as the anchor is TIPS: the Bloomberg US TIPS index rebalances at the month-end
+close, new TIPS settle on the last business day of the month in every calendar month (Jan
+10y new, Feb 30y new, Mar 10y reopen, Apr 5y new, May 10y reopen, Jun 5y reopen, Jul 10y
+new, Aug 30y reopen, Sep 10y reopen, Oct 5y new, Nov 10y reopen, Dec 5y reopen - schedule
+as of the 2010s; earlier years sparser), and the index-tracking TIPS funds (TIP, SCHP, VTIP,
+STIP - tens of billions, unverified) are the named forced counterparty at that close.
+Direction: long from the T-3 close to the month-end close.
+DATA: FRED DFII10, the H.15 10-year constant-maturity REAL yield (Treasury's TIPS curve read
+at 10 years, ~3:30pm ET) - the same construction class, quote time and route as the anchor's
+DGS10, which removes attempt 60's timing/construction asymmetry. Restored 2026-09-23 (5,934
+rows 2003-01-02..2026-09-21); checker: every structural check passes, three one-off gaps are
+documented closures (Reagan funeral, Sandy, Bush funeral), extremes match real-yield history
+(-1.19 on 2021-08-03, 3.15 on 2008-11-21). Manifest entry added (sha e0af94f9) BEFORE the
+run. DFII10 was used once before only as a killed gold-shock trigger (Round 66 kill #13);
+no return on it has ever been read. TIPS auction history (issue dates, terms, reopenings)
+being acquired from TreasuryDirect via a cloud VM for the roll read-onlys; the run waits
+for it.
+PROXY: par TIPS real return = -ModD(real y0) x d(real y) + real carry; cost 3 bp RT
+(ETF-implementable; cash on-the-run TIPS are wider, ~5-9 bp price - read-only at 8 bp),
+1.5x / 2x. Inflation accrual (index-ratio growth, ~2 bp per 3-day window) is OMITTED:
+common to events and controls within a month so it cancels in the differential, and
+omitting it understates the long's raw return - conservative; disclosed. Coupon semi-
+annual. Negative real yields 2011-08..2022-04 use the exact par ModD.
+FROZEN CELL (one selectable, floor 2.0): C1 EXTENSION LONG, T-3 close -> T close on the
+DFII10 calendar. IS 2003-01..2019-04 = 196 month-ends (series clipped 2019-05-06); sealed
+OOS 2019-05..2026-08 = 88 (same REGISTERED_CUT as attempts 59/60). IS bar exactly attempt
+59 v2 at floor 2.0: n >= 40, net > 0, PF >= 1.15, own t >= 2.0, halves [+,+], positive at
+2x; year-stratified event-minus-control differential > 0, t >= 2.0, halves [+,+], non-
+overlapping controls >= 5 bd from every month-end; placebo-clock max-stat p < 0.05. OOS
+bar: n >= 40, net > 0, PF >= 1.15, t >= 2.0, [+,+], positive at 1.5x and 2x, differential
+> 0 with t >= 2.0. ONE sealed shot if IS clears.
+REGISTERED DISCRIMINATOR (read-only, interpretation fixed now): the NOMINAL-orthogonalised
+differential (TIPS price component minus beta x DGS10 same-window price component; beta
+from the TIPS IS control windows, expected ~0.7 from the 3-day co-movement of 0.77 measured
+on the full series without month-end information; OOS reuses the IS beta). (i) C1 passes
+AND residual differential t >= 2 -> an independent TIPS-index flow exists; (ii) C1 passes
+with residual ~0 -> TIPS simply co-move with nominals at month-end (the DE pattern), no
+independent evidence; (iii) C1 fails -> the effect is nominal-specific or the TIPS flow is
+too small for this proxy. The attempt's pass/fail is C1 alone.
+ROLL STRUCTURE (disclosed, guarded): the 10-year TIPS constant-maturity point re-fits onto
+the new/reopened 10-year TIPS when it settles - which is the month-end close itself in
+Jan/Mar/May/Jul/Sep/Nov. On an upward-sloping real curve the roll pushes the T yield UP
+(fake loss), i.e. it biases AGAINST the long; on an inverted curve, for it. Registered
+read-only: C1 split into 10y-settlement months vs the other six; ex-roll re-score with
+the TreasuryDirect issue dates; the jump-rank guard as in attempt 60.
+Other read-onlys (all from the attempt-60 v2 runner, unchanged): T-1 -> T, T -> T+2,
+quarter-end vs other, era split 2009, per-year, mirror, ex-December, drop-one-max,
+negative-real-yield split (a large one: 955 negative days), US anchor re-scored on the
+same code. No pre-1990 placebo (series starts 2003). Count: +1 selectable, +14 read-only.
+POWER (honest): 3-day real-yield sd ~9 bp (10 bp in 2003-08, 5.7 bp in 2016-19) -> price sd
+~85 bp -> SE ~6 bp at n 196 -> t 2.0 needs ~12 bp. The nominal effect's co-movement alone
+predicts ~13 bp (0.72 x 18.7), so the raw cell is borderline-powered even if TIPS move
+fully with nominals, and a NULL here is weak evidence; OOS SE ~9 bp -> t 2 needs ~18 bp,
+so an OOS shot on a half-size effect is a coin flip. Stated before the run.
+Adjacency: attempts 59 and 60 (same mechanism; different index, instrument and investor
+base) - a replication family, not a re-parameterisation; the calendar is shared with watch
+#6 and #13 (disclosed). Runner: run_r84_tips_monthend.py -> run_r83_monthend_global.main
+(refactored today; the refactor reproduces attempt 60's committed IS file with zero
+differing values) with SPLIT_MONTHS = {1,3,5,7,9,11}, tag r84_tips_monthend, single-market
+verdict. Nothing read.
