@@ -7702,3 +7702,19 @@ quote time was named, and no roll guard existed for issue-based yield series. Ad
    check_yield_provenance.py committed; the manifest follows when the files land, and the
    ledger records each market's admission (or rejection, with the failing check) BEFORE the
    IS run. Nothing foreign read. Shots: up to 3 (one per candidate).
+
+### Round 83 v2 verification on synthetic data (2026-09-23, before any foreign file exists)
+A scratchpad copy of the v2 runner was run end to end on three SYNTHETIC series (1985-2026,
+local holidays, a null UK, injected DE/JP effects, JP issue-based with three fake roll
+dates) plus the real US anchor: manifest gate admitted all three; the null UK was rejected
+by the differential gate although its raw net was positive (carry alone; a reminder that
+the own-t bar without the differential would pass a null); JP ex-roll flagged the two
+windows containing fake roll dates; the sealed path ran only the candidates, kept the UK
+holdout sealed, reused the IS beta for the orthogonalised read, and produced the four-
+outcome family verdict; the US anchor's holdout reproduced attempt 59's OOS to the digit
+(n 88, +19.5 bp, t 2.53, PF 2.01; differential +27.3 bp t 2.96 - already-open data, no new
+read). Tamper guards verified: a one-row edit to a data file after IS, or any manifest
+edit, aborts the sealed run; --unseal without UNSEAL_OK falls back to an IS run. One defect
+fixed from the run: an infinite jump-rank ratio (event-rank jumps with zero mid-month
+jumps) did not raise the roll flag; it now does, and an IS-stage flag is carried onto the
+sealed verdict. Nothing foreign read.

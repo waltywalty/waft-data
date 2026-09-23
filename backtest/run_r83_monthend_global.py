@@ -183,7 +183,7 @@ def jump_rank_guard(y, all_me):
     by_rank = {int(r): dict(n=int(((rank == r) & valid).sum()), jump_share=float(jump[(rank == r) & valid].mean()) if ((rank == r) & valid).sum() else None)
                for r in range(-14, 2)}
     return dict(event_rank_jump_share=se, mid_month_jump_share=sm, ratio=ratio, event_rank_jumps=int(jump[ev].sum()),
-                mid_month_jumps=int(jump[mid].sum()), roll_flag=bool(np.isfinite(ratio) and ratio > 2 and jump[ev].sum() >= 5), by_rank=by_rank)
+                mid_month_jumps=int(jump[mid].sum()), roll_flag=bool((ratio == ratio) and ratio > 2 and jump[ev].sum() >= 5), by_rank=by_rank)   # inf ratio flags; nan does not
 
 
 def drop_one_max(g, c):
@@ -390,8 +390,8 @@ if __name__ == "__main__":
         n_pass = sum(passes.values())
         res["family"] = "REPLICATES" if n_pass >= 2 else ("PARTIAL" if n_pass == 1 else "FAILS")
         res["shots_taken"] = len(passes)
-        flags = [c for c in passes if passes[c] and res["markets"][c]["jump_rank_guard"]["roll_flag"]]
-        if flags: res["family"] += f" (roll flag on {flags})"
+        flags = [c for c in passes if passes[c] and (res["markets"][c]["jump_rank_guard"]["roll_flag"] or isr["markets"].get(c, {}).get("jump_rank_guard", {}).get("roll_flag"))]
+        if flags: res["family"] += f" (roll flag on {flags}, IS or OOS stage)"
     print(f"\nATTEMPT 60 {'OOS' if UNSEAL else 'IS'} VERDICT per market: {passes}\nFAMILY: {res['family']}")
     with open(os.path.join(HERE, "results", f"r83_monthend_global_{'oos' if UNSEAL else 'is'}.json"), "w") as f:
         json.dump(clean(res), f, indent=1)
