@@ -3,7 +3,7 @@ German, UK and Japanese 10-year government bonds, with the US 10-year as a fidel
 
 Cell per market (selectable; two-sided Bonferroni-3 floor t >= 2.39): C1 EXTENSION LONG, close of T-3 -> month-end
 close T on the market's own yield calendar. Proxy: par 10y bond, return = -ModD(y0)*dy + carry, semi-annual coupon
-for US/UK, annual for DE/JP; cost 3 bp RT, 1.5x / 2x. Gate per market as attempt 59 v2: net > 0, PF >= 1.15, own t >=
+for US/UK/JP, annual for DE (Bunds); cost 3 bp RT, 1.5x / 2x. Gate per market as attempt 59 v2: net > 0, PF >= 1.15, own t >=
 floor, halves [+,+], positive at 2x; year-stratified event-minus-control differential on the price component > 0,
 t >= floor, halves [+,+], non-overlapping controls >= 5 bd from every month-end; placebo-clock max-stat (k in
 +-4..+-13, 20 clocks, controls exclude true month-ends; signed t must beat all 20).
@@ -31,7 +31,7 @@ MARKETS = {  # code: (file, coupon frequency per year, selectable)
     "US": ("fred_DGS10.csv", 2, False),
     "DE": ("yield_DE10Y_daily.csv", 1, True),
     "UK": ("yield_UK10Y_daily.csv", 2, True),
-    "JP": ("yield_JP10Y_daily.csv", 1, True),
+    "JP": ("yield_JP10Y_daily.csv", 2, True),   # JGBs pay semi-annual coupons (corrected pre-data, see ledger)
 }
 US_IS_MONTHS = (pd.Period("1990-01", "M"), pd.Period("2019-04", "M")); US_SERIES_CUT = pd.Timestamp("2019-05-06")
 CELL = {"C1_extension_long": (-3, 0, +1)}

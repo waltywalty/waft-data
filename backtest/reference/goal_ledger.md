@@ -7573,3 +7573,13 @@ Test count: +3 selectable + 14 read-only. Runner run_r83_monthend_global.py ->
 results/r83_monthend_global_{is,oos}.json. Adjacency: attempt 59 (same mechanism, US
 instrument, PASSED) - this is a replication family on new instruments, registered as
 such; not a re-parameterisation. Shots: up to 3 (one per cleared market). Nothing read.
+
+### Round 83 pre-data correction (2026-09-23, before any foreign yield was read)
+The registration stated "ANNUAL coupon for Bund and JGB". That is wrong for Japan: JGBs
+pay semi-annual coupons (Bunds are annual). The runner's JP coupon frequency is set to 2
+before any yield_JP10Y_daily.csv exists. Effect on the proxy is a duration difference of
+0.01-0.04 years at JGB yield levels (0.5-2%), i.e. <0.5% of the price component - not a
+parameter change and not result-driven. US anchor unchanged. Runner smoke-tested on the
+US anchor alone: reproduces attempt 59 IS exactly (C1 net +20.7 bp, t 4.98, PF 1.96,
+[+,+]; differential +17.6 bp t 3.73; placebo max-stat p 0.048; T-1 +9.5 bp t 4.0;
+T+2 reversal -4.6 bp t -1.2). Foreign markets printed "skipped (data-gated)".
