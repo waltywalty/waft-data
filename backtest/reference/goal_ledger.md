@@ -7583,3 +7583,122 @@ parameter change and not result-driven. US anchor unchanged. Runner smoke-tested
 US anchor alone: reproduces attempt 59 IS exactly (C1 net +20.7 bp, t 4.98, PF 1.96,
 [+,+]; differential +17.6 bp t 3.73; placebo max-stat p 0.048; T-1 +9.5 bp t 4.0;
 T+2 reversal -4.6 bp t -1.2). Foreign markets printed "skipped (data-gated)".
+
+### Round 83 AMENDMENT (2026-09-23, adopted BEFORE any foreign yield was read; supersedes the cut, gate, verdict, roll, pooled and read-only clauses of the registration above)
+Critic review per house practice: three critics with distinct lenses (methodology, code on
+synthetic series, data provenance). Joint verdict: NOT fit to run as registered - the cell,
+control tiling, placebo geometry, Bonferroni floors and OOS criteria are sound and match
+attempt 59, but the registration was not BOUND: the holdout cut was computed at run time from
+whatever series landed (a 1972 vs 2010 start moves the OOS block by ~8 years), the data gate
+existed only in prose, the family verdict was decided at the IS stage, no primary series or
+quote time was named, and no roll guard existed for issue-based yield series. Adopted:
+1. CUT - fixed calendar, identical to attempt 59, for EVERY market: IS month-ends 1990-01..
+   2019-04 (series clipped 2019-05-06), sealed OOS 2019-05..2026-08 (series from 2018-06-01),
+   n_OOS 88 where the series runs to 2026-08; n >= 40 hard at both stages (the "else full
+   holdout" clause is deleted so that text = code). Admission needs >= 120 IS month-ends.
+   Month-ends BEFORE 1990 are a registered read-only MECHANISM PLACEBO (bond indexing and
+   benchmarked funds were marginal before the 1986 Lehman Aggregate / WGBI / NOMURA-BPI
+   launches, so the flow predicts a weaker or absent effect there); never a verdict input.
+   ACCIDENTAL READ DISCLOSED AND COUNTED: the first v2 run scored the US anchor from its 1962
+   series start instead of 1990-01 (688 month-ends: net +13.5 bp t 4.56, differential +8.9 bp
+   t 2.61, placebo p 0.14, pre-2009 differential t 1.6). The registered pre-1990 US placebo
+   then read: 336 month-ends 1962-01..1989-12, net +6.0 bp t 1.43, x2 +3.0, differential -0.4
+   bp t -0.08, halves [-,-] - weaker/absent, as the mechanism predicts, but SEEN BEFORE the
+   placebo was registered, so it carries no evidential weight (+1 unregistered read-only).
+   The foreign pre-1990 reads have not been seen.
+2. GATE, enforced in code - reference/yields_global_manifest.json (committed; data/ is
+   gitignored) with, per market: series_id, source, route actually used (the egress proxy
+   refuses the Bundesbank, ECB, BoE and MoF hosts from this container, so the route is a
+   provenance fact), construction in {fitted-par, fitted-spot, bucket-average, issue-based},
+   quote_time, first/last date, scale_check, known_date_checks, holiday_row_check, passed;
+   an issue-based series is admitted only with roll_dates. The runner refuses anything else,
+   records the manifest's and each data file's SHA-256 at IS and asserts both at OOS, so a
+   refreshed file cannot move the block. The manifest is filled from check_yield_provenance.py
+   (committed; provenance only, computes no return): parse hazards (decimal comma, Unicode
+   minus, '-' markers, era dates), weekday/Saturday rules, ZERO rows on must-be-closed local
+   dates, one-off gaps near month-ends matched to documented closures, repeats judged against
+   resolution x volatility (naive "<2% repeats" would fail DGS10 itself), scale, ~11 level
+   anchors per market, one-day jump anchors for date shift, rows/year band, T never on a
+   closed date, splice continuity. Calibrated on DGS10: every hard check passes. NAMED
+   PRIMARIES and fallbacks: DE = Bundesbank Svensson term-structure yield at 10y residual
+   maturity (fitted, no roll; spot vs par and observation time to be quoted from the
+   methodology note - if a Frankfurt midday fixing, DE is registered as ATTENUATED: a DE null
+   is inconclusive); a benchmark-Bund or 9-10y bucket series only as a second read-only file;
+   the ECB AAA curve (2004-09 start, rating-driven basket changes) and any monthly OECD/FRED
+   series are REJECTED. UK = Bank of England nominal government liability curve PAR yield at
+   10y (IADB IUDMNPY, ~16:30 London = FTSE Actuaries gilt index valuation time). JP = MoF
+   jgbcm 10y compound yield of the newest issue (issue-based, 15:00 JST JSDA reference price)
+   - admitted only with the 10y new-issue dates; the 9y column is delivered for the roll
+   detector. The acquisition agent was instructed accordingly (route, raw md5s, closed-date
+   confirmations, repeat runs) before any file was delivered.
+3. FAMILY VERDICT moves to the sealed stage. IS clearing makes a market a CANDIDATE with one
+   sealed shot, nothing more. Fewer than 2 markets admitted -> INCONCLUSIVE; 0 candidates ->
+   FAILS at the IS stage. OOS: REPLICATES iff >= 2 markets pass the OOS bar; PARTIAL iff
+   exactly 1; FAILS iff 0. With two admitted markets REPLICATES needs both. A JP miss inside
+   yield-curve control COUNTS (symmetric rule); the YCC split is read-only and disclosed.
+   Floors unchanged: 2.39 IS on own t and differential t, 2.0 OOS; Bonferroni-3 stays 2.39
+   if a market is dropped at the gate.
+4. ROLL GUARD: (i) manifest classification; (ii) issue-based series: month-ends whose
+   [T-3, T] contains a roll date are flagged and the cell is re-scored ex-roll (read-only);
+   for JP the 9y-vs-10y isolation detector (|d10y - d9y| > 8 bp) dates are merged into the
+   roll dates; (iii) blind statistical guard in every market (read-only): share of robust-
+   jump days (|dy| > 4 x 1.4826 x trailing-60d MAD) at business-day ranks T-4..T+1 vs T-14..
+   T-7; ratio > 2 with >= 5 event-rank jumps turns a pass into "pass with roll flag" pending a
+   fitted-series re-score. US anchor: ratio 1.07 (50 event-rank jumps), no flag.
+5. POOLED differential: the stacked strat_diff treated three same-date events as
+   independent (SE understated by up to sqrt 3). Replaced by a DATE-CLUSTERED version (per
+   market and year, event price minus that market's control mean; averaged across markets
+   per calendar month-end; t across dates); the market-stratified version is kept with its
+   caveat; the cross-market correlation of event-window price returns is registered read-only.
+6. FAMILY MAX-STAT read-only: per clock, max |t| over admitted markets vs the max observed
+   signed t. Disclosed: the per-market placebo p floors at 1/21 = 0.048, so the family-wise
+   placebo false-positive across three markets is ~0.14 uncorrected; the three OOS shots at
+   t >= 2 are uncorrected (~7% chance of one spurious pass if all three null markets cleared
+   IS); adjacent placebo clocks share 3 of 4 days (~6-8 effectively independent, as in 59).
+7. DATE-LEVEL NON-BLINDNESS disclosed: every US month-end outcome 1990..2026-08 is in this
+   ledger, and 25-50% of a foreign 3-day bond return's variance is shared with the US on the
+   same dates, so a foreign OOS pass is weaker than an independent-date pass and is
+   consistent with spillover from the US flow. Registered read-only: US-ORTHOGONALISED
+   differential (foreign price component minus beta x US same-window price component; beta
+   from the market's own IS control windows; OOS reuses the IS beta; Frankfurt and Tokyo
+   closes precede the NY close on T, which gives the read some temporal separation).
+8. Further read-only per market: ex-December (Frankfurt closed Dec 31 while the euro index
+   prices it; UK Dec 24/31 half days; JP last session Dec 28 to 2008, Dec 30 after);
+   drop-one-max influence (the UK Sep-2022 LDI window is a ~3 sd single event; US anchor:
+   dropping 2008-11-28 (+355 bp) leaves t 4.86 / differential t 3.60); negative-yield split
+   (DE 2019-03..2022-01, JP 2016-20; the proxy now uses the EXACT par ModD at negative yields
+   - v1 returned maturity for y <= 0, understating ModD by up to 4% at -0.7%; pre-data code
+   fix, US unaffected); JP YCC split 2016-09-21..2024-03-19; pre-1990 placebo (item 1).
+   Equity same-window read-only is UNAVAILABLE for DE/UK (no DAX/FTSE on disk) and for JP
+   (JP225 hourly starts 2016-04); stated, not substituted.
+9. READ-ONLY ENUMERATION (replaces "14"): per market T-1 -> T, T -> T+2, quarter-end vs
+   other, era split 2009, per-year, mirror, ex-December, drop-one-max, negative-yield split,
+   jump-rank guard, US-orthogonalised, pre-1990 placebo = 12; + YCC split (JP) + ex-roll (each
+   issue-based market); family: US anchor, pooled date-clustered, pooled market-stratified,
+   cross-market correlation, family max-stat = 5. With three admitted markets and JP issue-
+   based: 36 + 1 + 1 + 5 = 43, plus the accidental US full-span read = 44 read-only. The
+   selectable count stays +3.
+10. CODE (all pre-data, result-blind; critic-verified on synthetic DE/UK/JP series with
+   holidays, '-' markers, a 6-week gap and negative yields): load_yield input contract (2
+   columns, ISO dates, no decimal comma, weekday-only, unique ascending, percent range, no
+   gap > 12 days, < 2% non-numeric, >= 2500 rows - a bp-scaled file would otherwise have
+   produced a spurious own-t pass through the carry term); cut record + SHA-256 asserted at
+   OOS; US OOS branch capped at 2026-08 (88, as attempt 59) and the anchor allowed through
+   at OOS (reads nothing new); non-cleared markets recorded as "holdout stays sealed";
+   empty-frame guards; non-finite JSON values -> null. Verified unchanged: split invariants
+   (IS ends at last IS month-end + 7 days with T+2 complete, no OOS month-end reachable; OOS
+   starts 45 days before its first event, controls tile only from it), control tiling >= 5
+   bd, placebo geometry, ModD to < 1e-6 vs a numerical derivative for y > 0 and 8-10% yields.
+11. POWER restated from the fixed cut: IS n <= 352 per market (352 if each series is
+   complete from 1990); Bund/Gilt SE ~3.2 bp -> t 2.39 needs ~7.7 bp; JGB SE ~1.6 bp -> 3.8
+   bp, but a flow-proportional effect at JGB vol/duration is ~8-10 bp, so the 2x-cost gate
+   (6 bp) binds for JP. OOS n 88: Bund/Gilt SE ~6.4 bp -> t 2 needs ~13 bp; JP under YCC has
+   3-day sd ~10 bp -> SE ~1.1 bp, t 2 needs ~2 bp but net must clear 4.5 / 6 bp at 1.5x /
+   2x: JP OOS is cost-bound, not power-bound, and 59 of its 88 OOS month-ends fall inside
+   YCC. Disclosed now, before any JP number exists.
+12. US anchor after v2 (verified): reproduces attempt 59 IS exactly - n 352, net +20.7 bp,
+   t 4.98, PF 1.96, [+,+]; differential +17.6 bp t 3.73; placebo p 0.048; ex-December
+   differential t 3.43 (29 December events). Runner run_r83_monthend_global.py v2 and
+   check_yield_provenance.py committed; the manifest follows when the files land, and the
+   ledger records each market's admission (or rejection, with the failing check) BEFORE the
+   IS run. Nothing foreign read. Shots: up to 3 (one per candidate).
