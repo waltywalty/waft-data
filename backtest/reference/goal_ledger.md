@@ -7964,3 +7964,33 @@ Verdict: IS PASS. Per the registration TIPS takes its ONE sealed shot now (OOS 2
 differential > 0 with t >= 2.0). Power reminder from the registration: OOS SE ~9 bp, so
 t 2 needs ~18 bp against an IS effect of 22-26 bp - adequately powered only if the effect
 holds at full size. Test count: +1 selectable, +14 read-only.
+
+### Attempt 61 OOS RESULT (2026-09-24, UNSEAL_OK=1 --unseal; results/r84_tips_monthend_oos.json, log .log; manifest and file SHA-256 asserted, cut asserted)
+TIPS 10-year, the one sealed shot, 88 month-ends 2019-05..2026-08: net +12.3 bp, WR 53%,
+PF 1.58, t 1.55, halves [+,+]; x1.5 +10.8, x2 +9.3; price +14.4 / carry +0.9 vs control
+price -6.9; differential +21.3 bp t 2.16, diff halves [+,+]. FAILS the OOS bar on the own-t
+clause (1.55 < 2.0); every other clause passes. Per the registration that is a FAIL, and the
+bar is the bar: a positive net with t 1.5 on 88 events is exactly the watch-item profile
+the program has learned not to promote.
+Self-refutation reads: drop-one-max (2022-07-29, +300 bp) leaves +9.0 bp t 1.24,
+differential t 1.89; per-year 2019 +21.6, 2020 +23.6, 2021 -3.9, 2022 +31.7, 2023 -9.3,
+2024 +17.9, 2025 +18.6, 2026 -3.9; T-1 -> T +1.2 (t 0.2; the IS day-before build-up is
+absent, as it was for gilts OOS); T -> T+2 -11.5 (n.s.). REGISTERED DISCRIMINATOR out of
+sample: nominal-orthogonalised residual (IS beta 0.85) event mean -1.9 bp t -0.32, residual
+differential -1.9 bp t -0.26 (raw +21.3): case (ii) - out of sample the TIPS month-end move
+is ENTIRELY its co-movement with nominal Treasuries; the IS residual of +11.8 bp (t 3.0)
+did not survive. ROLL READ, the most important caveat: settlement-month split OOS inside
+(Jan/Mar/May/Jul/Sep/Nov, the 10y point rolls onto the new/reopened issue at the close of
+T) n 44 +29.1 bp t 2.6, differential +38.1 t 3.0, vs outside n 44 -4.4 bp t -0.4, halves
+[-,-]: out of sample the whole TIPS reading lives in the roll months. The 2019-26 real
+curve was flat-to-inverted for long stretches (2022-24), where a roll to the new issue
+LOWERS the constant-maturity yield and prints a fake gain, so the OOS TIPS number may be
+partly a proxy artefact - the direction of the roll bias flipped relative to the
+registration's upward-curve assumption, disclosed. Ex-roll (44 flagged windows) n 44 =
+the outside set above. Jump-rank guard ratio 0.33, no flag.
+VERDICT: ATTEMPT 61 FAILS. Shots spent: 17. Program score: 2 OOS passes / 61 attempts.
+What it settles: TIPS do not carry a separable index-extension flow that this proxy can
+see; the US month-end effect remains a nominal-Treasury result (attempt 59) whose echoes
+in other instruments (gilts IS, TIPS IS) are co-movement plus, in TIPS, a roll artefact
+that flips sign with the curve. Two replications, two bounds. Data assets +1 (TIPS auction
+history). Test count: +1 selectable, +14 read-only, 1 shot.
