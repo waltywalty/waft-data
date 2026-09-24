@@ -7994,3 +7994,48 @@ see; the US month-end effect remains a nominal-Treasury result (attempt 59) whos
 in other instruments (gilts IS, TIPS IS) are co-movement plus, in TIPS, a roll artefact
 that flips sign with the curve. Two replications, two bounds. Data assets +1 (TIPS auction
 history). Test count: +1 selectable, +14 read-only, 1 shot.
+
+## Round 85 (2026-09-24): proposal round for attempt 62 on the newly banked data - 4 candidates ranked, 6 killed at proposal, nothing read
+
+Proposer (one agent, ledger tail + burned inventory + data columns/spans only; no return
+computed) after the two failed replications. Ranked:
+1. CENTRAL-BANK PURCHASE-OPERATION DAYS on the bought sector - Fed SOMA Treasury operations
+   (LSAP1/2, MEP incl. its sales, QE3, 2020-22) with the BoE Asset Purchase Facility gilt
+   operations as the replication leg. Named forced BUYER (the central bank itself), dates,
+   times (10:15-11:00 ET; 14:15-14:45 London), sectors and sizes published in advance;
+   D'Amico & King (JFE 2013, flow effect ~3.5 bp on operation days, recollection to be
+   flagged) and Joyce & Tong (EJ 2012). Direction long the par 10y T-1 close -> T close on
+   in-sector operation days; era-internal non-overlapping controls; blocking cross-section
+   (7-10y op days: 10y effect > 2y; 4-5.5y op days: 5y > 10y - local supply, not level);
+   pre-op concession, post-op reversal, by programme/bucket, mirror as read-onlys. IS Fed
+   in-sector ops estimated 150-200 (to be COUNTED), OOS 2020-22 ~100-130; BoE IS ~300 all
+   buckets / OOS ~350. Adjacency: kill #12 closed the liquidity-QUANTITY regime class on
+   index futures (no counterparty in the instrument) - this is a dated, signed, sized
+   purchase in the bond itself, the mirror of attempt 58's supply calendar; the ledger has
+   never named a central-bank operation calendar. Objections: the on-the-run CMT is an
+   attenuated proxy (the Desk excluded/capped on-the-runs), operation days cluster inside
+   QE eras (controls must be era-internal), close-to-close may net the pre-op concession.
+   NEEDS DATA -> acquisition launched (NY Fed operation history; BoE APF results).
+2. JGB 10-year auction cycle on the MoF calendar (Special Participants' bidding obligation,
+   pre-2006 syndicate, post-2013 BoJ "rinban trade" -> pre-registerable era sign); C1
+   concession short T-5 -> T is roll-clean, C2 recovery needs the ex-roll block (issue at
+   T+1 since 2020). Needs the MoF auction calendar with reopenings (OOS on disk 29 < 40).
+   Replication of a failed family (58), disclosed. NEEDS DATA.
+3. 30-year auction cycle on the DV01-matched 30y-10y spread: on disk (166 IS / 88 OOS),
+   marginal power (t 2.26 needs ~15 bp = ~1 bp of 30y-specific yield per leg; OOS a coin
+   flip), sibling-tenor of attempt 58 (Bonferroni-4 -> 2.50), MEP/QE3 overlap with #1.
+   REGISTRABLE but weakest; held.
+4. TIPS pre-auction concession on the breakeven: IS 116 (< 120) without DFII20/30, no size
+   citation -> NEEDS DATA and a citation, else kill on power.
+Killed at proposal (no registration text, counted as 6 proposal kills, 0 tests): quarter-end
+G-SIB dealer balance sheet (no instrument on disk; 59's quarter-end split ~0 incremental);
+coupon/principal payment-date reinvestment (no forced direction; inside 58/59 windows;
+equity version kill #11); breakevens around CPI (no forced counterparty; watch #4/#5 in a
+costume); VIX settlement / term-structure / ETP rebalance / VVIX-SKEW-COR (kills #5, #22,
+#14, #15; attempts 25, 28, 31); pension quarter-end rebalance into bonds (quarters IS 117
+/ OOS 29); BCOM/GSCI gold roll and reweight (outright-neutral, Round 82). The index/gold
+preference could not be served on free data (every idea resolves to a Round 82 kill).
+Test count: 0. Data facts banked: JGB new-issue auction->issue lag (1 bd since 2020, so the
+issue sits inside any T..T+5 window); TIPS auctions fall a median 6 bd before the month-end
+(the post-auction recovery window IS attempt 61's window in 145/191 cases); 30y auction ->
+month-end 11-17 bd (clean of #13); the 20-year has no in-sample history (all 2020+).
