@@ -34,3 +34,21 @@ fetches with backoff on 5xx, to bring data back only through the Kernel tool's o
 channel, and to stop probing. Priority note: no forward routine reads a Dukascopy frame
 (they reproduce spent attempts 54, 56 and 57 and the index history), so an incomplete crawl
 at the feed's natural rate is acceptable; the recipe above is the reproduction path.
+
+## 2026-09-24 closing status
+
+Restore complete except two items. Per-file md5s and row counts for every restored asset are
+in the gitignored `data/RESTORE_2026-09-21.md` (written by the restore agents at acquisition
+time); the committed summary:
+- CBOE (15 series: VIX, VIX9D, VIX3M, VIX6M, VIX1Y, VIX1D, VVIX, VXN, RVX, GVZ, OVX, VXTLT,
+  SKEW, COR1M, COR3M) restored through 2026-09-22, each md5 matched against a fresh VM download.
+- FRED (DGS2, DFII5, DFII10, T10YIE, T5YIE, DTWEXBGS, RRPONTSYD, WALCL, WTREGEN, HYOAS) restored;
+  HYOAS is capped at ~3 years by the source. TreasuryDirect note and bond auction histories
+  restored (1,970 / 394 records). Alpha Vantage 5y/30y yields and GOLD_SILVER_HISTORY restored
+  (gold rewritten ascending/LF; cross-check against XAUUSD_5m closes before any use, as
+  fetch_data.sh already notes). XAUUSD_H1_collector restored.
+- FXStreet feed rebuilt (3,093 events); watch #12 re-scored.
+- New since the wipe: Bund/Gilt/JGB yields, JGB and TIPS auction histories (Rounds 83-84).
+- NOT restored: HK50_PT15M_yuan.csv (needs a sparse git clone of its source repository; only
+  Round 5's closed yuan cross-check used it) and the Dukascopy minute frames (network-policy
+  decision above). Neither feeds a live routine.
