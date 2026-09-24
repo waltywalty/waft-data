@@ -10,7 +10,7 @@ Outputs results/r84_tips_monthend_{is,oos}.json. OOS only with UNSEAL_OK=1 --uns
 import run_r83_monthend_global as R
 
 MARKETS = {"US": R.MARKETS["US"], "TIPS": ("fred_DFII10.csv", 2, True)}
-R.SPLIT_MONTHS = {1, 3, 5, 7, 9, 11}
+R.SPLIT_MONTHS = {1, 3, 5, 7, 9, 11}   # 10y-TIPS settlement months; note the roll sits on T only from 2011-01 (pre-run data note in the ledger); the ex-roll read uses actual issue dates
 
 if __name__ == "__main__":
     R.main(MARKETS, t_floor_is=2.0, tag="r84_tips_monthend", single=True)

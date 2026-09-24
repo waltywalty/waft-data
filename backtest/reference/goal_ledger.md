@@ -7921,3 +7921,15 @@ base) - a replication family, not a re-parameterisation; the calendar is shared 
 (refactored today; the refactor reproduces attempt 60's committed IS file with zero
 differing values) with SPLIT_MONTHS = {1,3,5,7,9,11}, tag r84_tips_monthend, single-market
 verdict. Nothing read.
+
+### Attempt 61 pre-run data note (2026-09-24, before any TIPS return was read)
+TreasuryDirect TIPS auction history acquired (data/tips_auctions.csv, 269 auctions 1997-01..
+2026-09, raw md5s in data/tips_auctions_MANIFEST.md). It corrects the registration's roll
+assumption: 10-Year TIPS settled on the 15th (mid-month) from 1997 until 2010-11 and on the
+last bond-market business day of the month only from 2011-01; 5- and 20-year TIPS have
+settled at month-end since 2004, 30-year since 2010. So the "roll on T" exposure of the
+10-year constant-maturity point exists only from 2011 (Jan/Mar/May/Jul/Sep/Nov), and the
+2003-2010 IS month-ends are roll-clean. The registered settlement-month split stays as
+written (it is read-only); the ex-roll read uses the 140 actual 10-Year issue dates (new
+and reopened) as roll dates in the manifest (sha 5a3e...; the 10y-point composition changes
+at each). Nothing else changed. IS run follows.
