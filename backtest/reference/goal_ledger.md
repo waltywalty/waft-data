@@ -8039,3 +8039,80 @@ Test count: 0. Data facts banked: JGB new-issue auction->issue lag (1 bd since 2
 issue sits inside any T..T+5 window); TIPS auctions fall a median 6 bd before the month-end
 (the post-auction recovery window IS attempt 61's window in 145/191 cases); 30y auction ->
 month-end 11-17 bd (clean of #13); the 20-year has no in-sample history (all 2020+).
+
+## Round 86 (2026-09-24): central-bank purchase-operation days on the bought sector - attempt 62 registered BEFORE running
+
+### Attempt 62 registration (BEFORE running): long the 10-year on Fed SOMA in-sector Treasury purchase days, BoE APF gilt purchase days as the replication leg
+Mechanism (external, dated public documents): in every large-scale asset-purchase
+programme the central bank published, in advance, the dates, times, maturity sectors and
+size ranges of its purchase operations (Fed: LSAP1 2009-03..2010-10, LSAP2 2010-11..2011-06,
+Maturity Extension Program 2011-09..2012-12 with its sales of 0-3y paper, QE3 2013-01..
+2014-10, the 2020-03..2022-03 programme; BoE APF gilt purchases 2009-03..2010-01, 2011-10..
+2012-11, 2016-08..2017-02, 2020-03..2021-12 with published weekday-by-bucket schedules).
+The central bank is the named forced BUYER at a stated hour (Fed 10:15-11:00 ET, second
+operations 13:15-14:00; BoE 14:15-14:45 London, verified from 2022 notices only, earlier
+assumed - flagged); primary dealers are the sellers and pre-position. D'Amico & King (JFE
+2013) report a flow effect of roughly 3.5 bp on the yields of purchased securities on
+operation days with local spillover (recollection; full text unreachable; flagged); Joyce &
+Tong (EJ 2012) report operation-day gilt effects. Direction fixed: yields in the bought
+sector fall on the operation day -> LONG the par 10-year from the T-1 close to the T close
+on operation days whose sector contains the 10-year point.
+DATA (on disk, provenance in data/cb_operations_MANIFEST.md; CSVs built by the acquisition
+agent and md5-verified against its VM build; the raw API JSON and BoE spreadsheets are
+staged in the session scratchpad and NOT placed under data/raw_yields/ because the agent's
+own session was blocked from writing and asked this session to do it - declined as
+permission laundering; their md5s are listed in raw_yields/*/MD5SUMS): data/
+fed_tsy_operations.csv, 1,642 Desk Treasury operations 2009-03-25..2022-12-19 (NY Fed
+markets API, per year 2009-2022; nominal 1,379 / TIPS 200 / bill 52 / FRN 11; purchases
+1,544 / sales 98); data/boe_apf_gilt_operations.csv, 938 operations (789 APF QE purchases
+2009-03-11..2021-12-15, 120 QT sales 2022-11+, 2022 financial-stability operations),
+buckets reconstructed empirically and confirmed against the 2016 and 2022 notices (A 2009
+5-10y/10-25y; B 2009-08..2012-02 3-10y/10-25y/25y+; C 2012-02..2020-03 3-7y/7-15y/15y+;
+D 2020-03..2021-12 3-7y/7-20y/20y+). Yields: DGS10 (US anchor proxy), DGS2 and UST05Y
+(cross-section), BoE IUDMNPY (UK), all admitted earlier.
+EVENTS (counted, dates only): Fed nominal purchase operation DAYS whose sector overlaps the
+7-10y residual range: IS (< 2019-05-06) 215 (LSAP1 16, LSAP2 29, MEP 90, QE3 79, 2019
+reinvestment 11), sealed OOS 82 (all in the 2020-22 programme); BoE conventional-gilt
+purchase days in a bucket containing the 10-year point (5-10y, 3-10y, 7-15y, 7-20y): IS 66,
+OOS 128. Multiple operations on one day collapse to one event.
+PROXY and COST: par 10y bond return = -ModD(y0) x dy + carry over the one-day window
+(attempt 59's proxy), cost 3 bp RT (ZN / gilt future), 1.5x / 2x.
+FROZEN CELL per market (two selectable, one per market, Bonferroni-2 floor t >= 2.24):
+C1 OPERATION-DAY LONG, T-1 close -> T close. CONTROLS: era-internal - business days inside
+each programme's span (first to last operation of the programme) on which NO Desk / APF
+operation of any type took place, each used once (one-day windows, non-overlapping by
+construction), year-stratified event-minus-control differential on the price component.
+IS bar: n >= 40, net > 0, PF >= 1.15, own t >= 2.24, halves [+,+], positive at 2x;
+differential > 0, t >= 2.24, diff halves [+,+]; placebo-clock max-stat: 20 clocks k in
++-4..+-13 bd, placebo days that coincide with a true operation day are dropped (weekly
+cadence resonance guard), placebo controls exclude true operation days +-1 and placebo
+days +-1, signed observed t must beat all 20 |t|. BLOCKING CROSS-SECTION (US; a generic
+QE-era bull drift cannot satisfy it): on 7-10y operation days the 10-year's event-minus-
+control yield change must be more negative than the 2-year's, AND on operation days whose
+sector covers 4-5.5y but not 7-10y the 5-year's must be more negative than the 10-year's -
+the effect must be LOCAL to the bought sector. UK blocking (no 2y/5y gilt series on disk):
+the 10-year's differential on in-bucket days must exceed its differential on out-of-bucket
+purchase days (3-7y, 15y+/20y+/25y+). OOS bar (one shot per market that clears IS): n >= 40,
+net > 0, PF >= 1.15, t >= 2.0, [+,+], positive at 1.5x and 2x, differential > 0 with t >= 2.0.
+FAMILY VERDICT at the sealed stage: REPLICATES iff both pass; PARTIAL iff one; FAILS iff
+none; IS clearing = candidate. Cut: IS operations before 2019-05-06, OOS on/after (the
+2020-22 programme is a fresh, larger programme - decay since the 2009-14 publicity is the
+registered prediction, as in attempt 59).
+Read-only (counted): pre-operation drift T-2 -> T-1 (the dealer concession); post-
+operation T -> T+1 (reversal); by programme; out-of-sector purchase days on the 10-year
+(placebo by sector); MEP sale days on the 2-year (sign should reverse); second-operation
+days; mirror; drop-one-max; per-year; ex-days coinciding with 10-year auction days
+(attempt 58's calendar) and with month-ends (attempt 59's, T-3..T); the 2-year and 5-year
+scored on the same days (the cross-section in full); UK by bucket regime; US 1.5x/2x.
+POWER (honest): 10-year 1-day price sd 2009-14 ~45-55 bp -> SE ~3.5 bp at n 215 -> t 2.24
+needs ~8 bp = ~1 bp of yield on the on-the-run CMT, which the Desk generally excluded or
+capped (the flow effect lives in off-the-run CUSIPs) - a null is weak evidence; OOS n 82,
+sd 2020-22 ~55 bp -> SE ~6 bp -> t 2 needs ~12 bp (~1.4 bp yield). UK: IS n 66 -> SE ~5.5
+bp -> t 2.24 needs ~12 bp (thin; a UK IS null is uninformative); OOS n 128 -> SE ~4.5 bp.
+Adjacency: kill #12 closed the liquidity-QUANTITY regime class (RRP/TGA gauges on index
+futures, no counterparty in the instrument) - this is a dated, signed, sized purchase in the
+bond itself; attempt 58 (auction supply calendar on the same instrument; ops on auction
+days split read-only); attempt 59/#13 (month-end; ops in T-3..T flagged). The ledger has
+never named a central-bank operation calendar. Independence: MEP/QE3 ops sit in refunding
+weeks (overlap flagged). Test count: +2 selectable + 16 read-only. Runner run_r86_cbops.py
+-> results/r86_cbops_{is,oos}.json. Shots: up to 2. Nothing read.
