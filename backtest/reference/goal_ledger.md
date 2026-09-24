@@ -8116,3 +8116,53 @@ days split read-only); attempt 59/#13 (month-end; ops in T-3..T flagged). The le
 never named a central-bank operation calendar. Independence: MEP/QE3 ops sit in refunding
 weeks (overlap flagged). Test count: +2 selectable + 16 read-only. Runner run_r86_cbops.py
 -> results/r86_cbops_{is,oos}.json. Shots: up to 2. Nothing read.
+
+### Attempt 62 AMENDMENT (2026-09-24, adopted BEFORE any return was read; two critics, four blockers; supersedes the control, placebo, event, blocking and verdict clauses above)
+Critics (methodology on calendar geometry, code on synthetic data) found: (B1) the "non-
+operation days inside the programme span" control clock is, in 2012-14, precisely the FOMC
+statement days (all eight of 2012), payroll Fridays and holiday half-sessions the Desk
+avoided - a mean error, not a variance error; (B2) the placebo +-1 exclusion left 0-5
+controls a year in 2011-14, so every placebo clock silently dropped the strata holding 192
+of 215 events; (B3) the runner's BoE rule (residual range of the bonds bought) dropped every
+2009-12 operation the registration named - the registered 66/128 were the bug's counts,
+the label rule gives 140/130; (B4) the sealed block admitted Jun-Dec 2022 (small-value
+tests) as controls and had no rule for the Mar-Apr 2020 daily-operation block. Adopted:
+1. EVENTS: operation days whose sector CONTAINS the 10-year point (Fed: sector lo <= 10 and
+   hi >= 9.5; UK: bucket label in {5-10y, 3-10y, 7-15y, 7-20y}); "overlaps 7-10y" (the count
+   rule above) is withdrawn - the 45 MEP 6-8y days it admitted are ADJACENT-sector days.
+2. CONTROL CLOCK: FAR-sector purchase-operation days of the same sub-programme (Fed) /
+   phase (UK) - chosen by the same published schedule rule, ordinary days - year-stratified;
+   ADJACENT-sector days (Fed: sector touching 5.5-9.5y or 10-17y without containing the 10y;
+   UK: 10-25y) never enter the control and are the GRADIENT read. The non-operation clock
+   survives as a read-only with FOMC, first-Friday and holiday-adjacent days excluded.
+3. NULL: year-stratified permutation of the in-sector label among the in + far purchase
+   days of the same year, 500 draws, same statistic; p = share of draws with t >= observed
+   (exact under the locality null, no systematic avoidance). The +-4..+-13 bd shift clocks
+   are a read-only calendar check with the identical control construction and per-clock n.
+4. BLOCKING (locality): the in-sector differential (vs far) must exceed the adjacent-sector
+   differential (vs far). The 2y cross-section is withdrawn as blocking (the 2y was pinned
+   2009-15, so it reduced to the primary itself); 2y / 5y / 30y same-day yield-change
+   differentials and the contains-5y days (US IS 65 / OOS 58) are read-only.
+5. DYSFUNCTION RULE: days with >= 3 purchase operations are excluded from events and
+   controls at both stages in both markets (US: 22 OOS days, Mar-Apr 2020; UK: 55 three-
+   bucket days of 2020); the excluded set is a read-only. Spans by sub-programme / phase;
+   SMALL_VALUE and RMP_BILLS phases dropped (the 2022 small-value tests no longer supply
+   controls; the single 2017 test op is no longer an event).
+6. VERDICT: over the markets that clear IS - REPLICATES iff all of them pass OOS, PARTIAL
+   iff some, FAILS iff none. Fed and UK are now both adequately sized, so the UK is a full
+   replication leg (its earlier "uninformative" line is withdrawn).
+7. Read-onlys added: T-1/T+1-excluded control variant (concession/reversal leakage), par-
+   weighted net, twist days (MEP sale on the same day), 2-op days, weekday mix (the UK's
+   Wednesday cadence vs Thu/Fri controls was the confound in the non-op clock), FOMC-day
+   exclusion, 30-year same-day read. Count: 2 selectable + 24 read-only.
+COUNTS, dates only, BOUND NOW: US in-sector IS 166 (LSAP1 11, MBS-reinvest-2010 5, LSAP2 25,
+reinvest-2011 2, MEP 45, QE3 78), adjacent 212, far controls 373; OOS 56 (COVID 49, MBS-
+reinvest-2019 7), adjacent 86, far 238. UK in-bucket IS 140 (2009 phase 38, 2011-12 phase
+43, 2016-17 phase 27, smaller reinvestment phases 32), adjacent 52, far 205; OOS 75 (2019
+phase 5, 2020-21 phase 70), far 151, adjacent 0. Power (SE from far-control counts): US IS
+SE ~4 bp -> t 2.24 needs ~9 bp; UK IS SE ~4.5 -> ~10 bp; OOS US SE ~7 (n 56) -> t 2 needs
+~14 bp, UK ~6 -> ~12 bp. The proxy caveat stands: the CMT on-the-run carries perhaps a
+third to a half of the per-CUSIP effect; the informative pattern is the gradient (in >
+adjacent > far) and the programme ordering (LSAP1 >= LSAP2 > MEP > QE3), stated now.
+Raw operation files remain staged in the scratchpad (not placed; see the registration).
+Runner run_r86_cbops.py v2 (compiled; empty-frame guards; dates normalised). Nothing read.
