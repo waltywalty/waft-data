@@ -92,9 +92,9 @@ def load_yield(fname):
     d.columns = ["date", "y"]
     d["date"] = pd.to_datetime(d.date, format="%Y-%m-%d")
     assert not d.y.astype(str).str.contains(",").any(), f"{fname}: comma in a value (European decimal?)"
-    d["y"] = pd.to_numeric(d.y, errors="coerce")
-    first = d.y.first_valid_index(); d = d.loc[first:]                       # leading rows before the provider published the tenor
-    n_missing = int(d.y.isna().sum())
+    raw = d.y.astype(str).str.strip(); d["y"] = pd.to_numeric(d.y, errors="coerce")
+    first = d.y.first_valid_index(); d = d.loc[first:]; raw = raw.loc[first:]   # leading rows before the provider published the tenor
+    n_missing = int((d.y.isna() & ~(raw.isna() | raw.isin([".", "", "nan", "NaN", "None"]))).sum())   # FRED "." / blank holiday markers are legitimate (pandas 3 keeps NaN through astype(str))
     y = d.dropna().sort_values("date", kind="stable").set_index("date").y
     assert y.index.is_unique and y.index.is_monotonic_increasing, f"{fname}: duplicate dates"
     assert (y.index.dayofweek < 6).all(), f"{fname}: Sunday rows"

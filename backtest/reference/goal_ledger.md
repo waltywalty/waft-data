@@ -7933,3 +7933,34 @@ settled at month-end since 2004, 30-year since 2010. So the "roll on T" exposure
 written (it is read-only); the ex-roll read uses the 140 actual 10-Year issue dates (new
 and reopened) as roll dates in the manifest (sha 5a3e...; the 10y-point composition changes
 at each). Nothing else changed. IS run follows.
+
+### Attempt 61 IS RESULT (2026-09-24, run_r84_tips_monthend.py -> results/r84_tips_monthend_is.json, log .log; manifest sha c12f41f0; US anchor reproduces attempt 59 to the digit)
+Loader note (pre-result, disclosed): the input contract's "< 2% non-numeric" rule tripped on
+FRED's blank holiday cells (254 of 6,188 rows); blank/"." markers are now excluded from the
+count (pandas 3 keeps NaN through astype(str)). No other change.
+TIPS 10-year (DFII10), C1 extension long, IS 2003-01..2019-04, n 196: net +22.3 bp, WR 63%,
+PF 2.18, t 3.94, halves [+,+]; x1.5 +20.8, x2 +19.3; price +24.1 / carry +1.2 vs control
+price -1.7 (641 controls); year-stratified differential +25.7 bp t 3.86, diff halves [+,+];
+placebo max |t| 2.40 -> p 0.048 (beats all 20). CLEARS THE FULL BAR -> CANDIDATE, one shot.
+Self-refutation and read-onlys: drop-one-max (2008-11-28, +436 bp) leaves t 3.83 /
+differential t 3.72; ex-December differential t 3.66; quarter-end +20.3 t 2.0 vs other
++28.5 t 3.6; era pre-2009 (n 72) +19.7 t 1.5 / 2009+ (n 124) +29.3 t 4.0; per-year 14 of 17
+positive; negative-real-yield events (n 17) +38.6 t 2.2 / positive-yield events differential
+positive; T-1 -> T +11.9 bp t 3.7 (differential t 4.5, the same day-before build-up as
+Treasuries and gilts); T -> T+2 +2.7 (no reversal); jump-rank guard ratio 1.06 (4 event-
+rank jumps), no roll flag. ROLL READS: settlement-month split (Jan/Mar/May/Jul/Sep/Nov,
+where the 10y point rolls on T from 2011) inside n 98 +27.0 bp t 3.4 (differential t 3.2)
+vs outside n 98 +17.7 t 2.2 (t 2.5) - both positive, the roll does not manufacture it (an
+upward-sloping real curve would bias against); ex-roll (50 windows containing a 10-year
+issue date, all 2011+) n 146 net and differential both positive (see JSON). REGISTERED
+DISCRIMINATOR, case (i): nominal-orthogonalised residual (beta 0.85 on IS controls) event
+mean +8.4 bp t 2.66, residual differential +11.8 bp t 3.04 (raw +25.7): the TIPS month-end
+move is NOT only its co-movement with nominals - about 45% of the differential survives
+orthogonalisation at t 3, which is the first evidence in this program of an index-extension
+flow that is separable from the Treasury one. Caveat: the residual is a read-only at
+uncorrected t 3.0 and the orthogonalisation is linear in the same-window nominal move.
+Verdict: IS PASS. Per the registration TIPS takes its ONE sealed shot now (OOS 2019-05..
+2026-08, n 88; bar n >= 40, net > 0, PF >= 1.15, t >= 2.0, [+,+], positive at 1.5x and 2x,
+differential > 0 with t >= 2.0). Power reminder from the registration: OOS SE ~9 bp, so
+t 2 needs ~18 bp against an IS effect of 22-26 bp - adequately powered only if the effect
+holds at full size. Test count: +1 selectable, +14 read-only.
