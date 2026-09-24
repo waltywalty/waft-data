@@ -215,7 +215,7 @@ def main():
     us10 = load_yield("fred_DGS10.csv"); us2 = load_yield("fred_DGS2.csv"); us5 = load_av("UST05Y_daily_av.csv"); uk10 = load_yield("yield_UK10Y_daily.csv")
     fed = fed_events(); boe = boe_events()
     auc = json.load(open(os.path.join(HERE, "data", "treasury_note_auctions.json")))
-    auc10 = set(pd.to_datetime([r["auction_date"] for r in auc if str(r.get("term", "")).startswith("10")]).normalize())
+    auc10 = set(pd.to_datetime([r["auction_date"] for r in auc if str(r.get("term", "")).startswith(("10", "9-Year"))]).normalize())   # new 10y issues and their reopenings (labelled 9-Year xx-Month)
     me = set(); per = us10.index.to_period("M")
     for m in per.unique():
         pos = np.where(per == m)[0]; me |= {us10.index[q] for q in pos[-4:]}
