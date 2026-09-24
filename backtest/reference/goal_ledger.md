@@ -8166,3 +8166,46 @@ third to a half of the per-CUSIP effect; the informative pattern is the gradient
 adjacent > far) and the programme ordering (LSAP1 >= LSAP2 > MEP > QE3), stated now.
 Raw operation files remain staged in the scratchpad (not placed; see the registration).
 Runner run_r86_cbops.py v2 (compiled; empty-frame guards; dates normalised). Nothing read.
+
+### Attempt 62 IS RESULT (2026-09-24, run_r86_cbops.py v2 -> results/r86_cbops_is.json, log .log; operation-file SHA-256 recorded)
+US (Fed in-sector purchase days, n 166, controls 373 far-sector days, 2009-03..2014-10):
+net +1.8 bp, WR 57%, PF 1.13, t 0.61, halves [+,+]; x1.5 +0.3, x2 -1.2; price +3.8 vs far-
+control price +0.7; differential +3.1 bp t 0.78 (halves [+,+]); yield-change differential
+-0.35 bp t -0.77 - i.e. the on-the-run 10-year yield fell about a third of a basis point
+more on operation days than on far-sector operation days; permutation null p 0.15 (95th
+percentile of null t 1.49). FAILS the bar on own t, PF, 2x cost, differential t and the
+null. Gradient (locality): in-sector +3.1 > adjacent -1.3 (t -0.3) > far 0 - the ordering
+the mechanism predicts, at no significance (blocking passed on sign only). By programme:
+LSAP1 +6.4 (n 11), LSAP2 -4.4, MEP -1.0, QE3 +3.2 t 1.2 - not the LSAP1 >= LSAP2 > MEP >
+QE3 ordering. Cross-section: 2y -0.02 bp, 5y -0.22, 30y +0.04 (all n.s.); contains-5y days
+(n 65): 5y -0.09 vs 10y +0.24 (n.s.); MEP sale days 2y +0.15 (n.s., right sign). Pre-op
+(T-2 -> T-1) -2.2 t -0.5; POST-OP (T -> T+1) -9.3 bp t -2.17 (read-only; a reversal larger
+than the effect it would reverse - noise or the well-known post-operation give-back).
+Drop-one-max (2009-03-25, the first LSAP1 operation, -116 bp: the day's move was the
+18-March announcement's unwind) leaves t 0.87. Weekday mix balanced (events 41/40/29/37/19
+Mon-Fri, far 78/78/72/81/64). Ex-month-end (34 events flagged) +0.4 bp. NON-OPERATION
+CLOCK (v1's design, read-only): differential +9.4 bp t 1.92, halves [+,+] - the near-pass
+that the critic predicted from the FOMC / payroll / half-session composition of that
+clock; with the schedule-matched clock it is +3.1 t 0.8. Shift clocks: 0 of 20 valid at
+the 80% events-used rule (the shifted days land on other operation days), so the
+permutation null is the only null - as registered.
+UK (BoE in-bucket purchase days, n 140, far controls 205, 2009-03..2019-10): net -2.3 bp,
+WR 48%, PF 0.89, t -0.56, halves [-,-]; differential -7.0 bp t -1.28 (yield-change +0.79
+bp t 1.26 - gilts in the 10-year bucket cheapened slightly on their own operation days
+relative to other buckets' days); adjacent (10-25y) -0.4; blocking fails; permutation
+p 1.0; by phase mixed (2009 -7.5, 2011-12 +0.6, 2016-17 -6.8); weekday mix: events are
+Wednesdays (117 of 140), far controls Mon/Tue (86/118) - the 2012-20 schedule fixed each
+bucket to a weekday, disclosed. Pre-op -6.7 t -1.35; post-op +1.3. Non-op clock read-only
++4.5 t 0.96. FAILS.
+VERDICT: ATTEMPT 62 FAILS at the IS stage, no candidate, no shot spent. Program score: 2
+OOS passes / 62 attempts; shots 17. Interpretation: on a constant-maturity yield the
+operation-day flow effect is not visible above ~0.3 bp - consistent with the registered
+proxy caveat (the Desk bought off-the-runs; D'Amico-King's 3.5 bp is per purchased CUSIP)
+and with the gradient having the right order at zero significance. The mechanism is not
+refuted; the PROXY cannot see it, and per-CUSIP price data is not on free disk. The
+family is spent on this instrument and this data; a per-CUSIP re-test would be a new data
+class, not a re-parameterisation. Data assets +2 (Fed Desk operation history 2009-22; BoE
+APF operation history 2009-26). Test count: +2 selectable, +24 read-only. The lesson
+banked: for event-day tests inside dense programmes, the control clock must be chosen by
+the same scheduling rule as the events - "days without an event" inside a programme are
+the days the scheduler avoided, and they are not ordinary.
