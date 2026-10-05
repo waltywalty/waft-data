@@ -1,66 +1,66 @@
 {
  "meta": {
-  "futures_age_s": 601,
+  "futures_age_s": 782,
   "note": "US index futures are exchange-delayed ~15min. Overnight ranges and levels are unaffected by the delay; the last tick is.",
   "sources": {
    "rates": "treasury.gov",
    "us_index": "yahoo_delayed",
    "vix": "cnbc"
   },
-  "took_s": 7.9
+  "took_s": 5.3
  },
  "quotes": {
   "CRUDE": {
-   "age_s": 601,
+   "age_s": 602,
    "bars": 261,
-   "chg": -1.98,
-   "chg_pct": -2.173,
-   "cnbc_px": 89.09,
+   "chg": -1.9,
+   "chg_pct": -2.085,
    "d1_high": 91.43,
    "d1_low": 88.74,
    "prev_close": 91.11,
-   "px": 89.13,
-   "src": "yahoo",
-   "ts": 1791229800
+   "px": 89.21,
+   "src": "cnbc",
+   "ts": 1791229980,
+   "yahoo_px": 89.21
   },
   "DXY": {
-   "age_s": 601,
+   "age_s": 782,
    "bars": 263,
-   "chg": 0.215,
-   "chg_pct": 0.211,
+   "chg": 0.22,
+   "chg_pct": 0.216,
    "d1_high": 102.535,
    "d1_low": 101.855,
    "prev_close": 101.93,
-   "px": 102.145,
+   "px": 102.15,
    "src": "yahoo",
    "ts": 1791229800
   },
   "ES": {
-   "age_s": 601,
+   "age_s": 782,
    "bars": 261,
-   "chg": 51.5,
-   "chg_pct": 0.662,
+   "chg": 48.0,
+   "chg_pct": 0.617,
    "d1_high": 7847.5,
    "d1_low": 7760.25,
    "prev_close": 7777.25,
-   "px": 7828.75,
+   "px": 7825.25,
    "src": "yahoo",
    "ts": 1791229800
   },
   "GOLD": {
-   "age_s": 601,
+   "age_s": 782,
    "bars": 261,
-   "chg": 6.5,
-   "chg_pct": 0.156,
+   "chg": 5.1001,
+   "chg_pct": 0.123,
    "d1_high": 4198.8999,
    "d1_low": 4150.3999,
    "prev_close": 4162.2998,
-   "px": 4168.7998,
+   "px": 4167.3999,
    "src": "yahoo",
    "ts": 1791229800
   },
   "HSI": {
-   "age_s": 42695,
+   "age_s": 42876,
    "bars": 140,
    "chg": -572.9297,
    "chg_pct": -2.328,
@@ -73,7 +73,7 @@
    "yahoo_px": 24040.3398
   },
   "NDX": {
-   "age_s": 301,
+   "age_s": 482,
    "bars": 156,
    "chg": 270.2031,
    "chg_pct": 0.877,
@@ -85,57 +85,57 @@
    "ts": 1791230100
   },
   "NQ": {
-   "age_s": 601,
+   "age_s": 782,
    "bars": 261,
-   "chg": 260.5,
-   "chg_pct": 0.839,
+   "chg": 252.0,
+   "chg_pct": 0.811,
    "d1_high": 31371.0,
    "d1_low": 30957.5,
    "prev_close": 31061.75,
-   "px": 31322.25,
+   "px": 31313.75,
    "src": "yahoo",
    "ts": 1791229800
   },
   "RTY": {
-   "age_s": 601,
+   "age_s": 782,
    "bars": 261,
-   "chg": 17.0,
-   "chg_pct": 0.596,
+   "chg": 15.4001,
+   "chg_pct": 0.54,
    "d1_high": 2878.3999,
    "d1_low": 2835.8,
    "prev_close": 2850.8999,
-   "px": 2867.8999,
+   "px": 2866.3,
    "src": "yahoo",
    "ts": 1791229800
   },
   "RUT": {
-   "age_s": 961,
-   "bars": 153,
-   "chg": 22.2771,
-   "chg_pct": 0.786,
+   "age_s": 1082,
+   "bars": 154,
+   "chg": 19.6575,
+   "chg_pct": 0.694,
+   "cnbc_px": 2852.557,
    "d1_high": 2859.1321,
    "d1_low": 2821.6296,
    "prev_close": 2832.8999,
-   "px": 2855.201,
-   "src": "cnbc",
-   "ts": 1791229440,
-   "yahoo_px": 2855.177
+   "px": 2852.5574,
+   "src": "yahoo",
+   "ts": 1791229500
   },
   "SPX": {
-   "age_s": 14,
+   "age_s": 3,
    "bars": 156,
    "chg": 51.5,
    "chg_pct": 0.667,
    "d1_high": 7794.3501,
    "d1_low": 7727.5898,
    "prev_close": 7722.7202,
-   "px": 7770.39,
+   "px": 7773.99,
    "src": "cnbc",
-   "ts": 1791230387,
+   "ts": 1791230579,
    "yahoo_px": 7774.2202
   },
   "US10Y": {
-   "age_s": 3901,
+   "age_s": 4082,
    "bars": 160,
    "chg": 0.034,
    "chg_pct": 0.644,
@@ -147,27 +147,27 @@
    "ts": 1791226500
   },
   "VIX": {
-   "age_s": 15,
+   "age_s": 16,
    "bars": 307,
-   "chg": 0.23,
-   "chg_pct": 1.502,
+   "chg": 0.24,
+   "chg_pct": 1.568,
    "d1_high": 16.38,
    "d1_low": 15.48,
    "prev_close": 15.31,
-   "px": 15.56,
+   "px": 15.52,
    "src": "cnbc",
-   "ts": 1791230386,
-   "yahoo_px": 15.54
+   "ts": 1791230566,
+   "yahoo_px": 15.55
   },
   "YM": {
-   "age_s": 601,
+   "age_s": 782,
    "bars": 261,
-   "chg": 101.0,
-   "chg_pct": 0.196,
+   "chg": 73.0,
+   "chg_pct": 0.142,
    "d1_high": 51696.0,
    "d1_low": 51141.0,
    "prev_close": 51477.0,
-   "px": 51578.0,
+   "px": 51550.0,
    "src": "yahoo",
    "ts": 1791229800
   }
@@ -185,6 +185,6 @@
   "src": "treasury.gov",
   "ts": 1791158400
  },
- "ts": "2026-10-05T20:00:09Z",
- "ts_epoch": 1791230401
+ "ts": "2026-10-05T20:03:07Z",
+ "ts_epoch": 1791230582
 }
