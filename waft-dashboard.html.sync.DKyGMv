@@ -1,0 +1,1916 @@
+<!doctype html>
+<!-- WAFT-BAKED-FROM sha256:81d381ad8e0a314ca7a8cbbedf7b4851843f676a2e9d2597771ebb1e8dbad745 -->
+<html lang="en" data-theme="dark"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- ADD TO HOME SCREEN. This board is opened on a phone, several times a day,
+     from a link that has to be found first. These four lines let iOS Safari and
+     Chrome install it as a standalone icon: no address bar, no tab to lose, and
+     the status bar tinted to match the dark surface rather than sitting as a
+     white strip above it.
+
+     NO WEB APP MANIFEST, deliberately. A manifest would have to be a data: URL to
+     stay inside one file, and browsers vary in whether they honour that — so it
+     would be a claim this page could not check. These meta tags are the part that
+     works from a single file, and they are all that is claimed. -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="WaFT">
+<meta name="theme-color" content="#0d0d0d">
+<meta name="color-scheme" content="dark light">
+<title>WaFT Daily — Market Desk</title>
+<style>
+  :root, .viz-root {
+    color-scheme: dark;
+    --surface-1: #1a1a19;
+    --plane: #0d0d0d;
+    --surface-2: #211f1e;
+    --text-primary: #ffffff;
+    --text-secondary: #c3c2b7;
+    --text-muted: #898781;
+    --grid: #2c2c2a;
+    --axis: #383835;
+    --border: rgba(255,255,255,0.10);
+    --accent: #3987e5;
+    --accent-wash: rgba(57,135,229,0.12);
+    --ord-1: #184f95; --ord-2: #256abf; --ord-3: #3987e5; --ord-4: #6da7ec; --ord-5: #9ec5f4;
+    --good: #0ca30c;
+    --warning: #fab219;
+    --serious: #ec835a;
+    --critical: #d03b3b;
+    /* diverging pair for the risk-tone gauge: blue (risk-on) <-> red (risk-off), gray mid */
+    --div-pos: #3987e5;
+    --div-neg: #e66767;
+    --div-mid: #383835;
+    /* delta up/down. Green-vs-red collapses under protan/deutan, so the pair is
+       separated by LIGHTNESS, not hue: validated CVD dE 8.6, contrast >=3:1 both.
+       Every delta also carries an explicit +/- sign, so colour is never alone. */
+    --up: #008300;
+    --down: #e66767;
+  }
+  :root[data-theme="light"], :root[data-theme="light"] .viz-root {
+    color-scheme: light;
+    --surface-1: #fcfcfb;
+    --plane: #f9f9f7;
+    --surface-2: #f2f1ed;
+    --text-primary: #0b0b0b;
+    --text-secondary: #52514e;
+    --text-muted: #898781;
+    --grid: #e1e0d9;
+    --axis: #c3c2b7;
+    --border: rgba(11,11,11,0.10);
+    --accent: #2a78d6;
+    --accent-wash: rgba(42,120,214,0.10);
+    --ord-1: #9ec5f4; --ord-2: #6da7ec; --ord-3: #3987e5; --ord-4: #256abf; --ord-5: #184f95;
+    /* Light-mode status is its own step, not the dark values reused. The dark
+       amber #fab219 sits at 1.6:1 on a white card — unreadable as text. These
+       are re-stepped to clear 4.5:1 against both light surfaces. */
+    --good: #0a7c0a;
+    --warning: #8f6100;
+    --critical: #8f1d1d;
+    --serious: #a94d27;
+    --div-pos: #2a78d6;
+    --div-neg: #e34948;
+    --div-mid: #f0efec;
+    --up: #006300;      /* dark green vs light red: validated CVD dE 14.7 */
+    --down: #e66767;
+  }
+
+  /* ================= live layer ================= */
+  .sectlabel { font-size:10.5px; letter-spacing:0.06em; text-transform:uppercase;
+               color:var(--text-muted); margin:18px 0 8px; line-height:1.5; }
+  .feedbar {
+    margin-top:12px; display:flex; align-items:center; gap:8px 10px; flex-wrap:wrap;
+    background:var(--surface-1); border:1px solid var(--border); border-radius:8px;
+    padding:9px 11px; font-size:11.5px; color:var(--text-secondary); line-height:1.45;
+  }
+  .pill {
+    display:inline-flex; align-items:center; gap:5px; font-weight:650; font-size:11px;
+    padding:3px 9px; border-radius:999px; border:1px solid var(--border);
+    background:var(--surface-2); white-space:nowrap;
+  }
+  .pill i { font-style:normal; font-size:11px; line-height:1; }
+  .feedbar b { color:var(--text-primary); font-weight:600; }
+  .feedbar .grow { flex:1 1 auto; min-width:120px; }
+  .mini {
+    appearance:none; border:1px solid var(--border); background:var(--surface-2);
+    color:var(--text-secondary); border-radius:999px; padding:4px 10px;
+    font-size:11px; font-family:inherit; cursor:pointer; min-height:30px; white-space:nowrap;
+  }
+  .mini:hover { color:var(--text-primary); }
+  .mini.alert { border-color:var(--warning); color:var(--warning); font-weight:650; }
+  .feedbar .dim { color:var(--text-muted); }
+
+  /* ---------- data-health guard ----------
+     Silent by default. A banner that is always on the page is a banner nobody
+     reads, so this one does not exist until something is actually wrong — and
+     when it does exist it is the widest, highest thing on the page, because the
+     failure it reports is one where every number below it still looks fine. */
+  .guard { display:none; margin-top:12px; border-radius:10px; padding:11px 13px;
+           font-size:12px; line-height:1.55; border:1px solid var(--border);
+           background:var(--surface-1); color:var(--text-secondary); }
+  .guard.on { display:block; }
+  /* No wrapping here: the marker is a bullet for the title, and a title long
+     enough to wrap would push the bullet onto a line of its own, where it reads
+     as a stray dot rather than as the thing marking the sentence. */
+  .guard-hd { display:flex; align-items:baseline; gap:8px; flex-wrap:nowrap;
+              font-size:12.5px; font-weight:650; color:var(--text-primary); }
+  .guard-hd i { font-style:normal; font-size:12px; line-height:1; flex:0 0 auto; }
+  .guard-hd span { flex:1 1 auto; }
+  .guard-what { margin-top:5px; }
+  .guard-do { margin-top:6px; color:var(--text-muted); font-size:11.5px; }
+  /* The command is a thing to be copied, not a phrase to be read, so it gets its
+     own line. Inline it wrapped through the middle of a path — "/tmp/waft-" on
+     one line and "free.lock" on the next — which is precisely the kind of thing
+     that gets mistyped at 6am on a laptop that is not yours. */
+  .guard-do code { display:block; margin-top:5px; font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+                   font-size:11px; line-height:1.5; background:var(--surface-2);
+                   border:1px solid var(--border); border-radius:6px; padding:6px 8px;
+                   color:var(--text-secondary); overflow-wrap:anywhere; }
+  /* Severity is carried by the left rule AND by the word in the heading, never
+     by the rule alone — the whole point of this component is being readable in
+     the conditions where you are least likely to look closely. */
+  .guard.warn  { border-left:4px solid var(--warning);  }
+  .guard.bad   { border-left:4px solid var(--critical); }
+  .guard.shut  { border-left:4px solid var(--text-muted); }
+  .guard.warn .guard-hd i { color:var(--warning); }
+  .guard.bad  .guard-hd i { color:var(--critical); }
+  .guard.shut .guard-hd i { color:var(--text-muted); }
+
+  /* Per-card marking. Dimming the numbers is the signal that survives being
+     scrolled past at speed; the word is the signal that survives colourblindness
+     and a grayscale print. Both, always. */
+  .stale-tag { display:inline-block; margin-left:7px; font-size:9.5px; font-weight:650;
+               letter-spacing:0.05em; text-transform:uppercase; vertical-align:middle;
+               border-radius:999px; padding:2px 7px; border:1px solid var(--border);
+               background:var(--surface-2); color:var(--warning); white-space:nowrap; }
+  .stale-tag.hard { color:var(--critical); }
+  .stale-tag.shut { color:var(--text-muted); }
+  [data-stale="half"] > .card-body, .tiles[data-stale="half"] { opacity:0.62; }
+  [data-stale="drop"] > .card-body, .tiles[data-stale="drop"] { opacity:0.48; }
+
+  /* ---------- the six-line summary ----------
+     Six rows, label / figure / sentence, at the top of a board that is
+     thirty-five thousand pixels tall. The FIGURE carries the weight — it is the
+     largest thing in the row and the only thing a reader has to look at to know
+     whether to keep reading — and the sentence beside it is one clause at
+     secondary weight. Grid rather than flex so every figure lands on the same
+     vertical rule down the bar: six numbers in a column can be compared at a
+     glance, six numbers at six indents cannot.
+
+     State by rule AND text, never by colour alone: a stale line dims its own
+     figure to a dash and says which card stopped, so the failure reads the same
+     in grayscale as in colour. */
+  .sum { margin-top:14px; background:var(--surface-1); border:1px solid var(--border);
+         border-radius:12px; padding:10px 12px 9px; }
+  .sum-row { display:grid; grid-template-columns:58px 74px 1fr; align-items:baseline;
+             gap:8px; padding:5px 0; border-top:1px solid var(--grid); }
+  .sum-row:first-child { border-top:none; }
+  .sum-lab { font-size:9.5px; font-weight:650; letter-spacing:0.07em;
+             text-transform:uppercase; color:var(--text-muted); }
+  .sum-fig { font-size:17px; font-weight:700; letter-spacing:-0.02em;
+             color:var(--text-primary); line-height:1.15; text-align:right; }
+  .sum-txt { font-size:11px; line-height:1.45; color:var(--text-secondary); }
+  .sum-row.warn { border-left:3px solid var(--warning); margin-left:-12px; padding-left:9px; }
+  .sum-row.warn .sum-fig { color:var(--warning); }
+  .sum-row.bad  { border-left:3px solid var(--critical); margin-left:-12px; padding-left:9px; }
+  .sum-row.bad  .sum-fig { color:var(--critical); }
+  .sum-row.dead .sum-fig { color:var(--text-muted); }
+  .sum-row.dead .sum-txt { color:var(--text-muted); font-style:italic; }
+  .sum-note { margin-top:7px; font-size:10px; line-height:1.5; color:var(--text-muted); }
+
+  /* ---------- the independent cross-check ----------
+     Quiet by default and quiet when it agrees, because a board that congratulates
+     itself every paint teaches the reader to skip the line. It gets loud in
+     exactly two states: the two feeds disagreed by more than tracking explains,
+     or the check itself has gone stale and is being read as though it were
+     current. Both are failures of belief rather than of arithmetic, which is why
+     they sit at the top of the page beside the data-health guard rather than
+     inside a card. */
+  .xchk { margin-top:10px; font-size:11px; line-height:1.55; color:var(--text-muted);
+          border-left:2px solid var(--border); padding:2px 0 2px 9px; }
+  .xchk b { color:var(--text-secondary); font-weight:650; }
+  .xchk.warn { border-left-color:var(--warning); color:var(--text-secondary); }
+  .xchk.warn b, .xchk.warn i { color:var(--warning); font-style:normal; font-weight:700; }
+  .xchk details { margin-top:5px; }
+  .xchk summary { cursor:pointer; list-style:none; color:var(--text-muted); }
+  .xchk summary::-webkit-details-marker { display:none; }
+  .xchk summary::before { content:"▸ "; }
+  .xchk details[open] summary::before { content:"▾ "; }
+  .xchk p { margin:6px 0 0; color:var(--text-muted); }
+  .xchk table { width:100%; border-collapse:collapse; margin-top:6px; font-size:10.5px; }
+  .xchk td, .xchk th { padding:3px 6px 3px 0; text-align:right; white-space:nowrap; }
+  .xchk th:first-child, .xchk td:first-child { text-align:left; }
+  .xchk th { color:var(--text-muted); font-weight:650; }
+
+  /* ---------- the contract roll ----------
+     Same shape of failure as the data-health guard above and the same treatment:
+     invisible until it is true, and impossible to miss once it is. The reason it
+     needs to be loud is that a roll is the ONE fault on this page where every
+     other check agrees the numbers are fine — the profile is real, the volume is
+     real, the shelf is real, and the shelf is a place no market ever traded.
+
+     Severity by rule AND word AND glyph, never by the rule alone. The figure is
+     the largest thing in the block because the figure is the decision: forty
+     points of step is a level you must not take; four is a level you can. */
+  .rollb { margin:0 0 12px; border:1px solid var(--border); border-left:4px solid var(--warning);
+           border-radius:10px; background:var(--surface-1); padding:11px 13px; }
+  .rollb-hd { display:flex; align-items:baseline; gap:8px; flex-wrap:nowrap;
+              font-size:12.5px; font-weight:650; color:var(--text-primary); }
+  .rollb-hd i { font-style:normal; font-size:12px; line-height:1; flex:0 0 auto;
+                color:var(--warning); }
+  .rollb-hd span { flex:1 1 auto; }
+  .rollb-fig { margin-top:7px; font-size:clamp(21px,6.5vw,28px); font-weight:650;
+               letter-spacing:-0.02em; color:var(--text-primary); line-height:1.1; }
+  /* A block, not an inline tail. Inline, the qualifier wraps onto a second line
+     and inherits the figure's line-height, so "that bar's own range was 1.5"
+     lands at 28px leading and reads as a second headline — two competing
+     figures where there is one answer and one piece of supporting evidence. */
+  .rollb-fig em { display:block; font-style:normal; font-size:12px; font-weight:600;
+                  color:var(--text-secondary); letter-spacing:0; line-height:1.5;
+                  margin-top:4px; }
+  .rollb-when { margin-top:5px; font-size:11.5px; color:var(--text-secondary); }
+  .rollb-when b { color:var(--text-primary); font-weight:650; }
+  /* How much of the picture below is the contract you are actually trading.
+     A share bar rather than a percentage alone: the reader is being asked
+     "should I trust this chart", and a short bar answers that before the eye
+     has finished reading the sentence. */
+  .rollb-share { margin-top:9px; }
+  .rollb-bar { height:7px; border-radius:4px; background:var(--surface-2);
+               border:1px solid var(--border); overflow:hidden; display:flex; }
+  .rollb-bar u { display:block; height:100%; background:var(--text-primary);
+                 text-decoration:none; border-radius:3px 0 0 3px; }
+  .rollb-bar u + u { background:repeating-linear-gradient(135deg,
+                       var(--warning) 0 3px, transparent 3px 6px);
+                     border-radius:0 3px 3px 0; opacity:0.75; }
+  .rollb-slab { margin-top:5px; font-size:11px; color:var(--text-muted); line-height:1.5; }
+  .rollb-slab b { color:var(--text-primary); font-weight:650; }
+  .rollb-fold { margin-top:8px; }
+  .rollb-fold summary { font-size:11.5px; color:var(--text-secondary); cursor:pointer;
+                        list-style:none; }
+  .rollb-fold summary::-webkit-details-marker { display:none; }
+  .rollb-fold summary::before { content:"▸ "; color:var(--text-muted); }
+  .rollb-fold[open] summary::before { content:"▾ "; }
+  .rollb-fold p { margin:7px 0 0; font-size:11.5px; line-height:1.6;
+                  color:var(--text-secondary); }
+  /* The compact form, for cards that CONSUME the profile rather than draw it.
+     One line, same glyph, same colour, and it carries the step in points —
+     because on a levels card the step IS the correction the reader has to make
+     by hand, and a chip that only says "roll" sends them somewhere else to
+     find the number. */
+  .rollchip { display:block; margin:6px 0 2px; font-size:11px; line-height:1.5;
+              color:var(--text-secondary); border-left:3px solid var(--warning);
+              padding:4px 0 4px 8px; }
+  .rollchip i { font-style:normal; color:var(--warning); font-weight:700; }
+  .rollchip b { color:var(--text-primary); font-weight:650; }
+
+  /* ---------- tap to reveal ----------
+     The bubble that stands in for a `title` on a touch screen. Above everything
+     (it is transient and explains what is under it), high-contrast against both
+     surfaces, and narrow enough that it never becomes a paragraph — these strings
+     are one clause each and a bubble wide enough for two would be hiding the card.
+
+     DISCOVERABILITY is the other half, and it is the harder one: a thing you can
+     tap that does not look tappable is a thing nobody taps. Anything carrying a
+     title gets a pointer cursor and a visible tap highlight, and inline text that
+     carries one gets a dotted underline in the muted ink — the same convention
+     the folds already use for "there is more behind this". Marks and pips are too
+     small for an underline to read, so they get the hit area instead. */
+  .tipbub { position:fixed; z-index:9000; max-width:min(260px, calc(100vw - 24px));
+            background:var(--surface-2); color:var(--text-primary);
+            border:1px solid var(--border); border-radius:8px;
+            padding:7px 10px; font-size:11.5px; line-height:1.5;
+            box-shadow:0 6px 20px rgba(0,0,0,0.35); pointer-events:none; }
+  [title] { cursor:pointer; -webkit-tap-highlight-color:rgba(120,120,120,0.25); }
+  /* Inline text with a tip says so. Block and mark elements are excluded: an
+     underline under a 6px rail mark is wider than the mark. */
+  span[title], b[title], u[title], em[title] {
+    text-decoration:underline dotted var(--text-muted); text-underline-offset:2px; }
+  .rail [title], .kzr [title], .liq-rail [title], .seas-bar[title],
+  .spip[title], .tv td[title], .fx-cell[title] { text-decoration:none; }
+  /* A tappable mark needs a thumb-sized target even when the ink is 6px. The
+     pseudo-element grows the hit area without moving a single pixel of the
+     drawing, which matters because these marks are positioned by percentage
+     against an axis and nudging one would make it claim a distance it does not
+     have. */
+  .rail [title], .kzr [title], .liq-rail [title], .spip[title] { position:relative; }
+  .rail [title]::after, .kzr [title]::after, .liq-rail [title]::after,
+  .spip[title]::after {
+    content:""; position:absolute; left:50%; top:50%;
+    width:24px; height:24px; transform:translate(-50%,-50%); }
+
+  /* ---------- MHI, on the future ----------
+     Sits directly under the expiry countdown on the HK ladder, above rungs that
+     are still the live cash sample. Two measurements of one market on one card is
+     a real hazard — a reader taking a number off the wrong one — so this block is
+     visually its own object: an inset panel with its own heading, rather than
+     more rows in the same column. */
+  .mhif { margin:10px 0 12px; border:1px solid var(--border); border-radius:10px;
+          background:var(--surface-1); padding:11px 12px; }
+  .mhif-hd { font-size:11.5px; font-weight:650; color:var(--text-primary);
+             line-height:1.5; margin-bottom:8px; }
+  .mhif-hd b { color:var(--text-primary); }
+  .mhif-t30 { display:flex; align-items:baseline; gap:11px; padding:8px 0 9px;
+              border-top:1px solid var(--grid); border-bottom:1px solid var(--grid); }
+  .mhif-fig { flex:0 0 auto; font-size:23px; font-weight:700; letter-spacing:-0.02em;
+              line-height:1; color:var(--text-primary); text-align:center; }
+  .mhif-fig u { display:block; text-decoration:none; font-size:8.5px; font-weight:650;
+                letter-spacing:0.06em; text-transform:uppercase; margin-top:4px;
+                color:var(--text-muted); }
+  .mhif-say { flex:1 1 auto; font-size:11px; line-height:1.5; color:var(--text-secondary); }
+  .mhif-row { margin-top:8px; font-size:11px; line-height:1.55; color:var(--text-secondary); }
+  .mhif-row b { color:var(--text-primary); font-weight:650; }
+  .mhif-tbl { width:100%; border-collapse:collapse; font-size:10.5px; margin-top:10px;
+              font-variant-numeric:tabular-nums; }
+  .mhif-tbl th { text-align:right; font-size:9px; font-weight:650; letter-spacing:0.05em;
+                 text-transform:uppercase; color:var(--text-muted); padding:3px 4px;
+                 border-bottom:1px solid var(--border); }
+  .mhif-tbl th:first-child, .mhif-tbl td:first-child { text-align:left; }
+  .mhif-tbl td { text-align:right; padding:5px 4px; border-bottom:1px solid var(--grid);
+                 color:var(--text-secondary); vertical-align:top; }
+  .mhif-sub { display:block; font-size:9px; color:var(--text-muted); margin-top:2px; }
+  .mhif-warn { margin-top:10px; padding:8px 10px; border-left:3px solid var(--warning);
+               background:var(--surface-2); border-radius:0 7px 7px 0;
+               font-size:10.5px; line-height:1.55; color:var(--text-secondary); }
+  .mhif-warn b { color:var(--text-primary); font-weight:650; }
+  .mhif-note { margin-top:9px; font-size:10px; line-height:1.5; color:var(--text-muted); }
+  .mhif-note b { color:var(--text-secondary); }
+
+  /* ---------- MHI expiry ----------
+     Unlike the roll banner this one is ALWAYS on the HK board, because the fact
+     it carries is always true: the contract has a death date and every basis
+     number quoted beside it dies with it. What changes is loudness. Far out it
+     is a muted line of reference; inside the last fortnight it takes the warning
+     rule; once expired it takes the critical rule and says the board is quoting
+     an instrument that no longer trades.
+
+     The days figure is the largest thing in the row because a countdown whose
+     number is the same size as its caption is a caption. */
+  .mhix { display:flex; align-items:center; gap:11px; margin:8px 0 10px;
+          padding:8px 10px; border:1px solid var(--border); border-radius:9px;
+          background:var(--surface-1); border-left:3px solid var(--text-muted); }
+  .mhix.near { border-left-color:var(--warning); }
+  .mhix.dead { border-left-color:var(--critical); }
+  .mhix-n { flex:0 0 auto; font-size:22px; font-weight:700; letter-spacing:-0.02em;
+            line-height:1; color:var(--text-primary); text-align:center; }
+  .mhix-n u { display:block; text-decoration:none; font-size:9px; font-weight:650;
+              letter-spacing:0.07em; text-transform:uppercase; margin-top:3px;
+              color:var(--text-muted); }
+  .mhix-t { flex:1 1 auto; font-size:11px; line-height:1.55; color:var(--text-secondary); }
+  .mhix-t b { color:var(--text-primary); font-weight:650; }
+  .mhix-t i { font-style:normal; font-weight:650; }
+  .mhix.near .mhix-t i { color:var(--warning); }
+  .mhix.dead .mhix-t i { color:var(--critical); }
+  .mhix.dead .mhix-n { color:var(--critical); }
+
+  /* --- risk tone --- */
+  .tone { margin-top:14px; background:var(--surface-1); border:1px solid var(--border);
+          border-radius:12px; padding:16px 14px 6px; }
+  .tone-lab { font-size:11px; letter-spacing:0.08em; text-transform:uppercase;
+              color:var(--text-muted); text-align:center; }
+  .tone-fig { font-size:clamp(32px,11.5vw,52px); font-weight:650; letter-spacing:-0.03em;
+              line-height:1.06; margin:4px 0 0; text-align:center;
+              font-variant-numeric:tabular-nums; }
+  .tone-band { font-size:13.5px; font-weight:650; text-align:center; margin-top:1px; }
+  .tone-pm { font-size:12px; text-align:center; color:var(--text-muted);
+             margin-top:-2px; font-variant-numeric:tabular-nums; }
+  .tone-note { font-size:11.5px; color:var(--text-muted); text-align:center;
+               margin:6px 0 12px; line-height:1.5; }
+  .dbar { position:relative; height:12px; background:var(--surface-2); border-radius:4px; }
+  .dbar .mid { position:absolute; left:50%; top:-4px; bottom:-4px; width:1px;
+               background:var(--axis); }
+  .dbar .fill { position:absolute; top:0; bottom:0; border-radius:4px; }
+  .dbar-ends { display:flex; justify-content:space-between; font-size:10px;
+               color:var(--text-muted); margin-top:5px; }
+  /* ---- trajectory ------------------------------------------------------
+     The level answers "where"; this answers "which way", which is the half a
+     single figure structurally cannot carry. Chips first because a delta is
+     read in one glance and a line is read in three. */
+  .trend { margin-top:15px; border-top:1px solid var(--grid); padding-top:13px; }
+  .trend-verdict { font-size:13.5px; font-weight:650; text-align:center; }
+  .trend-sub { font-size:11px; color:var(--text-muted); text-align:center;
+               margin-top:2px; line-height:1.45; }
+  /* WHAT THE CHIPS ARE MEASURED FROM, said where the chips are.
+     The four chips are differences within the REPLAYED series. The big figure
+     at the top of this card is the LIVE headline, computed from the provider's
+     own fields rather than the archive's, and on 7 August the two stood ten
+     points apart. Nothing said so anywhere near them, so a reader holding the
+     headline in their head and reading "24h -18" got a past value that was
+     wrong by the gap -- every time, on every chip.
+     The reconciliation existed already, buried three paragraphs down in the
+     note under the chart. A correction a reader has to go looking for is not a
+     correction; it goes where the mistake is made. */
+  .trend-anchor { font-size:10.5px; color:var(--text-muted); text-align:center;
+                  margin-top:9px; line-height:1.5; }
+  .trend-anchor b { color:var(--text-primary); font-weight:650;
+                    font-variant-numeric:tabular-nums; }
+  .trend-anchor .gapv { color:var(--warning); font-weight:700; }
+  .trend-chips { display:flex; gap:6px; margin:6px 0 9px; }
+  .chip { flex:1 1 0; text-align:center; padding:7px 2px 6px; border-radius:8px;
+          background:var(--surface-2); }
+  .chip b { display:block; font-size:16px; font-weight:650; line-height:1.1;
+            font-variant-numeric:tabular-nums; }
+  .chip i { display:block; font-style:normal; font-size:9px; letter-spacing:0.07em;
+            text-transform:uppercase; color:var(--text-muted); margin-top:3px; }
+  .chip.na b { color:var(--text-muted); font-size:14px; font-weight:500; }
+  /* 108px was the whole chart, on a phone, carrying five days. A level change
+     of ten points -- the size of the live-versus-replay gap this card is about
+     -- was under four pixels of travel, which is smaller than the line is
+     thick. Height is the only axis a trajectory has and it was the one being
+     rationed. */
+  .trend-svg { display:block; width:100%; height:172px; touch-action:pan-y; }
+  .trend-foot { display:flex; justify-content:space-between; font-size:10px;
+                color:var(--text-muted); margin-top:3px;
+                font-variant-numeric:tabular-nums; }
+  .trend-read { font-size:11px; color:var(--text-secondary); text-align:center;
+                margin-top:5px; min-height:15px; font-variant-numeric:tabular-nums; }
+  .trend-note { font-size:10.5px; color:var(--text-muted); line-height:1.5;
+                margin-top:9px; }
+  .comp { margin-top:14px; border-top:1px solid var(--grid); }
+  .comp-row { display:grid; grid-template-columns: 104px 1fr 52px; align-items:center;
+              gap:9px; padding:9px 0; border-bottom:1px solid var(--grid); }
+  .comp-row:last-child { border-bottom:0; }
+  .comp-name { font-size:11.5px; color:var(--text-secondary); line-height:1.3; }
+  .comp-name span { display:block; color:var(--text-muted); font-size:10px; }
+  .comp-val { font-size:11.5px; text-align:right; font-variant-numeric:tabular-nums;
+              color:var(--text-secondary); }
+  .cbar { position:relative; height:8px; background:var(--surface-2); border-radius:3px; }
+  .cbar .mid { position:absolute; left:50%; top:-2px; bottom:-2px; width:1px; background:var(--axis); }
+  .cbar .fill { position:absolute; top:0; bottom:0; border-radius:3px; }
+  /* A component running on an old quote still counts, at half weight, but it has
+     to LOOK different — and not by colour alone, because colour alone is exactly
+     what a colourblind reader cannot use. Dimmed bar plus a written word. */
+  .comp-row.aged .cbar .fill { opacity:0.45; }
+  .comp-row.aged .comp-val { color:var(--text-muted); }
+  .comp-age { display:block; font-size:9.5px; letter-spacing:0.04em;
+              text-transform:uppercase; color:var(--warning); margin-top:2px; }
+  /* Not a fault and not a warning colour: a pinned component is working exactly
+     as specified, it has simply run out of scale. Written word, not colour
+     alone, for the same reason .aged carries one. */
+  .comp-pin { display:block; font-size:9.5px; letter-spacing:0.04em;
+              text-transform:uppercase; color:var(--text-muted); margin-top:2px; }
+  .tone-regime { font-size:12px; text-align:center; margin:10px 0 0; line-height:1.5;
+                 padding:8px 10px; border-radius:8px; background:var(--surface-2); }
+  .tone-regime b { font-weight:650; }
+  .tone-regime span { display:block; color:var(--text-muted); font-size:11px; margin-top:2px; }
+  .tone-break { font-size:11.5px; color:var(--text-secondary); line-height:1.55;
+                margin-top:12px; padding-top:11px; border-top:1px solid var(--grid); }
+  .tone-break b { color:var(--text-primary); font-weight:650; }
+  .tone-health { font-size:10.5px; color:var(--text-muted); line-height:1.5; margin-top:9px; }
+  .tone-health.bad { color:var(--down); }
+
+  /* --- overnight range map --- */
+  .rt { padding:12px 0; border-bottom:1px solid var(--grid); }
+  .rt:last-child { border-bottom:0; padding-bottom:2px; }
+  .rt-head { display:flex; align-items:baseline; gap:8px; }
+  .rt-sym { font-weight:650; font-size:13.5px; }
+  .rt-sub { font-size:10.5px; color:var(--text-muted); }
+  .rt-px { margin-left:auto; font-size:13.5px; font-weight:650;
+           font-variant-numeric:tabular-nums; }
+  .rt-chg { font-size:11.5px; font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .rt-track { position:relative; height:18px; margin-top:9px; }
+  .rt-line { position:absolute; left:0; right:0; top:8px; height:2px;
+             background:var(--surface-2); border-radius:2px; }
+  .rt-fill { position:absolute; left:0; top:8px; height:2px; border-radius:2px;
+             background:var(--accent); }
+  .rt-prev { position:absolute; top:2px; width:2px; height:14px; margin-left:-1px;
+             background:var(--text-muted); border-radius:1px;
+             box-shadow:0 0 0 2px var(--surface-1); }
+  .rt-dot { position:absolute; top:2px; width:14px; height:14px; margin-left:-7px;
+            border-radius:50%; background:var(--accent);
+            box-shadow:0 0 0 2px var(--surface-1); }
+  .rt-ends { display:flex; justify-content:space-between; font-size:10.5px;
+             color:var(--text-muted); font-variant-numeric:tabular-nums; margin-top:3px; }
+  .rt-pos { font-size:10.5px; color:var(--text-secondary); margin-top:4px; }
+  .rt-key { font-size:10.5px; color:var(--text-muted); margin-top:10px; line-height:1.5; }
+  .rt-key u { text-decoration:none; border-left:2px solid var(--text-muted);
+              padding-left:4px; margin-right:2px; }
+
+  /* --- session clock ---
+     Break-trust is an ORDINAL quantity, so it is encoded by segment HEIGHT,
+     not by a third hue. Height is immune to colour-vision deficiency, survives
+     greyscale printing, and reads at a glance on a 390px strip where three
+     blues would not. Only two fills exist: accent = market open, muted grey =
+     closed. Every segment also carries its trust word in the table view. */
+  .sess-now { padding:13px 14px; border-radius:8px; background:var(--accent-wash);
+              border:1px solid var(--border); }
+  .sess-lab { font-size:10.5px; letter-spacing:0.06em; text-transform:uppercase;
+              color:var(--text-muted); }
+  .sess-name { font-size:17px; font-weight:650; margin-top:3px; line-height:1.25; }
+  .sess-meta { font-size:11.5px; color:var(--text-secondary); margin-top:4px;
+               font-variant-numeric:tabular-nums; }
+  .sess-note { font-size:12.5px; color:var(--text-primary); margin-top:9px;
+               line-height:1.55; }
+
+  /* THE RAIL ------------------------------------------------------------
+     Sticky, and that is a considered cost rather than a default. It eats 38px
+     of a 900px phone viewport permanently — 4% — on a board that is 35,000px
+     tall. Four per cent to make the other ninety-six reachable in one tap is
+     the trade, and it only looks like a trade at all because the board is this
+     long. On a two-screen page this element would be clutter. */
+  .rail { position:sticky; top:0; z-index:40; display:flex; gap:6px;
+          overflow-x:auto; overflow-y:hidden; white-space:nowrap;
+          padding:8px 14px; margin:0 -14px 4px;
+          background:var(--surface-1); border-bottom:1px solid var(--border);
+          -webkit-overflow-scrolling:touch; scrollbar-width:none; }
+  .rail::-webkit-scrollbar { display:none; }
+  .rail .rc { flex:0 0 auto; display:inline-flex; align-items:center; gap:5px;
+              font:600 11px/1 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+              color:var(--text-secondary); background:var(--surface-2);
+              border:1px solid var(--border); border-radius:999px;
+              padding:6px 10px 6px 8px; cursor:pointer; -webkit-appearance:none;
+              transition:color .12s, border-color .12s; }
+  .rail .rc:hover { color:var(--text-primary); }
+  /* the CURRENT chip is marked by weight and a ring, never by colour alone —
+     colour on this row already means feed state and cannot mean two things */
+  .rail .rc.here { color:var(--text-primary); border-color:var(--text-muted);
+                   background:var(--surface-1); }
+  /* THE DOT IS ABSENT ON A HEALTHY CARD, and that is the whole design.
+
+     A mark that appears on all eighteen chips is not a signal, it is a texture:
+     the eye has to read every one to find the three that matter. Absence is the
+     cheapest encoding of "nothing to say here" -- it costs no pixels, no colour
+     and no legend, and it makes a rail with three marks on it legible in one
+     glance from across the room.
+
+     It also fixes a truth problem the first version had. Four cards on this board
+     carry no data-feeds at all -- they are written analysis, not a live read --
+     so they never grow a stale-tag, and under a mapping where the default is
+     "live" they rendered green and confident while being the OLDEST content on
+     the page. With no mark they say nothing about freshness, which is exactly
+     what is known about them.
+
+     Colour comes from the RESERVED status palette (--warning, --critical) and
+     never from --accent or --div-pos. That was the first version's actual bug:
+     --accent and --div-pos are the same hex in BOTH themes (#3987e5 dark,
+     #2a78d6 light), so "live" and "lagging" painted identically and the rail
+     shipped a build cheerfully reporting that a lagging feed was fine. Series
+     colours carry identity; status colours carry state; borrowing across the two
+     is how a palette silently loses a distinction it thinks it has. railtest.mjs
+     now resolves these five rules in a real browser and fails the build if any
+     two states compute to the same paint.
+
+     And colour is never alone. A fault is FILLED and a degree larger; a
+     not-a-fault is HOLLOW; healthy is nothing at all -- three shapes before any
+     hue is read. The state word rides on the chip as title and aria-label, so it
+     survives a screen reader, a greyscale print and a monochrome phone. */
+  .rail .rd { width:7px; height:7px; border-radius:50%; flex:0 0 auto;
+              background:transparent;
+              box-shadow:inset 0 0 0 1.5px var(--text-muted); }
+  .rail .rc[data-st="live"] .rd { display:none; }
+  .rail .rc[data-st="live"] { padding-left:10px; }
+  .rail .rc[data-st="shut"] .rd { box-shadow:inset 0 0 0 1.5px var(--text-muted); }
+  .rail .rc[data-st="soft"] .rd { box-shadow:inset 0 0 0 1.5px var(--warning); }
+  .rail .rc[data-st="warn"] .rd { width:8px; height:8px;
+                                  background:var(--warning); box-shadow:none; }
+  .rail .rc[data-st="bad"]  .rd { width:8px; height:8px;
+                                  background:var(--critical); box-shadow:none; }
+  /* the sticky rail would otherwise land on top of whatever was jumped to */
+  section.card, .tone, .tiles { scroll-margin-top: 46px; }
+  .sess-mhi { display:flex; align-items:center; gap:7px; margin-top:9px;
+              font-size:11.5px; color:var(--text-secondary); line-height:1.4; }
+  .sess-mhi b { font-weight:600; color:var(--text-primary); }
+  .sess-mhi .mchip { flex:0 0 auto; font:650 10px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;
+                     letter-spacing:0.05em; padding:1px 6px; border-radius:4px;
+                     border:1px solid var(--border); background:var(--surface-2);
+                     color:var(--text-muted); white-space:nowrap; }
+  .sess-mhi .mchip.on   { border-color:var(--div-pos); color:var(--div-pos); }
+  .sess-mhi .mchip.pre  { border-color:var(--accent);  color:var(--accent); }
+  .sess-trust { display:inline-flex; align-items:center; gap:5px; font-size:11.5px;
+                font-weight:650; color:var(--text-secondary); margin-top:8px; }
+  .sess-trust u { text-decoration:none; display:inline-flex; align-items:flex-end;
+                  gap:2px; height:12px; }
+  .sess-trust u i { width:3px; background:var(--text-muted); border-radius:1px; }
+  .sess-trust u i.on { background:var(--accent); }
+
+  .sess-strip { position:relative; margin-top:16px; height:44px; }
+  .sess-seg { position:absolute; bottom:12px; background:var(--accent);
+              border-radius:2px 2px 0 0; }
+  .sess-seg.shut { background:var(--text-muted); }
+  .sess-seg.cur  { box-shadow:0 0 0 2px var(--surface-1), 0 0 0 4px var(--accent); }
+  .sess-axis { position:absolute; left:0; right:0; bottom:10px; height:1px;
+               background:var(--grid); }
+  .sess-tick { position:absolute; bottom:0; font-size:9.5px; color:var(--text-muted);
+               transform:translateX(-50%); font-variant-numeric:tabular-nums; }
+  .sess-now-mk { position:absolute; top:0; bottom:9px; width:2px; margin-left:-1px;
+                 background:var(--text-primary); border-radius:1px; }
+  .sess-now-mk::after { content:""; position:absolute; top:-1px; left:-3px;
+                        width:8px; height:8px; border-radius:50%;
+                        background:var(--text-primary); }
+  .sess-key { font-size:10.5px; color:var(--text-muted); margin-top:14px;
+              line-height:1.55; }
+  .sess-next { font-size:11.5px; color:var(--text-secondary); margin-top:10px;
+               padding-top:10px; border-top:1px solid var(--grid); }
+
+  /* --- day shape: where in the clock the movement actually happens ---
+
+     THREE PANELS ON ONE X AXIS, AND DELIBERATELY NOT ONE CHART. Travel and
+     volume are both percentages of the same day, so they share a y scale and can
+     be read straight down against each other — which IS the card's headline: the
+     half hour into the cash close carries the day's second-largest volume and is
+     never once its biggest move. The cumulative curve is a percentage of
+     something else entirely (the day's finished range) and runs to a hundred, so
+     it gets its own panel and its own axis rather than a second y scale on the
+     first. Two scales on one frame is the one chart mistake this page does not
+     make, and "they are both percentages" is exactly the excuse that makes it
+     tempting.
+
+     ONE SERIES PER PANEL, so there is no legend and no palette. Every bar is
+     --accent. Session identity is carried by position and by the labelled band
+     behind the bars — a surface tint, not a series colour, so nothing here needs
+     a CVD check and nothing competes with the status ramp. The only other ink is
+     the now-marker, which is --text-primary and is deliberately the same mark
+     the session clock draws a few centimetres above: one page, one glyph for
+     "you are here".
+
+     Columns rather than a line in the third panel, and that is a claim about the
+     data rather than a convenience: each value is the MEDIAN of that bucket over
+     the days that reached it, so consecutive values can come from different
+     subsets of days and the series is not guaranteed to rise. A line would draw
+     an interpolation between two numbers that were never measured together.
+     Columns say what was measured and stop there. */
+  /* The padding is the marker's lane. The dot has to live somewhere, and every
+     other row of this plot is spoken for: put it at the top of the first frame
+     and it covers the axis maximum, put it a few pixels higher and it covers
+     the panel caption. Ten pixels of empty plot above the first header is the
+     only place it can sit without hiding a number, and it costs nothing because
+     it replaces margin the plot was already spending. */
+  .seas-plot { position:relative; margin-top:4px; padding-top:10px; }
+  .seas-pan  { position:relative; margin-bottom:2px; }
+  /* THE STACK, bottom to top: bands, gridline rules, bars, the now-marker line,
+     then every piece of text. The order is declared here rather than left to
+     DOM order because DOM order had it exactly backwards at the top: the bars
+     are appended last, so they painted over the gridline labels the surface
+     chip below was written to protect, and the marker is appended after all
+     three panels, so it struck a 2px rule through every right-aligned number
+     and through two of the three panel headers. Text last, and text carrying
+     the background it sits on, is what makes a label survive whatever passes
+     under it. The dot is the one exception and it is drawn separately so it can
+     sit above the text — see .seas-mk-dot. */
+  .seas-pan-h { display:flex; justify-content:space-between; align-items:baseline;
+                font-size:10px; color:var(--text-muted); margin-bottom:4px;
+                position:relative; z-index:4; }
+  .seas-pan-h span { background:var(--surface-1); padding:0 4px; }
+  .seas-pan-h span:first-child { margin-left:-4px; }
+  .seas-pan-h span:last-child { margin-right:-4px; }
+  .seas-pan-h b { color:var(--text-secondary); font-weight:650; }
+  .seas-frame { position:relative; border-bottom:1px solid var(--axis); }
+  .seas-band { position:absolute; top:0; bottom:0; background:var(--plane); }
+  .seas-band.b2 { background:transparent; }
+  /* The chip colour is set per label by the painter, because a zone label sits
+     on whichever band it opens and the two bands are different colours. A fixed
+     --surface-1 chip would punch a visible rectangle through every other band. */
+  .seas-zlab { position:absolute; top:2px; font-size:9px; letter-spacing:0.04em;
+               color:var(--text-muted); text-transform:uppercase; padding:0 3px;
+               pointer-events:none; z-index:4; }
+  .seas-bar { position:absolute; bottom:0; background:var(--accent);
+              border-radius:2px 2px 0 0; z-index:1; }
+  .seas-bar.dim { background:var(--text-muted); }
+  .seas-gl { position:absolute; left:0; right:0; height:1px; background:var(--grid); }
+  /* The label hangs BELOW its rule, not above it. Above was the obvious choice
+     and it was wrong for one specific gridline: the topmost one sits at the top
+     edge of the frame, so a label placed above it has nowhere to go but into
+     the panel header, and it landed there — "15.0%" printed straight through
+     the word "movement" in all three panels at once. Below is always inside the
+     frame, so the top rule and the mid rule get the same treatment and neither
+     can escape the plot. The surface chip and the padding are what keep it
+     legible where it crosses a tall bar, which on the cumulative panel it
+     always will. */
+  .seas-glab { position:absolute; right:0; font-size:9px; color:var(--text-muted);
+               transform:translateY(100%); background:var(--surface-1); padding:0 2px;
+               font-variant-numeric:tabular-nums; pointer-events:none; z-index:4; }
+  .seas-axis { position:relative; height:15px; margin-top:3px; }
+  .seas-tick { position:absolute; top:0; font-size:9.5px; color:var(--text-muted);
+               transform:translateX(-50%); font-variant-numeric:tabular-nums;
+               white-space:nowrap; }
+  /* Same 2px rule and 8px dot as .sess-now-mk, re-declared rather than shared
+     because this one spans three stacked panels and has to stop at the axis of
+     the last of them, not at a fixed offset from its own bottom. */
+  .seas-mk { position:absolute; top:5px; bottom:20px; width:2px; margin-left:-1px;
+             background:var(--text-primary); border-radius:1px; pointer-events:none;
+             z-index:3; }
+  /* The dot is its own element rather than .seas-mk::after, so the two halves
+     of the marker can sit on opposite sides of the text: the line beneath it,
+     where a chip breaks it cleanly, and the dot above it, because "you are
+     here" is the one glyph on this plot that must never be the thing that gets
+     covered. A pseudo-element cannot do this — putting a z-index on .seas-mk
+     makes it a stacking context and traps the ::after under the same ceiling. */
+  .seas-mk-dot { position:absolute; top:1px; width:8px; height:8px; margin-left:-4px;
+                 border-radius:50%; background:var(--text-primary);
+                 pointer-events:none; z-index:5; }
+  .seas-key { font-size:10.5px; color:var(--text-muted); margin-top:12px;
+              line-height:1.55; }
+
+  .seas-now { font-size:12px; color:var(--text-secondary); line-height:1.55; }
+  .seas-now b { color:var(--text-primary); font-weight:650; }
+
+  /* Which contracts have no tab, and why. Muted rather than warning-coloured on
+     purpose: none of the four status colours belongs here. Nothing is wrong --
+     the card is stating its own boundary, and a reader scanning for trouble
+     should not stop on it. The permanent row is separated by a rule so the two
+     sentences do not read as one list with a longer second entry. */
+  .seas-absent { font-size:11px; color:var(--text-muted); line-height:1.55;
+                 margin-bottom:12px; }
+  .seas-absent .sab-row + .sab-row { margin-top:8px; padding-top:8px;
+                                     border-top:1px dotted var(--grid); }
+  .seas-absent b { color:var(--text-secondary); font-weight:650; }
+  .seas-absent:empty { display:none; }
+
+  /* The session summary and the two clock landmarks. Grids rather than tables so
+     they reflow at 430px; the table view carries the same numbers for anyone who
+     wants to read them as a table. */
+  .seas-sess { margin-top:16px; padding-top:12px; border-top:1px solid var(--grid); }
+  .seas-srow { display:grid; grid-template-columns:1fr auto auto; gap:10px;
+               align-items:baseline; padding:7px 0; font-size:12px;
+               border-bottom:1px dotted var(--grid); }
+  .seas-srow:last-child { border-bottom:0; }
+  .seas-srow.hd { font-size:10px; color:var(--text-muted); letter-spacing:0.04em;
+                  text-transform:uppercase; border-bottom:1px solid var(--grid); }
+  .seas-sname { color:var(--text-primary); font-weight:600; }
+  .seas-sname i { display:block; font-style:normal; font-size:10px;
+                  color:var(--text-muted); font-weight:400; margin-top:2px; }
+  .seas-sval { font-variant-numeric:tabular-nums; text-align:right; white-space:nowrap;
+               min-width:58px; }
+  .seas-lm { display:grid; grid-template-columns:auto 1fr; gap:10px; align-items:start;
+             margin-top:12px; padding:10px 11px; border-radius:8px;
+             background:var(--plane); border:1px solid var(--grid); font-size:11.5px;
+             line-height:1.55; color:var(--text-secondary); }
+  .seas-lm b { color:var(--text-primary); }
+  .seas-lmt { font-size:11px; font-weight:650; color:var(--text-primary);
+              font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .seas-lmt i { display:block; font-style:normal; font-size:9.5px; font-weight:400;
+                color:var(--text-muted); margin-top:2px; }
+
+  /* Card 2's fold variant, and it lives here with the card rather than beside
+     the base details.fwork rules, per the convention the other five variants
+     follow. The base summary is 11px --text-secondary, tuned for full-width card
+     prose. Every fold on THIS card sits inside a small, muted container instead:
+     the legend under the chart (10.5px muted), the note under the session table
+     (10px muted), and the two landmark boxes (11.5px secondary on a plane). In
+     all three the folded thing is method sitting under a finding, and method is
+     the quieter of the two everywhere else on this page. At the base size the
+     summary would read as a new sentence rather than as a footnote, which is the
+     opposite of what folding it was for.
+     Two classes deep on the element, so it beats the base rule on specificity
+     regardless of which of the two comes first in the sheet. */
+  details.fwork.seas-f { margin-top:6px; }
+  details.fwork.seas-f > summary { font-size:10.5px; color:var(--text-muted); }
+  details.fwork.seas-f > .fwork-b { font-size:10.5px; color:var(--text-muted); }
+
+  /* --- the day-size strip ---
+     The house one-dimensional idiom, the same one .kzr-*, .drl-* and .dcov-*
+     use: a relative track with percentage-positioned children, so it is right at
+     whatever width the phone gives it rather than at the width it was measured
+     on. A pixel geometry computed at paint time would be wrong the moment the
+     card is read in landscape.
+
+     Two bands inside the track, for the reason the reach strip states: the top
+     fourteen pixels carry the one label the strip has, and the baseline, the bar
+     and the marks live below it, so a label's padding cannot punch a gap in the
+     baseline it crosses.
+
+     ONLY THE MEDIAN IS LABELLED ON THE TRACK, and that is a measurement rather
+     than a preference. Today's two marks -- the range already done and the
+     projection -- sit a few per cent of the track apart on most days the card is
+     read (24.0 and 32.1 on a 180 scale is 4.5%, about eighteen pixels on this
+     phone). Two labels there would overlap, and the fix for overlapping labels
+     is not smaller type, it is fewer labels. Both numbers are in the sentence
+     directly above the strip, where they read as a sentence, and on each mark's
+     own hover title. The median's label has nothing to collide with. */
+  .sday { margin:9px 0 2px; }
+  .sday-track { position:relative; height:34px; }
+  .sday-line { position:absolute; left:0; right:0; top:26px; height:1px;
+               background:var(--grid); }
+  /* What is already on the board is a magnitude measured from zero, so it is
+     drawn as one: a bar anchored at the origin with a rounded data-end, not a
+     floating mark. The cap is what makes the end of a very faint wash legible. */
+  .sday-done { position:absolute; left:0; top:23px; height:6px;
+               border-radius:0 3px 3px 0; background:var(--accent-wash); }
+  .sday-cap { position:absolute; top:21px; height:11px; width:2px;
+              background:var(--text-secondary); transform:translateX(-100%); }
+  /* --text-muted and not --axis: every tick here is a closed day, which makes
+     them the data rather than the furniture. The reach strip's ticks wear --axis
+     because there they ARE context, sitting behind two bold markers. */
+  .sday-t { position:absolute; top:21px; height:11px; width:1px;
+            background:var(--text-muted); transform:translateX(-50%); }
+  /* The median stands taller than a day tick AND carries a label. Two marks of
+     difference rather than a shade, because a strip whose most important line is
+     distinguishable only by being slightly paler is a strip that is unreadable
+     to a fifth of the people who open it. */
+  .sday-med { position:absolute; top:14px; bottom:1px; width:1px;
+              background:var(--text-muted); transform:translateX(-50%); }
+  .sday-proj { position:absolute; top:26px; transform:translate(-50%,-50%);
+               font-size:11px; line-height:1; font-weight:700; color:var(--accent);
+               background:var(--surface-2); padding:1px 2px; }
+  /* Centred on its own mark, except at the ends, where it is anchored by its
+     near edge instead -- the reach strip's rule, and for the reason stated
+     there: a clamped label slides off its mark and lands at a distance the
+     number does not have, which is a lie the reader has no way to catch. */
+  .sday-lab { position:absolute; top:0; font-size:9.5px; font-weight:650;
+              white-space:nowrap; color:var(--text-secondary); padding:0 2px;
+              font-variant-numeric:tabular-nums; }
+  .sday-ax { position:relative; height:12px; }
+  .sday-ax span { position:absolute; top:0; font-size:9px; color:var(--text-muted);
+                  white-space:nowrap; font-variant-numeric:tabular-nums; }
+  .sday-ax span.l { left:0; }
+  .sday-ax span.r { right:0; }
+  .sday-lg { font-size:9.5px; color:var(--text-muted); line-height:1.5;
+             margin-top:3px; }
+  .sday-hd { display:flex; align-items:baseline; gap:9px; flex-wrap:wrap; }
+  .sday-say { font-size:12px; line-height:1.55; color:var(--text-secondary); }
+  .sday-prep { margin-top:12px; }
+  .sday-pill { display:inline-block; font-size:10px; font-weight:700;
+               letter-spacing:0.04em; padding:2px 9px; border-radius:99px;
+               color:#fff; white-space:nowrap; }
+  /* Two tones for six verdicts, and the WORD carries all of it: accent means
+     today is not an ordinary day by size, grey means it is one or the card is
+     refusing to say. None of the four status colours appear here on purpose. A
+     narrow day is not a warning and a wide one is not a critical -- they are
+     descriptions of size, and borrowing the status ramp would file an ordinary
+     Tuesday in the same visual bucket as a stale feed. */
+  .sday-pill.odd { background:var(--accent); }
+  .sday-pill.mid { background:var(--grid); color:var(--text-secondary); }
+
+  /* --- session liquidity: standing levels and what has been taken ---
+     THE STATUS COLOURS ARE NEVER ALONE. Every chip carries a word, every level
+     row carries an arrow glyph, and the standing/taken split is also carried by
+     border weight — solid for a level still there, dotted for one already run.
+     That is the same rule the delta pair up top follows, for the same reason:
+     green-against-red is the first thing to go under protan and deutan, and a
+     board whose entire content is "which of these is still dangerous" cannot
+     afford to say it in a channel a tenth of readers do not have.
+
+     Three states, three tokens, and they mean what they mean everywhere else on
+     the page: --warning is a level still standing (something to watch), muted
+     is one already taken (history), --accent is where price is now. Red and
+     green are NOT used for standing-vs-taken — a level being taken is not bad
+     news and a level holding is not good news, and colouring them as if they
+     were would be the card lying about its own subject. Red and green appear
+     only where there is a genuine right-and-wrong: in the sweep record, where
+     "still beyond the level" and "back through it" really are opposite
+     outcomes. */
+  .kz-sym { margin-top:18px; padding-top:14px; border-top:1px solid var(--grid); }
+  .kz-sym:first-child { margin-top:0; padding-top:0; border-top:0; }
+  .kz-head { display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;
+             margin-bottom:11px; }
+  .kz-name { font-size:14px; font-weight:650; letter-spacing:0.01em; }
+  .kz-px { font-size:12px; color:var(--text-secondary); font-variant-numeric:tabular-nums; }
+  .kz-path { font-size:10px; color:var(--text-muted); border:1px solid var(--grid);
+             border-radius:99px; padding:1px 7px; }
+  .kz-row { display:grid; grid-template-columns:15px 1fr auto auto; gap:9px;
+            align-items:center; padding:6px 0; font-size:12px;
+            border-bottom:1px dotted var(--grid); }
+  .kz-row:last-child { border-bottom:0; }
+  .kz-arrow { font-size:11px; color:var(--text-muted); text-align:center; }
+  .kz-lab { color:var(--text-secondary); line-height:1.4; }
+  .kz-lab b { color:var(--text-primary); font-weight:600; }
+  .kz-val { font-variant-numeric:tabular-nums; text-align:right; white-space:nowrap; }
+  .kz-dist { font-size:10.5px; color:var(--text-muted); font-variant-numeric:tabular-nums;
+             text-align:right; white-space:nowrap; min-width:64px; }
+  .kz-chip { display:inline-block; font-size:10px; font-weight:650; letter-spacing:0.02em;
+             padding:1px 7px; border-radius:99px; border:1px solid; white-space:nowrap; }
+  .kz-chip.standing { color:var(--warning); border-color:var(--warning); }
+  .kz-chip.taken    { color:var(--text-muted); border-color:var(--grid);
+                      border-style:dotted; }
+  .kz-chip.here     { color:var(--accent); border-color:var(--accent);
+                      background:var(--accent-wash); }
+  .kz-now { display:grid; grid-template-columns:15px 1fr auto auto; gap:9px;
+            align-items:center; padding:7px 0; font-size:12px;
+            border-top:2px solid var(--accent); border-bottom:2px solid var(--accent);
+            margin:2px 0; }
+  /* --- the advisory + disclosure kit ---
+     These eight rules (.advis, .advis-hdr, .subnote, details.disc, .disc-body,
+     .disc-tbl, .disc-yes, .disc-no) were written for the killzone card and were
+     named kz-* accordingly. They are not killzone-specific: they are the shape
+     every card wants once it has more to say than fits — a boxed advisory at the
+     top, the working behind a <details>, a table inside it, and two verdict
+     colours. They were renamed the moment a SECOND card needed them, before the
+     duplicate existed, because the cheap moment to un-fork a style is the one
+     before it is forked. Card-specific rules keep their card prefix (.kz-row,
+     .yc-band); these carry none because they belong to no card. */
+  .advis { margin-top:16px; padding:12px 13px; border-radius:8px;
+            background:var(--surface-2); font-size:12px; line-height:1.6;
+            color:var(--text-secondary); }
+  .advis b { color:var(--text-primary); }
+  .subnote { font-size:10px; color:var(--text-muted); margin-top:8px; line-height:1.5; }
+  .kz-row.far { opacity:0.55; }
+  /* The exclusion note. Same weight as the day-shape one and for the same
+     reason: it is the card stating its own boundary, not reporting trouble. */
+  .kz-excl { font-size:11px; color:var(--text-muted); line-height:1.55;
+             margin-top:14px; padding-top:10px; border-top:1px dotted var(--grid); }
+  .kz-excl b { color:var(--text-secondary); font-weight:650; }
+  .kz-excl:empty { display:none; }
+  /* Shared by the liquidity map and the decision board, because they print the
+     same sentence out of the same object and should not look like two different
+     statements. Muted for the same reason as the other two: a stated boundary is
+     not a fault. */
+  .liq-excl { font-size:11px; color:var(--text-muted); line-height:1.55;
+              margin-top:14px; padding-top:10px; border-top:1px dotted var(--grid); }
+  .liq-excl b { color:var(--text-secondary); font-weight:650; }
+  .liq-excl:empty { display:none; }
+
+  /* ---- anchored VWAP ---------------------------------------------------
+     One row per anchor. The grid is label / anchor / mean / three distances,
+     and it collapses to two lines at 430px rather than scrolling sideways --
+     the three distance units are the point of the row and a reader should not
+     have to swipe to compare them. */
+  .avw-row { display:grid; grid-template-columns:1fr auto; gap:4px 12px;
+             padding:11px 0; border-bottom:1px dotted var(--grid); }
+  .avw-row:last-child { border-bottom:0; }
+  .avw-hd { font-size:12px; color:var(--text-primary); font-weight:650; }
+  .avw-of { font-size:10px; color:var(--text-muted); margin-top:2px; }
+  .avw-mean { font-size:15px; font-variant-numeric:tabular-nums;
+              color:var(--text-primary); font-weight:650; text-align:right; }
+  .avw-band { font-size:10px; color:var(--text-muted); text-align:right;
+              font-variant-numeric:tabular-nums; margin-top:2px; }
+  /* The three units, side by side and equally weighted. None of them is the
+     headline: points is what a stop is written in, sigma is what makes two
+     contracts comparable, and x t30 is what says how long it would take. A
+     reader picks; the card does not pick for them. */
+  .avw-d { grid-column:1 / -1; display:grid; grid-template-columns:repeat(3, 1fr);
+           gap:8px; margin-top:8px; }
+  .avw-d div { font-size:11px; color:var(--text-secondary);
+               font-variant-numeric:tabular-nums; }
+  .avw-d b { display:block; font-size:13px; color:var(--text-primary);
+             font-weight:650; }
+  .avw-d u { display:block; text-decoration:none; font-size:9.5px;
+             color:var(--text-muted); margin-top:1px; }
+  /* Withheld anchors. Same row height as a live one on purpose -- an anchor
+     that is waiting should occupy the space it will fill, so the card does not
+     visibly reflow when it arrives. */
+  .avw-row.avw-wait .avw-hd { color:var(--text-secondary); }
+  .avw-wait-why { grid-column:1 / -1; font-size:11px; color:var(--text-muted);
+                  line-height:1.5; margin-top:6px; }
+  .avw-stamp { font-size:10px; color:var(--text-muted); margin-top:12px;
+               padding-top:8px; border-top:1px solid var(--grid); line-height:1.5; }
+  /* The sampling caveat, folded. Its marker says "why" rather than "working",
+     because what is behind it is not reasoning about a trade -- it is the size
+     of the error in the numbers directly above it. */
+  details.fwork.kz-note { margin-top:10px; }
+  details.fwork.kz-note > summary { font-size:10px; color:var(--text-muted);
+            line-height:1.5; }
+  details.fwork.kz-note > summary b { color:var(--text-secondary); font-weight:650; }
+  details.fwork.kz-note > summary::after { content:"  \25B8  why"; font-size:9.5px; }
+  details.fwork.kz-note[open] > summary::after { content:"  \25BE  less"; }
+  .kz-note .fwork-b { font-size:10px; line-height:1.55; color:var(--text-muted); }
+  .advis .advis-hdr { display:block; font-size:10.5px; letter-spacing:0.05em;
+                    text-transform:uppercase; color:var(--text-muted); margin-bottom:6px; }
+
+  /* --- the reach strip ---
+     The same one-dimensional idiom as every other strip on this page: a relative
+     track with percentage-positioned children, so it is right at whatever width
+     the phone gives it rather than at the width it was measured on. A pixel
+     geometry computed at paint time would be wrong the moment the card is read
+     in landscape.
+
+     Two bands inside the track. The top twelve pixels carry the one x label each
+     side gets; the baseline, the ticks and the markers live below it. Keeping
+     them apart is what stops a label's padding from punching a gap in the
+     baseline it happens to cross -- the defect the decision rail found the
+     expensive way. */
+  .kzr { margin:0 0 12px; }
+  .kzr-hd { display:flex; align-items:baseline; gap:9px; flex-wrap:wrap;
+            margin-bottom:8px; }
+  .kzr-pill { display:inline-block; font-size:10px; font-weight:700;
+              letter-spacing:0.04em; padding:2px 9px; border-radius:99px;
+              color:#fff; white-space:nowrap; }
+  /* Three colours for eight verdicts, so the WORD carries the direction and the
+     colour only carries how strong the reading is. Nothing here is identifiable
+     by colour alone. */
+  .kzr-pill.both  { background:var(--accent); }
+  .kzr-pill.over  { background:var(--warning); color:#3a2a00; }
+  .kzr-pill.under { background:var(--warning); color:#3a2a00; }
+  .kzr-pill.out   { background:var(--grid); color:var(--text-secondary); }
+  .kzr-say { font-size:11.5px; line-height:1.5; color:var(--text-secondary); }
+  /* C1: session liquidity's promoted row — the first untouched level each
+     side, the one thing a flat reader checks five minutes before the open.
+     Size and weight carry it; the words ("above"/"below", zone, x-distance)
+     carry the meaning — never colour alone. */
+  .kz-key { display:flex; flex-wrap:wrap; gap:4px 14px; align-items:baseline;
+            padding:9px 10px; margin-bottom:10px; background:var(--surface-2);
+            border-radius:8px; }
+  .kz-key-lab { font-size:10px; font-weight:650; letter-spacing:0.4px;
+                text-transform:uppercase; color:var(--text-muted); }
+  .kz-key-side { font-size:13.5px; font-weight:680; }
+  .kz-key-side small { font-size:10.5px; font-weight:500; color:var(--text-secondary); }
+  .plan-r { font-weight:700; white-space:nowrap; }
+  .plan-rnote { font-size:10.5px; color:var(--text-muted); margin-top:4px; line-height:1.45; }
+  .kzr-lane { display:grid; grid-template-columns:30px 1fr; align-items:center;
+              gap:8px; margin-bottom:5px; }
+  .kzr-sym { font-size:10px; font-weight:650; color:var(--text-secondary);
+             text-align:right; }
+  .kzr-track { position:relative; height:26px; }
+  /* one typical thirty-minute move either way. It is a band and not a line
+     because that is what the number is -- a median, not a boundary. */
+  .kzr-band { position:absolute; top:13px; bottom:0; background:var(--accent-wash); }
+  .kzr-line { position:absolute; left:0; right:0; top:19px; height:1px;
+              background:var(--grid); }
+  .kzr-t { position:absolute; top:14px; bottom:1px; width:1px;
+           background:var(--axis); transform:translateX(-50%); }
+  .kzr-now { position:absolute; left:50%; top:13px; bottom:0; width:1px;
+             background:var(--accent); transform:translateX(-50%); }
+  /* the horizontal padding is not decoration: two levels a tenth of a typical
+     move apart sit within a percent of each other, and one pixel of surface each
+     side is what keeps them reading as two marks */
+  .kzr-m { position:absolute; top:19px; transform:translate(-50%,-50%);
+           font-size:10px; line-height:1; font-weight:700; color:var(--warning);
+           background:var(--surface-2); padding:1px 2px; }
+  /* the label sits in the band above its own marker and is centred on it, except
+     at the ends, where it is anchored by its near edge instead. Anchoring rather
+     than clamping: a clamped label slides off its marker and lands at a distance
+     that level does not have, which is a lie the reader has no way to catch. */
+  .kzr-lab { position:absolute; top:0; font-size:9.5px; font-weight:650;
+             white-space:nowrap; color:var(--text-secondary);
+             font-variant-numeric:tabular-nums; padding:0 2px; }
+  .kzr-ax { position:relative; height:12px; margin:1px 0 0 38px; }
+  .kzr-ax span { position:absolute; top:0; font-size:9px; color:var(--text-muted);
+                 transform:translateX(-50%); white-space:nowrap; }
+  .kzr-ax span:first-child { transform:none; }
+  /* A level past the end of the axis is drawn as a COUNT at the edge, never as
+     a mark at the edge. A mark there would claim a distance the level does not
+     have, and the reader has no way to catch that; a count claims only that
+     there are more of them further out, which is true. The distance itself is
+     not lost -- it is named in the legend behind the fold. */
+  .kzr-off { position:absolute; top:19px; font-size:9px; font-weight:650;
+             color:var(--text-muted); background:var(--surface-2);
+             padding:1px 2px; transform:translateY(-50%); }
+  .kzr-off.l { left:0; }
+  .kzr-off.r { right:0; }
+  /* The legend is the kz-adv fold at legend weight. Three classes deep on the
+     body so it beats .kz-adv .fwork-b wherever that rule happens to sit in the
+     sheet, rather than relying on source order to settle a tie. */
+  details.fwork.kz-adv.kzr-legend { margin:6px 0 0 38px; }
+  details.fwork.kz-adv.kzr-legend > summary { font-size:9.5px; line-height:1.5;
+            color:var(--text-muted); }
+  details.fwork.kz-adv.kzr-legend > summary b { color:var(--text-secondary);
+            font-weight:600; }
+  details.fwork.kz-adv.kzr-legend > summary::after { content:"  \25B8  scale";
+            font-size:9px; }
+  details.fwork.kz-adv.kzr-legend[open] > summary::after { content:"  \25BE  less"; }
+  .kz-adv.kzr-legend .fwork-b { font-size:9.5px; line-height:1.55;
+            color:var(--text-muted); margin-top:4px; }
+  /* the verdict's own fold sits under the say line it explains, not below the
+     block as a heading of its own */
+  .kzr-hd details.fwork.kz-adv { margin:7px 0 0; }
+
+  /* The advisory's own folds. Marker says "working" rather than "why", because
+     what is behind these IS reasoning about a trade -- unlike the sampling
+     caveat above, which is the size of an error. */
+  details.fwork.kz-adv { margin:0 0 9px; }
+  details.fwork.kz-adv > summary { font-size:12px; line-height:1.6;
+            color:var(--text-secondary); }
+  details.fwork.kz-adv > summary b { color:var(--text-primary); }
+  details.fwork.kz-adv > summary::after { content:"  \25B8  working"; font-size:9.5px;
+            color:var(--text-muted); }
+  details.fwork.kz-adv[open] > summary::after { content:"  \25BE  less"; }
+  .kz-adv .fwork-b { font-size:11.5px; line-height:1.6; color:var(--text-muted);
+            margin-top:5px; }
+  .kz-adv .fwork-b b { color:var(--text-secondary); }
+
+  /* --- the advisory, as instructions ---
+     One 236-word paragraph became three rows, and the reason is what the
+     paragraph did to its own bold leads: "Trade the size instead." began in the
+     right-hand third of a line and read as a continuation of the sentence before
+     it rather than as the second of three things to do. An instruction that has
+     to be found is not an instruction.
+
+     The grid is 1fr auto auto — the instruction, its one number, the triangle.
+     The number is the evidence the instruction rests on and it sits on the same
+     line as the instruction rather than inside the paragraph, so the reader who
+     reads three lines and closes the page still leaves with the magnitude. It
+     is nowrap and tabular: "ES -0.18 &middot; r&sup2; 3%" is the widest string
+     this column ever holds and it fits at 430 with the instruction wrapping to
+     two lines beneath it, which is the intended behaviour — the LEFT column is
+     the one allowed to wrap.
+
+     No status colour anywhere in here. Three of these rows are advice about
+     what to trade, and advice is not a state; the accent belongs to the forward
+     row on the yen timeline above, where there is exactly one of them. */
+  details.fwork.adv-i { margin-top:0; padding:6px 0;
+             border-bottom:1px solid var(--grid); }
+  details.fwork.adv-i:last-of-type { border-bottom:0; padding-bottom:0; }
+  details.fwork.adv-i > summary { display:grid; grid-template-columns:1fr auto auto;
+             gap:8px; align-items:baseline; }
+  .adv-i > summary .t { color:var(--text-primary); font-weight:650; font-size:12.5px;
+             line-height:1.5; }
+  .adv-i > summary .n { color:var(--text-muted); font-size:10.5px; white-space:nowrap;
+             font-variant-numeric:tabular-nums; }
+  /* TWO SPACES after the escape. A CSS hex escape shorter than six digits is
+     terminated by whitespace and that whitespace is consumed, so a single space
+     leaves the triangle glued to whatever follows it. */
+  details.fwork.adv-i > summary::after { content:"  \25B8  "; font-size:10px; }
+  details.fwork.adv-i[open] > summary::after { content:"  \25BE  "; }
+  .adv-i .adv-b { font-size:12px; line-height:1.55; margin-top:6px; }
+  .adv-i .adv-b b { color:var(--text-primary); font-weight:650; }
+
+  /* --- the disclosure pattern ---
+     <details> rather than a button and a hidden div, and the reason is the
+     static file. Everything else on this page that folds — the table views —
+     folds through JavaScript, which is fine while there is JavaScript. The
+     baked copy exists precisely for the reader who has none: a chat preview, a
+     mail client, a browser with scripts off. A <details> still opens there. A
+     button wired to a click handler is a dead control that looks alive.
+
+     So: long prose goes behind <details>, and anything a reader must not miss
+     stays outside it. The summary line is not a label for the detail, it is the
+     answer — the detail is the working. If the summary reads "Read more" then
+     the card has hidden its content rather than layered it. */
+  details.disc { margin-top:12px; border-top:1px solid var(--grid); padding-top:10px; }
+  /* Inside a tile the full disc chrome is too heavy: no rule, tighter gap, and
+     the body inherits the tile's smaller type. The affordance stays the page's
+     standard one so a reader who has learned it anywhere has learned it here. */
+  /* Trade plan rows. The grid is the ladder's discipline at the scorecard's
+     width: a label gutter and a content column, tabular numerals, chips that
+     carry words. */
+  .plan { border:1px solid var(--grid); border-radius:10px; padding:10px 12px;
+          margin-bottom:10px; }
+  .plan-hd { display:flex; align-items:center; gap:8px; margin-bottom:6px; }
+  .plan-id { font-weight:750; font-size:13px; }
+  .plan-dir { font-size:10px; font-weight:700; letter-spacing:0.05em;
+              padding:2px 7px; border-radius:999px; border:1px solid var(--grid); }
+  .plan-dir.short { color:var(--down); border-color:var(--down); }
+  .plan-dir.long  { color:var(--up); border-color:var(--up); }
+  .plan-dir.none  { color:var(--text-muted); }
+  .plan-st { margin-left:auto; font-size:10px; font-weight:700; padding:2px 8px;
+             border-radius:999px; background:var(--surface-2); }
+  .plan-st.armed { color:var(--warning); }
+  .plan-st.tripped { color:var(--serious); }
+  .plan-st.dead { color:var(--text-muted); }
+  .plan-row { display:grid; grid-template-columns:74px 1fr; gap:8px;
+              font-size:11.5px; line-height:1.5; padding:3px 0; }
+  .plan-row b.lv { font-variant-numeric:tabular-nums; }
+  .plan-k { color:var(--text-muted); font-size:10px; letter-spacing:0.04em;
+            text-transform:uppercase; padding-top:2px; }
+  .plan-foot { font-size:10.5px; color:var(--text-muted); line-height:1.55;
+               margin-top:4px; }
+  .tile .tile-disc { margin-top:5px; border-top:0; padding-top:0; }
+  .tile .tile-disc > summary { font-size:10.5px; }
+  .tile .tile-disc .disc-body { font-size:10.5px; }
+  details.disc > summary { cursor:pointer; font-size:11.5px; color:var(--accent);
+            list-style:none; display:flex; align-items:center; gap:6px;
+            padding:3px 0; font-weight:600; }
+  details.disc > summary::-webkit-details-marker { display:none; }
+  details.disc > summary::before { content:"\25B8"; font-size:9px; transition:transform .12s;
+            display:inline-block; color:var(--text-muted); }
+  details.disc[open] > summary::before { transform:rotate(90deg); }
+  details.disc > summary > span { flex:1; }
+  details.disc > summary:focus-visible { outline:2px solid var(--accent);
+            outline-offset:2px; border-radius:3px; }
+  .disc-body { font-size:11.5px; line-height:1.65; color:var(--text-secondary);
+             padding:8px 0 2px; }
+  .disc-body p { margin:0 0 9px; }
+  .disc-body p:last-child { margin-bottom:0; }
+  .disc-body b { color:var(--text-primary); }
+  .disc-tbl { width:100%; border-collapse:collapse; font-size:11px; margin:6px 0 10px;
+            font-variant-numeric:tabular-nums; }
+  .disc-tbl th { text-align:right; font-weight:600; color:var(--text-muted);
+               padding:4px 6px; border-bottom:1px solid var(--grid); font-size:10px;
+               letter-spacing:0.03em; text-transform:uppercase; }
+  .disc-tbl th:first-child, .disc-tbl td:first-child { text-align:left; }
+  .disc-tbl td { text-align:right; padding:4px 6px; border-bottom:1px solid var(--grid);
+               color:var(--text-secondary); }
+  .disc-tbl tr:last-child td { border-bottom:0; }
+  .disc-yes { color:var(--up); font-weight:600; }
+  .disc-no { color:var(--down); font-weight:600; }
+
+  /* --- the dollar ---
+     Follows the page-wide colour rule written out on the landed-catalyst card.
+     Here the two ramps land on two different objects and it is worth naming
+     which is which, because this card puts them side by side on one row:
+
+         the CORRELATION BAR is DIRECTION. A negative r means the dollar and
+         the contract move opposite ways, and that is a direction, drawn in
+         --up/--down and pointing left or right off a centre line.
+
+         the STABILITY PILL is STATUS. It answers "did the first half of the
+         window and the second half agree with each other?" -- which is the
+         same question the cross-market card asks of four contracts and the
+         landed board asks of a print and a reaction. Same question, same ink.
+
+     So a row can carry a red bar and a green pill: the dollar moved against
+     gold, dependably. That is not a contradiction, it is the two ramps doing
+     the two jobs they exist for. */
+  .fx-hero { display:grid; grid-template-columns:1fr 1fr; gap:9px; margin:2px 0 4px; }
+  .fx-cell { background:var(--surface-2); border-radius:8px; padding:10px 11px; }
+  .fx-cell.hi { outline:1px solid var(--warning); outline-offset:-1px; }
+  .fx-cell .k { font-size:9.5px; letter-spacing:0.05em; text-transform:uppercase;
+                color:var(--text-muted); line-height:1.35; }
+  .fx-cell .v { font-size:23px; font-weight:700; color:var(--text-primary);
+                font-variant-numeric:tabular-nums; line-height:1.15; margin-top:5px; }
+  .fx-cell .n { font-size:10.5px; color:var(--text-secondary); margin-top:4px;
+                line-height:1.45; }
+  .fx-cell .n b { color:var(--text-primary); font-weight:650; }
+
+  /* The verdict pill, same construction as .ld-chip: a word inside, never
+     colour alone. */
+  .fx-chip { display:inline-flex; align-items:center; gap:5px; padding:3px 9px;
+             border-radius:11px; font-size:10px; font-weight:700;
+             letter-spacing:0.05em; text-transform:uppercase; }
+  .fx-chip.good { background:rgba(12,163,12,0.14);  color:var(--good); }
+  .fx-chip.warn { background:rgba(250,178,25,0.14); color:var(--warning); }
+  .fx-chip.bad  { background:rgba(208,59,59,0.14);  color:var(--critical); }
+  .fx-chip.none { background:var(--surface-2); color:var(--text-muted); }
+
+  .fx-lvl { display:flex; align-items:baseline; flex-wrap:wrap; gap:10px;
+            margin:14px 0 2px; }
+  .fx-lvl .px { font-size:19px; font-weight:700; color:var(--text-primary);
+                font-variant-numeric:tabular-nums; }
+  .fx-lvl .sym { font-size:10px; letter-spacing:0.06em; text-transform:uppercase;
+                 color:var(--text-muted); }
+  .fx-lvl .ch { font-size:12.5px; font-weight:650; font-variant-numeric:tabular-nums; }
+  .fx-lvl .ch.up { color:var(--up); }
+  .fx-lvl .ch.dn { color:var(--down); }
+  .fx-lvl .rng { font-size:10.5px; color:var(--text-muted);
+                 font-variant-numeric:tabular-nums; }
+
+  /* The per-day strip. Bars are DIRECTION off a shared centre, scaled to the
+     largest day so one session's dominance is visible as geometry rather than
+     only as a number -- 77% of this window's dollar move happened on one day,
+     and a reader should be able to see that before reading anything. */
+  .fx-days { margin-top:10px; }
+  .fx-day { display:grid; grid-template-columns:58px 1fr 52px; gap:8px;
+            align-items:center; padding:3px 0; font-size:10.5px;
+            font-variant-numeric:tabular-nums; }
+  .fx-day .d { color:var(--text-muted); }
+  .fx-day .p { text-align:right; font-weight:650; }
+  .fx-day .p.up { color:var(--up); }
+  .fx-day .p.dn { color:var(--down); }
+  .fx-day .track { position:relative; height:9px; background:var(--surface-2);
+                   border-radius:2px; }
+  .fx-day .track::before { content:""; position:absolute; left:50%; top:-1px;
+                   bottom:-1px; width:1px; background:var(--grid); }
+  .fx-day .bar { position:absolute; top:0; height:9px; border-radius:2px; }
+  .fx-day .bar.up { background:var(--up); }
+  .fx-day .bar.dn { background:var(--down); }
+  .fx-day.thin .track, .fx-day.thin .bar { opacity:0.45; }
+
+  /* The correlation grid. One row per instrument: name, a diverging bar, r,
+     and the stability verdict with the two halves it was judged from. */
+  .fx-cor { margin-top:6px; }
+  .fx-crow { display:grid; grid-template-columns:52px 1fr 46px 94px; gap:8px;
+             align-items:center; padding:6px 0;
+             border-bottom:1px solid var(--grid); font-size:11px;
+             font-variant-numeric:tabular-nums; }
+  .fx-crow:last-child { border-bottom:0; }
+  .fx-crow .s { color:var(--text-primary); font-weight:650; font-size:11.5px; }
+  .fx-crow .r { text-align:right; font-weight:700; }
+  .fx-crow .r.up { color:var(--up); }
+  .fx-crow .r.dn { color:var(--down); }
+  .fx-crow .track { position:relative; height:11px; background:var(--surface-2);
+                    border-radius:2px; }
+  .fx-crow .track::before { content:""; position:absolute; left:50%; top:-2px;
+                    bottom:-2px; width:1px; background:var(--grid); }
+  .fx-crow .bar { position:absolute; top:0; height:11px; border-radius:2px; }
+  .fx-crow .bar.up { background:var(--up); }
+  .fx-crow .bar.dn { background:var(--down); }
+  /* The pill and the pair that produced it, stacked. This is the one change on
+     this card that MOVES data rather than folding it: the six first-half →
+     second-half readings used to live inside the legend below as a
+     comma-separated prose list — "ES -0.23 → -0.10 · NQ -0.23 → -0.04 · …" — in
+     the smallest and faintest type on the page, four rows below the pills they
+     are the evidence for. A reader asking "why does ES say STABLE and NQ say
+     FADES when they are two points apart?" had to find the list, parse it, and
+     hold six pairs in their head to answer it. It is the answer, so it goes
+     where the question is asked. Prose is where data goes to hide. */
+  .fx-crow .v { justify-self:start; display:grid; gap:2px; justify-items:start; }
+  .fx-crow .v .hh { font-size:9px; color:var(--text-muted); letter-spacing:0.01em;
+                    font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .fx-halves { font-size:10px; color:var(--text-muted); padding:0 0 8px;
+               line-height:1.5; font-variant-numeric:tabular-nums; }
+  /* What is left of the legend once the numbers have moved into the grid: the
+     key, which must stay on screen because the bar is unreadable without it,
+     and the provenance, which folds. The summary keeps the RATIO — 1,006 of
+     1,532 means a third of the window has no paired data and that is a fact
+     about how much the grid above is worth, not a footnote about plumbing. */
+  details.fwork.fx-lg { margin-top:4px; }
+  details.fwork.fx-lg > summary { font-size:10px; color:var(--text-muted);
+             line-height:1.5; font-variant-numeric:tabular-nums; }
+  details.fwork.fx-lg > summary::after { content:"  \25B8  why"; }
+  details.fwork.fx-lg[open] > summary::after { content:"  \25BE  less"; }
+  .fx-lg .fx-lgb { font-size:10px; color:var(--text-muted); line-height:1.5;
+             margin-top:5px; font-variant-numeric:tabular-nums; }
+  .fx-lg .fx-lgb p { margin:0 0 7px; }
+  .fx-lg .fx-lgb p:last-child { margin-bottom:0; }
+  .fx-lg .fx-lgb b, .fx-lg > summary b { color:var(--text-secondary); }
+
+  /* The narrative half wears a different surface from the measured half on
+     purpose. Everything above this line was computed from the archive on this
+     refresh; everything inside it was written by hand on a stated date from
+     stated sources, and the two must never be mistaken for each other. */
+  .fx-narr { margin-top:12px; padding:11px 12px; border-radius:8px;
+             border:1px dashed var(--grid); background:transparent; }
+  .fx-narr .hd { font-size:10.5px; letter-spacing:0.05em; text-transform:uppercase;
+             color:var(--text-muted); margin-bottom:7px; display:flex;
+             justify-content:space-between; gap:8px; align-items:baseline; }
+  .fx-narr .hd em { font-style:normal; font-variant-numeric:tabular-nums;
+             text-transform:none; letter-spacing:0; }
+  .fx-tl { margin:2px 0 0; }
+  /* Six entries that used to be six open paragraphs of forty to sixty words, all
+     the same weight, 1,403px of card between the lead and the note. One line
+     each now. The left rail is kept because it is what makes the block scannable
+     at a glance, but it was always doing two jobs — three of these are dates and
+     three are category labels — so the row that points FORWARD is marked. It is
+     the only one here that can still change, and it names a release that has not
+     happened yet. Accent on the label, and the ROW ORDER already carries the
+     same information, so this is emphasis and not the only cue. */
+  details.fwork.fx-e { margin-top:0; padding:5px 0;
+             border-bottom:1px solid var(--grid); }
+  details.fwork.fx-e:last-of-type { border-bottom:0; }
+  details.fwork.fx-e > summary { display:grid; grid-template-columns:70px 1fr auto;
+             gap:9px; align-items:baseline; font-size:11.5px; line-height:1.55;
+             color:var(--text-secondary); }
+  .fx-e > summary .w { color:var(--text-muted); font-size:10.5px;
+             font-variant-numeric:tabular-nums; }
+  .fx-e > summary .t { color:var(--text-primary); font-weight:650; }
+  .fx-e[data-k="next"] > summary .w { color:var(--accent); font-weight:650; }
+  /* TWO SPACES after the escape. A CSS hex escape shorter than six digits is
+     terminated by whitespace and that whitespace is consumed. */
+  details.fwork.fx-e > summary::after { content:"  \25B8  "; font-size:10px; }
+  details.fwork.fx-e[open] > summary::after { content:"  \25BE  "; }
+  .fx-e .fx-eb { font-size:11.5px; line-height:1.55; color:var(--text-secondary);
+             margin-top:6px; }
+  .fx-e .fx-eb b { color:var(--text-primary); font-weight:650; }
+  .fx-e .fx-eb p { margin:0 0 9px; }
+  .fx-e .fx-eb p:last-child { margin-bottom:0; }
+  /* The reconciling claim stays on screen; only the argument for it folds. */
+  .fx-e.fx-note > summary .t { font-weight:500; color:var(--text-secondary); }
+  .fx-e.fx-note > summary .w { color:var(--text-muted); }
+  .fx-src { font-size:10px; color:var(--text-muted); margin-top:9px; line-height:1.6; }
+  .fx-src a { color:var(--accent); text-decoration:none; }
+  .fx-src a:hover { text-decoration:underline; }
+
+  /* --- liquidity map ---
+     Two fills only, and they are not two peer categories: --accent is the value
+     area (the thing being pointed at) and --text-muted is everything outside it.
+     Emphasis, not category. Volume magnitude is already carried by bar LENGTH,
+     so colour must not encode it again. Validated on both surfaces: CVD ΔE 15.9,
+     normal-vision 17.0, contrast >= 3:1. The chroma check fails on the grey,
+     which is correct — it is meant to read as a neutral. */
+  .liq-wrap { position:relative; margin-top:14px; }
+  /* the left margin is the stop-pool rail's gutter; see .liq-rail below */
+  .liq-prof { position:relative; height:300px; margin-right:104px; margin-left:18px; }
+  .liq-bin  { position:absolute; left:0; background:var(--text-muted);
+              border-radius:0 2px 2px 0; }
+  .liq-bin.in { background:var(--accent); }
+  .liq-rule { position:absolute; left:0; right:-104px; height:1px;
+              background:var(--text-primary); opacity:0.55; }
+  .liq-rule.poc { background:var(--accent); opacity:1; height:2px; }
+  .liq-rule.edge { background:var(--grid); opacity:1; }
+  .liq-tag { position:absolute; right:-104px; width:100px; text-align:right;
+             font-size:9.5px; line-height:1.15; color:var(--text-muted);
+             font-variant-numeric:tabular-nums; transform:translateY(-50%);
+             white-space:nowrap; }
+  .liq-tag b { color:var(--text-primary); font-weight:650; display:block;
+               font-size:10.5px; }
+  .liq-tag.poc b { color:var(--accent); }
+  .liq-tag.px  b { color:var(--text-primary); }
+  /* The price marker has to win against a 300px stack of bars, so it gets a
+     shape no bar can imitate rather than another colour. */
+  .liq-px { position:absolute; left:-5px; width:0; height:0; margin-top:-4px;
+            border-top:4px solid transparent; border-bottom:4px solid transparent;
+            border-left:7px solid var(--text-primary); }
+
+  /* --- the stop pools, drawn on the axis the profile already has ---
+     Every row in the list below this chart is a PRICE, and the chart is a price
+     axis 300px tall. Putting the rows on it costs no second axis and no second
+     legend: where a mark sits relative to the price triangle IS its side and its
+     distance, which is otherwise six rows of reading to work out. The question
+     the list answers slowly — is there more resting above me or below me, and is
+     it near — the rail answers at a glance.
+     The marks are NEVER pushed apart when they collide, unlike the four labels
+     in the right gutter, which are text and have to stay legible. A mark moved
+     off its price is sitting at a level the market does not have. And two heavy
+     pools three pixels apart genuinely ARE a cluster: merging into one thicker
+     mark says so, and separating them would say the opposite.
+     Strength is width — the same ordinal-to-size device the row's own bars use,
+     and for the same reason. Side is already carried by position, so nothing
+     here may carry it a second time. */
+  .liq-rail { position:absolute; left:-18px; top:0; bottom:0; width:13px; }
+  .liq-rail::before { content:""; position:absolute; right:0; top:0; bottom:0;
+                      width:1px; background:var(--grid); }
+  /* 3px rather than 2. At 2px these are legible on the 3x screenshot they were
+     designed against and nearly invisible on the phone this page is read on,
+     which is the wrong way round. Centred on the price by half its own height,
+     because the mark is AT the level rather than starting at it. */
+  .liq-pm { position:absolute; right:0; height:3px; border-radius:1px;
+            background:var(--text-secondary); margin-top:-1.5px; }
+  /* A pool outside the profile's own price range gets pinned to the end of the
+     axis, and gets a shape no in-range mark has. A flat tick resting at the
+     boundary would claim a price the pool does not sit at, which is the same lie
+     a clamped label tells, and the reader has no way to catch either one. */
+  .liq-pm.off { height:0; width:0; background:none; right:1px; margin-top:0;
+                border-left:5px solid transparent; border-right:5px solid transparent; }
+  .liq-pm.off.up { border-bottom:5px solid var(--text-muted); }
+  .liq-pm.off.dn { border-top:5px solid var(--text-muted); }
+
+  .liq-call { margin-top:16px; padding:13px 14px; border-radius:8px;
+              background:var(--accent-wash); border:1px solid var(--border); }
+  .liq-lean { font-size:15px; font-weight:650; line-height:1.3; }
+  /* the reasoning under the lean used to be a plain .liq-why div. It is a fold
+     now, so its type moved down to the liq-f variant block rather than staying
+     here as a rule with nothing left to match. */
+
+  .liq-pool { display:grid; grid-template-columns: 74px 1fr 64px; gap:9px;
+              align-items:center; padding:10px 0;
+              border-bottom:1px solid var(--grid); }
+  .liq-pool .pp { font-size:13px; font-weight:650; font-variant-numeric:tabular-nums; }
+  .liq-pool .pd { font-size:10px; color:var(--text-muted); font-variant-numeric:tabular-nums; }
+  .liq-pool .pn { font-size:11.5px; color:var(--text-secondary); line-height:1.35; }
+  .liq-pool .pn b { color:var(--text-primary); font-weight:650; }
+  .liq-pool .pmeta { font-size:10.5px; color:var(--text-muted); }
+  .liq-pool .pw { text-align:right; font-size:10.5px; color:var(--text-secondary);
+                  font-variant-numeric:tabular-nums; }
+  /* Pool size is ordinal, so it is bars-of-height again — the same device the
+     session clock uses, for the same reason. */
+  .liq-pool .pw u { text-decoration:none; display:flex; justify-content:flex-end;
+                    align-items:flex-end; gap:2px; height:11px; margin-bottom:3px; }
+  .liq-pool .pw u i { width:3px; background:var(--text-muted); border-radius:1px; }
+  .liq-pool .pw u i.on { background:var(--accent); }
+
+  /* Card 11's fold variant, with the card per the convention the other variants
+     follow. This card had NO disclosure of any kind in its body until 6 August:
+     1723px and 642 visible words with nothing folded, which made it the least
+     worked card on the page by an order of magnitude and the reason it was the
+     next target. It needs two type sizes rather than one, because two different
+     kinds of thing are being folded here:
+       liq-f      the three muted footnotes -- the chart legend, the session-weight
+                  note, and the 240-word method paragraph at the foot. These are
+                  glossary and caveat sitting under a finding, so they stay at
+                  rt-key size and rt-key colour whether open or closed.
+       liq-f.liq-w  the reasoning under the call. This one is body prose inside
+                  the accent-wash box, and it inherits exactly the type .liq-why
+                  used to carry, because the fold replaced that div rather than
+                  being added beside it. Dropping it to footnote size would say
+                  the call's reasoning is a footnote, which is the one thing on
+                  this card it is not.
+     The [open] rules for each sub-variant are declared explicitly. Without them
+     `.liq-f[open]` and `.liq-f.liq-w` tie on specificity and the winner would be
+     decided by which happens to sit lower in the sheet, which is not a thing to
+     leave to the order two unrelated edits landed in.
+     TWO spaces after every \25xx escape, for the reason spelled out at the base
+     details.fwork rules: a short hex escape eats the whitespace that ends it. */
+  details.fwork.liq-f { margin-top:9px; }
+  details.fwork.liq-f > summary { font-size:10.5px; color:var(--text-muted);
+            line-height:1.5; }
+  details.fwork.liq-f > summary b { color:var(--text-secondary); font-weight:650; }
+  details.fwork.liq-f > summary::after { content:"  \25B8  method"; font-size:9.5px; }
+  details.fwork.liq-f[open] > summary::after { content:"  \25BE  less"; }
+  .liq-f > .fwork-b { font-size:10.5px; line-height:1.55; color:var(--text-muted);
+            margin-top:5px; }
+
+  /* the chart legend says "reading it" rather than "method", because what is
+     behind it is how to read the picture directly above and not how the numbers
+     in it were arrived at */
+  details.fwork.liq-f.liq-rd > summary::after { content:"  \25B8  reading it"; }
+  details.fwork.liq-f.liq-rd[open] > summary::after { content:"  \25BE  less"; }
+
+  details.fwork.liq-f.liq-w { margin-top:7px; }
+  details.fwork.liq-f.liq-w > summary { font-size:12.5px; color:var(--text-primary);
+            line-height:1.55; }
+  details.fwork.liq-f.liq-w > summary b { color:var(--text-primary); font-weight:650; }
+  details.fwork.liq-f.liq-w > summary::after { content:"  \25B8  why"; font-size:10px; }
+  details.fwork.liq-f.liq-w[open] > summary::after { content:"  \25BE  less"; }
+  .liq-f.liq-w > .fwork-b { font-size:12.5px; line-height:1.55;
+            color:var(--text-primary); margin-top:7px; }
+
+  /* --- decision board ---
+     One row, one level, one question: when does it come into reach and what
+     fires before then. Time is the sort key, so time is what the eye lands on
+     first — left column, heaviest type on the row. Everything else is
+     subordinate to it, which is the opposite of how the liquidity map is
+     ordered and is the entire reason this card exists separately.
+
+     The left border carries the gate class, but never alone: every row also
+     says in words whether the water is clear or an event stands in it. Colour
+     here is a second reading of something already written down. */
+  .dec-sym { display:flex; align-items:baseline; justify-content:space-between;
+             gap:10px; margin-top:20px; padding-bottom:7px;
+             border-bottom:1px solid var(--border); }
+  .dec-sym:first-child { margin-top:4px; }
+  .dec-sym .dsn { font-size:14px; font-weight:650; }
+  .dec-sym .dsp { font-size:11px; color:var(--text-muted);
+                  font-variant-numeric:tabular-nums; text-align:right; }
+
+  .dec-row { display:grid; grid-template-columns: 62px 1fr; gap:11px;
+             padding:11px 0 11px 9px; border-bottom:1px solid var(--grid);
+             border-left:2px solid var(--text-muted); }
+  .dec-row.now   { border-left-color:var(--accent); }
+  .dec-row.clear { border-left-color:var(--good); }
+  .dec-row.gated { border-left-color:var(--warning); }
+  .dec-row.far   { border-left-color:var(--grid); }
+  .dec-row .dwhen { font-size:14px; font-weight:650; line-height:1.15;
+                    font-variant-numeric:tabular-nums; }
+  .dec-row.far .dwhen { color:var(--text-muted); font-weight:600; font-size:12.5px; }
+  .dec-row .dwhen span { display:block; margin-top:4px; font-size:9.5px;
+                         font-weight:500; letter-spacing:0.04em;
+                         text-transform:uppercase; color:var(--text-muted);
+                         line-height:1.3; }
+  .dec-row .dlvl { font-size:13px; font-weight:650; font-variant-numeric:tabular-nums; }
+  .dec-row .dlvl .dd { font-weight:500; font-size:10.5px; color:var(--text-muted);
+                       margin-left:6px; }
+  .dec-row .dwhat { font-size:11.5px; color:var(--text-secondary);
+                    line-height:1.4; margin-top:3px; }
+  .dec-row .dwhat b { color:var(--text-primary); font-weight:650; }
+  .dec-row .dgate { font-size:11.5px; color:var(--text-primary); line-height:1.5;
+                    margin-top:6px; padding-left:9px;
+                    border-left:1px solid var(--grid); }
+  .dec-row .dgate b { font-weight:650; }
+
+  /* --- the decision rail ---
+     One horizontal axis, shared by both contracts, so that "which of these
+     comes first" and "what lands in between" are read off the same picture.
+     Percentage positioning throughout: the rail has to be correct at whatever
+     width the phone gives it, and a pixel geometry computed at paint time would
+     be wrong the moment the card is read in landscape. */
+  .dec-rail { margin:2px 0 4px; }
+  .drl-hd { font-size:9.5px; letter-spacing:0.05em; text-transform:uppercase;
+            color:var(--text-muted); font-weight:600; margin-bottom:7px; }
+  .drl-lane { display:grid; grid-template-columns:34px 1fr; align-items:center;
+              gap:8px; margin-bottom:7px; }
+  .drl-sym { font-size:10px; font-weight:650; color:var(--text-secondary);
+             text-align:right; }
+  /* Two bands. The top eleven pixels are for the one price label this lane
+     carries; everything else — baseline, markers, event rules — lives below it.
+     Keeping them apart is what stops the label's background from punching a gap
+     in a dashed rule it happens to cross. */
+  .drl-track { position:relative; height:30px; }
+  .drl-line { position:absolute; left:0; right:0; top:22px; height:1px;
+              background:var(--grid); }
+  /* a scheduled release. Dashed, because it is a moment rather than a level,
+     and it runs the full height of the marker band so it reads as a wall the
+     markers are on one side of */
+  .drl-ev { position:absolute; top:11px; bottom:0; width:0;
+            border-left:1px dashed var(--warning); opacity:0.55; }
+  /* the horizontal padding is not decoration: two levels fifteen minutes apart
+     sit within a couple of percent of each other on a ten-hour rail, and one
+     pixel of surface each side is what keeps them reading as two marks */
+  .drl-m { position:absolute; top:22px; transform:translate(-50%,-50%);
+           font-size:11px; line-height:1; font-weight:700;
+           background:var(--surface); padding:1px 1px; }
+  .drl-m.now   { color:var(--accent); }
+  .drl-m.clear { color:var(--good); }
+  .drl-m.gated { color:var(--warning); }
+  /* the label sits in the band above its own marker, centred on it, and only
+     the nearest level in each lane gets one */
+  .drl-lab { position:absolute; top:0; transform:translateX(-50%);
+             font-size:9.5px; font-weight:650; white-space:nowrap;
+             color:var(--text-secondary); font-variant-numeric:tabular-nums;
+             padding:0 3px; }
+  .drl-ax { position:relative; height:12px; margin:1px 0 0 42px; }
+  .drl-ax span { position:absolute; top:0; font-size:9px; color:var(--text-muted);
+                 transform:translateX(-50%); white-space:nowrap; }
+  /* the first tick is left-aligned on its position and the last is
+     right-aligned on its own, so neither end hangs off the track and gets
+     clipped by the card. The last one is set inline, because which tick is last
+     depends on the span. */
+  .drl-ax span:first-child { transform:none; }
+  .drl-key { font-size:9.5px; color:var(--text-muted); margin:6px 0 0 42px;
+             line-height:1.5; }
+  .drl-key b { color:var(--text-secondary); font-weight:600; }
+
+  /* The coverage bar. Same idiom as every other one-dimensional strip on this
+     page: a relative track with percentage-positioned children, so it is right
+     at whatever width the phone gives it rather than at the width it was
+     measured on. The track is the whole distance to the level; the fill is the
+     part of that distance the print's expected move covers by itself. */
+  .dcov { display:grid; grid-template-columns:1fr 96px; align-items:center;
+          gap:9px; margin-top:7px; }
+  .dcov-t { position:relative; height:7px; border-radius:3.5px;
+            background:var(--grid); }
+  .dcov-f { position:absolute; left:0; top:0; bottom:0; border-radius:3.5px;
+            background:var(--warning); opacity:0.8; }
+  /* The 100% mark: the point at which the print's expected move covers the
+     level's whole distance on its own. It is a mark on the track rather than
+     the end of it, so a bar can overshoot and be SEEN to overshoot -- 250% and
+     111% are both "covered outright" and they are not the same trade. Taller
+     than the track so it is legible against a fill that has run past it. */
+  .dcov-1 { position:absolute; top:-3px; bottom:-3px; width:1px;
+            background:var(--text-secondary); opacity:0.7; }
+  .dcov-l { font-size:10.5px; line-height:1.4; color:var(--text-secondary);
+            font-variant-numeric:tabular-nums; }
+  .dcov-l b { color:var(--text-primary); font-weight:650; }
+
+  /* the shared premise, above the run of rows it governs. Indented to the same
+     left edge as the rows' prose column so it reads as their heading rather
+     than as a row of its own, and it carries the gated left border because it
+     is the reason those rows are gated. */
+  .dec-gh { margin:9px 0 -2px; padding:6px 0 6px 11px;
+            border-left:2px solid var(--warning);
+            font-size:11.5px; line-height:1.5; color:var(--text-secondary); }
+  .dec-gh b { color:var(--text-primary); font-weight:650; }
+  .dec-gh .dghn { display:block; margin-top:2px; font-size:9.5px;
+                  color:var(--text-muted); letter-spacing:0.02em; }
+
+  details.fwork.dec-far { margin-top:10px; padding-top:9px;
+                          border-top:1px solid var(--grid); }
+  details.fwork.dec-far > summary { font-size:11.5px; line-height:1.5; }
+  details.fwork.dec-far > summary b { color:var(--text-primary); font-weight:650; }
+  details.fwork.dec-far > summary::after { content:"  \25B8  list them"; font-size:10px; }
+  details.fwork.dec-far[open] > summary::after { content:"  \25BE  less"; }
+  .dec-far .fwork-b { margin-top:7px; }
+  .dec-far .dfr { display:grid; grid-template-columns: 86px 1fr; gap:10px;
+                  padding:5px 0; border-bottom:1px solid var(--grid);
+                  font-size:11px; line-height:1.45; }
+  .dec-far .dfr:last-child { border-bottom:0; }
+  .dec-far .dfp { font-weight:650; font-variant-numeric:tabular-nums;
+                  color:var(--text-primary); }
+  .dec-far .dfp span { display:block; margin-top:2px; font-weight:500;
+                       font-size:9.5px; color:var(--text-muted); }
+  .dec-far .dfw { color:var(--text-secondary); }
+  .dec-far .dfw b { color:var(--text-primary); font-weight:600; }
+
+  /* the method, behind its own marker. Not "working": what is behind this one
+     is how every time on the card was built, and the summary in front of it
+     already carries the error bar that essay exists to publish. */
+  details.fwork.dec-meth { margin-top:16px; padding-top:11px;
+                           border-top:1px solid var(--border); }
+  details.fwork.dec-meth > summary { font-size:11px; line-height:1.5;
+                                     color:var(--text-muted); }
+  details.fwork.dec-meth > summary b { color:var(--text-secondary); font-weight:650; }
+  details.fwork.dec-meth > summary::after { content:"  \25B8  how"; font-size:9.5px; }
+  details.fwork.dec-meth[open] > summary::after { content:"  \25BE  less"; }
+  .dec-meth .fwork-b { font-size:11px; line-height:1.55; color:var(--text-muted); }
+
+  /* --- catalyst board ---
+     The blast radius is a one-dimensional map of price, so it gets a horizontal
+     axis and nothing else: no area fill, no second measure. Two fills again —
+     --accent is what is in reach, --text-muted is the rest of the number line. */
+  .cat-hd { padding:13px 14px; border-radius:8px; background:var(--accent-wash);
+            border:1px solid var(--border); margin-bottom:4px; }
+  .cat-hd .ch-lab { font-size:10.5px; letter-spacing:0.06em; text-transform:uppercase;
+                    color:var(--text-muted); }
+  .cat-hd .ch-fig { font-size:17px; font-weight:650; margin-top:3px; line-height:1.25; }
+  .cat-hd .ch-note { font-size:12.5px; color:var(--text-primary); margin-top:8px;
+                     line-height:1.55; }
+
+  .cat-row { padding:15px 0; border-bottom:1px solid var(--grid); }
+  .cat-row:last-child { border-bottom:0; }
+  .cat-top { display:grid; grid-template-columns: 1fr auto; gap:10px; align-items:start; }
+  .cat-nm { font-size:14px; font-weight:650; line-height:1.3; }
+  .cat-when { font-size:11.5px; color:var(--text-secondary); margin-top:3px;
+              font-variant-numeric:tabular-nums; }
+  .cat-cd { font-size:15px; font-weight:650; font-variant-numeric:tabular-nums;
+            text-align:right; white-space:nowrap; }
+  .cat-cd.imminent { color:var(--warning); }
+  .cat-cd span { display:block; font-size:10px; font-weight:450; color:var(--text-muted);
+                 letter-spacing:0.05em; text-transform:uppercase; margin-top:2px; }
+  /* Impact is ordinal — height again, never a hue step. */
+  .cat-imp { display:inline-flex; align-items:flex-end; gap:2px; height:11px;
+             vertical-align:-1px; margin-right:6px; }
+  .cat-imp i { width:3px; background:var(--text-muted); border-radius:1px; }
+  .cat-imp i.on { background:var(--accent); }
+  .cat-why { font-size:12.5px; color:var(--text-secondary); line-height:1.55; margin-top:8px; }
+  .cat-why b { color:var(--text-primary); font-weight:650; }
+  /* The two branches of an upcoming binary. One line each, closed: the condition
+     that triggers it and which way price goes if it does. The paragraph behind
+     each is the working and it stays behind it.
+
+     GEOMETRY IS PRIMARY AND COLOUR IS SECONDARY, which is not a preference here.
+     Light --good and --warning sit 2.9 ΔE apart under deuteranopia, and while
+     these two use the divergence pair rather than the status palette, the same
+     discipline applies: the arrow differs in SHAPE (up, down, dash) and the
+     outcome is spelled in WORDS. Strip every colour out of this row and it still
+     reads correctly, which is the test. */
+  .cat-brs { margin-top:8px; }
+  details.fwork.cat-br { margin-top:5px; }
+  details.fwork.cat-br > summary { display:flex; align-items:baseline; gap:7px;
+            font-size:12.5px; line-height:1.5; }
+  /* Fixed width so the conditions line up down the column and the eye can run
+     the arrows without reading anything. tabular alignment is the whole reason
+     this is a flex row rather than inline spans. */
+  .br-dir { flex:0 0 auto; width:11px; text-align:center; font-size:13px;
+            font-weight:700; line-height:1; }
+  .br-if  { flex:1 1 auto; color:var(--text-primary); font-weight:650; }
+  .br-out { flex:0 0 auto; font-size:10.5px; font-weight:650; white-space:nowrap;
+            letter-spacing:0.01em; }
+  .br-dir.up, .br-out.up { color:var(--div-pos); }
+  .br-dir.dn, .br-out.dn { color:var(--div-neg); }
+  .br-dir.nx, .br-out.nx { color:var(--text-muted); }
+  /* The word is carried by .br-out, so the marker is the triangle alone — the
+     one place on this page a bare marker is right, because the line it opens
+     already ends in a label and "▸ working" after "RTY down" would be the third
+     thing competing for the end of a 390px row. TWO SPACES after the escape:
+     a hex escape under six digits eats the whitespace that terminates it. */
+  details.fwork.cat-br > summary::after { content:"  \25B8  "; font-size:10px; }
+  details.fwork.cat-br[open] > summary::after { content:"  \25BE  "; }
+  .cat-br .br-b { font-size:12px; line-height:1.55; margin-top:6px; }
+  .cat-br .br-b b { color:var(--text-primary); font-weight:650; }
+  /* The fold under each upcoming event. Its summary is the consensus/last pair
+     when the calendar publishes one — information rather than an affordance — so
+     the marker names what is behind it instead of saying "working": the body is
+     why the release is on the board at all and how its band was arrived at, not
+     reasoning about a trade. When there is no consensus the summary is empty and
+     the marker is the whole label, which is how the card intro's "how it's built"
+     reads too. It is the marker that has to carry the name, because it is the
+     half that is always there. */
+  details.fwork.cat-fold { margin-top:9px; }
+  details.fwork.cat-fold > summary { font-size:12.5px; line-height:1.55; }
+  details.fwork.cat-fold > summary::after { content:"  \25B8  why this one matters"; font-size:10px; }
+  details.fwork.cat-fold[open] > summary::after { content:"  \25BE  less"; }
+  .cat-fold .fwork-b { font-size:12.5px; line-height:1.55; }
+  .cat-fold .cat-whyb b { color:var(--text-primary); font-weight:650; }
+  .cat-how { font-size:10.5px; color:var(--text-muted); margin-top:7px; line-height:1.5; }
+
+  .cat-band { position:relative; height:52px; margin:14px 0 2px; }
+  .cat-axis { position:absolute; left:0; right:0; top:26px; height:2px;
+              background:var(--text-muted); opacity:0.30; border-radius:1px; }
+  .cat-reach { position:absolute; top:26px; height:2px; background:var(--accent);
+               border-radius:1px; }
+  .cat-now { position:absolute; top:19px; width:2px; height:16px; margin-left:-1px;
+             background:var(--accent); border-radius:1px;
+             box-shadow:0 0 0 2px var(--surface-1); }
+  .cat-nowl { position:absolute; top:38px; font-size:9.5px; color:var(--accent);
+              font-weight:650; font-variant-numeric:tabular-nums; transform:translateX(-50%);
+              white-space:nowrap; }
+  .cat-pool { position:absolute; top:21px; width:2px; height:12px; margin-left:-1px;
+              background:var(--text-muted); border-radius:1px; }
+  .cat-pool.hit { background:var(--accent); }
+  .cat-pl { position:absolute; top:2px; font-size:9.5px; line-height:1.15;
+            color:var(--text-muted); font-variant-numeric:tabular-nums;
+            transform:translateX(-50%); white-space:nowrap; text-align:center; }
+  .cat-pl.hit { color:var(--text-primary); font-weight:650; }
+  .cat-pl.lo { top:36px; }
+  .cat-edge { position:absolute; top:38px; font-size:9.5px; color:var(--text-muted);
+              font-variant-numeric:tabular-nums; }
+  .cat-edge.r { right:0; }
+  .cat-verdict { font-size:12.5px; color:var(--text-primary); line-height:1.55;
+                 margin-top:9px; }
+  .cat-verdict u { text-decoration:none; border-left:2px solid var(--accent);
+                   padding-left:8px; display:block; }
+
+
+  /* --- landed catalysts ---
+     THE PAGE-WIDE COLOUR RULE, and this is the card that forces it to be
+     written down. Two ramps, two questions:
+
+         the STATUS ramp  (--good / --warning / --critical)
+             answers "did these two things agree?"
+         the DIRECTION ramp  (--up / --down)
+             answers "which way did it go?"
+
+     The cross-market card uses the first for whether four contracts agreed with
+     each other. This card uses it for whether the tape agreed with what the
+     result argued. Same question, different pair — so the same ink. Direction
+     never wears green: a market can fall exactly as the number said it would,
+     and that is agreement, in green, pointing down.
+
+     The two are made to look different as well as mean different things,
+     because a reader is not going to hold a legend in their head. A verdict is
+     a filled pill with a word inside it. A direction is a bare glyph and a
+     signed number in ordinary ink. Nothing on this card is both. */
+  .ld-wrap { margin-top:2px; }
+  .ld-row { padding:12px 0; border-bottom:1px solid var(--grid); }
+  .ld-row:last-child { border-bottom:0; }
+  .ld-top { display:flex; align-items:baseline; justify-content:space-between; gap:10px; }
+  .ld-nm { font-size:13px; color:var(--text-primary); font-weight:600; line-height:1.35; }
+  .ld-when { font-size:10.5px; color:var(--text-muted); white-space:nowrap;
+             font-variant-numeric:tabular-nums; }
+
+  /* The verdict pill. Word inside, never colour alone — the same discipline the
+     status palette carries everywhere else on this page. */
+  .ld-chip { display:inline-flex; align-items:center; gap:5px; margin-top:7px;
+             padding:3px 9px; border-radius:11px; font-size:10px; font-weight:700;
+             letter-spacing:0.05em; text-transform:uppercase; }
+  .ld-chip.agree { background:rgba(12,163,12,0.14);  color:var(--good); }
+  .ld-chip.noise { background:rgba(250,178,25,0.14); color:var(--warning); }
+  .ld-chip.against { background:rgba(208,59,59,0.14); color:var(--critical); }
+  .ld-chip.none  { background:var(--surface-2); color:var(--text-muted); }
+  .ld-chip.wait  { background:var(--surface-2); color:var(--text-muted); }
+
+  /* The surprise line: actual against forecast. Deliberately NOT coloured by
+     beat-or-miss — a beat is not good news, it is a bigger number, and half
+     this board's releases trade a beat downward. Direction of the ARGUMENT is
+     stated in words on the line below, where it can carry its own caveat. */
+  .ld-surp { font-size:12px; color:var(--text-secondary); margin-top:8px;
+             line-height:1.5; font-variant-numeric:tabular-nums; }
+  .ld-surp b { color:var(--text-primary); font-weight:650; }
+  .ld-lead { font-size:12.5px; color:var(--text-secondary); margin-top:8px; line-height:1.55; }
+  .ld-lead b { color:var(--text-primary); font-weight:650; }
+
+  /* The four arms, as a fixed-scale strip rather than four pills.
+
+     The number on an arm is a PERCENTILE — how unusual this contract's move
+     over the window was against every ordinary window of the same length — so
+     it already lives on a 0-100 scale that does not change between events or
+     between rows. Four bars against a common track is therefore an honest
+     picture rather than a decoration: the same length means the same thing
+     everywhere on this card, which "17 pct" and "94 pct" set in the same weight
+     of type did not. Reading which arm refused to join in used to mean
+     comparing four two-digit numbers held in your head; it is now the shape.
+
+     Direction stays an arrow AND tints the fill. That redundancy is deliberate
+     and it is the same discipline the chips on this card follow by carrying a
+     word inside them: a strip that said "down" only in red would say nothing at
+     all to a reader who cannot separate red from green.
+
+     The tick is LD_NOISE — the line under which ldRead calls a move "inside
+     noise" and refuses to score it at all. Because every track is the same
+     width the four ticks line up into one rule across the strip, which is what
+     a reference line should look like. NOTE: ldOdd's own p >= 75 test is a
+     separate literal that happens to equal LD_NOISE today; this tick is drawn
+     FROM LD_NOISE and means the evidence line, not the odd-arm test. */
+  .ld-arms { display:grid; gap:6px; margin-top:9px; }
+  .ld-arm { display:grid; grid-template-columns:26px 11px 1fr 24px; gap:7px;
+            align-items:center; font-size:11px; font-variant-numeric:tabular-nums; }
+  .ld-arm .s { color:var(--text-muted); font-size:10px; letter-spacing:0.04em; }
+  .ld-arm .d { font-weight:700; text-align:center; }
+  .ld-arm .d.up { color:var(--up); }
+  .ld-arm .d.dn { color:var(--down); }
+  .ld-arm .pc { color:var(--text-primary); font-weight:650; text-align:right; }
+  /* Same 6px height and 999px radius as .meter. This page already has one bar
+     idiom and a second one differing from it by two pixels would read as an
+     unrelated widget rather than as the same kind of statement. */
+  .ld-trk { position:relative; height:6px; background:var(--grid); border-radius:999px; }
+  .ld-fil { position:absolute; left:0; top:0; height:6px; border-radius:999px;
+            background:var(--text-muted); }
+  .ld-fil.up { background:var(--up); }
+  .ld-fil.dn { background:var(--down); }
+  /* No min-width, on purpose. A move in the 2nd percentile SHOULD be a bar you
+     can barely see, and propping it up to a legible stub would make the one
+     reading the strip exists to give — this arm did nothing — the one reading
+     it cannot show. The digits are printed beside it for anyone who needs them. */
+  .ld-ref { position:absolute; top:-2px; height:10px; width:1px;
+            background:var(--text-muted); opacity:0.5; }
+  .ld-arm.odd .s, .ld-arm.odd .pc { color:var(--warning); font-weight:700; }
+  .ld-arm.odd .ld-trk { outline:1px solid var(--warning); outline-offset:1px; }
+  .ld-oddnote { font-size:10.5px; color:var(--warning); margin-top:7px; line-height:1.5; }
+  .ld-none { font-size:11.5px; color:var(--text-muted); margin-top:8px; line-height:1.55; }
+
+  .cat-news { padding:11px 0; border-bottom:1px solid var(--grid); }
+  .cat-news:last-child { border-bottom:0; }
+  .cat-news .nh { font-size:12.5px; line-height:1.45; color:var(--text-primary); }
+  .cat-news .nm2 { font-size:10.5px; color:var(--text-muted); margin-top:4px; }
+  .cat-news .nw { font-size:11.5px; color:var(--text-secondary); line-height:1.45;
+                  margin-top:5px; }
+
+  /* --- macro rows --- */
+  .mrow { display:grid; grid-template-columns: 1fr auto auto; align-items:baseline;
+          gap:10px; padding:10px 0; border-bottom:1px solid var(--grid);
+          font-variant-numeric:tabular-nums; }
+  .mrow:last-child { border-bottom:0; }
+  .mrow .nm { font-size:12.5px; color:var(--text-primary); font-variant-numeric:normal; }
+  .mrow .nm span { display:block; font-size:10px; color:var(--text-muted); }
+  .mrow .pv { font-size:13px; font-weight:600; }
+  .mrow .cv { font-size:11.5px; min-width:62px; text-align:right; }
+
+  /* --- curve ---
+     ONE HUE, five steps of opacity, oldest faintest. The five lines on this
+     chart are the same measurement at five moments, which is a SEQUENTIAL
+     encoding and not a categorical one: giving each date its own colour would
+     say the 30 July curve and the 4 August curve are different KINDS of thing,
+     and the reader's eye would then have to learn a legend to recover an order
+     it can already see. Recency is the magnitude, so recency gets the ramp.
+
+     No red and no green anywhere on the chart or the change strip. A yield that
+     rose is not a yield that is wrong, and the two status colours on this page
+     mean right-and-wrong — they are spent in the disclosure, on the one column
+     that holds a realised equity return, where up and down have a side. */
+  /* The two chart modes. An inline-flex so the pill hugs its two buttons rather
+     than stretching across the card and reading like a nav bar. */
+  .yc-modes { display:inline-flex; margin-bottom:8px; }
+  .yc-modes .tab { font-size:11.5px; padding:6px 11px; min-height:30px; }
+  .curve-wrap { margin-top:4px; }
+  .curve-wrap svg { display:block; width:100%; height:172px; overflow:visible; }
+  .curve-stat { display:flex; gap:16px; flex-wrap:wrap; margin-top:12px;
+                padding-top:11px; border-top:1px solid var(--grid); }
+  .curve-stat div { font-size:11.5px; color:var(--text-muted); }
+  .curve-stat b { display:block; font-size:15px; color:var(--text-primary);
+                  font-weight:650; font-variant-numeric:tabular-nums; margin-top:1px; }
+
+  /* The recency legend. Present because there are five lines: identity is never
+     colour-alone, so each step carries its date as text beside the swatch. */
+  .yc-leg { display:flex; gap:11px; flex-wrap:wrap; margin-top:10px;
+            font-size:10px; color:var(--text-muted); align-items:center; }
+  .yc-leg span { display:inline-flex; align-items:center; gap:4px; white-space:nowrap; }
+  .yc-leg i { width:13px; height:2px; border-radius:1px; background:var(--accent);
+              display:inline-block; }
+  .yc-leg span.new { color:var(--text-primary); font-weight:600; }
+  /* An off-cycle state carries the WORD as well as the colour, here and in the
+     disclosure table, because it is the one legend entry that is not a close. */
+  .yc-odd { color:var(--warning); }
+
+  /* The per-tenor change strip. A glyph and a signed number in muted ink; the
+     glyph is the channel that survives greyscale, a screenshot, and CVD. */
+  .yc-chg { display:grid; grid-template-columns:repeat(8,1fr); gap:2px; margin-top:13px;
+            padding-top:11px; border-top:1px solid var(--grid); }
+  .yc-chg div { text-align:center; font-size:10px; color:var(--text-muted);
+                line-height:1.45; }
+  .yc-chg b { display:block; font-size:11.5px; font-weight:650;
+              color:var(--text-secondary); font-variant-numeric:tabular-nums; }
+  .yc-chg u { display:block; text-decoration:none; font-size:9px; color:var(--text-muted); }
+
+  /* The move badge: name of what the curve did, in words, with the two numbers
+     that define it. Neutral surface — see the note above about red and green. */
+  .yc-move { display:flex; align-items:baseline; gap:9px; flex-wrap:wrap;
+             margin-top:13px; padding:9px 11px; border-radius:7px;
+             background:var(--surface-2); }
+  .yc-move strong { font-size:13px; color:var(--text-primary); font-weight:650; }
+  .yc-move em { font-style:normal; font-size:10.5px; color:var(--text-muted);
+                font-variant-numeric:tabular-nums; }
+  .yc-stale { font-size:10px; color:var(--warning); font-weight:600; }
+
+  /* --- cross-market agreement ---
+     THE COLOUR RULE FOR THIS CARD, and the reason it needs stating: on every
+     other card here green means UP. Here it means the four contracts agreed,
+     and th
